@@ -47,6 +47,7 @@ class UserController extends Controller
 
         $data = $request->validate([
             'name' => 'required',
+            'business_name' => 'required',
             'email' => 'required|email',
             'timezone' => 'present|timezone',
         ]);
@@ -65,7 +66,7 @@ class UserController extends Controller
 
         // add business
         $business = new \App\Business;
-        $business->name = $user->name ."'s Business";
+        $business->name = $data['business_name'];
         $business->owner_id = $user->id;
         $business->save();
 
