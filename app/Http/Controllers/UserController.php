@@ -51,12 +51,34 @@ class UserController extends Controller
             'timezone' => 'present|timezone',
         ]);
 
-        return User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => Hash::make(Str::random(10)),
-            'timezone' => $data['timezone'],
-        ]);
+        // create and add user
+        $user = new User;
+        $user->name = $data['name'];
+        $user->email = $data['email'];
+        $user->password = Hash::make(Str::random(10));
+        $user->timezone = $data['timezone'];
+        $user->save();
+
+        // assign client role
+        $client_role = \App\Role::where('name', 'client')->first();
+        $user->assignRole($client_role);
+
+        // add business
+        $business = new \App\Business;
+        $business->name = $user->name ."'s Business";
+        $business->owner_id = $user->id;
+        $business->save();
+
+        // grant license to business
+        $advisor = Auth::user();
+        $license = new \App\License;
+        $license->account_number = uniqid();
+        $license->business_id = $business->id;
+        $license->advisor_id = $advisor->id;
+        $license->save();
+
+        // redirect to user view of newly created user
+        return redirect("user/{$user->id}");
     }
 
     /**
