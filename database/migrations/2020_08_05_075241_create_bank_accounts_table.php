@@ -17,7 +17,7 @@ class CreateBankAccountsTable extends Migration
             $table->bigIncrements('id');
             $table->string('name');
             $table->string('type');
-            $table->unsignedBigIncrements('business_id');
+            $table->unsignedBigInteger('business_id');
             $table->foreign('business_id')
             ->references('id')
             ->on('businesses')
