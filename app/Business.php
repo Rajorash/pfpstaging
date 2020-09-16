@@ -22,4 +22,10 @@ class Business extends Model
     {
         return $this->hasOne(License::class);
     }
+
+    public function accounts()
+    {
+        return $this->hasMany(BankAccount::class);
+    }
+ 
 }

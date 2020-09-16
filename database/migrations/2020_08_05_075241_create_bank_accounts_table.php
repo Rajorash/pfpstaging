@@ -16,7 +16,7 @@ class CreateBankAccountsTable extends Migration
         Schema::create('bank_accounts', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name');
-            $table->string('type');
+            $table->enum('type', ['revenue', 'prereal', 'postreal', 'pretotal']);
             $table->unsignedBigInteger('business_id');
             $table->foreign('business_id')
             ->references('id')
@@ -24,6 +24,7 @@ class CreateBankAccountsTable extends Migration
             ->onDelete('cascade'); // If a user is deleted, cascade to delete their pivot table rows
             $table->timestamps();
         });
+
     }
 
     /**

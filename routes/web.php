@@ -22,9 +22,26 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::group(['middleware' => 'auth'], function () {
     Route::get('/business', 'BusinessController@index');
     Route::get('/business/{business}', 'BusinessController@show');
+    
+    Route::get('/business/{business}/accounts', function ($business_id) {
+        $business = App\Business::findOrFail($business_id);
+        $accounts = $business->accounts;
+        // $accounts = [];
+        return view('accounts.show', ['accounts' => $accounts]);
+    });
 
     Route::get('/user', 'UserController@index');
     Route::post('/user', 'UserController@store');
     Route::get('/user/create', 'UserController@create');
     Route::get('/user/{user}', 'UserController@show');
+
+    Route::get('/allocations/percentages', function () {
+        $accounts = [
+            ['label' => 'Profit', 'percentage' => 35],
+            ['label' => 'Opex', 'percentage' => 50],
+            ['label' => 'General', 'percentage' => 15]
+        ];
+        return view('allocations.percentages', ['accounts' => $accounts]);
+    });
+
 });
