@@ -22,6 +22,8 @@ class UserSeeder extends Seeder
         ]);
         $advisor_role = App\Role::where('name', 'advisor')->first();
         $advisor->assignRole($advisor_role);
+        $advisor_details = new App\Advisor($advisor->id);
+        $advisor_details->save();
         
         $client = App\User::firstOrCreate([
             'name' => 'Test Client',

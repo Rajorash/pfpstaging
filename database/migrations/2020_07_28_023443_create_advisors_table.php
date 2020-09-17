@@ -16,8 +16,8 @@ class CreateAdvisorsTable extends Migration
         Schema::create('advisors', function (Blueprint $table) {
             $table->bigInteger('id')->unsigned();
             $table->smallInteger('seat_limit');
-            $table->string('niche');
-            $table->string('tier');
+            $table->string('niche')->nullable();
+            $table->string('tier')->nullable();
             $table->foreign('id')
                 ->references('id')
                 ->on('users')

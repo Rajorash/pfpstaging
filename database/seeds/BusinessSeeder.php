@@ -16,11 +16,13 @@ class BusinessSeeder extends Seeder
         factory(App\Business::class)->create([
             'name' => 'Clients Company',
             'owner_id' => 2
-        ]);
+        ])->each( function ( $business ) {
+            $license = factory(App\License::class)->make([
+                'business_id' => $business->id,
+                'advisor_id' => 1,
+            ]);
+            $business->license()->save($license);
+        });
         
-        factory(App\Business::class)->create([
-            'name' => 'Advisors Company',
-            'owner_id' => 1
-        ]);
     }
 }
