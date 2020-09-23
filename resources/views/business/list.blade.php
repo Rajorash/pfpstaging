@@ -3,7 +3,7 @@
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-md-8">
+        <div class="col-md-10">
             <div class="card">
                 <div class="card-header"><strong>Businesses Visible To You</strong></div>
 
@@ -14,6 +14,8 @@
                             <th>Business Name</th>
                             <th>Owner</th>
                             <th>Advisor</th>
+                            <th>Accounts</th>
+                            <th></th>
                         </tr>
                         </thead>
                         <tbody>
@@ -27,6 +29,12 @@
                             </td>
                             <td>
                                 {{$business->license ? $business->license->advisor->name : 'No advisor.'}}
+                            </td>
+                            <td>
+                                {{$business->accounts()->count()}}
+                            </td>
+                            <td>
+                                <a class="btn btn-info btn-sm" href="/business/{{$business->id}}/accounts">See Accounts</a>
                             </td>
                         </tr>
                         @empty

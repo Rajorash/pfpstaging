@@ -12,4 +12,13 @@ class BankAccount extends Model
     {
         return $this->belongsTo(Business::class);
     }
+
+    public static function type_list() {
+        return [
+            1 => 'revenue',
+            2 => 'prereal',
+            3 => 'postreal',
+            4 => 'pretotal'
+        ];
+    }
 }
