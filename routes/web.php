@@ -23,11 +23,20 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/business', 'BusinessController@index');
     Route::get('/business/{business}', 'BusinessController@show');
     
+    Route::resource('business.accounts', 'BankAccountController');
+
     Route::get('/business/{business}/accounts', function ($business_id) {
         $business = App\Business::findOrFail($business_id);
         $accounts = $business->accounts;
         // $accounts = [];
         return view('accounts.show', ['accounts' => $accounts]);
+    });
+
+    Route::get('/business/{business}/accounts/create', function ($business_id) {
+        $business = App\Business::findOrFail($business_id);
+        $accounts = $business->accounts;
+        // $accounts = [];
+        return view('accounts.create', ['business' => $business]);
     });
 
     Route::get('/user', 'UserController@index');
