@@ -48,7 +48,7 @@ class UserController extends Controller
         $data = $request->validate([
             'name' => 'required',
             'business_name' => 'required',
-            'email' => 'required|email',
+            'email' => 'unique:users,email|required|email',
             'timezone' => 'present|timezone',
         ]);
 
