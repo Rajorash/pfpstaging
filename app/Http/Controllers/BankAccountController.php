@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use Auth;
 use App\BankAccount;
+use App\Business;
 use Illuminate\Http\Request;
 
 class BankAccountController extends Controller
@@ -12,9 +14,10 @@ class BankAccountController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Business $business)
     {
-        $business = App\Business::findOrFail($business_id);
+        $this->authorize('view', $business);
+        
         $accounts = $business->accounts;
         // $accounts = [];
         return view('accounts.show', ['accounts' => $accounts]);
@@ -25,11 +28,12 @@ class BankAccountController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Business $business)
     {
-        $business = App\Business::findOrFail($business_id);
+        $this->authorize('create', $business);
+
         $accounts = $business->accounts;
-        // $accounts = [];
+        
         return view('accounts.create', ['business' => $business]);
     }
 
@@ -39,18 +43,31 @@ class BankAccountController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, Business $business)
     {
-        //
+        $data = $request->validate([
+            'name' => 'required',
+            'account_type' => 'required'
+        ]);
+
+        $account = new BankAccount();
+        $account->name = $data['name'];
+        $account->type = $data['account_type'];
+        $account->business_id = $business->id;
+
+        $account->save();
+
+        return redirect("business/".$business->id."/accounts");
+    
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\BankAccount  $bankAccount
+     * @param  \App\BankAccount  $account
      * @return \Illuminate\Http\Response
      */
-    public function show(BankAccount $bankAccount)
+    public function show(BankAccount $account)
     {
         //
     }
@@ -58,34 +75,52 @@ class BankAccountController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\BankAccount  $bankAccount
+     * @param  \App\BankAccount  $account
      * @return \Illuminate\Http\Response
      */
-    public function edit(BankAccount $bankAccount)
+    public function edit(Business $business, BankAccount $account)
     {
-        //
+        $this->authorize('update', $account);        
+
+        return view('accounts.edit', ['business' => $business, 'account' => $account, 'curr_type' => $account->type ]);
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\BankAccount  $bankAccount
+     * @param  \App\BankAccount  $account
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, BankAccount $bankAccount)
+    public function update(Request $request, Business $business, BankAccount $account)
     {
-        //
+        // authorise
+        
+        $data = request()->validate([
+            'name' => 'required',
+            'account_type' => 'required']
+        );
+
+        $account->name = $data['name'];
+        $account->type = $data['account_type'];
+        $account->save();
+
+        return redirect("business/".$business->id."/accounts");
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\BankAccount  $bankAccount
+     * @param  \App\BankAccount  $account
      * @return \Illuminate\Http\Response
      */
-    public function destroy(BankAccount $bankAccount)
+    public function destroy(Business $business, BankAccount $account)
     {
-        //
+
+        // authorise first
+
+        $account->delete();
+
+        return redirect("/business/{$business->id}/accounts");
     }
 }

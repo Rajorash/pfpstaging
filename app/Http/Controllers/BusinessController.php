@@ -31,7 +31,7 @@ class BusinessController extends Controller
      */
     public function create()
     {
-        //
+        $this->authorize('create', $business);
     }
 
     /**
@@ -42,7 +42,7 @@ class BusinessController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->authorize('create', $business);
     }
 
     /**
@@ -53,6 +53,8 @@ class BusinessController extends Controller
      */
     public function show(Business $business)
     {
+        $this->authorize('view', $business);
+
         return view('business.show', ['business' => $business]);
     }
 
@@ -64,7 +66,7 @@ class BusinessController extends Controller
      */
     public function edit(Business $business)
     {
-        //
+        $this->authorize('edit', $business);
     }
 
     /**
@@ -76,7 +78,7 @@ class BusinessController extends Controller
      */
     public function update(Request $request, Business $business)
     {
-        //
+        $this->authorize('update', $business);
     }
 
     /**
@@ -87,6 +89,6 @@ class BusinessController extends Controller
      */
     public function destroy(Business $business)
     {
-        //
+        $this->authorize('delete', $business);
     }
 }
