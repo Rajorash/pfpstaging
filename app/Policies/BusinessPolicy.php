@@ -36,24 +36,7 @@ class BusinessPolicy
             $user = Auth::user();
         }
 
-        // owners can view their own business
-        if ($business->owner && $user->id === $business->owner->id) {
-            return true;
-        }
-
-        // advisors can view the businesses that they advise
-        if ($business->license && $user->id === $business->license->advisor_id) {
-            return true;
-        }
-        
-        // advisors can view the businesses that they collaborate on
-        if ($business->collaboration && $user->id === $business->collaboration->advisor_id) {
-            // need to add expiry check
-            return true;
-        }
-
-        // otherwise deny view
-        return false;
+        return self::userHasBusinessAccess($user, $business);
     }
 
     /**
@@ -76,24 +59,7 @@ class BusinessPolicy
      */
     public function update(User $user, Business $business)
     {
-        // owners can update their own business
-        if ($user->id === $business->owner->id) {
-            return true;
-        }
-
-        // advisors can update the businesses that they advise
-        if ($user->id === $business->license->advisor_id) {
-            return true;
-        }
-
-        // advisors can update the businesses that they collaborate on
-        if ($user->id === $business->collaboration->advisor_id) {
-            // need to add expiry check
-            return true;
-        }
-
-        // otherwise deny update
-        return false;
+        return self::userHasBusinessAccess($user, $business);
     }
 
     /**
@@ -105,7 +71,7 @@ class BusinessPolicy
      */
     public function delete(User $user, Business $business)
     {
-        //
+        return self::userHasBusinessAccess($user, $business);
     }
 
     /**
@@ -117,7 +83,7 @@ class BusinessPolicy
      */
     public function restore(User $user, Business $business)
     {
-        //
+        return self::userHasBusinessAccess($user, $business);
     }
 
     /**
@@ -130,5 +96,34 @@ class BusinessPolicy
     public function forceDelete(User $user, Business $business)
     {
         //
+    }
+
+    /**
+     * Returns true if the user is the owner of the account, an advisor to the 
+     * account or an advisor currently collaborating on the account.
+     * 
+     * @param  \App\User  $user
+     * @param  \App\Business  $business
+     * @return mixed
+     */
+    public function userHasBusinessAccess(User $user, Business $business) {
+        // owners can access their own business
+        if ($business->owner && $user->id === $business->owner->id) {
+            return true;
+        }
+
+        // advisors can access the businesses that they advise
+        if ($business->license && $user->id === $business->license->advisor_id) {
+            return true;
+        }
+        
+        // advisors can access the businesses that they collaborate on
+        if ($business->collaboration && $user->id === $business->collaboration->advisor_id) {
+            // need to add expiry check
+            return true;
+        }
+
+        // otherwise deny access
+        return false;
     }
 }
