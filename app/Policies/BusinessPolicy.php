@@ -51,6 +51,17 @@ class BusinessPolicy
     }
 
     /**
+     * Determine whether the user can create businesses.
+     *
+     * @param  \App\User  $user
+     * @return mixed
+     */
+    public function createBankAccount(User $user, Business $business)
+    {
+        return self::userHasBusinessAccess($user, $business);
+    }
+
+    /**
      * Determine whether the user can update the business.
      *
      * @param  \App\User  $user

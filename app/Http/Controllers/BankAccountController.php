@@ -30,7 +30,7 @@ class BankAccountController extends Controller
      */
     public function create(Business $business)
     {
-        $this->authorize('create', $business);
+        $this->authorize('createBankAccount', $business);
 
         $accounts = $business->accounts;
         
@@ -47,7 +47,7 @@ class BankAccountController extends Controller
     {
         $data = $request->validate([
             'name' => 'required',
-            'account_type' => 'required'
+            'type' => 'required'
         ]);
 
         $account = new BankAccount();
