@@ -13,6 +13,11 @@ class BankAccount extends Model
         return $this->belongsTo(Business::class);
     }
 
+    public function accountFlows()
+    {
+        return $this->hasMany(AccountFlow::class);
+    }
+
     public static function type_list() {
         return [
             1 => 'revenue',
@@ -21,4 +26,5 @@ class BankAccount extends Model
             4 => 'pretotal'
         ];
     }
+
 }
