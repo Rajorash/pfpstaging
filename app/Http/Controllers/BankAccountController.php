@@ -47,7 +47,7 @@ class BankAccountController extends Controller
     {
         $data = $request->validate([
             'name' => 'required',
-            'type' => 'required'
+            'account_type' => 'required'
         ]);
 
         $account = new BankAccount();
