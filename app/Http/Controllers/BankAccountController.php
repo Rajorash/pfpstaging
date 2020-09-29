@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Auth;
+use App\AccountFlow;
 use App\BankAccount;
 use App\Business;
 use Illuminate\Http\Request;
@@ -37,6 +38,18 @@ class BankAccountController extends Controller
         return view('accounts.create', ['business' => $business]);
     }
 
+        /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function createFlow(BankAccount $account)
+    {
+        $this->authorize('createBankAccount', $account->business);
+
+        return view('accounts.createflow', ['account' => $account]);
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -58,6 +71,32 @@ class BankAccountController extends Controller
         $account->save();
 
         return redirect("business/".$business->id."/accounts");
+    
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function storeFlow(Request $request, BankAccount $account)
+    {
+        $this->authorize('createBankAccount', $account->business);
+
+        $data = $request->validate([
+            'label' => 'required',
+            'flow-direction' => 'required'
+        ]);
+
+        $flow = new AccountFlow();
+        $flow->label = $data['label'];
+        $flow->negative_flow = $data['flow-direction'];
+        $flow->account_id = $account->id;
+        
+        $flow->save();
+        
+        return redirect("business/".$account->business->id."/accounts");
     
     }
 
