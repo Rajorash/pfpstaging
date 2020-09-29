@@ -26,6 +26,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::resource('business.accounts', 'BankAccountController');
     Route::get('/accounts/{account}/create-flow', 'BankAccountController@createFlow');
     Route::post('/accounts/{account}/create-flow', 'BankAccountController@storeFlow');
+    Route::delete('/accounts/{account}/flow/{flow}', 'BankAccountController@destroyFlow');
 
     Route::get('/user', 'UserController@index');
     Route::post('/user', 'UserController@store');

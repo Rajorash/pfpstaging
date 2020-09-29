@@ -19,8 +19,8 @@ class BankAccountController extends Controller
     {
         $this->authorize('view', $business);
         
-        $accounts = $business->accounts;
-        // $accounts = [];
+        $accounts = $business->accounts->load('flows');
+        
         return view('accounts.show', ['accounts' => $accounts]);
     }
 
@@ -119,7 +119,7 @@ class BankAccountController extends Controller
      */
     public function edit(Business $business, BankAccount $account)
     {
-        $this->authorize('update', $account);        
+        $this->authorize('update', $account);
 
         return view('accounts.edit', ['business' => $business, 'account' => $account, 'curr_type' => $account->type ]);
     }
@@ -156,10 +156,25 @@ class BankAccountController extends Controller
     public function destroy(Business $business, BankAccount $account)
     {
 
-        // authorise first
+        $this->authorize('view', $business);
 
         $account->delete();
 
         return redirect("/business/{$business->id}/accounts");
+    }
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\BankAccount  $account
+     * @return \Illuminate\Http\Response
+     */
+    public function destroyFlow(BankAccount $account, AccountFlow $flow)
+    {
+
+        $this->authorize('view', $account->business);
+
+        $flow->delete();
+
+        return redirect("/business/{$account->business->id}/accounts");
     }
 }

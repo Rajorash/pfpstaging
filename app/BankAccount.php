@@ -7,15 +7,16 @@ use Illuminate\Database\Eloquent\Model;
 class BankAccount extends Model
 {
     protected $fillable = ['name','type'];
+    protected $with = ['flows'];
 
     public function business()
     {
         return $this->belongsTo(Business::class);
     }
 
-    public function accountFlows()
+    public function flows()
     {
-        return $this->hasMany(AccountFlow::class);
+        return $this->hasMany(AccountFlow::class, 'account_id');
     }
 
     public static function type_list() {

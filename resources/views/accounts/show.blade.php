@@ -18,8 +18,20 @@
                     </form>
                 </span>
             </div>
-            <div class="d-flex justify-content-between align-items-center py-2 pl-4 pr-2 text-success">Inflow <span class="inline-block text-right"><button class="btn btn-sm btn-info">Edit</button> <button class="btn btn-sm btn-danger">Delete</button></span></div>
-            <div class="d-flex justify-content-between align-items-center py-2 pl-4 pr-2 text-danger">Outflow <span class="inline-block text-right"><button class="btn btn-sm btn-info">Edit</button> <button class="btn btn-sm btn-danger">Delete</button></span></div>
+            @forelse($acc->flows as $flow)
+            <div class="d-flex justify-content-between align-items-center py-2 pl-4 pr-2 text-{{$flow->isNegative() ? 'danger' : 'success' }}">
+                {{ $flow->label }}
+                <span class="inline-block text-right"><button class="btn btn-sm btn-info">Edit</button> 
+                    <form class="d-inline" action="/accounts/{{$acc->id}}/flow/{{$flow->id}}" method="POST">
+                        @method('DELETE')
+                        @csrf
+                        <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                    </form>
+                </span>
+            </div>
+            @empty
+            <div class="py-2 pl-4 pr-2">No flows added.</div>
+            @endforelse
             <div class="py-2 pl-4 pr-2" style="border-bottom: 1px #363636 solid;"><a href="/accounts/{{ $acc->id }}/create-flow" class="btn btn-sm btn-success">+ Flow adjustment</a>
             </div>
             @empty

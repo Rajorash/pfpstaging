@@ -30,11 +30,11 @@
                             <div class="col-md-6">
                                 <div class="btn-group" data-toggle="buttons">
                                     <label class="btn btn-success active">
-                                        <input type="radio" name="flow-direction" id="flow-in" autocomplete="off" value="false" checked>
+                                        <input type="radio" name="flow-direction" id="flow-in" autocomplete="off" value="0" checked>
                                         In
                                     </label>
                                     <label class="btn btn-danger">
-                                        <input type="radio" name="flow-direction" id="flow-out" autocomplete="off" value="true">
+                                        <input type="radio" name="flow-direction" id="flow-out" autocomplete="off" value="1">
                                         Out
                                     </label>
                                 </div>
