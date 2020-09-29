@@ -137,11 +137,11 @@ class BankAccountController extends Controller
         
         $data = request()->validate([
             'name' => 'required',
-            'account_type' => 'required']
+            'type' => 'required']
         );
 
         $account->name = $data['name'];
-        $account->type = $data['account_type'];
+        $account->type = $data['type'];
         $account->save();
 
         return redirect("business/".$business->id."/accounts");
