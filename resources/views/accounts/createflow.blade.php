@@ -26,21 +26,21 @@
                         </div>
 
                         <div class="form-group row">
-                            <label class="col-md-4 col-form-label text-md-right">Account Type:</label>
+                            <label class="col-md-4 col-form-label text-md-right">Flow Type:</label>
                             <div class="col-md-6">
                                 <div class="btn-group" data-toggle="buttons">
                                     <label class="btn btn-success active">
                                         <input type="radio" name="flow-direction" id="flow-in" autocomplete="off" value="0" checked>
-                                        In
+                                        Positive
                                     </label>
                                     <label class="btn btn-danger">
                                         <input type="radio" name="flow-direction" id="flow-out" autocomplete="off" value="1">
-                                        Out
+                                        Negative
                                     </label>
                                 </div>
                             </div>
                                 
-                            @error('account_type')
+                            @error('flow-direction')
                             <span class="invalid-feedback" role="alert">
                                 <strong>{{ $message }}</strong>
                             </span>

@@ -5,20 +5,20 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header"><strong>Update Account For {{$business->name}}</strong></div>
+                <div class="card-header"><strong>Update Flow For {{$account->name}}</strong></div>
 
                 <div class="card-body">
-                    <form method="POST" action="/business/{{$account->business_id}}/accounts/{{$account->id}}">
+                    <form method="POST" action="/accounts/{{$account->id}}/flow/{{$flow->id}}">
                         @csrf
                         @method('PUT')
 
                         <div class="form-group row">
-                            <label for="name" class="col-md-4 col-form-label text-md-right">{{ __('Name') }}</label>
+                            <label for="label" class="col-md-4 col-form-label text-md-right">{{ __('Label') }}</label>
 
                             <div class="col-md-6">
-                                <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ $account->name }}" required autocomplete="name" autofocus>
+                                <input id="label" type="text" class="form-control @error('label') is-invalid @enderror" name="label" value="{{ $flow->label }}" required autocomplete="label" autofocus>
 
-                                @error('name')
+                                @error('label')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
@@ -27,17 +27,21 @@
                         </div>
 
                         <div class="form-group row">
-                            <label class="col-md-4 col-form-label text-md-right">Account Type:</label>
+                            <label class="col-md-4 col-form-label text-md-right">Flow Type:</label>
                             <div class="col-md-6">
-                                <select name="type" id="type" class="form-control @error('type') is-invalid @enderror" >
-                                    <option value="">Select your account type</option>
-                                @foreach (App\BankAccount::type_list() as $account_index => $account_type)
-                                    <option value="{{ $account_index }}"{{ $account_type == $curr_type ? ' selected' : '' }}>{{ $account_type }}</option>
-                                @endforeach
-                                </select>
+                                <div class="btn-group" data-toggle="buttons">
+                                    <label class="btn btn-success active">
+                                        <input type="radio" name="flow-direction" id="flow-in" autocomplete="off" value="0" {{ $flow->isNegative() ? '' : 'checked' }}>
+                                        Positive
+                                    </label>
+                                    <label class="btn btn-danger">
+                                        <input type="radio" name="flow-direction" id="flow-out" autocomplete="off" value="1" {{ $flow->isNegative() ? 'checked' : '' }}>
+                                        Negative
+                                    </label>
+                                </div>
                             </div>
                                 
-                            @error('type')
+                            @error('flow-direction')
                             <span class="invalid-feedback" role="alert">
                                 <strong>{{ $message }}</strong>
                             </span>
@@ -47,7 +51,7 @@
                         <div class="form-group row mb-0">
                             <div class="col-md-6 offset-md-4">
                                 <button type="submit" class="btn btn-primary">
-                                    {{ __('Update Account') }}
+                                    {{ __('Update Flow') }}
                                 </button>
                             </div>
                         </div>

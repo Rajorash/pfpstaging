@@ -148,6 +148,42 @@ class BankAccountController extends Controller
     }
 
     /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  \App\BankAccount  $account
+     * @return \Illuminate\Http\Response
+     */
+    public function editFlow(BankAccount $account, AccountFlow $flow)
+    {
+        $this->authorize('update', $account);
+
+        return view('accounts.editflow', ['flow' => $flow, 'account' => $account, 'curr_type' => $account->type ]);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\BankAccount  $account
+     * @return \Illuminate\Http\Response
+     */
+    public function updateFlow(Request $request, BankAccount $account, AccountFlow $flow)
+    {
+        $this->authorize('update', $account);
+        
+        $data = request()->validate([
+            'label' => 'required',
+            'flow-direction' => 'required']
+        );
+
+        $flow->label = $data['label'];
+        $flow->negative_flow = $data['flow-direction'];
+        $flow->save();
+
+        return redirect("business/".$account->business->id."/accounts");
+    }
+
+    /**
      * Remove the specified resource from storage.
      *
      * @param  \App\BankAccount  $account

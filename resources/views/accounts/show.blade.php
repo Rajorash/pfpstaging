@@ -21,7 +21,7 @@
             @forelse($acc->flows as $flow)
             <div class="d-flex justify-content-between align-items-center py-2 pl-4 pr-2 text-{{$flow->isNegative() ? 'danger' : 'success' }}">
                 {{ $flow->label }}
-                <span class="inline-block text-right"><button class="btn btn-sm btn-info">Edit</button> 
+                <span class="inline-block text-right"><a href="/accounts/{{$acc->id}}/flow/{{$flow->id}}/edit" class="btn btn-sm btn-info">Edit</a> 
                     <form class="d-inline" action="/accounts/{{$acc->id}}/flow/{{$flow->id}}" method="POST">
                         @method('DELETE')
                         @csrf
