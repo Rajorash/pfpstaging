@@ -16,7 +16,7 @@ class CreateBankAccountsTable extends Migration
         Schema::create('bank_accounts', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name');
-            $table->enum('type', ['revenue', 'prereal', 'postreal', 'pretotal']);
+            $table->enum('type', ['revenue', 'pretotal', 'salestax', 'prereal', 'postreal']);
             $table->unsignedBigInteger('business_id');
             $table->foreign('business_id')
             ->references('id')

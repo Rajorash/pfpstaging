@@ -22,9 +22,10 @@ class BankAccount extends Model
     public static function type_list() {
         return [
             1 => 'revenue',
-            2 => 'prereal',
-            3 => 'postreal',
-            4 => 'pretotal'
+            2 => 'pretotal',
+            3 => 'salestax',
+            4 => 'prereal',
+            5 => 'postreal'
         ];
     }
 
