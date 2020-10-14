@@ -35,6 +35,9 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/user/create', 'UserController@create');
     Route::get('/user/{user}', 'UserController@show');
 
+    Route::get('/allocations', function () {
+        return view('allocations.calculator');
+    });
     Route::get('/allocations/percentages', function () {
         $accounts = [
             ['label' => 'Profit', 'percentage' => 35],

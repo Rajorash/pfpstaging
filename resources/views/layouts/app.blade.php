@@ -49,7 +49,11 @@
                                 </li>
                             @endif
                         @else
+                            <a class="nav-link" href="/business">Businesses</a>
+                            <a class="nav-link" href="/allocations">Allocations</a>
+                            <a class="nav-link" href="/allocations/percentages">Percentages</a>
                             <li class="nav-item dropdown">
+
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                     {{ Auth::user()->name }} <span class="caret"></span>
                                 </a>
