@@ -5,7 +5,7 @@
     <div class="row justify-content-center">
         <div class="col-md-10">
             <div class="card">
-                <div class="card-header"><strong>Businesses Visible To You</strong></div>
+                <div class="card-header"><strong>Select A Business To See It's Allocations</strong></div>
 
                 <div class="card-body p-0">
                 <table class="table table-striped">
@@ -15,6 +15,7 @@
                             <th>Owner</th>
                             <th>Advisor</th>
                             <th>Accounts</th>
+                            <th></th>
                             <th></th>
                         </tr>
                         </thead>
@@ -31,10 +32,13 @@
                                 {{$business->license ? $business->license->advisor->name : 'No advisor.'}}
                             </td>
                             <td>
-                                {{$business->accounts()->count()}}
+                                <a href="/business/{{$business->id}}/accounts">{{$business->accounts()->count()}}</a>
                             </td>
                             <td>
-                                <a class="btn btn-info btn-sm" href="/business/{{$business->id}}/accounts">See Accounts</a>
+                                <a class="btn btn-info btn-sm" href="/allocations/{{$business->id}}">See Allocations</a>
+                            </td>
+                            <td>
+                                <a class="btn btn-info btn-sm" href="/allocations/{{$business->id}}\percentages">See Percentages</a>
                             </td>
                         </tr>
                         @empty

@@ -23,6 +23,39 @@ class AllocationsController extends Controller
             return Auth::user()->can('view', $business);
         })->values();
         
-        return view('allocations.list', ['businesses' => $filtered]);
+        return view('business.list', ['businesses' => $filtered]);
     }
+
+    
+    /**
+     * Show the allocations for the selected business
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function allocations(Business $business)
+    {
+        $accounts = [
+            ['label' => 'Profit', 'percentage' => 35],
+            ['label' => 'Opex', 'percentage' => 50],
+            ['label' => 'General', 'percentage' => 15]
+        ];
+        return view('allocations.calculator', ['accounts' => $accounts]);
+    }
+
+    /**
+     * Show the percentages for the selected business
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function percentages(Business $business)
+    {
+        $accounts = [
+            ['label' => 'Profit', 'percentage' => 35],
+            ['label' => 'Opex', 'percentage' => 50],
+            ['label' => 'General', 'percentage' => 15]
+        ];
+        return view('allocations.percentages', ['accounts' => $accounts]);
+    }
+
+
 }

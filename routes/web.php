@@ -35,22 +35,9 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/user/create', 'UserController@create');
     Route::get('/user/{user}', 'UserController@show');
 
+    // allocation calculator routing.
     Route::get('/allocations', 'AllocationsController@index');
-    Route::get('/allocations/{business}', function () {
-        $accounts = [
-            ['label' => 'Profit', 'percentage' => 35],
-            ['label' => 'Opex', 'percentage' => 50],
-            ['label' => 'General', 'percentage' => 15]
-        ];
-        return view('allocations.percentages', ['accounts' => $accounts]);
-    });
-    Route::get('/allocations/{business}/percentages', function () {
-        $accounts = [
-            ['label' => 'Profit', 'percentage' => 35],
-            ['label' => 'Opex', 'percentage' => 50],
-            ['label' => 'General', 'percentage' => 15]
-        ];
-        return view('allocations.percentages', ['accounts' => $accounts]);
-    });
+    Route::get('/allocations/{business}', 'AllocationsController@allocations');
+    Route::get('/allocations/{business}/percentages', 'AllocationsController@percentages');
 
 });
