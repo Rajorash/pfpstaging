@@ -14,7 +14,7 @@
                             <th>Business Name</th>
                             <th>Owner</th>
                             <th>Advisor</th>
-                            <th>Accounts</th>
+                            <th class="text-center">Accounts</th>
                             <th></th>
                             <th></th>
                         </tr>
@@ -31,7 +31,7 @@
                             <td>
                                 {{$business->license ? $business->license->advisor->name : 'No advisor.'}}
                             </td>
-                            <td>
+                            <td class="text-center">
                                 <a href="/business/{{$business->id}}/accounts">{{$business->accounts()->count()}}</a>
                             </td>
                             <td>
