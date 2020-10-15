@@ -15,6 +15,11 @@ class CreateAllocationPercentagesTable extends Migration
     {
         Schema::create('allocation_percentages', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->unsignedBigInteger('phase_id');
+            $table->foreign('phase_id')->references('id')->on('phases')->onDelete('cascade'); // If an allocation is deleted, cascade to delete their pivot table rows
+            $table->unsignedBigInteger('bank_account_id');
+            $table->foreign('bank_account_id')->references('id')->on('bank_accounts')->onDelete('cascade'); // If an allocation is deleted, cascade to delete their pivot table rows
+            $table->decimal('percent', 5,2);
             $table->timestamps();
         });
     }
