@@ -46,12 +46,9 @@ class AllocationsController extends Controller
      */
     public function percentages(Business $business)
     {
-        $accounts = [
-            ['label' => 'Profit', 'percentage' => 35],
-            ['label' => 'Opex', 'percentage' => 50],
-            ['label' => 'General', 'percentage' => 15]
-        ];
-        return view('allocations.percentages', ['accounts' => $accounts]);
+        $this->authorize('view', $business);
+
+        return view('allocations.percentages', compact('business'));
     }
 
 

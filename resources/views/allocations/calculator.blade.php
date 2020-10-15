@@ -11,110 +11,25 @@
             <thead class="thead-inverse">
                 <tr>
                     <th></th>
-                    <th>Jan 1</th>
-                    <th>Jan 2</th>
-                    <th>Jan 3</th>
-                    <th>Jan 4</th>
-                    <th>Jan 5</th>
-                    <th>Jan 6</th>
-                    <th>Jan 7</th>
-                    <th>Jan 8</th>
-                    <th>Jan 9</th>
-                    <th>Jan 10</th>
-                    <th>Jan 11</th>
-                    <th>Jan 12</th>
-                    <th>Jan 13</th>
-                    <th>Jan 14</th>
-                    <th>Jan 15</th>
-                    <th>Jan 16</th>
-                    <th>Jan 17</th>
-                    <th>Jan 18</th>
-                    <th>Jan 19</th>
-                    <th>Jan 20</th>
-                    <th>Jan 21</th>
-                    <th>Jan 22</th>
-                    <th>Jan 23</th>
-                    <th>Jan 24</th>
-                    <th>Jan 25</th>
-                    <th>Jan 26</th>
-                    <th>Jan 27</th>
-                    <th>Jan 28</th>
-                    <th>Jan 29</th>
-                    <th>Jan 30</th>
-                    <th>Jan 31</th>
+                    @for($i = 1; $i < 32; $i++)
+                    <th>Jan {{$i}}</th>
+                    @endfor
                 </tr>
                 </thead>
                 <tbody>
                     @forelse ($business->accounts as $acc)
                     <tr style="border-top: 2px solid #99ccdd;">
                         <td scope="row" style="background-color:#99ccdd;">{{$acc->name}}</td>
+                        @for($i = 1; $i < 32; $i++)
                         <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
+                        @endfor
                     </tr>
                     @forelse ($acc->flows as $flow)
                     <tr>
                         <td style="background-color: {{$flow->negative_flow ? '#dd9999' : '#99dd99'}}" scope="row">{{$flow->label}}</td>
+                        @for($i = 1; $i < 32; $i++)
                         <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                    </tr>
+                        @endfor                    </tr>
                     @empty
                     @endforelse
                     @empty

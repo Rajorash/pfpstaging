@@ -2,12 +2,16 @@
 
 @section('content')
 
-<div class="container-fluid">
+<div class="container">
     <div class="row justify-content-center">
-        <div class="col-md-8">
-            <h1>Allocation Percentages</h1>
-            <table class="table">
-                <thead>
+        <!-- <div class="col"> -->
+            <h1>{{$business->name}} Allocation Percentages</h1>
+        <!-- </div> -->
+    </div>
+    <div class="row justify-content-center">
+        <!-- <div class="col"> -->
+            <table class="table table-hover table-sm">
+                <thead class="thead-inverse">
                     <tr>
                         <th>Account</th>
                         @for($i = 1; $i < 8; $i++)
@@ -16,11 +20,11 @@
                     </tr>
                 </thead>
                 <tbody>
-                @forelse($accounts as $acc)
+                @forelse($business->accounts as $acc)
                     <tr>
-                        <td scope="row">{{ $acc['label'] }}</td>
+                        <td scope="row">{{ $acc->name }}</td>
                         @for($i = 1; $i < 8; $i++)
-                        <td class="text-center">{{ $acc['percentage'] }}%</td>
+                        <td class="text-center">0%</td>
                         @endfor
                     </tr>
                 @empty
@@ -33,7 +37,7 @@
                 @endforelse
                 </tbody>
             </table>
-        </div>
+        <!-- </div> -->
     </div>
 </div>
 
