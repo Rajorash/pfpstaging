@@ -14,7 +14,7 @@ class AddEnddateToPhases extends Migration
     public function up()
     {
         Schema::table('phases', function (Blueprint $table) {
-            $table->date('end_date')->nullable();
+            $table->date('end_date')->nullable()->after('rollout_id');
         });
     }
 
