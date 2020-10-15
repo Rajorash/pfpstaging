@@ -12,7 +12,7 @@
                 <tr>
                     <th></th>
                     @for($i = 1; $i < 32; $i++)
-                    <th>Jan {{$i}}</th>
+                    <th class="text-right">Jan {{$i}}</th>
                     @endfor
                 </tr>
                 </thead>
@@ -21,14 +21,14 @@
                     <tr style="border-top: 2px solid #99ccdd;">
                         <td scope="row" style="background-color:#99ccdd;">{{$acc->name}}</td>
                         @for($i = 1; $i < 32; $i++)
-                        <td>0</td>
+                        <td class="text-right">0</td>
                         @endfor
                     </tr>
                     @forelse ($acc->flows as $flow)
                     <tr>
                         <td style="background-color: {{$flow->negative_flow ? '#dd9999' : '#99dd99'}}" scope="row">{{$flow->label}}</td>
                         @for($i = 1; $i < 32; $i++)
-                        <td>0</td>
+                        <td class="text-right">0</td>
                         @endfor                    </tr>
                     @empty
                     @endforelse
