@@ -27,5 +27,10 @@ class Business extends Model
     {
         return $this->hasMany(BankAccount::class);
     }
+
+    public function rollout()
+    {
+        return $this->hasMany(Phase::class);
+    }
  
 }
