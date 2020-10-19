@@ -13,28 +13,35 @@ class CreateRolloutTables extends Migration
      */
     public function up()
     {
-        Schema::create('rollouts', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->unsignedBigInteger('business_id');
-            $table->foreign('business_id')->references('id')->on('businesses')->onDelete('cascade'); // If a business is deleted, cascade to delete their rollout
-            $table->timestamps();
-        });
         Schema::create('phases', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('rollout_id');
-            $table->foreign('rollout_id')->references('id')->on('rollouts')->onDelete('cascade'); // If an rollour is deleted, cascade to delete their phases
+            $table->unsignedBigInteger('business_id');
+            $table->foreign('business_id')
+            ->references('id')
+            ->on('businesses')
+            ->onDelete('cascade'); // If a business is deleted, cascade to delete their phases
+            $table->date('end_date')->nullable();
             $table->timestamps();
         });
+
         Schema::create('allocations', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->unsignedBigInteger('phase_id');
+            $table->foreign('phase_id')->references('id')->on('phases')->onDelete('cascade'); // If an allocation is deleted, cascade to delete their pivot table rows
+            $table->bigInteger('allocatable_id')->unsigned();
+            $table->string('allocatable_type');
+            $table->decimal('amount', 14, 2);
+            $table->date('allocation_date');
             $table->timestamps();
         });
-        Schema::create('allocation_bank_account', function (Blueprint $table) {
+
+        Schema::create('allocation_percentages', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('allocation_id');
-            $table->foreign('allocation_id')->references('id')->on('allocations')->onDelete('cascade'); // If an allocation is deleted, cascade to delete their pivot table rows
+            $table->unsignedBigInteger('phase_id');
+            $table->foreign('phase_id')->references('id')->on('phases')->onDelete('cascade'); // If an allocation is deleted, cascade to delete their pivot table rows
             $table->unsignedBigInteger('bank_account_id');
             $table->foreign('bank_account_id')->references('id')->on('bank_accounts')->onDelete('cascade'); // If an allocation is deleted, cascade to delete their pivot table rows
+            $table->decimal('percent', 5,2);
             $table->timestamps();
         });
     }
@@ -46,9 +53,8 @@ class CreateRolloutTables extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('rollouts');
         Schema::dropIfExists('phases');
         Schema::dropIfExists('allocations');
-        Schema::dropIfExists('allocation_bank_account');
+        Schema::dropIfExists('allocation_percentages');
     }
 }
