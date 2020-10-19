@@ -2,10 +2,13 @@
 
 namespace App;
 
+use App\Traits\Allocatable;
 use Illuminate\Database\Eloquent\Model;
 
 class BankAccount extends Model
 {
+    use Allocatable;
+
     protected $fillable = ['name','type'];
     protected $with = ['flows'];
 
@@ -19,7 +22,8 @@ class BankAccount extends Model
         return $this->hasMany(AccountFlow::class, 'account_id');
     }
 
-    public static function type_list() {
+    public static function type_list()
+    {
         return [
             1 => 'revenue',
             2 => 'pretotal',
@@ -27,6 +31,11 @@ class BankAccount extends Model
             4 => 'prereal',
             5 => 'postreal'
         ];
+    }
+
+    public function allocations()
+    {
+        return $this->morphMany('App\Allocation', 'allocatable');
     }
 
 }

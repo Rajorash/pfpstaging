@@ -2,10 +2,13 @@
 
 namespace App;
 
+use App\Traits\Allocatable;
 use Illuminate\Database\Eloquent\Model;
 
 class AccountFlow extends Model
 {
+    use Allocatable;
+    
     protected $fillable = ['name','negative_flow'];
 
     protected $casts = [
