@@ -1,5 +1,10 @@
 <?php
 
+namespace Database\Seeders;
+
+use App\AccountFlow as AccountFlow;
+use App\BankAccount as BankAccount;
+use App\Business as Business;
 use Illuminate\Database\Seeder;
 
 class AccountSeeder extends Seeder
@@ -11,7 +16,7 @@ class AccountSeeder extends Seeder
      */
     public function run()
     {
-        $businesses = App\Business::all()->each( function ($business) {
+        $businesses = Business::all()->each( function ($business) {
 
             // generate specific accounts for demo
             $predefined_accounts = [
@@ -133,7 +138,7 @@ class AccountSeeder extends Seeder
             ];
 
             foreach($predefined_accounts as $acc) {
-                $account = factory(App\BankAccount::class)->create([
+                $account = factory(BankAccount::class)->create([
                     'name' => $acc['name'],
                     'type' => $acc['type'],
                     'business_id' => $business->id
@@ -141,7 +146,7 @@ class AccountSeeder extends Seeder
                 $business->accounts()->save($account);
                 
                 foreach($acc['flows'] as $flow) {
-                    $new_flow = factory(App\AccountFlow::class)->create(['label' => $flow['label'], 'negative_flow' => $flow['negative']]);
+                    $new_flow = factory(AccountFlow::class)->create(['label' => $flow['label'], 'negative_flow' => $flow['negative']]);
                     $account->flows()->save($new_flow);
                 }
             }

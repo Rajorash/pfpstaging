@@ -1,6 +1,8 @@
 <?php
 
-use App\Role;
+namespace Database\Seeders;
+
+use App\Role as Role;
 use Illuminate\Database\Seeder;
 
 class RoleSeeder extends Seeder
@@ -21,7 +23,7 @@ class RoleSeeder extends Seeder
         ];
 
         foreach ($roles as $role) {
-            App\Role::firstOrCreate($role);
+            Role::firstOrCreate($role);
         }
     }
 }
