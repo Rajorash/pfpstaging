@@ -1,7 +1,9 @@
 <?php
 
-use App\Permission;
-use App\Role;
+namespace Database\Seeders;
+
+use App\Permission as Permission;
+use App\Role as Role;
 use Illuminate\Database\Seeder;
 
 class PermissionsSeeder extends Seeder
@@ -24,10 +26,10 @@ class PermissionsSeeder extends Seeder
         ];
         
         foreach ($permissions as $permission) {
-            App\Permission::firstOrCreate($permission);
+            Permission::firstOrCreate($permission);
         }
 
-        $advisor_role = App\Role::where('name', 'advisor')->first();
+        $advisor_role = Role::where('name', 'advisor')->first();
         $advisor_permissions = [
             'see_clients',
             'see_client_list',
@@ -35,16 +37,16 @@ class PermissionsSeeder extends Seeder
             'view_client_allocations',
         ];
         foreach ($advisor_permissions as $permission) {
-            $advisor_role->allowTo( App\Permission::where('name', $permission)->first() );
+            $advisor_role->allowTo( Permission::where('name', $permission)->first() );
         }
 
-        $client_role = App\Role::where('name', 'client')->first();
+        $client_role = Role::where('name', 'client')->first();
         $client_permissions = [
             'update_own_allocations',
             'view_own_allocations',
         ];
         foreach ($client_permissions as $permission) {
-            $client_role->allowTo( App\Permission::where('name', $permission)->first() );
+            $client_role->allowTo( Permission::where('name', $permission)->first() );
         }
     }
 }
