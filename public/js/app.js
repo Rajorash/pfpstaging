@@ -65909,8 +65909,8 @@ if (document.getElementById('example')) {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /mnt/data/home/209865.cloudwaysapps.com/jgxbfmcrpp/public_html/resources/js/app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! /mnt/data/home/209865.cloudwaysapps.com/jgxbfmcrpp/public_html/resources/sass/app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\laragon\www\pfp-dev\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\laragon\www\pfp-dev\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })
