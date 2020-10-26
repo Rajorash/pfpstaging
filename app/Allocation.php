@@ -17,4 +17,8 @@ class Allocation extends Model
     {
         return $this->morphTo();
     }
+
+    public function phase() {
+        $this->belongsTo(Phase::class);
+    }
 }
