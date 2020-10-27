@@ -39,5 +39,6 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/allocations', 'AllocationsController@index');
     Route::get('/allocations/{business}', 'AllocationsController@allocations');
     Route::get('/allocations/{business}/percentages', 'AllocationsController@percentages');
+    Route::post('/allocations/update', 'AllocationsController@update');
 
 });

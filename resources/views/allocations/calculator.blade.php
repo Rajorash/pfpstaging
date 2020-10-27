@@ -11,24 +11,31 @@
             <thead class="thead-inverse">
                 <tr>
                     <th></th>
-                    @for($i = 1; $i < 32; $i++)
-                    <th class="text-right">Jan {{$i}}</th>
+
+                    @for( $date = $start_date; $date <= $end_date; $date->addDay(1) )
+                    <th class="text-right">
+                        <span style="{{$today->format('jM') == $date->format('jM') ? 'color: #bada55' : ''}}">{{ $date->format('M j') }}</span>
+                    </th>
                     @endfor
                 </tr>
                 </thead>
                 <tbody>
                     @forelse ($business->accounts as $acc)
-                    <tr style="border-top: 2px solid #99ccdd;">
+                    <tr>
                         <td scope="row" style="background-color:#99ccdd;">{{$acc->name}}</td>
-                        @for($i = 1; $i < 32; $i++)
-                        <td class="text-right">0</td>
+                        @for($i = 0; $i < 31; $i++)
+                        <td class="text-right" style="background-color:#99ccdd;">
+                            <input style="min-width: 8em;" class="text-right allocation-value form-control form-control-sm" data-type="account" data-id="{{$acc->id}}" type="text" value="0">
+                        </td>
                         @endfor
                     </tr>
                     @forelse ($acc->flows as $flow)
                     <tr>
-                        <td style="background-color: {{$flow->negative_flow ? '#dd9999' : '#99dd99'}}" scope="row">{{$flow->label}}</td>
-                        @for($i = 1; $i < 32; $i++)
-                        <td class="text-right">0</td>
+                        <td style="background-color: {{ $flow->negative_flow ? '#dd9999' : '#99dd99' }}" scope="row">{{$flow->label}}</td>
+                        @for($i = 0; $i < 31; $i++)
+                        <td class="text-right">
+                            <input style="min-width: 8em;" class="text-right allocation-value form-control form-control-sm" data-type="flow" data-id="{{$flow->id}}" type="text" value="0">
+                        </td>
                         @endfor                    </tr>
                     @empty
                     @endforelse
@@ -43,5 +50,4 @@
         </table>
     </div>
 </div>
-
 @endsection

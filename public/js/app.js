@@ -65782,6 +65782,29 @@ module.exports = function(module) {
 
 /***/ }),
 
+/***/ "./resources/js/allocations.js":
+/*!*************************************!*\
+  !*** ./resources/js/allocations.js ***!
+  \*************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+// update allocations on input change
+var updateAllocation = function updateAllocation(e) {
+  var allocation = {
+    'id': $(this).data('id'),
+    'type': $(this).data('type'),
+    'value': $(this).val(),
+    '_token': $('meta[name="csrf-token"]').attr('content')
+  };
+  console.table([allocation]);
+  $.post('/allocations/update', allocation).done(alert('done'));
+};
+
+$('.allocation-value').on("change", updateAllocation);
+
+/***/ }),
+
 /***/ "./resources/js/app.js":
 /*!*****************************!*\
   !*** ./resources/js/app.js ***!
@@ -65803,6 +65826,8 @@ __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 
 
 __webpack_require__(/*! ./components/Example */ "./resources/js/components/Example.js");
+
+__webpack_require__(/*! ./allocations */ "./resources/js/allocations.js");
 
 /***/ }),
 
