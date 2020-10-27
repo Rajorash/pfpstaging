@@ -47,8 +47,9 @@ class AllocationsController extends Controller
     public function percentages(Business $business)
     {
         $this->authorize('view', $business);
+        $rollout = $business->rollout->orderBy('end_date');
 
-        return view('allocations.percentages', compact('business'));
+        return view('allocations.percentages', compact('business', 'rollout'));
     }
 
 

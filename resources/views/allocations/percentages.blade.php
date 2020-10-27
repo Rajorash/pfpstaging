@@ -14,25 +14,30 @@
                 <thead class="thead-inverse">
                     <tr>
                         <th>Account</th>
-                        @for($i = 1; $i < 8; $i++)
-                        <th class="text-center">Phase {{ $i }}</th>
-                        @endfor
+                        @forelse($rollout as $phase)
+                        <th class="text-center">Phase Ends:<br> {{date('D j M', strtotime($phase->end_date))}}</th>
+                        @empty
+                        <th class="text-center">No dice...</th>
+                        
+                        @endforelse
                     </tr>
                 </thead>
                 <tbody>
                 @forelse($business->accounts as $acc)
                     <tr>
                         <td scope="row">{{ $acc->name }}</td>
-                        @for($i = 1; $i < 8; $i++)
+                        @forelse($rollout as $phase)
                         <td class="text-center">0%</td>
-                        @endfor
+                        @empty
+                        <td class="text-center">N/A</td>
+                        @endforelse
                     </tr>
                 @empty
                     <tr>
                         <td scope="row">N/A</td>
-                        @for($i = 1; $i < 8; $i++)
+                        @forelse($rollout as $phase)
                         <td class="text-center">N/A</td>
-                        @endfor
+                        @empty                        @endforelse
                     </tr>
                 @endforelse
                 </tbody>

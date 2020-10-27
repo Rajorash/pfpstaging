@@ -28,5 +28,9 @@ class Phase extends Model
     public function allocations() {
         $this->hasMany(Allocations::class);
     }
+    
+    public function percentages() {
+        $this->hasMany(AllocationPercentage::class);
+    }
 
 }
