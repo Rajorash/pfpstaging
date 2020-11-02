@@ -4,19 +4,26 @@ namespace App\Observers;
 
 use App\Business;
 use App\Phase;
+use Carbon\Carbon as Carbon;
 
 class BusinessObserver
 {
+
     /**
      * Function to run upon successful creation of a business
      *
      */
     public function created(Business $business)
     {
-        // create an empty phase and assign to the business
-        $phase = Phase::create([
-            'business_id' => $business->id
-        ]);
+        // create empty phases and assign to the business, each 3 months apart on end_date
+        for ($i=0; $i < Phase::DEFAULT_PHASE_COUNT; $i++) {
+            # code...
+            $phase = Phase::create([
+                'business_id' => $business->id,
+                'end_date' => Carbon::now()->addMonths(3 * $i)
+            ]);
+        }
 
     }
+
 }

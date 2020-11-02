@@ -98,8 +98,7 @@ class AllocationsController extends Controller
 
         return response()->JSON([
             "msg" => "allocation successfully updated.",
-            "allocation" => $allocation,
-            "new allocation" => $new_allocation,
+            "allocation" => $allocation
         ]);
     }
 
