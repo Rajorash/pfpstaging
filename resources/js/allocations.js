@@ -2,8 +2,8 @@
 var updateAllocation = function (e) {
     var allocation = {
         'id': $(this).data('id'),
-        'type': $(this).data('type'),
-        'value': $(this).val(),
+        'allocation_type': $(this).data('type'),
+        'amount': $(this).val(),
         '_token': $('meta[name="csrf-token"]').attr('content')
     };
     
@@ -12,9 +12,9 @@ var updateAllocation = function (e) {
     $.post(
         '/allocations/update',
         allocation
-    ).done(
-        alert('done')
-    );
+    ).done( function (data) {
+        console.log(data);
+    });
 };
 
 $('.allocation-value').on("change", updateAllocation);

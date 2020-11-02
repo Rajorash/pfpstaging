@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Auth;
+use Illuminate\Support\Facades\Auth;
 use App\AccountFlow;
+use App\Allocation;
 use App\BankAccount;
 use App\Business;
 use Carbon\Carbon as Carbon;
@@ -23,11 +24,11 @@ class AllocationsController extends Controller
         $filtered = $businesses->filter( function ($business) {
             return Auth::user()->can('view', $business);
         })->values();
-        
+
         return view('business.list', ['businesses' => $filtered]);
     }
 
-    
+
     /**
      * Show the allocations for the selected business
      *
@@ -51,23 +52,54 @@ class AllocationsController extends Controller
     public function percentages(Business $business)
     {
         $this->authorize('view', $business);
-        $rollout = $business->rollout->orderBy('end_date');
+        $rollout = $business->rollout->sortBy('end_date');
 
         return view('allocations.percentages', compact('business', 'rollout'));
     }
 
-    // Used to update or create allocations 
+    // Used to update or create allocations
     public function update(Request $request) {
-        
-        $request->validate([
+
+        $valid = $request->validate([
             'id' => 'required|integer',
-            'type' => 'required',
+            'allocation_type' => 'required',
             'amount' => 'required|integer'
         ]);
-        
-        
+
+        // find allocation matching type and id
+        $allocation = Allocation::where('allocatable_id', '=', $valid['id'])->where('allocatable_type', 'like', 'App\\'.$valid['allocation_type'] )->get();
+
+
+        // if there is no existing allocation, insert one.
+        if( $allocation->empty() ) {
+
+            $new_allocation = new Allocation();
+
+            $new_allocation->phase_id = 1;
+            $new_allocation->allocatable_id = $valid['id'];
+            $new_allocation->allocatable_type = $valid['allocation_type'];
+            $new_allocation->amount = $valid['amount'];
+            $new_allocation->allocation_date = Carbon::now()->toDate();
+
+            if ( !$new_allocation->save() ) {
+                return response(["msg" => "allocation not created"], 400);
+            }
+
+            return response()->JSON([
+                "msg" => "created new allocation",
+                "allocation" => $allocation,
+                "new allocation" => $new_allocation
+            ]);
+
+        }
+
+
+        $this->authorize('view', $allocation->phase->business);
+
         return response()->JSON([
-            "msg" => "allocation successfully updated."
+            "msg" => "allocation successfully updated.",
+            "allocation" => $allocation,
+            "new allocation" => $new_allocation,
         ]);
     }
 

@@ -65793,12 +65793,14 @@ module.exports = function(module) {
 var updateAllocation = function updateAllocation(e) {
   var allocation = {
     'id': $(this).data('id'),
-    'type': $(this).data('type'),
-    'value': $(this).val(),
+    'allocation_type': $(this).data('type'),
+    'amount': $(this).val(),
     '_token': $('meta[name="csrf-token"]').attr('content')
   };
   console.table([allocation]);
-  $.post('/allocations/update', allocation).done(alert('done'));
+  $.post('/allocations/update', allocation).done(function (data) {
+    console.log(data);
+  });
 };
 
 $('.allocation-value').on("change", updateAllocation);
