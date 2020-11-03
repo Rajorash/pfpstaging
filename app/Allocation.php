@@ -27,7 +27,13 @@ class Allocation extends Model
         return $this->morphTo();
     }
 
-    public function phase() {
-        $this->belongsTo(Phase::class);
+    public function phase()
+    {
+        return $this->belongsTo(Phase::class);
+    }
+
+    public function business()
+    {
+        return $this->phase->business;
     }
 }

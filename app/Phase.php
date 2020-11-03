@@ -23,15 +23,15 @@ class Phase extends Model
     protected $casts = ['end_date' => 'date'];
 
     public function business() {
-        $this->belongsTo(Business::class);
+        return $this->belongsTo(Business::class);
     }
 
     public function allocations() {
-        $this->hasMany(Allocations::class);
+        return $this->hasMany(Allocations::class);
     }
 
     public function percentages() {
-        $this->hasMany(AllocationPercentage::class);
+        return $this->hasMany(AllocationPercentage::class);
     }
 
 }
