@@ -33,4 +33,11 @@ class Business extends Model
         return $this->hasMany(Phase::class);
     }
 
+    public function allocations()
+    {
+        $phaseIds = $this->rollout()->pluck('id');
+
+        return Allocation::whereIn('phase_id', $phaseIds)->get();
+    }
+
 }
