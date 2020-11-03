@@ -38,10 +38,18 @@ class AllocationsController extends Controller
     {
         $this->authorize('view', $business);
         $today = Carbon::now();
-        $start_date = Carbon::now()->addDays(-15);
-        $end_date = Carbon::now()->addDays(15);
+        $start_date = Carbon::now()->addDays(-6);
+        $end_date = Carbon::now()->addDays(7);
 
-        return view('allocations.calculator', compact(['business', 'today', 'start_date', 'end_date']));
+        $dates = array();
+        for($date = $start_date; $date <= $end_date; $date->addDay(1))
+        {
+            $dates[] = $date->format('Y-m-j');
+        }
+
+        $allocations = $business->allocations;
+
+        return view('allocations.calculator', compact(['business', 'today', 'start_date', 'end_date', 'dates', 'allocations']));
     }
 
     /**
@@ -63,23 +71,24 @@ class AllocationsController extends Controller
         $valid = $request->validate([
             'id' => 'required|integer',
             'allocation_type' => 'required',
+            'allocation_date' => 'required',
             'amount' => 'required|integer'
         ]);
 
         // find allocation matching type and id
-        $allocation = Allocation::where('allocatable_id', '=', $valid['id'])->where('allocatable_type', 'like', 'App\\'.$valid['allocation_type'] )->get();
+        $allocations = Allocation::where('allocatable_id', '=', $valid['id'])->where('allocatable_type', 'like', "%".$valid['allocation_type'] )->where('allocation_date', '=', $valid['allocation_date'] )->get();
 
 
         // if there is no existing allocation, insert one.
-        if( $allocation->empty() ) {
+        if( $allocations->count() < 1 ) {
 
             $new_allocation = new Allocation();
 
             $new_allocation->phase_id = 1;
             $new_allocation->allocatable_id = $valid['id'];
-            $new_allocation->allocatable_type = $valid['allocation_type'];
+            $new_allocation->allocatable_type = "App" . "\\" . $valid['allocation_type'];
             $new_allocation->amount = $valid['amount'];
-            $new_allocation->allocation_date = Carbon::now()->toDate();
+            $new_allocation->allocation_date = $valid['allocation_date'];
 
             if ( !$new_allocation->save() ) {
                 return response(["msg" => "allocation not created"], 400);
@@ -87,20 +96,22 @@ class AllocationsController extends Controller
 
             return response()->JSON([
                 "msg" => "created new allocation",
-                "allocation" => $allocation,
                 "new allocation" => $new_allocation
             ]);
 
         }
 
+        // removed auth check to finish writing logic
+        // $this->authorize('view', $allocation->phase->business);
 
-        $this->authorize('view', $allocation->phase->business);
+        $allocation = $allocations->first();
+        $allocation->amount = $valid['amount'];
+        $allocation->save();
 
         return response()->JSON([
             "msg" => "allocation successfully updated.",
             "allocation" => $allocation
         ]);
     }
-
 
 }

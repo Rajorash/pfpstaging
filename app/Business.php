@@ -32,5 +32,5 @@ class Business extends Model
     {
         return $this->hasMany(Phase::class);
     }
- 
+
 }

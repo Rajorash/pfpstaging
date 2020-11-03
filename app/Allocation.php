@@ -6,6 +6,15 @@ use Illuminate\Database\Eloquent\Model;
 
 class Allocation extends Model
 {
+
+
+    /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = ['allocation_date' => 'date:Y-m-j'];
+
     /**
      * The attributes that are mass assignable.
      *
