@@ -3,7 +3,6 @@
 @section('content')
 <div class="container-fluid">
     <div class="row justify-content-center">
-        {{var_dump($allocations)}}
         <h1>{{$business->name}} Allocations</h1>
     </div>
     <div class="row">

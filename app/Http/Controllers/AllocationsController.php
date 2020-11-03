@@ -47,7 +47,7 @@ class AllocationsController extends Controller
             $dates[] = $date->format('Y-m-j');
         }
 
-        $allocations = $business->allocations;
+        $allocations = $business->allocations()->sortBy('allocation_date');
 
         return view('allocations.calculator', compact(['business', 'today', 'start_date', 'end_date', 'dates', 'allocations']));
     }
