@@ -20,19 +20,30 @@
                 <tbody>
                     @forelse ($business->accounts as $acc)
                     <tr>
-                        <td scope="row" style="background-color:#99ccdd;">{{$acc->name}}</td>
+                        <td scope="row account-row" style="background-color:#99ccdd;">{{$acc->name}}</td>
                         @foreach($dates as $date)
-                        <td class="text-right" style="background-color:#99ccdd;">
-                            <input style="min-width: 8em;" class="text-right allocation-value form-control form-control-sm" data-type="BankAccount" data-id="{{$acc->id}}" data-date="{{$date}}" type="text" value="0">
+                        <td class="text-right account" style="background-color:#99ccdd;">
+                            <input class="account-value text-right allocation-value form-control form-control-sm"
+                            style="min-width: 8em;"
+                            data-type="BankAccount" data-id="{{$acc->id}}" data-date="{{$date}}" type="text" value="{{$allocationValues['BankAccount'][$acc->id][$date] ?? 0}}" disabled>
                         </td>
                         @endforeach
                     </tr>
                     @forelse ($acc->flows as $flow)
                     <tr>
-                        <td style="background-color: {{ $flow->negative_flow ? '#dd9999' : '#99dd99' }}" scope="row">{{$flow->label}}</td>
+                        <td class="flow-label" style="background-color: {{ $flow->negative_flow ? '#dd9999' : '#99dd99' }}" scope="row">{{$flow->label}}</td>
                         @foreach($dates as $date)
-                        <td class="text-right">
-                            <input style="min-width: 8em;" class="text-right allocation-value form-control form-control-sm" data-type="AccountFlow" data-id="{{$flow->id}}" data-date="{{$date}}" type="text" value="0">
+                        <td class="text-right flow">
+                            <input style="min-width: 8em;"
+                                class="text-right allocation-value form-control form-control-sm"
+                                data-type="AccountFlow"
+                                data-id="{{$flow->id}}"
+                                data-date="{{$date}}"
+                                data-parent="{{$acc->id}}"
+                                data-direction="{{$flow->negative_flow ? 'negative' : 'positive'}}"
+                                placeholder='0'
+                                type="text"
+                                value="{{$allocationValues['AccountFlow'][$flow->id][$date] ?? ''}}">
                         </td>
                         @endforeach
                     </tr>

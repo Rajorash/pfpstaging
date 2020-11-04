@@ -65804,7 +65804,37 @@ var updateAllocation = function updateAllocation(e) {
   });
 };
 
-$('.allocation-value').on("change", updateAllocation);
+var calculateAccountTotal = function calculateAccountTotal(e) {
+  var accountId = $(this).data('parent');
+  var date = $(this).data('date');
+  var total = 0;
+  var flows = $('.flow input[data-parent=' + accountId + '][data-date=' + date + ']');
+  flows.each(function (flow) {
+    var value = parseFloat($(this).val());
+
+    if (!value) {
+      value = 0;
+    }
+
+    if ($(this).data('direction') == 'negative') {
+      total = total - value;
+    } else {
+      total = total + value;
+    }
+  });
+  var accountInput = $('.account-value[data-id="' + accountId + '"][data-date=' + date + ']');
+  accountInput.val(total);
+  accountInput.trigger('change'); // return total;
+};
+
+$('.allocation-value').on("change", updateAllocation); // $('.flow .allocation-value').on("change", function (e) {
+//     let total = $(this).calculateAccountTotal;
+//     let accountId = $(this).data('parent');
+//     alert(total);
+//     $('.account-value[data-id="'+ accountId +'"]').val(total);
+// });
+
+$('.flow .allocation-value').on("change", calculateAccountTotal);
 
 /***/ }),
 

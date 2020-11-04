@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Phase extends Model
 {
-    public const DEFAULT_PHASE_COUNT = 3;
+    public const DEFAULT_PHASE_COUNT = 8;
 
     /**
      * The attributes that are mass assignable.

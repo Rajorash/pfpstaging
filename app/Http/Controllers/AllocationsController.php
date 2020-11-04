@@ -49,7 +49,20 @@ class AllocationsController extends Controller
 
         $allocations = $business->allocations()->sortBy('allocation_date');
 
-        return view('allocations.calculator', compact(['business', 'today', 'start_date', 'end_date', 'dates', 'allocations']));
+        $allocatables = array();
+
+        foreach($business->accounts as $account)
+        {
+            $allocatables[] = ['label' => $account->name, 'type' => 'BankAccount', 'id' => $account->id ];
+            foreach($account->flows as $flow)
+            {
+                $allocatables[] = ['label' => $flow->label, 'type' => 'AccountFlow', 'id' => $flow->id ];
+            }
+        }
+
+        $allocationValues = self::buildAllocationValues($dates, $allocatables);
+
+        return view('allocations.calculator', compact(['business', 'today', 'start_date', 'end_date', 'dates', 'allocations', 'allocatables', 'allocationValues']));
     }
 
     /**
@@ -112,6 +125,32 @@ class AllocationsController extends Controller
             "msg" => "allocation successfully updated.",
             "allocation" => $allocation
         ]);
+    }
+
+    public function buildAllocationValues(Array $dates, Array $allocatables)
+    {
+        $allocationValues = [];
+
+        foreach($allocatables as $allocatable)
+        {
+            foreach($dates as $date)
+            {
+                $allocation = Allocation::where('allocation_date', '=', $date)
+                    ->where('allocatable_id', '=', $allocatable['id'])
+                    ->where('allocatable_type', 'like', '%'.$allocatable['type'])
+                    ->get();
+
+                if($allocation->count())
+                {
+                    $allocationValues[$allocatable['type']][$allocatable['id']][$date] = $allocation[0]->amount;
+                    // array( 'allocation' => $allocation, "T:" . $allocatable['type'] . "-I:" . $allocatable['id'] . "-D:" . $date);
+                }
+
+            }
+        }
+
+        return $allocationValues;
+
     }
 
 }
