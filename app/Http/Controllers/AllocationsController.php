@@ -142,7 +142,7 @@ class AllocationsController extends Controller
 
                 if($allocation->count())
                 {
-                    $allocationValues[$allocatable['type']][$allocatable['id']][$date] = $allocation[0]->amount;
+                    $allocationValues[$allocatable['type']][$allocatable['id']][$date] = number_format($allocation[0]->amount, 0);
                     // array( 'allocation' => $allocation, "T:" . $allocatable['type'] . "-I:" . $allocatable['id'] . "-D:" . $date);
                 }
 
