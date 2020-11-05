@@ -115,7 +115,7 @@ class AllocationsController extends Controller
         }
 
         $allocation = $allocations->first();
-        // if amount is empty remove the allocation
+        // if amount is empty remove the allocation -- please note that 0 is a valid amount
         if (!$valid['amount'])
         {
             $allocation->delete();
