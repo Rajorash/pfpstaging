@@ -65789,7 +65789,10 @@ module.exports = function(module) {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-// update allocations on input change
+/**
+ * Send the details of the update request through
+ * to /allocations/update
+ */
 var updateAllocation = function updateAllocation(e) {
   var allocation = {
     'id': $(this).data('id'),
@@ -65803,6 +65806,10 @@ var updateAllocation = function updateAllocation(e) {
     console.log(data);
   });
 };
+/**
+ *  Cascade through all account flows and calculate the account total
+ */
+
 
 var calculateAccountTotal = function calculateAccountTotal(e) {
   var accountId = $(this).data('parent');
@@ -65825,14 +65832,10 @@ var calculateAccountTotal = function calculateAccountTotal(e) {
   var accountInput = $('.account-value[data-id="' + accountId + '"][data-date=' + date + ']');
   accountInput.val(total);
   accountInput.trigger('change'); // return total;
-};
+}; // upon changing the value of a flow input, update the Allocation in the DB
 
-$('.allocation-value').on("change", updateAllocation); // $('.flow .allocation-value').on("change", function (e) {
-//     let total = $(this).calculateAccountTotal;
-//     let accountId = $(this).data('parent');
-//     alert(total);
-//     $('.account-value[data-id="'+ accountId +'"]').val(total);
-// });
+
+$('.allocation-value').on("change", updateAllocation); // if an AccountFlow is updated, calculate the new BankAccount total
 
 $('.flow .allocation-value').on("change", calculateAccountTotal);
 

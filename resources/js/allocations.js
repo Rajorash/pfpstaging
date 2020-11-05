@@ -1,4 +1,7 @@
-// update allocations on input change
+/**
+ * Send the details of the update request through
+ * to /allocations/update
+ */
 var updateAllocation = function (e) {
     var allocation = {
         'id': $(this).data('id'),
@@ -18,7 +21,9 @@ var updateAllocation = function (e) {
     });
 };
 
-
+/**
+ *  Cascade through all account flows and calculate the account total
+ */
 var calculateAccountTotal = function (e) {
     let accountId = $(this).data('parent');
     let date = $(this).data('date');
@@ -49,12 +54,7 @@ var calculateAccountTotal = function (e) {
     // return total;
 }
 
+// upon changing the value of a flow input, update the Allocation in the DB
 $('.allocation-value').on("change", updateAllocation);
-// $('.flow .allocation-value').on("change", function (e) {
-//     let total = $(this).calculateAccountTotal;
-//     let accountId = $(this).data('parent');
-//     alert(total);
-
-//     $('.account-value[data-id="'+ accountId +'"]').val(total);
-// });
+// if an AccountFlow is updated, calculate the new BankAccount total
 $('.flow .allocation-value').on("change", calculateAccountTotal);
