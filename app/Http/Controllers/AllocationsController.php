@@ -85,7 +85,7 @@ class AllocationsController extends Controller
             'id' => 'required|integer',
             'allocation_type' => 'required',
             'allocation_date' => 'required',
-            'amount' => 'required|integer'
+            'amount' => 'present|numeric|nullable'
         ]);
 
         // find allocation matching type and id
@@ -114,10 +114,20 @@ class AllocationsController extends Controller
 
         }
 
+        $allocation = $allocations->first();
+        // if amount is empty remove the allocation
+        if (!$valid['amount'])
+        {
+            $allocation->delete();
+            return response()->JSON([
+                "msg" => "allocation successfully deleted."
+            ]);
+        }
         // removed auth check to finish writing logic
         // $this->authorize('view', $allocation->phase->business);
 
-        $allocation = $allocations->first();
+
+        // otherwise if allocation exists and amount is valid, update the allocation
         $allocation->amount = $valid['amount'];
         $allocation->save();
 
