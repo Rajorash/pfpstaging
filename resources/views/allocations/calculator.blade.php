@@ -12,7 +12,7 @@
                     <th></th>
                     @foreach($dates as $date)
                     <th class="text-right">
-                        <span style="{{$today->format('Y-m-j') == $date ? 'color: #bada55' : ''}}">{{ $date }}</span>
+                        <span style="{{$today->format('Y-m-j') == $date ? 'color: #bada55' : ''}}">{{ Carbon\Carbon::parse($date)->format("M j Y") }}</span>
                     </th>
                     @endforeach
                 </tr>
