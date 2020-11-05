@@ -127,7 +127,7 @@ class AllocationsController extends Controller
         ]);
     }
 
-    public function buildAllocationValues(Array $dates, Array $allocatables)
+    public static function buildAllocationValues(Array $dates, Array $allocatables)
     {
         $allocationValues = [];
 
