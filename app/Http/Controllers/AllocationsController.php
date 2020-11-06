@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Auth;
 use App\AccountFlow;
 use App\Allocation;
+use App\AllocationPercentage;
 use App\BankAccount;
 use App\Business;
 use Carbon\Carbon as Carbon;
@@ -78,8 +79,10 @@ class AllocationsController extends Controller
         return view('allocations.percentages', compact('business', 'rollout'));
     }
 
-    // Used to update or create allocations
-    public function update(Request $request) {
+    /**
+     * Used to update or create allocations
+     */
+    public function updateAllocation(Request $request) {
 
         $valid = $request->validate([
             'id' => 'required|integer',
@@ -162,5 +165,62 @@ class AllocationsController extends Controller
         return $allocationValues;
 
     }
+
+        /**
+     * Used to update or create allocations
+     */
+    public function updatePercentage(Request $request) {
+
+        $valid = $request->validate([
+            'phase_id' => 'required|numeric',
+            'bank_account_id' => 'required|numeric',
+            'percent' => 'present|integer|min:0|max:100|nullable'
+        ]);
+
+        // find allocation matching type and id
+        $percentages = AllocationPercentage::where('phase_id', '=', $valid['phase_id'])->where('bank_account_id', '=', $valid['bank_account_id'] )->get();
+
+        // if there is no existing allocation, insert one.
+        if( $percentages->isEmpty() ) {
+
+            $new_percentage = new AllocationPercentage();
+
+            $new_percentage->phase_id = $valid['phase_id'];
+            $new_percentage->bank_account_id = $valid['bank_account_id'];
+            $new_percentage->percent = $valid['percent'];
+
+            if ( !$new_percentage->save() ) {
+                return response(["msg" => "percentage not created"], 400);
+            }
+
+            return response()->JSON([
+                "msg" => "created new percentage value"
+            ]);
+
+        }
+
+        // return response()->JSON($percentages);
+        $percentage = $percentages->first();
+
+        // if percent is empty remove the percentage -- please note that 0 is a valid percent
+        if (!$valid['percent'])
+        {
+            $percentage->delete();
+            return response()->JSON([
+               "msg" => "percentage successfully deleted."
+            ]);
+        }
+        // removed auth check to finish writing logic
+        // $this->authorize('view', $percentage->phase->business);
+
+        // otherwise if percentage exists and percent is valid, update the percentage
+        $percentage->percent = $valid['percent'];
+        $percentage->save();
+
+        return response()->JSON([
+            "msg" => "percentage successfully updated."
+        ]);
+    }
+
 
 }

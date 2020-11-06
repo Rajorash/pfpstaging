@@ -22,7 +22,7 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::group(['middleware' => 'auth'], function () {
     Route::get('/business', 'BusinessController@index');
     Route::get('/business/{business}', 'BusinessController@show');
-    
+
     Route::resource('business.accounts', 'BankAccountController');
     Route::get('/accounts/{account}/create-flow', 'BankAccountController@createFlow');
     Route::post('/accounts/{account}/create-flow', 'BankAccountController@storeFlow');
@@ -39,6 +39,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/allocations', 'AllocationsController@index');
     Route::get('/allocations/{business}', 'AllocationsController@allocations');
     Route::get('/allocations/{business}/percentages', 'AllocationsController@percentages');
-    Route::post('/allocations/update', 'AllocationsController@update');
+    Route::post('/allocations/update', 'AllocationsController@updateAllocation');
+    Route::post('/percentages/update', 'AllocationsController@updatePercentage');
 
 });

@@ -65865,6 +65865,8 @@ __webpack_require__(/*! ./components/Example */ "./resources/js/components/Examp
 
 __webpack_require__(/*! ./allocations */ "./resources/js/allocations.js");
 
+__webpack_require__(/*! ./percentages */ "./resources/js/percentages.js");
+
 /***/ }),
 
 /***/ "./resources/js/bootstrap.js":
@@ -65949,6 +65951,35 @@ function Example() {
 if (document.getElementById('example')) {
   react_dom__WEBPACK_IMPORTED_MODULE_1___default.a.render( /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Example, null), document.getElementById('example'));
 }
+
+/***/ }),
+
+/***/ "./resources/js/percentages.js":
+/*!*************************************!*\
+  !*** ./resources/js/percentages.js ***!
+  \*************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+/**
+ * Send the details of the update request through
+ * to /percentages/update
+ */
+var updateAllocationPercentage = function updateAllocationPercentage(e) {
+  var percentage = {
+    'phase_id': $(this).data('phase-id'),
+    'bank_account_id': $(this).data('account-id'),
+    'percent': $(this).val(),
+    '_token': $('meta[name="csrf-token"]').attr('content')
+  };
+  console.table([percentage]);
+  $.post('/percentages/update', percentage).done(function (data) {
+    console.log(data);
+  });
+}; // upon changing the value of a flow input, update the AllocationPercentage in the DB
+
+
+$('.percentage-value').on("change", updateAllocationPercentage);
 
 /***/ }),
 

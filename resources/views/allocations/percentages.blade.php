@@ -10,15 +10,14 @@
     </div>
     <div class="row justify-content-center">
         <!-- <div class="col"> -->
-            <table class="table table-hover table-sm">
+            <table class="table table-responsive table-hover table-sm">
                 <thead class="thead-inverse">
                     <tr>
                         <th>Account</th>
                         @forelse($rollout as $phase)
-                        <th class="text-center">Phase Ends:<br> {{date('D j M', strtotime($phase->end_date))}}</th>
+                        <th class="text-center">Phase Ends:<br> {{ Carbon\Carbon::parse($phase->end_date)->format("D j M") }}</th>
                         @empty
                         <th class="text-center">No dice...</th>
-                        
                         @endforelse
                     </tr>
                 </thead>
@@ -27,7 +26,7 @@
                     <tr>
                         <td scope="row">{{ $acc->name }}</td>
                         @forelse($rollout as $phase)
-                        <td class="text-center">0%</td>
+                        <td class="text-center">{{Form::text('percentage', 0, ['class' => 'percentage-value text-right form-control form-control-sm', 'data-phase-id' => $phase->id, 'data-account-id' => $acc->id])}}</td>
                         @empty
                         <td class="text-center">N/A</td>
                         @endforelse
@@ -37,7 +36,9 @@
                         <td scope="row">N/A</td>
                         @forelse($rollout as $phase)
                         <td class="text-center">N/A</td>
-                        @empty                        @endforelse
+                        @empty
+
+                        @endforelse
                     </tr>
                 @endforelse
                 </tbody>
