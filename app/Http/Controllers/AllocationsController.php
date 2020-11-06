@@ -174,7 +174,7 @@ class AllocationsController extends Controller
         $valid = $request->validate([
             'phase_id' => 'required|numeric',
             'bank_account_id' => 'required|numeric',
-            'percent' => 'present|integer|min:0|max:100|nullable'
+            'percent' => 'present|numeric|min:0|max:100|nullable'
         ]);
 
         // find allocation matching type and id

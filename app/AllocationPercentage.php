@@ -19,7 +19,7 @@ class AllocationPercentage extends Model
      *
      * @var array
      */
-    protected $casts = ['percent' => 'decimal'];
+    protected $casts = ['percent' => 'decimal:2'];
 
     public function phase() {
         $this->belongsTo(Phase::class);
