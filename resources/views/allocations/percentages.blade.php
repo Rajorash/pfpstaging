@@ -26,7 +26,10 @@
                     <tr>
                         <td scope="row">{{ $acc->name }}</td>
                         @forelse($rollout as $phase)
-                        <td class="text-center">{{Form::text('percentage', 0, ['class' => 'percentage-value text-right form-control form-control-sm', 'data-phase-id' => $phase->id, 'data-account-id' => $acc->id])}}</td>
+
+                        <td class="text-center">
+                            {{Form::text('percentage', $percentageValues[$acc->id][$phase->id] ?? null, ['class' => 'percentage-value text-right form-control form-control-sm', 'data-phase-id' => $phase->id, 'data-account-id' => $acc->id, 'placeholder' => 0])}}
+                        </td>
                         @empty
                         <td class="text-center">N/A</td>
                         @endforelse

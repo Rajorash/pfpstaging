@@ -67,19 +67,6 @@ class AllocationsController extends Controller
     }
 
     /**
-     * Show the percentages for the selected business
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function percentages(Business $business)
-    {
-        $this->authorize('view', $business);
-        $rollout = $business->rollout->sortBy('end_date');
-
-        return view('allocations.percentages', compact('business', 'rollout'));
-    }
-
-    /**
      * Used to update or create allocations
      */
     public function updateAllocation(Request $request) {
@@ -166,7 +153,23 @@ class AllocationsController extends Controller
 
     }
 
-        /**
+
+    /**
+     * Show the percentages for the selected business
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function percentages(Business $business)
+    {
+        $this->authorize('view', $business);
+        $rollout = $business->rollout->sortBy('end_date');
+
+        $percentageValues = self::buildPercentageValues($business);
+
+        return view('allocations.percentages', compact('business', 'rollout', 'percentageValues'));
+    }
+
+    /**
      * Used to update or create allocations
      */
     public function updatePercentage(Request $request) {
@@ -174,7 +177,7 @@ class AllocationsController extends Controller
         $valid = $request->validate([
             'phase_id' => 'required|numeric',
             'bank_account_id' => 'required|numeric',
-            'percent' => 'present|integer|min:0|max:100|nullable'
+            'percent' => 'present|numeric|min:0|max:100|nullable'
         ]);
 
         // find allocation matching type and id
@@ -222,5 +225,19 @@ class AllocationsController extends Controller
         ]);
     }
 
+    public static function buildPercentageValues(Business $business)
+    {
+        $phase_ids = $business->rollout->pluck('id');
+
+        $percentages = AllocationPercentage::whereIn('phase_id', $phase_ids)->get();
+
+        $percentageValues = array();
+        foreach($percentages as $entry)
+        {
+            $percentageValues[$entry->bank_account_id][$entry->phase_id] = $entry->percent;
+        }
+
+        return $percentageValues;
+    }
 
 }
