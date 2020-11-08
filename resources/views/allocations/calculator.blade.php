@@ -22,10 +22,23 @@
                     <tr>
                         <td scope="row account-row" style="background-color:#99ccdd;">{{$acc->name}}</td>
                         @foreach($dates as $date)
-                        <td class="text-right account" style="background-color:#99ccdd;">
-                            <input class="account-value text-right allocation-value form-control form-control-sm"
-                            style="min-width: 8em;"
-                            data-type="BankAccount" data-id="{{$acc->id}}" data-date="{{$date}}" type="text" value="{{$allocationValues['BankAccount'][$acc->id][$date] ?? 0}}" disabled>
+                        <td class="text-right account"
+                            style="background-color:#99ccdd;"
+                            data-row='{{$loop->parent->iteration}}'  data-col='{{$loop->iteration}}'>
+                            <input type="text"
+                                   class="bg-info projected-total text-right form-control form-control-sm"
+                                   value="{{$loop->parent->iteration ."-".$loop->iteration }}"
+                                   placeholder="0"
+                                   disabled>
+                            <input type="text"
+                                   class="account-value text-right allocation-value form-control form-control-sm"
+                                   style="min-width: 8em;"
+                                   data-type="BankAccount"
+                                   data-hierarchy="{{$acc->type}}"
+                                   data-id="{{$acc->id}}"
+                                   data-date="{{$date}}"
+                                   value="{{$allocationValues['BankAccount'][$acc->id][$date] ?? 0}}"
+                                   disabled>
                         </td>
                         @endforeach
                     </tr>
