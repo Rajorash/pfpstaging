@@ -65800,10 +65800,9 @@ var updateAllocation = function updateAllocation(e) {
     'amount': $(this).val(),
     'allocation_date': $(this).data('date'),
     '_token': $('meta[name="csrf-token"]').attr('content')
-  };
-  console.table([allocation]);
-  $.post('/allocations/update', allocation).done(function (data) {
-    console.log(data);
+  }; // console.table([allocation]);
+
+  $.post('/allocations/update', allocation).done(function (data) {// console.log(data);
   });
 };
 /**
@@ -65816,8 +65815,8 @@ var calculateAccountTotal = function calculateAccountTotal(e) {
   var date = $(this).data('date');
   var total = 0;
   var flows = $('.flow input[data-parent=' + accountId + '][data-date=' + date + ']');
-  flows.each(function (flow) {
-    var value = parseFloat($(this).val());
+  flows.each(function () {
+    var value = parseInt($(this).val());
 
     if (!value) {
       value = 0;
@@ -65832,12 +65831,104 @@ var calculateAccountTotal = function calculateAccountTotal(e) {
   var accountInput = $('.account-value[data-id="' + accountId + '"][data-date=' + date + ']');
   accountInput.val(total);
   accountInput.trigger('change'); // return total;
-}; // upon changing the value of a flow input, update the Allocation in the DB
+};
+
+var calculateProjectedTotal = function calculateProjectedTotal(e) {
+  var hierarchy = $(this).data('hierarchy');
+  var date = $(this).data('date'); // sum all the values from revenue account (should be 1 account...)
+
+  var revenue = 0;
+  var salestax = 0;
+  var prereal = 0;
+  var postreal = 0;
+  var pretotal = 0;
+  var revenueOnDate = $(".account-value[data-hierarchy='revenue'][data-date='".concat(date, "']"));
+  revenueOnDate.each(function () {
+    revenue = parseFloat(revenue) + parseFloat($(this).val());
+  });
+  var pretotalOnDate = $(".account-value[data-hierarchy='pretotal'][data-date='".concat(date, "']"));
+  pretotalOnDate.each(function () {
+    pretotal = parseFloat(pretotal) + parseFloat($(this).val());
+  });
+  var salestaxOnDate = $(".account-value[data-hierarchy='salestax'][data-date='".concat(date, "']"));
+  salestaxOnDate.each(function () {
+    salestax = parseFloat(salestax) + parseFloat($(this).val());
+  });
+  var prerealOnDate = $(".account-value[data-hierarchy='prereal'][data-date='".concat(date, "']"));
+  prerealOnDate.each(function () {
+    prereal = parseFloat(prereal) + parseFloat($(this).val());
+  });
+  var postrealOnDate = $(".account-value[data-hierarchy='postreal'][data-date='".concat(date, "']"));
+  postrealOnDate.each(function () {
+    postreal = parseFloat(postreal) + parseFloat($(this).val());
+  });
+  var receiptsToAllocate = parseFloat(revenue) + parseFloat(pretotal);
+  var netCashReceipts = receiptsToAllocate + parseFloat(salestax);
+  var realRevenue = netCashReceipts + parseFloat(prereal);
+  var placeholderValue = revenue;
+
+  switch (hierarchy) {
+    case 'revenue':
+      placeholderValue = revenue;
+      break;
+
+    case 'pretotal':
+      placeholderValue = pretotal;
+      break;
+
+    case 'salestax':
+      placeholderValue = salestax;
+      break;
+
+    case 'prereal':
+      placeholderValue = prereal;
+      break;
+
+    case 'postreal':
+      placeholderValue = postreal;
+      break;
+  }
+
+  var projectedTotalField = $(".projected-total[data-date='".concat(date, "'][data-hierarchy='").concat(hierarchy, "']")); // placeholderValue = parseInt(placeholderValue) + getPreviousProjectedTotal(projectedTotalField);
+
+  placeholderValue = parseInt(getAdjustedDailyAccountTotal(projectedTotalField)) + getPreviousProjectedTotal(projectedTotalField);
+  projectedTotalField.attr('placeholder', placeholderValue);
+  console.table([["revenue", revenue], ["pretotal", pretotal], ["receiptsToAllocate", receiptsToAllocate], ["salestax", salestax], ["netCashReceipts", netCashReceipts], ["prereal", prereal], ["realRevenue", realRevenue], ["postreal", postreal]]);
+};
+
+function getPreviousProjectedTotal(currentProjectedTotalField) {
+  // get the col id from the passed projected total input
+  var col = currentProjectedTotalField.parent().data('col');
+  var row = currentProjectedTotalField.parent().data('row'); // if this is the first entry, return 0
+
+  if (col === 1) {
+    return parseInt(0);
+  } // locate the previous column
+
+
+  col = parseInt(col) - 1;
+  var previousProjectedTotalField = $(".account[data-col='".concat(col, "'][data-row='").concat(row, "'] .projected-total"));
+  var previousProjectedTotal = previousProjectedTotalField.attr('placeholder');
+
+  if (previousProjectedTotalField.val()) {
+    previousProjectedTotal = parseInt(previousProjectedTotalField.val());
+  }
+
+  return parseInt(previousProjectedTotal);
+}
+
+function getAdjustedDailyAccountTotal(currentProjectedTotalField) {
+  var adjustedAccountTotalField = currentProjectedTotalField.parent().find(".account-value");
+  return parseInt(adjustedAccountTotalField.val());
+} // upon changing the value of a flow input, update the Allocation in the DB
 
 
 $('.allocation-value').on("change", updateAllocation); // if an AccountFlow is updated, calculate the new BankAccount total
 
-$('.flow .allocation-value').on("change", calculateAccountTotal);
+$('.flow .allocation-value').on("change", calculateAccountTotal); // calculate projected values
+
+$.each($('.account .allocation-value'), calculateProjectedTotal);
+$('.account .allocation-value').on("change", calculateProjectedTotal);
 
 /***/ }),
 

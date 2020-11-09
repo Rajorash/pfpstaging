@@ -24,10 +24,13 @@
                         @foreach($dates as $date)
                         <td class="text-right account"
                             style="background-color:#99ccdd;"
-                            data-row='{{$loop->parent->iteration}}'  data-col='{{$loop->iteration}}'>
+                            data-date='{{$date}}'
+                            data-row='{{$loop->parent->iteration}}'
+                            data-col='{{$loop->iteration}}'>
                             <input type="text"
                                    class="bg-info projected-total text-right form-control form-control-sm"
-                                   value="{{$loop->parent->iteration ."-".$loop->iteration }}"
+                                   data-hierarchy="{{$acc->type}}"
+                                   data-date='{{$date}}'
                                    placeholder="0"
                                    disabled>
                             <input type="text"
