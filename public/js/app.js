@@ -65892,8 +65892,16 @@ var calculateProjectedTotal = function calculateProjectedTotal(e) {
   var projectedTotalField = $(".projected-total[data-date='".concat(date, "'][data-hierarchy='").concat(hierarchy, "']")); // placeholderValue = parseInt(placeholderValue) + getPreviousProjectedTotal(projectedTotalField);
 
   placeholderValue = parseInt(getAdjustedDailyAccountTotal(projectedTotalField)) + getPreviousProjectedTotal(projectedTotalField);
-  projectedTotalField.attr('placeholder', placeholderValue);
-  console.table([["revenue", revenue], ["pretotal", pretotal], ["receiptsToAllocate", receiptsToAllocate], ["salestax", salestax], ["netCashReceipts", netCashReceipts], ["prereal", prereal], ["realRevenue", realRevenue], ["postreal", postreal]]);
+  projectedTotalField.attr('placeholder', placeholderValue); // console.table([
+  //     ["revenue",revenue],
+  //     ["pretotal",pretotal],
+  //     ["receiptsToAllocate",receiptsToAllocate],
+  //     ["salestax",salestax],
+  //     ["netCashReceipts",netCashReceipts],
+  //     ["prereal",prereal],
+  //     ["realRevenue",realRevenue],
+  //     ["postreal",postreal]
+  // ]);
 };
 
 function getPreviousProjectedTotal(currentProjectedTotalField) {

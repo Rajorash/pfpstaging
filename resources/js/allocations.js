@@ -128,16 +128,16 @@ var calculateProjectedTotal = function (e) {
 
     projectedTotalField.attr('placeholder', placeholderValue);
 
-    console.table([
-        ["revenue",revenue],
-        ["pretotal",pretotal],
-        ["receiptsToAllocate",receiptsToAllocate],
-        ["salestax",salestax],
-        ["netCashReceipts",netCashReceipts],
-        ["prereal",prereal],
-        ["realRevenue",realRevenue],
-        ["postreal",postreal]
-    ]);
+    // console.table([
+    //     ["revenue",revenue],
+    //     ["pretotal",pretotal],
+    //     ["receiptsToAllocate",receiptsToAllocate],
+    //     ["salestax",salestax],
+    //     ["netCashReceipts",netCashReceipts],
+    //     ["prereal",prereal],
+    //     ["realRevenue",realRevenue],
+    //     ["postreal",postreal]
+    // ]);
 }
 
 
