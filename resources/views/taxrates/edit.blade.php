@@ -5,7 +5,7 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header">Dashboard</div>
+                <div class="card-header">Tax Rates</div>
 
                 <div class="card-body">
                     @forelse ($salestaxAccounts as $acc)

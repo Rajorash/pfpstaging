@@ -96,8 +96,8 @@ var calculateProjectedTotal = function (e) {
         postreal = parseFloat(postreal) + parseFloat($(this).val());
     });
 
-    let receiptsToAllocate = parseFloat(revenue) +  parseFloat(pretotal);
-    let netCashReceipts = receiptsToAllocate +  parseFloat(salestax);
+    let receiptsToAllocate = parseFloat(revenue) + parseFloat(pretotal);
+    let netCashReceipts = receiptsToAllocate + parseFloat(salestax);
     let realRevenue = netCashReceipts + parseFloat(prereal);
 
     let placeholderValue = revenue;
@@ -121,7 +121,7 @@ var calculateProjectedTotal = function (e) {
 
 
 
-    let projectedTotalField = $(`.projected-total[data-date='${date}'][data-hierarchy='${hierarchy}']`);
+    let projectedTotalField = $(this).parent().find(`.projected-total`);
 
     // placeholderValue = parseInt(placeholderValue) + getPreviousProjectedTotal(projectedTotalField);
     placeholderValue = parseInt(getAdjustedDailyAccountTotal(projectedTotalField)) + getPreviousProjectedTotal(projectedTotalField);

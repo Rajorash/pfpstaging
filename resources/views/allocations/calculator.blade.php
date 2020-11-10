@@ -26,9 +26,9 @@
                             style="background-color:#99ccdd;"
                             data-date='{{$date}}'
                             data-percentage='{{'10'}}'
-                            @if($acc->type == 'salestax')
-                            data-tax={{$taxRates[$acc->id]}}
-                            @endif
+                            {{-- @if($acc->type == 'salestax') --}}
+                            {{-- data-tax={{$taxRates[$acc->id]}} --}}
+                            {{-- @endif --}}
                             data-row='{{$loop->parent->iteration}}'
                             data-col='{{$loop->iteration}}'>
                             <input type="text"

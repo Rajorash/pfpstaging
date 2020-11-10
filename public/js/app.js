@@ -65889,7 +65889,7 @@ var calculateProjectedTotal = function calculateProjectedTotal(e) {
       break;
   }
 
-  var projectedTotalField = $(".projected-total[data-date='".concat(date, "'][data-hierarchy='").concat(hierarchy, "']")); // placeholderValue = parseInt(placeholderValue) + getPreviousProjectedTotal(projectedTotalField);
+  var projectedTotalField = $(this).parent().find(".projected-total"); // placeholderValue = parseInt(placeholderValue) + getPreviousProjectedTotal(projectedTotalField);
 
   placeholderValue = parseInt(getAdjustedDailyAccountTotal(projectedTotalField)) + getPreviousProjectedTotal(projectedTotalField);
   projectedTotalField.attr('placeholder', placeholderValue); // console.table([
