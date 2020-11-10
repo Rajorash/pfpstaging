@@ -16,7 +16,7 @@ class CreateTaxRatesTable extends Migration
         Schema::create('tax_rates', function (Blueprint $table) {
             $table->id();
             $table->decimal('rate', 5, 2);
-            $table->foreign('bank_account_id')->references('id')->on('bank_accounts')->onDelete('cascade');
+            $table->foreignId('bank_account_id')->references('id')->on('bank_accounts')->onDelete('cascade');
             $table->timestamps();
         });
     }

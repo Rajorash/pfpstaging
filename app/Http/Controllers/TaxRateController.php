@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\TaxRate;
+use App\Business;
+use App\BankAccount;
 use Illuminate\Http\Request;
 
 class TaxRateController extends Controller
@@ -12,9 +14,11 @@ class TaxRateController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Business $business)
     {
-        //
+        $salestaxAccounts = $business->accounts->where('type', '=', 'salestax');
+
+        return view('taxrates.edit', compact('salestaxAccounts'));
     }
 
     /**
@@ -35,7 +39,34 @@ class TaxRateController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $data = $request->validate([
+            'rate' => 'required|numeric',
+            'account_id' => 'required'
+        ]);
+
+        $bank_account = BankAccount::find($data['account_id']);
+        if (!$bank_account)
+        {
+            return response('Account not found', 404);
+        }
+
+        if (!$bank_account->taxRate)
+        {
+            $taxrate = new TaxRate();
+            $taxrate->rate = $data['rate'];
+            $taxrate->bank_account_id = $data['account_id'];
+            $taxrate->save();
+
+            // return response('Tax rate successfully created');
+            return back();
+        }
+
+        $taxrate = $bank_account->taxRate;
+        $taxrate->rate = $data['rate'];
+        $taxrate->save();
+
+        // return response('Tax rate successfully saved');
+        return back();
     }
 
     /**

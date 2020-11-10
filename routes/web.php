@@ -35,6 +35,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/user/create', 'UserController@create');
     Route::get('/user/{user}', 'UserController@show');
 
+    Route::get('/business/{business}/tax', 'TaxRateController@index');
+    Route::post('/taxrate', 'TaxRateController@store');
     // allocation calculator routing.
     Route::get('/allocations', 'AllocationsController@index');
     Route::get('/allocations/{business}', 'AllocationsController@allocations');

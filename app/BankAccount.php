@@ -38,4 +38,13 @@ class BankAccount extends Model
         return $this->morphMany('App\Allocation', 'allocatable');
     }
 
+    /**
+     * Return the tax rate for the account (if it has one)
+     */
+    public function taxRate()
+    {
+        return $this->hasOne(TaxRate::class);
+    }
+
+
 }

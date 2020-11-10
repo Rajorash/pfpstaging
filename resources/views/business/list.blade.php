@@ -34,6 +34,10 @@
                             <td class="text-center">
                                 <a href="/business/{{$business->id}}/accounts">{{$business->accounts()->count()}}</a>
                             </td>
+                            </td>
+                            <td class="text-center">
+                                <a class="btn btn-warning btn-sm" href="/business/{{$business->id}}/tax">Tax rate</a>
+                            </td>
                             <td>
                                 <a class="btn btn-info btn-sm" href="/allocations/{{$business->id}}">See Allocations</a>
                             </td>
