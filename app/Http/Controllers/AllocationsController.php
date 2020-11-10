@@ -51,10 +51,17 @@ class AllocationsController extends Controller
         $allocations = $business->allocations()->sortBy('allocation_date');
 
         $allocatables = array();
+        $taxRates = array();
 
         foreach($business->accounts as $account)
         {
             $allocatables[] = ['label' => $account->name, 'type' => 'BankAccount', 'id' => $account->id ];
+
+            if ($account->taxRate)
+            {
+                $taxRates[$account->id] = $account->taxRate->rate;
+            }
+
             foreach($account->flows as $flow)
             {
                 $allocatables[] = ['label' => $flow->label, 'type' => 'AccountFlow', 'id' => $flow->id ];
@@ -63,7 +70,7 @@ class AllocationsController extends Controller
 
         $allocationValues = self::buildAllocationValues($dates, $allocatables);
 
-        return view('allocations.calculator', compact(['business', 'today', 'start_date', 'end_date', 'dates', 'allocations', 'allocatables', 'allocationValues']));
+        return view('allocations.calculator', compact(['business', 'today', 'start_date', 'end_date', 'dates', 'allocations', 'allocatables', 'allocationValues', 'taxRates']));
     }
 
     /**
