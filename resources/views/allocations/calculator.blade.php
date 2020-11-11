@@ -25,7 +25,7 @@
                         <td class="text-right account"
                             style="background-color:#99ccdd;"
                             data-date='{{$date}}'
-                            data-percentage='{{$allocationPercentages[1][$acc->id]}}'
+                            data-percentage='{{$allocationPercentages[1][$acc->id] ?? 0}}'
                             {{-- @if($acc->type == 'salestax') --}}
                             {{-- data-tax={{$taxRates[$acc->id]}} --}}
                             {{-- @endif --}}
