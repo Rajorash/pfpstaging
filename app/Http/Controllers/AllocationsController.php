@@ -93,7 +93,7 @@ class AllocationsController extends Controller
             foreach($dates as $date)
             {
 
-                if($date <= $phase->end_date && $date > $currentEndDate)
+                if(Carbon::parse($date) <= Carbon::parse($phase->end_date) && Carbon::parse($date) > Carbon::parse($currentEndDate) )
                 {
                     $phaseDates[$date] = $phase->id;
                 }
