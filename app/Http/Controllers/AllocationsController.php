@@ -2,16 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Auth;
 use App\AccountFlow;
 use App\Allocation;
 use App\AllocationPercentage;
 use App\BankAccount;
-use App\Phase;
 use App\Business;
+use App\Phase;
 use Carbon\Carbon as Carbon;
 use Illuminate\Http\Request;
-use PhpParser\Node\Stmt\Foreach_;
+use Illuminate\Support\Facades\Auth;
 
 class AllocationsController extends Controller
 {
@@ -98,6 +97,7 @@ class AllocationsController extends Controller
                 {
                     $phaseDates[$date] = $phase->id;
                 }
+
             }
             $currentEndDate = $phase->end_date;
         }
@@ -112,6 +112,7 @@ class AllocationsController extends Controller
 
         foreach($business->accounts as $account)
         {
+
             $percentageCollection = $account->getAllocationPercentages();
             Foreach($percentageCollection as $allocation_percentage)
             {
@@ -119,6 +120,7 @@ class AllocationsController extends Controller
 
                 $allocationPercentages[$phase_id][$account->id] = $allocation_percentage->percent ?? 0;
             }
+
         }
 
         return $allocationPercentages;
