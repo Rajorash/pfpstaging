@@ -7,6 +7,7 @@ use App\AccountFlow;
 use App\Allocation;
 use App\AllocationPercentage;
 use App\BankAccount;
+use App\Phase;
 use App\Business;
 use Carbon\Carbon as Carbon;
 use Illuminate\Http\Request;
@@ -70,15 +71,43 @@ class AllocationsController extends Controller
             }
         }
 
-        $allocationPercentages = self::buildAllocationPercentages($dates, $business);
+        $allocationPercentages = self::buildAllocationPercentages($business);
+        $phaseDates = self::buildPhaseDates($dates, $business);
 
         $allocationValues = self::buildAllocationValues($dates, $allocatables);
 
-        return view('allocations.calculator', compact(['business', 'today', 'start_date', 'end_date', 'dates', 'allocations', 'allocatables', 'allocationValues', 'allocationPercentages']));
+
+        return view('allocations.calculator', compact(['business', 'today', 'start_date', 'end_date', 'dates', 'allocations', 'allocatables', 'allocationValues', 'allocationPercentages', 'phaseDates']));
+
     }
 
-    public function buildAllocationPercentages(Array $dates, Business $business)
+    public static function buildPhaseDates(Array $dates, Business $business)
     {
+
+        $phaseDates = array();
+
+        $phases = Phase::where('business_id', '=', $business->id)->orderBy('end_date')->get();
+
+        $currentEndDate = 0;
+        foreach ($phases as $phase)
+        {
+            foreach($dates as $date)
+            {
+
+                if($date <= $phase->end_date && $date > $currentEndDate)
+                {
+                    $phaseDates[$date] = $phase->id;
+                }
+            }
+            $currentEndDate = $phase->end_date;
+        }
+
+        return $phaseDates;
+    }
+
+    public static function buildAllocationPercentages(Business $business)
+    {
+
         $allocationPercentages = [];
 
         foreach($business->accounts as $account)
