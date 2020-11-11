@@ -10,6 +10,7 @@ use App\BankAccount;
 use App\Business;
 use Carbon\Carbon as Carbon;
 use Illuminate\Http\Request;
+use PhpParser\Node\Stmt\Foreach_;
 
 class AllocationsController extends Controller
 {
@@ -69,11 +70,31 @@ class AllocationsController extends Controller
             }
         }
 
+        $allocationPercentages = self::buildAllocationPercentages($dates, $business);
+
         $allocationValues = self::buildAllocationValues($dates, $allocatables);
 
-        return view('allocations.calculator', compact(['business', 'today', 'start_date', 'end_date', 'dates', 'allocations', 'allocatables', 'allocationValues']));
+        return view('allocations.calculator', compact(['business', 'today', 'start_date', 'end_date', 'dates', 'allocations', 'allocatables', 'allocationValues', 'allocationPercentages']));
     }
 
+    public function buildAllocationPercentages(Array $dates, Business $business)
+    {
+        $allocationPercentages = [];
+
+        foreach($business->accounts as $account)
+        {
+            $percentageCollection = $account->getAllocationPercentages();
+            Foreach($percentageCollection as $allocation_percentage)
+            {
+                $phase_id = $allocation_percentage->phase_id;
+
+                $allocationPercentages[$phase_id][$account->id] = $allocation_percentage->percent ?? 0;
+            }
+        }
+
+        return $allocationPercentages;
+
+    }
     /**
      * Used to update or create allocations
      */
