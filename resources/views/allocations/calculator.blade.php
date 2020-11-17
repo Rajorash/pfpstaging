@@ -20,11 +20,13 @@
             <tbody>
                 @forelse ($business->accounts as $acc)
                 <tr>
-                    <td scope="row account-row" style="background-color:#99ccdd;">{{$acc->name}}</td>
+                    <td scope="row account-row" style="background-color:#99ccdd;">{{$acc->name}} <br>
+                        <span style="color: #333">Transfer in</span></td>
                     @foreach($dates as $date)
                     <td class="text-right account"
                         style="background-color:#99ccdd;"
                         data-date='{{$date}}'
+                        data-hierarchy="{{$acc->type}}"
                         data-phase='{{$phaseDates[$date]}}'
                         data-percentage='{{$allocationPercentages[$phaseDates[$date]][$acc->id]??0}}'
                         {{-- @if($acc->type == 'salestax') --}}
@@ -33,19 +35,19 @@
                         data-row='{{$loop->parent->iteration}}'
                         data-col='{{$loop->iteration}}'>
                         <input type="text"
+                        class="account-value text-right allocation-value form-control form-control-sm"
+                        style="min-width: 8em;"
+                        data-type="BankAccount"
+                        data-hierarchy="{{$acc->type}}"
+                        data-id="{{$acc->id}}"
+                        data-date="{{$date}}"
+                        value="{{$allocationValues['BankAccount'][$acc->id][$date] ?? 0}}"
+                        disabled>
+                        <input type="text"
                                 class="bg-info projected-total text-right form-control form-control-sm"
                                 data-hierarchy="{{$acc->type}}"
                                 data-date='{{$date}}'
                                 placeholder="0"
-                                disabled>
-                        <input type="text"
-                                class="account-value text-right allocation-value form-control form-control-sm"
-                                style="min-width: 8em;"
-                                data-type="BankAccount"
-                                data-hierarchy="{{$acc->type}}"
-                                data-id="{{$acc->id}}"
-                                data-date="{{$date}}"
-                                value="{{$allocationValues['BankAccount'][$acc->id][$date] ?? 0}}"
                                 disabled>
                     </td>
                     @endforeach

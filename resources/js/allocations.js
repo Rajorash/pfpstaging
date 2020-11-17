@@ -61,63 +61,67 @@ var calculateProjectedTotal = function (e) {
     let percentage = parseFloat( $(this).parent().data('percentage') / 100 ) ?? 0;
 
     // sum all the values from revenue account (should be 1 account...)
-    var revenue = 0;
-    var salestax = 0;
-    var prereal = 0;
-    var postreal = 0;
-    var pretotal = 0;
+    let revenue = 0;
+    let salestax = 0;
+    let prereal = 0;
+    let postreal = 0;
+    let pretotal = 0;
 
     let revenueOnDate = $(`.account-value[data-hierarchy='revenue'][data-date='${date}']`);
 
     revenueOnDate.each( function () {
-        revenue = parseFloat(revenue) + parseFloat($(this).val());
+        revenue = parseInt(revenue) + parseInt($(this).val());
     });
 
     let pretotalOnDate = $(`.account-value[data-hierarchy='pretotal'][data-date='${date}']`);
 
     pretotalOnDate.each( function () {
-        pretotal = parseFloat(pretotal) + parseFloat($(this).val());
+        pretotal = parseInt(pretotal) + parseInt($(this).parent().find('.projected-total').attr('placeholder'));
     });
 
     let salestaxOnDate = $(`.account-value[data-hierarchy='salestax'][data-date='${date}']`);
 
     salestaxOnDate.each( function () {
-        salestax = parseFloat(salestax) + parseFloat($(this).val());
+        salestax = parseInt(salestax) + parseInt($(this).parent().find('.projected-total').attr('placeholder'));
     });
 
     let prerealOnDate = $(`.account-value[data-hierarchy='prereal'][data-date='${date}']`);
 
     prerealOnDate.each( function () {
-        prereal = parseFloat(prereal) + parseFloat($(this).val());
+        prereal = parseInt(prereal) + parseInt($(this).parent().find('.projected-total').attr('placeholder'));
     });
 
     let postrealOnDate = $(`.account-value[data-hierarchy='postreal'][data-date='${date}']`);
 
     postrealOnDate.each( function () {
-        postreal = parseFloat(postreal) + parseFloat($(this).val());
+        postreal = parseInt(postreal) + parseInt($(this).parent().find('.projected-total').attr('placeholder'));
     });
 
-    let receiptsToAllocate = parseFloat(revenue) + parseFloat(pretotal);
-    let netCashReceipts = receiptsToAllocate / (percentage + 1);
-    let realRevenue = netCashReceipts + parseFloat(prereal);
+    let receiptsToAllocate = parseInt(revenue + pretotal);
 
-    // if (hierarchy == 'salestax')
-    // {
+    // percentage is passed as zero on no sales tax accounts - figure out how to keep date specific salestax percentage
+    let salestaxPercentage = $(`.account[data-hierarchy='salestax'][data-date='${date}']`).data('percentage');
+    let netCashReceipts = parseInt(receiptsToAllocate / ((salestaxPercentage / 100) + 1));
 
-    //     console.table([
-    //         ["revenue",revenue],
-    //         ["pretotal",pretotal],
-    //         ["receiptsToAllocate",receiptsToAllocate],
-    //         ["salestax",salestax],
-    //         ["netCashReceipts",netCashReceipts],
-    //         ["prereal",prereal],
-    //         ["realRevenue",realRevenue],
-    //         ["postreal",postreal],
-    //         ["percentage",percentage],
-    //         ["hierarchy",hierarchy]
+    let realRevenue = parseInt(netCashReceipts) + parseInt(prereal);
 
-    //     ]);
-    // }
+    if (hierarchy == 'postreal')
+    {
+
+        console.table([
+            ["hierarchy",hierarchy],
+            ["percentage",percentage],
+            ["revenue",revenue],
+            ["pretotal",pretotal],
+            ["receiptsToAllocate",receiptsToAllocate],
+            ["salestax",salestax],
+            ["netCashReceipts",netCashReceipts],
+            ["prereal",prereal],
+            ["realRevenue",realRevenue],
+            ["postreal",postreal]
+        ]);
+
+    }
 
 
     let projectedTotalField = $(this).parent().find(`.projected-total`);
@@ -125,19 +129,19 @@ var calculateProjectedTotal = function (e) {
 
     switch(hierarchy) {
         case 'revenue':
-            placeholderValue = parseInt(getAdjustedDailyAccountTotal(projectedTotalField)) + getPreviousProjectedTotal(projectedTotalField);
+            placeholderValue = parseInt(getAdjustedDailyAccountTotal(projectedTotalField) + getPreviousProjectedTotal(projectedTotalField));
             break;
         case 'pretotal':
-            placeholderValue = parseInt(getAdjustedDailyAccountTotal(projectedTotalField)) + getPreviousProjectedTotal(projectedTotalField);
+            placeholderValue = parseInt(getAdjustedDailyAccountTotal(projectedTotalField) + getPreviousProjectedTotal(projectedTotalField));
             break;
         case 'salestax':
-            placeholderValue = Math.ceil(receiptsToAllocate - netCashReceipts);
+            placeholderValue = parseInt(receiptsToAllocate - netCashReceipts);
             break;
         case 'prereal':
-            placeholderValue = Math.ceil(netCashReceipts * percentage);
+            placeholderValue = parseInt(netCashReceipts * percentage);
             break;
         case 'postreal':
-            placeholderValue = Math.ceil(realRevenue * percentage);
+            placeholderValue = parseInt(realRevenue * percentage);
             break;
     }
 
