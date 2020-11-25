@@ -224,7 +224,7 @@ function setCumulativeTotal(targetField) {
 
     // get the adjusted day total
     let accountRow = $(`.account[data-col='${col}'][data-row='${row}']`).first();
-    let accountValueField = $accountRow.find(`.account-value`).first();
+    let accountValueField = accountRow.find(`.account-value`).first();
     let projectedTotalField = $accountRow.find(`.projected-total`).first();
     let adjTotal = parseInt(accountValueField.val()) + parseInt(projectedTotalField.attr('placeholder'));
 
