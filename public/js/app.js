@@ -65871,8 +65871,18 @@ var calculateProjectedTotal = function calculateProjectedTotal(e) {
   var netCashReceipts = parseInt(receiptsToAllocate / (salestaxPercentage / 100 + 1));
   var realRevenue = parseInt(netCashReceipts) + parseInt(prereal);
 
-  if (hierarchy == 'postreal') {
-    console.table([["hierarchy", hierarchy], ["percentage", percentage], ["revenue", revenue], ["pretotal", pretotal], ["receiptsToAllocate", receiptsToAllocate], ["salestax", salestax], ["netCashReceipts", netCashReceipts], ["prereal", prereal], ["realRevenue", realRevenue], ["postreal", postreal]]);
+  if (hierarchy == 'postreal') {// console.table([
+    //     ["hierarchy",hierarchy],
+    //     ["percentage",percentage],
+    //     ["revenue",revenue],
+    //     ["pretotal",pretotal],
+    //     ["receiptsToAllocate",receiptsToAllocate],
+    //     ["salestax",salestax],
+    //     ["netCashReceipts",netCashReceipts],
+    //     ["prereal",prereal],
+    //     ["realRevenue",realRevenue],
+    //     ["postreal",postreal]
+    // ]);
   }
 
   var projectedTotalField = $(this).parent().find(".projected-total");
@@ -65884,7 +65894,7 @@ var calculateProjectedTotal = function calculateProjectedTotal(e) {
       break;
 
     case 'pretotal':
-      placeholderValue = parseInt(getAdjustedDailyAccountTotal(projectedTotalField) + getPreviousProjectedTotal(projectedTotalField));
+      placeholderValue = calculatePretotalPlaceholder(projectedTotalField);
       break;
 
     case 'salestax':
@@ -65914,6 +65924,12 @@ var calculateProjectedTotal = function calculateProjectedTotal(e) {
   // ]);
 };
 
+function calculatePretotalPlaceholder(projectedTotalField) {
+  var dayTotal = getAdjustedDailyAccountTotal(projectedTotalField);
+  var previousProjected = getPreviousProjectedTotal(projectedTotalField);
+  return parseInt(dayTotal + previousProjected);
+}
+
 function getPreviousProjectedTotal(currentProjectedTotalField) {
   // get the col id from the passed projected total input
   var col = currentProjectedTotalField.parent().data('col');
@@ -65938,15 +65954,39 @@ function getPreviousProjectedTotal(currentProjectedTotalField) {
 function getAdjustedDailyAccountTotal(currentProjectedTotalField) {
   var adjustedAccountTotalField = currentProjectedTotalField.parent().find(".account-value");
   return parseInt(adjustedAccountTotalField.val());
+}
+
+function setCumulativeTotal(targetField) {
+  var row = targetField.parent().data('row');
+  var col = targetField.parent().data('col');
+  var value = 0; // if this is not the first column, get the previous cumulative total
+
+  if (col > 1) {
+    var previousTotalField = $(".account[data-col=\"".concat(col - 1, "\"][data-row='").concat(row, "'] .cumulative")).first();
+    var previousTotal = parseInt(previousTotalField.val());
+    value = value + parseInt(previousTotal);
+  } // get the adjusted day total
+
+
+  var accountRow = $(".account[data-col='".concat(col, "'][data-row='").concat(row, "']")).first();
+  var accountValueField = $accountRow.find(".account-value").first();
+  var projectedTotalField = $accountRow.find(".projected-total").first();
+  var adjTotal = parseInt(accountValueField.val()) + parseInt(projectedTotalField.attr('placeholder'));
+  value = value + adjTotal;
+  targetField.val(parseInt(value));
 } // upon changing the value of a flow input, update the Allocation in the DB
 
 
-$('.allocation-value').on("change", updateAllocation); // if an AccountFlow is updated, calculate the new BankAccount total
+$('.allocation-value').on("change", updateAllocation); // $('.allocation-value').on("change", setCumulativeTotal( $(this).parent().find('.cumulative') ));
+// if an AccountFlow is updated, calculate the new BankAccount total
 
 $('.flow .allocation-value').on("change", calculateAccountTotal); // calculate projected values
 
 $.each($('.account .allocation-value'), calculateProjectedTotal);
-$('.account .allocation-value').on("change", calculateProjectedTotal);
+$('.account .allocation-value').on("change", $.each($('.account .allocation-value'), calculateProjectedTotal));
+$('.cumulative').each(function () {
+  setCumulativeTotal($(this));
+});
 
 /***/ }),
 

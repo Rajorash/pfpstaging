@@ -34,8 +34,15 @@
                         {{-- @endif --}}
                         data-row='{{$loop->parent->iteration}}'
                         data-col='{{$loop->iteration}}'>
+                        <input type="text" class="cumulative text-right text-bold form-control form-control-sm" disabled>
                         <input type="text"
-                        class="account-value text-right allocation-value form-control form-control-sm"
+                                class="bg-info projected-total text-right form-control form-control-sm"
+                                data-hierarchy="{{$acc->type}}"
+                                data-date='{{$date}}'
+                                placeholder="0"
+                                disabled>
+                        <input type="text"
+                        class="account-value bg-warning text-right allocation-value form-control form-control-sm border-info"
                         style="min-width: 8em;"
                         data-type="BankAccount"
                         data-hierarchy="{{$acc->type}}"
@@ -43,12 +50,6 @@
                         data-date="{{$date}}"
                         value="{{$allocationValues['BankAccount'][$acc->id][$date] ?? 0}}"
                         disabled>
-                        <input type="text"
-                                class="bg-info projected-total text-right form-control form-control-sm"
-                                data-hierarchy="{{$acc->type}}"
-                                data-date='{{$date}}'
-                                placeholder="0"
-                                disabled>
                     </td>
                     @endforeach
                 </tr>

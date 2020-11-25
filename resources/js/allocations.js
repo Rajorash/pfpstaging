@@ -108,18 +108,18 @@ var calculateProjectedTotal = function (e) {
     if (hierarchy == 'postreal')
     {
 
-        console.table([
-            ["hierarchy",hierarchy],
-            ["percentage",percentage],
-            ["revenue",revenue],
-            ["pretotal",pretotal],
-            ["receiptsToAllocate",receiptsToAllocate],
-            ["salestax",salestax],
-            ["netCashReceipts",netCashReceipts],
-            ["prereal",prereal],
-            ["realRevenue",realRevenue],
-            ["postreal",postreal]
-        ]);
+        // console.table([
+        //     ["hierarchy",hierarchy],
+        //     ["percentage",percentage],
+        //     ["revenue",revenue],
+        //     ["pretotal",pretotal],
+        //     ["receiptsToAllocate",receiptsToAllocate],
+        //     ["salestax",salestax],
+        //     ["netCashReceipts",netCashReceipts],
+        //     ["prereal",prereal],
+        //     ["realRevenue",realRevenue],
+        //     ["postreal",postreal]
+        // ]);
 
     }
 
@@ -132,7 +132,7 @@ var calculateProjectedTotal = function (e) {
             placeholderValue = parseInt(getAdjustedDailyAccountTotal(projectedTotalField) + getPreviousProjectedTotal(projectedTotalField));
             break;
         case 'pretotal':
-            placeholderValue = parseInt(getAdjustedDailyAccountTotal(projectedTotalField) + getPreviousProjectedTotal(projectedTotalField));
+            placeholderValue = calculatePretotalPlaceholder(projectedTotalField);
             break;
         case 'salestax':
             placeholderValue = parseInt(receiptsToAllocate - netCashReceipts);
@@ -166,6 +166,16 @@ var calculateProjectedTotal = function (e) {
     // ]);
 }
 
+function calculatePretotalPlaceholder(projectedTotalField)
+{
+
+    let dayTotal = getAdjustedDailyAccountTotal(projectedTotalField);
+    let previousProjected = getPreviousProjectedTotal(projectedTotalField);
+
+    return parseInt( dayTotal + previousProjected );
+
+}
+
 
 function getPreviousProjectedTotal(currentProjectedTotalField) {
     // get the col id from the passed projected total input
@@ -196,11 +206,44 @@ function getAdjustedDailyAccountTotal(currentProjectedTotalField) {
     return parseInt(adjustedAccountTotalField.val());
 }
 
+function setCumulativeTotal(targetField) {
+
+    let row = targetField.parent().data('row');
+    let col = targetField.parent().data('col');
+
+    let value = 0;
+
+    // if this is not the first column, get the previous cumulative total
+    if (col > 1) {
+        let previousTotalField = $(`.account[data-col="${col - 1}"][data-row='${row}'] .cumulative`).first();
+        let previousTotal = parseInt(previousTotalField.val());
+
+        value = value + parseInt(previousTotal);
+
+    }
+
+    // get the adjusted day total
+    let accountRow = $(`.account[data-col='${col}'][data-row='${row}']`).first();
+    let accountValueField = $accountRow.find(`.account-value`).first();
+    let projectedTotalField = $accountRow.find(`.projected-total`).first();
+    let adjTotal = parseInt(accountValueField.val()) + parseInt(projectedTotalField.attr('placeholder'));
+
+    value = value + adjTotal;
+
+
+    targetField.val(parseInt(value));
+
+}
 
 // upon changing the value of a flow input, update the Allocation in the DB
 $('.allocation-value').on("change", updateAllocation);
+// $('.allocation-value').on("change", setCumulativeTotal( $(this).parent().find('.cumulative') ));
 // if an AccountFlow is updated, calculate the new BankAccount total
 $('.flow .allocation-value').on("change", calculateAccountTotal);
 // calculate projected values
 $.each($('.account .allocation-value'), calculateProjectedTotal);
-$('.account .allocation-value').on("change", calculateProjectedTotal);
+$('.account .allocation-value').on("change", $.each($('.account .allocation-value'), calculateProjectedTotal));
+$('.cumulative').each( function() {
+    setCumulativeTotal( $(this) );
+ });
+
