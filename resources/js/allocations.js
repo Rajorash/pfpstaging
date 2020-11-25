@@ -228,6 +228,11 @@ function setCumulativeTotal(targetField) {
     let projectedTotalField = accountRow.find(`.projected-total`).first();
     let adjTotal = parseInt(accountValueField.val()) + parseInt(projectedTotalField.attr('placeholder'));
 
+    // revenue accounts do not accumulate projected total
+    if (accountRow.data('hierarchy') == 'revenue') {
+        adjTotal = parseInt(accountValueField.val());
+    }
+
     value = value + adjTotal;
 
 

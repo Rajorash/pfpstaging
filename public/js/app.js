@@ -65971,7 +65971,12 @@ function setCumulativeTotal(targetField) {
   var accountRow = $(".account[data-col='".concat(col, "'][data-row='").concat(row, "']")).first();
   var accountValueField = accountRow.find(".account-value").first();
   var projectedTotalField = accountRow.find(".projected-total").first();
-  var adjTotal = parseInt(accountValueField.val()) + parseInt(projectedTotalField.attr('placeholder'));
+  var adjTotal = parseInt(accountValueField.val()) + parseInt(projectedTotalField.attr('placeholder')); // revenue accounts do not accumulate projected total
+
+  if (accountRow.data('hierarchy') == 'revenue') {
+    adjTotal = parseInt(accountValueField.val());
+  }
+
   value = value + adjTotal;
   targetField.val(parseInt(value));
 } // upon changing the value of a flow input, update the Allocation in the DB
