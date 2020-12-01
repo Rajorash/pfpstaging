@@ -76,7 +76,8 @@ var calculateProjectedTotal = function (e) {
     let receiptsToAllocate = parseInt(revenue + pretotal);
     // percentage is passed as zero on no sales tax accounts - figure out how to keep date specific salestax percentage
     let salestaxPercentage = $(`.account[data-hierarchy='salestax'][data-date='${date}']`).data('percentage');
-    let netCashReceipts = parseInt(receiptsToAllocate / ((salestaxPercentage / 100) + 1));
+    let salestaxDivisor = (salestaxPercentage / 100) + 1;
+    let netCashReceipts = Math.round(receiptsToAllocate / salestaxDivisor);
     let realRevenue = parseInt(netCashReceipts) + parseInt(prereal);
     let projectedTotalField = $(this).parent().find(`.projected-total`);
     let placeholderValue = revenue;
@@ -89,7 +90,9 @@ var calculateProjectedTotal = function (e) {
             placeholderValue = calculatePretotalPlaceholder(projectedTotalField);
             break;
         case 'salestax':
-            placeholderValue = parseInt(receiptsToAllocate - netCashReceipts);
+            console.log(receiptsToAllocate);
+            console.log(netCashReceipts);
+            placeholderValue = parseInt(receiptsToAllocate) - parseInt(netCashReceipts);
             break;
         case 'prereal':
             placeholderValue = parseInt(netCashReceipts * percentage);
