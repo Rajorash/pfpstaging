@@ -62,10 +62,10 @@ var calculateProjectedTotal = function (e) {
 
     // sum all the values from revenue account (should be 1 account...)
     let revenue = 0;
-    let salestax = 0;
-    let prereal = 0;
-    let postreal = 0;
-    let pretotal = 0;
+    let salestax = calculateHierarchyValueOnDate(date, 'salestax');
+    let prereal = calculateHierarchyValueOnDate(date, 'prereal');
+    let postreal = calculateHierarchyValueOnDate(date, 'postreal');
+    let pretotal = calculateHierarchyValueOnDate(date, 'pretotal');
 
     let revenueOnDate = $(`.account-value[data-hierarchy='revenue'][data-date='${date}']`);
 
@@ -73,57 +73,11 @@ var calculateProjectedTotal = function (e) {
         revenue = parseInt(revenue) + parseInt($(this).val());
     });
 
-    let pretotalOnDate = $(`.account-value[data-hierarchy='pretotal'][data-date='${date}']`);
-
-    pretotalOnDate.each( function () {
-        pretotal = parseInt(pretotal) + parseInt($(this).parent().find('.projected-total').attr('placeholder'));
-    });
-
-    let salestaxOnDate = $(`.account-value[data-hierarchy='salestax'][data-date='${date}']`);
-
-    salestaxOnDate.each( function () {
-        salestax = parseInt(salestax) + parseInt($(this).parent().find('.projected-total').attr('placeholder'));
-    });
-
-    let prerealOnDate = $(`.account-value[data-hierarchy='prereal'][data-date='${date}']`);
-
-    prerealOnDate.each( function () {
-        prereal = parseInt(prereal) + parseInt($(this).parent().find('.projected-total').attr('placeholder'));
-    });
-
-    let postrealOnDate = $(`.account-value[data-hierarchy='postreal'][data-date='${date}']`);
-
-    postrealOnDate.each( function () {
-        postreal = parseInt(postreal) + parseInt($(this).parent().find('.projected-total').attr('placeholder'));
-    });
-
     let receiptsToAllocate = parseInt(revenue + pretotal);
-
     // percentage is passed as zero on no sales tax accounts - figure out how to keep date specific salestax percentage
     let salestaxPercentage = $(`.account[data-hierarchy='salestax'][data-date='${date}']`).data('percentage');
     let netCashReceipts = parseInt(receiptsToAllocate / ((salestaxPercentage / 100) + 1));
-
     let realRevenue = parseInt(netCashReceipts) + parseInt(prereal);
-
-    if (hierarchy == 'postreal')
-    {
-
-        // console.table([
-        //     ["hierarchy",hierarchy],
-        //     ["percentage",percentage],
-        //     ["revenue",revenue],
-        //     ["pretotal",pretotal],
-        //     ["receiptsToAllocate",receiptsToAllocate],
-        //     ["salestax",salestax],
-        //     ["netCashReceipts",netCashReceipts],
-        //     ["prereal",prereal],
-        //     ["realRevenue",realRevenue],
-        //     ["postreal",postreal]
-        // ]);
-
-    }
-
-
     let projectedTotalField = $(this).parent().find(`.projected-total`);
     let placeholderValue = revenue;
 
@@ -145,25 +99,23 @@ var calculateProjectedTotal = function (e) {
             break;
     }
 
-
-
-
-
     // placeholderValue = parseInt(placeholderValue) + getPreviousProjectedTotal(projectedTotalField);
     // let placeholderValue = parseInt(getAdjustedDailyAccountTotal(projectedTotalField)) + getPreviousProjectedTotal(projectedTotalField);
 
     projectedTotalField.attr('placeholder', placeholderValue);
 
-    // console.table([
-    //     ["revenue",revenue],
-    //     ["pretotal",pretotal],
-    //     ["receiptsToAllocate",receiptsToAllocate],
-    //     ["salestax",salestax],
-    //     ["netCashReceipts",netCashReceipts],
-    //     ["prereal",prereal],
-    //     ["realRevenue",realRevenue],
-    //     ["postreal",postreal]
-    // ]);
+}
+
+function calculateHierarchyValueOnDate(date, hierarchy) {
+    let selector = $(`.account-value[data-hierarchy='${hierarchy}'][data-date='${date}']`);
+    let value = 0;
+
+    selector.each( function () {
+        let valueOnDate = $(this).parent().find('.projected-total').attr('placeholder');
+        value = parseInt(value) + parseInt(valueOnDate);
+    });
+
+    return value;
 }
 
 function calculatePretotalPlaceholder(projectedTotalField)
@@ -175,7 +127,6 @@ function calculatePretotalPlaceholder(projectedTotalField)
     return parseInt( dayTotal + previousProjected );
 
 }
-
 
 function getPreviousProjectedTotal(currentProjectedTotalField) {
     // get the col id from the passed projected total input

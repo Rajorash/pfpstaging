@@ -65841,50 +65841,19 @@ var calculateProjectedTotal = function calculateProjectedTotal(e) {
   var percentage = (_parseFloat = parseFloat($(this).parent().data('percentage') / 100)) !== null && _parseFloat !== void 0 ? _parseFloat : 0; // sum all the values from revenue account (should be 1 account...)
 
   var revenue = 0;
-  var salestax = 0;
-  var prereal = 0;
-  var postreal = 0;
-  var pretotal = 0;
+  var salestax = calculateHierarchyValueOnDate(date, 'salestax');
+  var prereal = calculateHierarchyValueOnDate(date, 'prereal');
+  var postreal = calculateHierarchyValueOnDate(date, 'postreal');
+  var pretotal = calculateHierarchyValueOnDate(date, 'pretotal');
   var revenueOnDate = $(".account-value[data-hierarchy='revenue'][data-date='".concat(date, "']"));
   revenueOnDate.each(function () {
     revenue = parseInt(revenue) + parseInt($(this).val());
-  });
-  var pretotalOnDate = $(".account-value[data-hierarchy='pretotal'][data-date='".concat(date, "']"));
-  pretotalOnDate.each(function () {
-    pretotal = parseInt(pretotal) + parseInt($(this).parent().find('.projected-total').attr('placeholder'));
-  });
-  var salestaxOnDate = $(".account-value[data-hierarchy='salestax'][data-date='".concat(date, "']"));
-  salestaxOnDate.each(function () {
-    salestax = parseInt(salestax) + parseInt($(this).parent().find('.projected-total').attr('placeholder'));
-  });
-  var prerealOnDate = $(".account-value[data-hierarchy='prereal'][data-date='".concat(date, "']"));
-  prerealOnDate.each(function () {
-    prereal = parseInt(prereal) + parseInt($(this).parent().find('.projected-total').attr('placeholder'));
-  });
-  var postrealOnDate = $(".account-value[data-hierarchy='postreal'][data-date='".concat(date, "']"));
-  postrealOnDate.each(function () {
-    postreal = parseInt(postreal) + parseInt($(this).parent().find('.projected-total').attr('placeholder'));
   });
   var receiptsToAllocate = parseInt(revenue + pretotal); // percentage is passed as zero on no sales tax accounts - figure out how to keep date specific salestax percentage
 
   var salestaxPercentage = $(".account[data-hierarchy='salestax'][data-date='".concat(date, "']")).data('percentage');
   var netCashReceipts = parseInt(receiptsToAllocate / (salestaxPercentage / 100 + 1));
   var realRevenue = parseInt(netCashReceipts) + parseInt(prereal);
-
-  if (hierarchy == 'postreal') {// console.table([
-    //     ["hierarchy",hierarchy],
-    //     ["percentage",percentage],
-    //     ["revenue",revenue],
-    //     ["pretotal",pretotal],
-    //     ["receiptsToAllocate",receiptsToAllocate],
-    //     ["salestax",salestax],
-    //     ["netCashReceipts",netCashReceipts],
-    //     ["prereal",prereal],
-    //     ["realRevenue",realRevenue],
-    //     ["postreal",postreal]
-    // ]);
-  }
-
   var projectedTotalField = $(this).parent().find(".projected-total");
   var placeholderValue = revenue;
 
@@ -65912,17 +65881,18 @@ var calculateProjectedTotal = function calculateProjectedTotal(e) {
   // let placeholderValue = parseInt(getAdjustedDailyAccountTotal(projectedTotalField)) + getPreviousProjectedTotal(projectedTotalField);
 
 
-  projectedTotalField.attr('placeholder', placeholderValue); // console.table([
-  //     ["revenue",revenue],
-  //     ["pretotal",pretotal],
-  //     ["receiptsToAllocate",receiptsToAllocate],
-  //     ["salestax",salestax],
-  //     ["netCashReceipts",netCashReceipts],
-  //     ["prereal",prereal],
-  //     ["realRevenue",realRevenue],
-  //     ["postreal",postreal]
-  // ]);
+  projectedTotalField.attr('placeholder', placeholderValue);
 };
+
+function calculateHierarchyValueOnDate(date, hierarchy) {
+  var selector = $(".account-value[data-hierarchy='".concat(hierarchy, "'][data-date='").concat(date, "']"));
+  var value = 0;
+  selector.each(function () {
+    var valueOnDate = $(this).parent().find('.projected-total').attr('placeholder');
+    value = parseInt(value) + parseInt(valueOnDate);
+  });
+  return value;
+}
 
 function calculatePretotalPlaceholder(projectedTotalField) {
   var dayTotal = getAdjustedDailyAccountTotal(projectedTotalField);
