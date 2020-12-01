@@ -20,8 +20,11 @@
             <tbody>
                 @forelse ($business->accounts as $acc)
                 <tr>
-                    <td scope="row account-row" style="background-color:#99ccdd;">{{$acc->name}} <br>
-                        <span style="color: #333">Transfer in</span></td>
+                    <td scope="row account-row" style="background-color:#99ccdd;">
+                        <label>{{$acc->name}}</label><br>
+                        <label style="color: rgba(0, 0, 0, 0.35);">Transfer in</label><br>
+                        <label style="color: rgba(0, 0, 0, 0.35);margin-bottom: 0;">Daily Total</label>
+                    </td>
                     @foreach($dates as $date)
                     <td class="text-right account"
                         style="background-color:#99ccdd;"
