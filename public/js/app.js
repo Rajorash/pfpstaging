@@ -65952,15 +65952,23 @@ function setCumulativeTotal(targetField) {
 } // upon changing the value of a flow input, update the Allocation in the DB
 
 
-$('.allocation-value').on("change", updateAllocation); // $('.allocation-value').on("change", setCumulativeTotal( $(this).parent().find('.cumulative') ));
-// if an AccountFlow is updated, calculate the new BankAccount total
+$('.allocation-value').on("change", updateAllocation); // if an AccountFlow is updated, calculate the new BankAccount total
 
-$('.flow .allocation-value').on("change", calculateAccountTotal); // calculate projected values
+$('.flow .allocation-value').on("change", calculateAccountTotal); // if an account allocation changes, update all account allocations
 
-$.each($('.account .allocation-value'), calculateProjectedTotal);
-$('.account .allocation-value').on("change", $.each($('.account .allocation-value'), calculateProjectedTotal));
+$('.account .allocation-value').on("change", $.each($('.account .allocation-value'), calculateProjectedTotal)); // calculate projected values
+
+$.each($('.account .allocation-value'), calculateProjectedTotal); // calculate cumulative totals based on previous and current values for each date
+
 $('.cumulative').each(function () {
   setCumulativeTotal($(this));
+}); // if anything in the table changes, roll all calculations again to update the values
+
+$('#allocationTable').on('change', function () {
+  $.each($('.account .allocation-value'), calculateProjectedTotal);
+  $('.cumulative').each(function () {
+    setCumulativeTotal($(this));
+  });
 });
 
 /***/ }),

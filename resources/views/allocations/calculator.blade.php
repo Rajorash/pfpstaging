@@ -6,7 +6,7 @@
         <h1>{{$business->name}} Allocations</h1>
     </div>
     <div class="row">
-        <table class="table table-hover table-sm table-responsive">
+        <table id="allocationTable" class="table table-hover table-sm table-responsive">
             <thead class="thead-inverse">
                 <tr>
                     <th></th>
