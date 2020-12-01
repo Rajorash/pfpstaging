@@ -24,7 +24,8 @@ class AccountSeeder extends Seeder
                     'name' => 'Core',
                     'type' => 'revenue',
                     'flows' => [
-                        [ 'label' => "Transfer to revenue", 'negative' => false ],
+                        [ 'label' => "Accounts Receivable", 'negative' => false ],
+                        [ 'label' => "Estimated Activity", 'negative' => false ],
                     ]
                 ],
                 [
@@ -144,7 +145,7 @@ class AccountSeeder extends Seeder
                     'business_id' => $business->id
                 ]);
                 $business->accounts()->save($account);
-                
+
                 foreach($acc['flows'] as $flow) {
                     $new_flow = factory(AccountFlow::class)->create(['label' => $flow['label'], 'negative_flow' => $flow['negative']]);
                     $account->flows()->save($new_flow);
