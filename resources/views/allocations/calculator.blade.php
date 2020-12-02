@@ -22,7 +22,9 @@
                 <tr>
                     <td scope="row account-row" style="background-color:#99ccdd;">
                         <label>{{$acc->name}}</label><br>
+                        @unless ($acc->type == 'revenue')
                         <label style="color: rgba(0, 0, 0, 0.35);">Transfer in</label><br>
+                        @endunless
                         <label style="color: rgba(0, 0, 0, 0.35);margin-bottom: 0;">Daily Total</label>
                     </td>
                     @foreach($dates as $date)
@@ -38,12 +40,14 @@
                         data-row='{{$loop->parent->iteration}}'
                         data-col='{{$loop->iteration}}'>
                         <input type="text" class="cumulative text-right text-bold form-control form-control-sm" disabled>
+                        @unless ($acc->type == 'revenue')
                         <input type="text"
                                 class="bg-info projected-total text-right form-control form-control-sm"
                                 data-hierarchy="{{$acc->type}}"
                                 data-date='{{$date}}'
                                 placeholder="0"
                                 disabled>
+                        @endunless
                         <input type="text"
                         class="account-value bg-warning text-right allocation-value form-control form-control-sm border-info"
                         style="min-width: 8em;"
