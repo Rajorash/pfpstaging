@@ -11,8 +11,6 @@ var updateAllocation = function (e) {
         '_token': $('meta[name="csrf-token"]').attr('content')
     };
 
-    // console.table([allocation]);
-
     $.post(
         '/allocations/update',
         allocation
@@ -90,9 +88,7 @@ var calculateProjectedTotal = function (e) {
             placeholderValue = calculatePretotalPlaceholder(projectedTotalField);
             break;
         case 'salestax':
-            console.log(receiptsToAllocate);
-            console.log(netCashReceipts);
-            placeholderValue = parseInt(receiptsToAllocate) - parseInt(netCashReceipts);
+           placeholderValue = parseInt(receiptsToAllocate) - parseInt(netCashReceipts);
             break;
         case 'prereal':
             placeholderValue = parseInt(netCashReceipts * percentage);
@@ -101,9 +97,6 @@ var calculateProjectedTotal = function (e) {
             placeholderValue = parseInt(realRevenue * percentage);
             break;
     }
-
-    // placeholderValue = parseInt(placeholderValue) + getPreviousProjectedTotal(projectedTotalField);
-    // let placeholderValue = parseInt(getAdjustedDailyAccountTotal(projectedTotalField)) + getPreviousProjectedTotal(projectedTotalField);
 
     projectedTotalField.attr('placeholder', placeholderValue);
 

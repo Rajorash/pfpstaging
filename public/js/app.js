@@ -18,8 +18,7 @@ var updateAllocation = function updateAllocation(e) {
     'amount': $(this).val(),
     'allocation_date': $(this).data('date'),
     '_token': $('meta[name="csrf-token"]').attr('content')
-  }; // console.table([allocation]);
-
+  };
   $.post('/allocations/update', allocation).done(function (data) {// console.log(data);
   });
 };
@@ -86,8 +85,6 @@ var calculateProjectedTotal = function calculateProjectedTotal(e) {
       break;
 
     case 'salestax':
-      console.log(receiptsToAllocate);
-      console.log(netCashReceipts);
       placeholderValue = parseInt(receiptsToAllocate) - parseInt(netCashReceipts);
       break;
 
@@ -98,9 +95,7 @@ var calculateProjectedTotal = function calculateProjectedTotal(e) {
     case 'postreal':
       placeholderValue = parseInt(realRevenue * percentage);
       break;
-  } // placeholderValue = parseInt(placeholderValue) + getPreviousProjectedTotal(projectedTotalField);
-  // let placeholderValue = parseInt(getAdjustedDailyAccountTotal(projectedTotalField)) + getPreviousProjectedTotal(projectedTotalField);
-
+  }
 
   projectedTotalField.attr('placeholder', placeholderValue);
 };
