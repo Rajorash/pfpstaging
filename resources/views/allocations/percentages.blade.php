@@ -4,9 +4,10 @@
 
 <div class="container">
     <div class="row justify-content-center">
-        <!-- <div class="col"> -->
             <h1>{{$business->name}} Allocation Percentages</h1>
-        <!-- </div> -->
+            <div class="ml-auto  align-items-center">
+                <a class="btn btn-info btn-sm" href="/allocations/{{$business->id}}">See Allocations</a>
+            </div>
     </div>
     <div class="row justify-content-center">
         <!-- <div class="col"> -->
