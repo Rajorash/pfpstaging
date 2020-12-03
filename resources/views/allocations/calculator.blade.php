@@ -1,12 +1,12 @@
 @extends('layouts.app')
 
 @section('content')
+<div class="container secondary-nav nav mb-3">
+    <a class="ml-auto" href="/allocations/{{$business->id}}\percentages">See Percentages</a>
+</div>
 <div class="container-fluid">
     <div class="row justify-content-center px-5">
         <h1>{{$business->name}} Allocations</h1>
-        <div class="ml-auto">
-            <a class="btn btn-info btn-sm" href="/allocations/{{$business->id}}\percentages">See Percentages</a>
-        </div>
     </div>
     <div class="row">
         <table id="allocationTable" class="table table-hover table-sm table-responsive">
