@@ -17,12 +17,15 @@
                         @forelse($rollout as $phase)
                         <th class="text-center">Phase Ends:<br> {{ Carbon\Carbon::parse($phase->end_date)->format("D j M") }}</th>
                         @empty
-                        <th class="text-center">No dice...</th>
+                        <th class="text-center">No phases exist...</th>
                         @endforelse
                     </tr>
                 </thead>
                 <tbody>
                 @forelse($business->accounts as $acc)
+                    @if ($acc->type == "revenue")
+                        @continue
+                    @endif
                     <tr>
                         <td scope="row">{{ $acc->name }}</td>
                         @forelse($rollout as $phase)
