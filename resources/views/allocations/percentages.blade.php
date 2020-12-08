@@ -47,6 +47,14 @@
                         @endforelse
                     </tr>
                 @endforelse
+                <tr>
+                    <td></td>
+                    @forelse($rollout as $phase)
+                    <td class="percentage-total text-right" data-phase-id="{{ $phase->id }}" data-value="0">0%</td>
+                    @empty
+                    <th class="text-center">No phases exist...</th>
+                    @endforelse
+                </tr>
                 </tbody>
             </table>
         <!-- </div> -->

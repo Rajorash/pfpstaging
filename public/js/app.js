@@ -319,15 +319,48 @@ var updateAllocationPercentage = function updateAllocationPercentage(e) {
     'bank_account_id': $(this).data('account-id'),
     'percent': $(this).val(),
     '_token': $('meta[name="csrf-token"]').attr('content')
-  };
-  console.table([percentage]);
+  }; // console.table([percentage]);
+
   $.post('/percentages/update', percentage).done(function (data) {
     console.log(data);
   });
-}; // upon changing the value of a flow input, update the AllocationPercentage in the DB
+}; // calculate the current total percentage value of each phase
 
 
-$('.percentage-value').on("change", updateAllocationPercentage);
+var updatePercentageTotal = function updatePercentageTotal(e) {
+  var phase_id = $(this).data('phase-id');
+  console.log("Function ".concat(phase_id));
+  var percentageTotalField = $(".percentage-total[data-phase-id='".concat(phase_id, "']"));
+  var total = calculatePhaseTotal(phase_id);
+
+  if (total > 100) {
+    percentageTotalField.addClass('text-danger');
+  } else {
+    percentageTotalField.removeClass('text-danger');
+  }
+
+  percentageTotalField.text("".concat(total, "%"));
+};
+
+function calculatePhaseTotal(phase_id) {
+  var phasePercentagesFields = $(".percentage-value[data-phase-id='".concat(phase_id, "']"));
+  var total = 0;
+  phasePercentagesFields.each(function () {
+    var value = parseFloat($(this).val());
+
+    if (!isNaN(value)) {
+      total = total + value;
+    }
+  });
+  return total;
+} // set initial values
+
+
+$.each($('.percentage-total'), updatePercentageTotal); // upon changing the value of a flow input, update the AllocationPercentage in the DB
+
+$('.percentage-value').on("change", updateAllocationPercentage); // upon changing the value of a flow input, update the total value below
+
+$('.percentage-value').on("change", updatePercentageTotal);
 
 /***/ }),
 
