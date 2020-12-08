@@ -76,7 +76,7 @@ var calculateProjectedTotal = function (e) {
     let salestaxPercentage = $(`.account[data-hierarchy='salestax'][data-date='${date}']`).data('percentage');
     let salestaxDivisor = (salestaxPercentage / 100) + 1;
     let netCashReceipts = Math.round(receiptsToAllocate / salestaxDivisor);
-    let realRevenue = parseInt(netCashReceipts) + parseInt(prereal);
+    let realRevenue = parseInt(netCashReceipts) - parseInt(prereal);
     let projectedTotalField = $(this).parent().find(`.projected-total`);
     let placeholderValue = revenue;
 
