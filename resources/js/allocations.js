@@ -118,9 +118,8 @@ function calculatePretotalPlaceholder(projectedTotalField)
 {
 
     let dayTotal = getAdjustedDailyAccountTotal(projectedTotalField);
-    let previousProjected = getPreviousProjectedTotal(projectedTotalField);
 
-    return parseInt( dayTotal + previousProjected );
+    return parseInt( dayTotal );
 
 }
 

@@ -112,8 +112,7 @@ function calculateHierarchyValueOnDate(date, hierarchy) {
 
 function calculatePretotalPlaceholder(projectedTotalField) {
   var dayTotal = getAdjustedDailyAccountTotal(projectedTotalField);
-  var previousProjected = getPreviousProjectedTotal(projectedTotalField);
-  return parseInt(dayTotal + previousProjected);
+  return parseInt(dayTotal);
 }
 
 function getPreviousProjectedTotal(currentProjectedTotalField) {
