@@ -179,6 +179,10 @@ function setCumulativeTotal(targetField) {
     if (accountRow.data('hierarchy') == 'revenue') {
         adjTotal = parseInt(accountValueField.val());
     }
+    // revenue accounts do not accumulate projected total
+    if (accountRow.data('hierarchy') == 'pretotal') {
+        adjTotal = parseInt(accountValueField.val());
+    }
 
     value = value + adjTotal;
 

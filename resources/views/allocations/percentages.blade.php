@@ -2,7 +2,10 @@
 
 @section('content')
 <div class="container secondary-nav nav mb-3">
-    <div class="ml-auto"><a class="ml-auto" href="/allocations/{{$business->id}}">See Allocations</a>   </div>
+    <div class="ml-auto">
+        <a class="ml-auto mr-2" href="/allocations/{{$business->id}}">See Allocations</a> |
+        <a class="ml-2" href="/business/{{$business->id}}\accounts">See Accounts</a>
+    </div>
 </div>
 <div class="container">
     <div class="row justify-content-center">

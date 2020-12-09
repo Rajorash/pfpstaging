@@ -2,7 +2,8 @@
 
 @section('content')
 <div class="container secondary-nav nav mb-3">
-    <a class="ml-auto" href="/allocations/{{$business->id}}\percentages">See Percentages</a>
+    <a class="ml-auto mr-2" href="/allocations/{{$business->id}}\percentages">See Percentages</a> |
+    <a class="ml-2" href="/business/{{$business->id}}\accounts">See Accounts</a>
 </div>
 <div class="container-fluid">
     <div class="row justify-content-center px-5">

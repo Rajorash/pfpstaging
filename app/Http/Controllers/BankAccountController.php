@@ -18,10 +18,10 @@ class BankAccountController extends Controller
     public function index(Business $business)
     {
         $this->authorize('view', $business);
-        
+
         $accounts = $business->accounts->load('flows');
-        
-        return view('accounts.show', ['accounts' => $accounts]);
+
+        return view('accounts.show', ['accounts' => $accounts, 'business' => $business]);
     }
 
     /**
@@ -34,7 +34,7 @@ class BankAccountController extends Controller
         $this->authorize('createBankAccount', $business);
 
         $accounts = $business->accounts;
-        
+
         return view('accounts.create', ['business' => $business]);
     }
 
@@ -71,7 +71,7 @@ class BankAccountController extends Controller
         $account->save();
 
         return redirect("business/".$business->id."/accounts");
-    
+
     }
 
     /**
@@ -93,11 +93,11 @@ class BankAccountController extends Controller
         $flow->label = $data['label'];
         $flow->negative_flow = $data['flow-direction'];
         $flow->account_id = $account->id;
-        
+
         $flow->save();
-        
+
         return redirect("business/".$account->business->id."/accounts");
-    
+
     }
 
     /**
@@ -134,7 +134,7 @@ class BankAccountController extends Controller
     public function update(Request $request, Business $business, BankAccount $account)
     {
         // authorise
-        
+
         $data = request()->validate([
             'name' => 'required',
             'type' => 'required']
@@ -170,7 +170,7 @@ class BankAccountController extends Controller
     public function updateFlow(Request $request, BankAccount $account, AccountFlow $flow)
     {
         $this->authorize('update', $account);
-        
+
         $data = request()->validate([
             'label' => 'required',
             'flow-direction' => 'required']
