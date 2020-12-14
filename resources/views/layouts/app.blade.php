@@ -42,17 +42,14 @@
                     <ul class="navbar-nav ml-auto">
                         <!-- Authentication Links -->
                         @guest
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
-                            </li>
+                            <x-nav-link route="login">{{ __('Login') }}</x-nav-link>
                             @if (Route::has('register'))
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
-                                </li>
+                            <x-nav-link route="register">{{ __('Register') }}</x-nav-link>
                             @endif
                         @else
-                            <a class="nav-link" href="/business">Businesses</a>
-                            <a class="nav-link" href="/allocations">Allocations</a>
+                            <x-nav-link route="home">{{ __('Home') }}</x-nav-link>
+                            <x-nav-link route="businesses">{{ __('Businesses') }}</x-nav-link>
+                            <x-nav-link route="allocations">{{ __('Allocations') }}</x-nav-link>
                             <li class="nav-item dropdown">
 
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
@@ -60,21 +57,8 @@
                                 </a>
 
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" href="/business">
-                                        Business List
-                                    </a>
-                                    <a class="dropdown-item" href="/user">
-                                        User List
-                                    </a>
-                                    <a class="dropdown-item" href="{{ route('logout') }}"
-                                       onclick="event.preventDefault();
-                                                     document.getElementById('logout-form').submit();">
-                                        {{ __('Logout') }}
-                                    </a>
-
-                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                                        @csrf
-                                    </form>
+                                    <x-dropdown-link route="users" >{{ __('User List') }}</x-nav-link>
+                                    <x-logout-link>{{ __('Logout') }}</x-nav-link>
                                 </div>
                             </li>
                         @endguest
