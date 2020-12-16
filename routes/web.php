@@ -37,6 +37,9 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::get('/business/{business}/tax', 'TaxRateController@index');
     Route::post('/taxrate', 'TaxRateController@store');
+    // account balance entries.
+    Route::get('/business/{business}/account-entry', 'BankAccountEntryController@edit');
+    Route::patch('/business/{business}/account-entry', 'BankAccountEntryController@update');
     // allocation calculator routing.
     Route::get('/allocations', 'AllocationsController@index')->name('allocations');
     Route::get('/allocations/{business}', 'AllocationsController@allocations');
