@@ -85,20 +85,25 @@ class BankAccountEntryController extends Controller
         $date = $request->date;
         $amounts = collect($request->amount);
 
+        // get all account ids belonging to the business
         $business_account_ids = $business->accounts->pluck('id');
 
-        dump($amounts);
+        // filter out any entries that do not belong to the business entered
         // in order to pass business_accounts_ids to a closure you need to 'use ($var)'
-        $amounts = $amounts->filter( function ($value, $key) use ($business_account_ids) {
-            return in_array($key, $business_account_ids->values()->toArray());
+        $amounts = $amounts->filter( function ($value, $account_id) use ($business_account_ids) {
+            return in_array($account_id, $business_account_ids->values()->toArray());
         });
 
         foreach( $amounts as $account_id => $amount ) {
-            // CHECK THAT THE ACCOUNTS BELONG TO THE BUSINESS
-            // create or update account entry
+            // find or create an entry
+            $entry = BankAccountEntry::firstOrNew(['balance_date' => $date, 'bank_account_id' => $account_id]);
+            $entry->balance_amount = $amount;
+            $entry->balance_date = $date;
+            $entry->save();
         }
 
-        dd( $date, $amounts, $business_account_ids );
+        return redirect()->back()->with('success', 'Account entries successfully entered.');
+
     }
 
     /**
