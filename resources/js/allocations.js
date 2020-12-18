@@ -195,6 +195,10 @@ function setCumulativeTotal(targetField) {
 
 }
 
+function getValue(element) {
+    return element.val() ?? element.attr('placeholder');
+}
+
 // allow arrow navigation of table
 $('#allocationTable').arrowTable({
     focusTarget: 'input:enabled'

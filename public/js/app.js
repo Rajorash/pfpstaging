@@ -174,6 +174,12 @@ function setCumulativeTotal(targetField) {
 
   value = value + adjTotal;
   targetField.attr('placeholder', parseInt(value));
+}
+
+function getValue(element) {
+  var _element$val;
+
+  return (_element$val = element.val()) !== null && _element$val !== void 0 ? _element$val : element.attr('placeholder');
 } // allow arrow navigation of table
 
 
