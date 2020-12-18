@@ -190,6 +190,10 @@ function setCumulativeTotal(targetField) {
 
 }
 
+// allow arrow navigation of table
+$('#allocationTable').arrowTable({
+    focusTarget: 'input:enabled'
+});
 // upon changing the value of a flow input, update the Allocation in the DB
 $('.allocation-value').on("change", updateAllocation);
 // if an AccountFlow is updated, calculate the new BankAccount total

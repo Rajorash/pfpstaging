@@ -169,8 +169,12 @@ function setCumulativeTotal(targetField) {
 
   value = value + adjTotal;
   targetField.val(parseInt(value));
-} // upon changing the value of a flow input, update the Allocation in the DB
+} // allow arrow navigation of table
 
+
+$('#allocationTable').arrowTable({
+  focusTarget: 'input:enabled'
+}); // upon changing the value of a flow input, update the Allocation in the DB
 
 $('.allocation-value').on("change", updateAllocation); // if an AccountFlow is updated, calculate the new BankAccount total
 
@@ -206,6 +210,12 @@ $('#allocationTable').on('change', function () {
  * building robust, powerful web applications using React + Laravel.
  */
 __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
+
+__webpack_require__(/*! arrow-table */ "./node_modules/arrow-table/src/arrow-table.js");
+
+__webpack_require__(/*! ./allocations */ "./resources/js/allocations.js");
+
+__webpack_require__(/*! ./percentages */ "./resources/js/percentages.js");
 /**
  * Next, we will create a fresh React component instance and attach it to
  * the page. Then, you may begin adding components to this application
@@ -214,10 +224,6 @@ __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 
 
 __webpack_require__(/*! ./components/Example */ "./resources/js/components/Example.js");
-
-__webpack_require__(/*! ./allocations */ "./resources/js/allocations.js");
-
-__webpack_require__(/*! ./percentages */ "./resources/js/percentages.js");
 
 /***/ }),
 

@@ -38,12 +38,9 @@
                         data-hierarchy="{{$acc->type}}"
                         data-phase='{{$phaseDates[$date]}}'
                         data-percentage='{{$allocationPercentages[$phaseDates[$date]][$acc->id]??0}}'
-                        {{-- @if($acc->type == 'salestax') --}}
-                        {{-- data-tax={{$taxRates[$acc->id]}} --}}
-                        {{-- @endif --}}
                         data-row='{{$loop->parent->iteration}}'
                         data-col='{{$loop->iteration}}'>
-                        <input type="text" class="cumulative text-right text-bold form-control form-control-sm" disabled>
+                        <input type="text" class="cumulative text-right text-bold form-control form-control-sm">
                         @unless ($acc->type == 'revenue')
                         <input type="text"
                                 class="bg-info projected-total text-right form-control form-control-sm"
