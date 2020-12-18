@@ -148,7 +148,12 @@ function setCumulativeTotal(targetField) {
 
   if (col > 1) {
     var previousTotalField = $(".account[data-col=\"".concat(col - 1, "\"][data-row='").concat(row, "'] .cumulative")).first();
-    var previousTotal = parseInt(previousTotalField.val());
+    var previousTotal = parseInt(previousTotalField.attr('placeholder')); // if a value has been entered in the previous total, override the placeholder calculation.
+
+    if (previousTotalField.val()) {
+      previousTotal = parseInt(previousTotalField.val());
+    }
+
     value = value + parseInt(previousTotal);
   } // get the adjusted day total
 
@@ -160,7 +165,7 @@ function setCumulativeTotal(targetField) {
 
   if (accountRow.data('hierarchy') == 'revenue') {
     adjTotal = parseInt(accountValueField.val());
-  } // revenue accounts do not accumulate projected total
+  } // pretotal accounts do not accumulate projected total
 
 
   if (accountRow.data('hierarchy') == 'pretotal') {
@@ -168,7 +173,7 @@ function setCumulativeTotal(targetField) {
   }
 
   value = value + adjTotal;
-  targetField.val(parseInt(value));
+  targetField.attr('placeholder', parseInt(value));
 } // allow arrow navigation of table
 
 

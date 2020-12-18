@@ -162,7 +162,12 @@ function setCumulativeTotal(targetField) {
     // if this is not the first column, get the previous cumulative total
     if (col > 1) {
         let previousTotalField = $(`.account[data-col="${col - 1}"][data-row='${row}'] .cumulative`).first();
-        let previousTotal = parseInt(previousTotalField.val());
+        let previousTotal = parseInt(previousTotalField.attr('placeholder'));
+
+        // if a value has been entered in the previous total, override the placeholder calculation.
+        if (previousTotalField.val()) {
+            previousTotal = parseInt(previousTotalField.val());
+        }
 
         value = value + parseInt(previousTotal);
 
@@ -178,7 +183,7 @@ function setCumulativeTotal(targetField) {
     if (accountRow.data('hierarchy') == 'revenue') {
         adjTotal = parseInt(accountValueField.val());
     }
-    // revenue accounts do not accumulate projected total
+    // pretotal accounts do not accumulate projected total
     if (accountRow.data('hierarchy') == 'pretotal') {
         adjTotal = parseInt(accountValueField.val());
     }
@@ -186,7 +191,7 @@ function setCumulativeTotal(targetField) {
     value = value + adjTotal;
 
 
-    targetField.val(parseInt(value));
+    targetField.attr('placeholder', parseInt(value));
 
 }
 
