@@ -46,7 +46,7 @@ var calculateAccountTotal = function (e) {
         }
     });
 
-    let accountInput = $('.account-value[data-id="'+ accountId +'"][data-date='+date+']');
+    let accountInput = $('.daily-total[data-id="'+ accountId +'"][data-date='+date+']');
     accountInput.val(total);
     accountInput.trigger('change');
     // return total;
@@ -65,7 +65,7 @@ var calculateProjectedTotal = function (e) {
     let postreal = calculateHierarchyValueOnDate(date, 'postreal');
     let pretotal = calculateHierarchyValueOnDate(date, 'pretotal');
 
-    let revenueOnDate = $(`.account-value[data-hierarchy='revenue'][data-date='${date}']`);
+    let revenueOnDate = $(`.daily-total[data-hierarchy='revenue'][data-date='${date}']`);
 
     revenueOnDate.each( function () {
         revenue = parseInt(revenue) + parseInt($(this).val());
@@ -103,7 +103,7 @@ var calculateProjectedTotal = function (e) {
 }
 
 function calculateHierarchyValueOnDate(date, hierarchy) {
-    let selector = $(`.account-value[data-hierarchy='${hierarchy}'][data-date='${date}']`);
+    let selector = $(`.daily-total[data-hierarchy='${hierarchy}'][data-date='${date}']`);
     let value = 0;
 
     selector.each( function () {
@@ -130,24 +130,19 @@ function getPreviousProjectedTotal(currentProjectedTotalField) {
 
     // if this is the first entry, return 0
     if (col === 1) {
-        return parseInt(0);
+        return 0;
     }
 
     // locate the previous column
-    col = parseInt(col) - 1;
+    col = col - 1;
     let previousProjectedTotalField = $(`.account[data-col='${col}'][data-row='${row}'] .projected-total`);
 
-    let previousProjectedTotal = previousProjectedTotalField.attr('placeholder');
-
-    if(previousProjectedTotalField.val()) {
-        previousProjectedTotal = parseInt(previousProjectedTotalField.val());
-    }
-    return parseInt(previousProjectedTotal);
+    return parseInt( getAccountValue( previousProjectedTotalField ) );
 
 }
 
 function getAdjustedDailyAccountTotal(currentProjectedTotalField) {
-    let adjustedAccountTotalField = currentProjectedTotalField.parent().find(`.account-value`);
+    let adjustedAccountTotalField = currentProjectedTotalField.parent().find(`.daily-total`);
 
     return parseInt(adjustedAccountTotalField.val());
 }
@@ -175,7 +170,7 @@ function setCumulativeTotal(targetField) {
 
     // get the adjusted day total
     let accountRow = $(`.account[data-col='${col}'][data-row='${row}']`).first();
-    let accountValueField = accountRow.find(`.account-value`).first();
+    let accountValueField = accountRow.find(`.daily-total`).first();
     let projectedTotalField = accountRow.find(`.projected-total`).first();
     let adjTotal = parseInt(accountValueField.val()) + parseInt(projectedTotalField.attr('placeholder'));
 
@@ -195,7 +190,7 @@ function setCumulativeTotal(targetField) {
 
 }
 
-function getValue(element) {
+function getAccountValue(element) {
     return element.val() ?? element.attr('placeholder');
 }
 

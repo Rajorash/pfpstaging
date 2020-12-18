@@ -45,7 +45,7 @@ var calculateAccountTotal = function calculateAccountTotal(e) {
       total = total + value;
     }
   });
-  var accountInput = $('.account-value[data-id="' + accountId + '"][data-date=' + date + ']');
+  var accountInput = $('.daily-total[data-id="' + accountId + '"][data-date=' + date + ']');
   accountInput.val(total);
   accountInput.trigger('change'); // return total;
 };
@@ -62,7 +62,7 @@ var calculateProjectedTotal = function calculateProjectedTotal(e) {
   var prereal = calculateHierarchyValueOnDate(date, 'prereal');
   var postreal = calculateHierarchyValueOnDate(date, 'postreal');
   var pretotal = calculateHierarchyValueOnDate(date, 'pretotal');
-  var revenueOnDate = $(".account-value[data-hierarchy='revenue'][data-date='".concat(date, "']"));
+  var revenueOnDate = $(".daily-total[data-hierarchy='revenue'][data-date='".concat(date, "']"));
   revenueOnDate.each(function () {
     revenue = parseInt(revenue) + parseInt($(this).val());
   });
@@ -101,7 +101,7 @@ var calculateProjectedTotal = function calculateProjectedTotal(e) {
 };
 
 function calculateHierarchyValueOnDate(date, hierarchy) {
-  var selector = $(".account-value[data-hierarchy='".concat(hierarchy, "'][data-date='").concat(date, "']"));
+  var selector = $(".daily-total[data-hierarchy='".concat(hierarchy, "'][data-date='").concat(date, "']"));
   var value = 0;
   selector.each(function () {
     var valueOnDate = $(this).parent().find('.projected-total').attr('placeholder');
@@ -121,23 +121,17 @@ function getPreviousProjectedTotal(currentProjectedTotalField) {
   var row = currentProjectedTotalField.parent().data('row'); // if this is the first entry, return 0
 
   if (col === 1) {
-    return parseInt(0);
+    return 0;
   } // locate the previous column
 
 
-  col = parseInt(col) - 1;
+  col = col - 1;
   var previousProjectedTotalField = $(".account[data-col='".concat(col, "'][data-row='").concat(row, "'] .projected-total"));
-  var previousProjectedTotal = previousProjectedTotalField.attr('placeholder');
-
-  if (previousProjectedTotalField.val()) {
-    previousProjectedTotal = parseInt(previousProjectedTotalField.val());
-  }
-
-  return parseInt(previousProjectedTotal);
+  return parseInt(getAccountValue(previousProjectedTotalField));
 }
 
 function getAdjustedDailyAccountTotal(currentProjectedTotalField) {
-  var adjustedAccountTotalField = currentProjectedTotalField.parent().find(".account-value");
+  var adjustedAccountTotalField = currentProjectedTotalField.parent().find(".daily-total");
   return parseInt(adjustedAccountTotalField.val());
 }
 
@@ -159,7 +153,7 @@ function setCumulativeTotal(targetField) {
 
 
   var accountRow = $(".account[data-col='".concat(col, "'][data-row='").concat(row, "']")).first();
-  var accountValueField = accountRow.find(".account-value").first();
+  var accountValueField = accountRow.find(".daily-total").first();
   var projectedTotalField = accountRow.find(".projected-total").first();
   var adjTotal = parseInt(accountValueField.val()) + parseInt(projectedTotalField.attr('placeholder')); // revenue accounts do not accumulate projected total
 
@@ -176,7 +170,7 @@ function setCumulativeTotal(targetField) {
   targetField.attr('placeholder', parseInt(value));
 }
 
-function getValue(element) {
+function getAccountValue(element) {
   var _element$val;
 
   return (_element$val = element.val()) !== null && _element$val !== void 0 ? _element$val : element.attr('placeholder');
