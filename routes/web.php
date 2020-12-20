@@ -23,6 +23,11 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/business', 'BusinessController@index')->name('businesses');
     Route::get('/business/{business}', 'BusinessController@show');
 
+    Route::get('/user', 'UserController@index')->name('users');
+    Route::post('/user', 'UserController@store');
+    Route::get('/user/create', 'UserController@create');
+    Route::get('/user/{user}', 'UserController@show');
+
     Route::resource('business.accounts', 'BankAccountController');
     Route::get('/accounts/{account}/create-flow', 'BankAccountController@createFlow');
     Route::post('/accounts/{account}/create-flow', 'BankAccountController@storeFlow');
@@ -30,13 +35,11 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/accounts/{account}/flow/{flow}/edit', 'BankAccountController@editFlow');
     Route::put('/accounts/{account}/flow/{flow}', 'BankAccountController@updateFlow');
 
-    Route::get('/user', 'UserController@index')->name('users');
-    Route::post('/user', 'UserController@store');
-    Route::get('/user/create', 'UserController@create');
-    Route::get('/user/{user}', 'UserController@show');
-
     Route::get('/business/{business}/tax', 'TaxRateController@index');
     Route::post('/taxrate', 'TaxRateController@store');
+
+    //
+    Route::get('/business/{business}/projections', 'ProjectionController@index');
     // account balance entries.
     Route::get('/business/{business}/account-entry', 'BankAccountEntryController@edit');
     Route::patch('/business/{business}/account-entry', 'BankAccountEntryController@update');
