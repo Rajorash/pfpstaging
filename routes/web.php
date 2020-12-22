@@ -38,8 +38,6 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/business/{business}/tax', 'TaxRateController@index');
     Route::post('/taxrate', 'TaxRateController@store');
 
-    //
-    Route::get('/business/{business}/projections', 'ProjectionController@index');
     // account balance entries.
     Route::get('/business/{business}/account-entry', 'BankAccountEntryController@edit');
     Route::patch('/business/{business}/account-entry', 'BankAccountEntryController@update');
@@ -49,5 +47,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/allocations/{business}/percentages', 'AllocationsController@percentages');
     Route::post('/allocations/update', 'AllocationsController@updateAllocation');
     Route::post('/percentages/update', 'AllocationsController@updatePercentage');
+    // Projections
+    Route::get('/projections/{business}', 'ProjectionController@index')->name('projections');
 
 });

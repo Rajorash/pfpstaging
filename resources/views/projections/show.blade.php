@@ -22,13 +22,9 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td class="px-3">Account Label</td>
-                    @foreach($dates as $date)
-                    <td class="text-right">15000</td>
-                    @endforeach
-
-                </tr>
+                @foreach($allocations as $allocation)
+                <x-projection.allocation-row :dates="$dates" :allocation="$allocation"/>
+                @endforeach
             </tbody>
         </table>
     </div>
