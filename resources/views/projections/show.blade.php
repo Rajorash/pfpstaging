@@ -2,15 +2,16 @@
 
 @section('content')
 <div class="container secondary-nav nav mb-3">
-    <a class="ml-auto mr-2" href="/allocations/{{$business->id}}\percentages">See Percentages</a> |
+    <a class="ml-auto mr-2" href="/allocations/{{$business->id}}">See Allocations</a> |
+    <a class="mx-2" href="/allocations/{{$business->id}}\percentages">See Percentages</a> |
     <a class="ml-2" href="/business/{{$business->id}}\accounts">See Accounts</a>
 </div>
 <div class="container-fluid">
-    <div class="row justify-content-center px-5">
-        <h1>{{$business->name}} Allocations</h1>
+    <div class="row justify-content-center">
+        <h1>{{$business->name}} Projections</h1>
     </div>
-    <div class="row">
-        <table id="projectionTable" class="table table-hover table-sm table-responsive">
+    <div class="row px-2 justify-content-center">
+        <table id="projectionTable" class="table table-hover table-sm">
             <thead class="thead-inverse">
                 <tr>
                     <th></th>
