@@ -7,14 +7,17 @@ use Illuminate\View\Component;
 class BusinessNav extends Component
 {
     public $businessId;
+    public $links;
+
     /**
      * Create a new component instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($businessId)
     {
-        //
+        $this->businessId = $businessId;
+        $this->links = $this->buildLinks($businessId);
     }
 
     /**
@@ -25,5 +28,16 @@ class BusinessNav extends Component
     public function render()
     {
         return view('components.business-nav');
+    }
+
+    public function buildLinks($businessId) {
+        $links = collect([
+            "/business/${businessId}/accounts" => "Accounts",
+            "/allocations/${businessId}" => "Allocations",
+            "/allocations/${businessId}/percentages" => "Percentages",
+            "/projections/${businessId}" => "Projections",
+        ]);
+
+        return $links;
     }
 }

@@ -1,12 +1,3 @@
-@php
-    $links = collect([
-        "/business/${businessId}/accounts" => "Accounts",
-        "/allocations/${businessId}" => "Allocations",
-        "/allocations/${businessId}/percentages" => "Percentages",
-        "/projections/${businessId}" => "Projections",
-    ]);
-@endphp
-
 <div class="container secondary-nav nav mt-n3 mb-2">
     @foreach ($links as $link => $label)
 

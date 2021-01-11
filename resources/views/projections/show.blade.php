@@ -1,11 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container secondary-nav nav mb-3">
-    <a class="ml-auto mr-2" href="/allocations/{{$business->id}}">See Allocations</a> |
-    <a class="mx-2" href="/allocations/{{$business->id}}\percentages">See Percentages</a> |
-    <a class="ml-2" href="/business/{{$business->id}}\accounts">See Accounts</a>
-</div>
+<x-business-nav businessId="{{$business->id}}" />
 <div class="container-fluid">
     <div class="row justify-content-center">
         <h1>{{$business->name}} Projections</h1>
