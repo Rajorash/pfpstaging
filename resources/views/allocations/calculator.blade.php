@@ -39,7 +39,14 @@
                         data-col='{{$loop->iteration}}'>
 
                         @unless ($acc->type == 'revenue')
-                        <input type="text" class="cumulative text-right text-bold form-control form-control-sm">
+                        <input type="text" class="cumulative text-right allocation-value text-bold form-control form-control-sm"
+                        data-type="BankAccount"
+                        data-id="{{$acc->id}}"
+                        data-date="{{$date}}"
+                        @if ($allocationValues['BankAccount'][$acc->id][$date] ?? false)
+                        value="{{$allocationValues['BankAccount'][$acc->id][$date]}}"
+                        @endif
+                        >
 
                         <input type="text"
                                 class="bg-info projected-total text-right form-control form-control-sm"
@@ -50,13 +57,18 @@
                         @endunless
 
                         <input type="text"
-                        class="daily-total bg-warning text-right allocation-value form-control form-control-sm border-info"
+                        class="daily-total bg-warning text-right form-control form-control-sm border-info"
                         style="min-width: 8em;"
                         data-type="BankAccount"
                         data-hierarchy="{{$acc->type}}"
                         data-id="{{$acc->id}}"
                         data-date="{{$date}}"
+                        @if ($acc->type == 'revenue')
                         value="{{$allocationValues['BankAccount'][$acc->id][$date] ?? 0}}"
+                        @else
+                        value="0"
+                        @endif
+
                         disabled>
 
                     </td>

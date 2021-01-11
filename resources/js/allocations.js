@@ -203,10 +203,10 @@ $('.allocation-value').on("change", updateAllocation);
 // if an AccountFlow is updated, calculate the new BankAccount total
 $('.flow .allocation-value').on("change", calculateAccountTotal);
 // if an account allocation changes, update all account allocations
-$('.account .allocation-value').on("change", $.each($('.account .allocation-value'), calculateProjectedTotal));
+$('.account .daily-total').on("change", $.each($('.account .daily-total'), calculateProjectedTotal));
 
 // calculate projected values
-$.each($('.account .allocation-value'), calculateProjectedTotal);
+$.each($('.account .daily-total'), calculateProjectedTotal);
 // calculate cumulative totals based on previous and current values for each date
 $('.cumulative').each( function() {
     setCumulativeTotal( $(this) );
@@ -214,7 +214,7 @@ $('.cumulative').each( function() {
 
 // if anything in the table changes, roll all calculations again to update the values
 $('#allocationTable').on('change', function() {
-    $.each($('.account .allocation-value'), calculateProjectedTotal);
+    $.each($('.account .daily-total'), calculateProjectedTotal);
     $('.cumulative').each( function() {
         setCumulativeTotal( $(this) );
     });
