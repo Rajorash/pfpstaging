@@ -30,7 +30,7 @@ class ProjectionController extends Controller
         $dates = array();
         for($date = $start_date; $date <= $end_date; $date->addDay(1))
         {
-            $dates[] = $date->format('Y-m-j');
+            $dates[] = $date->format('Y-m-d');
         }
 
         $allocations = self::allocationsByDate($business);
