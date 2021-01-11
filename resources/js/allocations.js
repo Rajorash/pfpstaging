@@ -186,7 +186,8 @@ function setCumulativeTotal(targetField) {
     value = value + adjTotal;
 
 
-    targetField.attr('placeholder', parseInt(value));
+    // targetField.attr('placeholder', parseInt(value));
+    targetField.val(parseInt(value));
 
 }
 
