@@ -199,7 +199,7 @@ $('#allocationTable').arrowTable({
     focusTarget: 'input:enabled'
 });
 // upon changing the value of a flow input, update the Allocation in the DB
-$('.allocation-value').on("change", updateAllocation);
+$('.allocation-value, .daily-total[data-hierarchy="revenue"]').on("change", updateAllocation);
 // if an AccountFlow is updated, calculate the new BankAccount total
 $('.flow .allocation-value').on("change", calculateAccountTotal);
 // if an account allocation changes, update all account allocations
