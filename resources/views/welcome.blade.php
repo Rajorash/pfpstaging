@@ -1,96 +1,20 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+<x-guest-layout>
+    @if (Route::has('login'))
+    <div class="flex flex-row content-end w-full space-x-6 py-3 px-6">
+        @auth
+        <a class="text-blue-400 hover:text-blue-600 block ml-auto" href="{{ url('/dashboard') }}">Dashboard</a>
+        @else
+        <a class="text-blue-400 hover:text-blue-600 block ml-auto" href="{{ route('login') }}">Login</a>
 
-        <title>{{env('APP_NAME', 'PF Prophet')}}</title>
+        @if (Route::has('register'))
+        <a class="text-blue-400 hover:text-blue-600 block" href="{{ route('register') }}">Register</a>
+        @endif
+        @endauth
+    </div>
+    @endif
 
-        <!-- Fonts -->
-        <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
-
-        <!-- Styles -->
-        <style>
-            html, body {
-                background-color: #fff;
-                color: #636b6f;
-                font-family: 'Nunito', sans-serif;
-                font-weight: 200;
-                height: 100vh;
-                margin: 0;
-            }
-
-            .full-height {
-                height: 100vh;
-            }
-
-            .flex-center {
-                align-items: center;
-                display: flex;
-                justify-content: center;
-            }
-
-            .position-ref {
-                position: relative;
-            }
-
-            .top-right {
-                position: absolute;
-                right: 10px;
-                top: 18px;
-            }
-
-            .content {
-                text-align: center;
-            }
-
-            .title {
-                font-size: 84px;
-            }
-            .sub-title {
-                font-size: 44px;
-            }
-
-            .links > a {
-                color: #636b6f;
-                padding: 0 25px;
-                font-size: 13px;
-                font-weight: 600;
-                letter-spacing: .1rem;
-                text-decoration: none;
-                text-transform: uppercase;
-            }
-
-            .m-b-md {
-                margin-bottom: 30px;
-            }
-        </style>
-    </head>
-    <body>
-        <div class="flex-center position-ref full-height">
-            @if (Route::has('login'))
-                <div class="top-right links">
-                    @auth
-                        <a href="{{ url('/dashboard') }}">Dashboard</a>
-                    @else
-                        <a href="{{ route('login') }}">Login</a>
-
-                        @if (Route::has('register'))
-                            <a href="{{ route('register') }}">Register</a>
-                        @endif
-                    @endauth
-                </div>
-            @endif
-
-            <div class="content">
-                <div class="title m-b-md">
-                    PFP MVP
-                </div>
-                <div class="sub-title m-b-md">
-                    Coming soon
-                </div>
-
-            </div>
-        </div>
-    </body>
-</html>
+    <div class="container mx-auto w-full">
+        <h1 class="font-sans text-gray-600 subpixel-antialiased text-center text-5xl">PFP MVP</h1>
+        <h2 class="font-sans text-gray-600 subpixel-antialiased text-center text-xl">Coming soon</h2>
+    </div>
+</x-guest-layout>
