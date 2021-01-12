@@ -51,3 +51,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/projections/{business}', 'ProjectionController@index')->name('projections');
 
 });
+
+Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
+    return view('dashboard');
+})->name('dashboard');
