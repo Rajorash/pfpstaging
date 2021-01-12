@@ -35,10 +35,10 @@
                 <a class="inline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded  no-underline bg-orange-400 text-black hover:bg-orange-500 py-1 px-2 leading-tight text-xs " href="/business/{{$business->id}}/tax">Tax rate</a>
             </td> --}}
             <td>
-                <a class="inline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded  no-underline bg-blue text-white hover:bg-blue-600 py-1 px-2 leading-tight text-xs " href="/allocations/{{$business->id}}">See Allocations</a>
+                <a class="inline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded  no-underline bg-blue-500 text-white hover:bg-blue-600 py-1 px-2 leading-tight text-xs " href="/allocations/{{$business->id}}">See Allocations</a>
             </td>
             <td>
-                <a class="inline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded  no-underline bg-blue text-white hover:bg-blue-600 py-1 px-2 leading-tight text-xs " href="/allocations/{{$business->id}}\percentages">See Percentages</a>
+                <a class="inline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded  no-underline bg-blue-500 text-white hover:bg-blue-600 py-1 px-2 leading-tight text-xs " href="/allocations/{{$business->id}}\percentages">See Percentages</a>
             </td>
         </tr>
         @empty
