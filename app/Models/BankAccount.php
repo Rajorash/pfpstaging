@@ -1,9 +1,9 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use App\Traits\Allocatable;
-use App\AllocationPercentage;
+use App\Models\AllocationPercentage;
 use Illuminate\Database\Eloquent\Model;
 
 class BankAccount extends Model
@@ -36,7 +36,7 @@ class BankAccount extends Model
 
     public function allocations()
     {
-        return $this->morphMany('App\Allocation', 'allocatable');
+        return $this->morphMany('App\Models\Allocation', 'allocatable');
     }
 
     public function getAllocationPercentages($phase_id = null)

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Auth;
-use App\Business;
+use App\Models\Business;
 use Illuminate\Http\Request;
 
 class BusinessController extends Controller
@@ -48,7 +48,7 @@ class BusinessController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Business  $business
+     * @param  \App\Models\Business  $business
      * @return \Illuminate\Http\Response
      */
     public function show(Business $business)
@@ -61,7 +61,7 @@ class BusinessController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Business  $business
+     * @param  \App\Models\Business  $business
      * @return \Illuminate\Http\Response
      */
     public function edit(Business $business)
@@ -73,7 +73,7 @@ class BusinessController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Business  $business
+     * @param  \App\Models\Business  $business
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Business $business)
@@ -84,7 +84,7 @@ class BusinessController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Business  $business
+     * @param  \App\Models\Business  $business
      * @return \Illuminate\Http\Response
      */
     public function destroy(Business $business)

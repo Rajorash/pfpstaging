@@ -2,8 +2,8 @@
 
 namespace App\Observers;
 
-use App\Business;
-use App\Phase;
+use App\Models\Business;
+use App\Models\Phase;
 use Carbon\Carbon as Carbon;
 
 class BusinessObserver

@@ -31,12 +31,12 @@
                             <div class="col-md-6">
                                 <select name="type" id="type" class="form-control @error('type') is-invalid @enderror" >
                                     <option value="">Select your account type</option>
-                                @foreach (App\BankAccount::type_list() as $account_index => $account_type)
+                                @foreach (App\Models\BankAccount::type_list() as $account_index => $account_type)
                                     <option value="{{ $account_index }}"{{ $account_type == $curr_type ? ' selected' : '' }}>{{ $account_type }}</option>
                                 @endforeach
                                 </select>
                             </div>
-                                
+
                             @error('type')
                             <span class="invalid-feedback" role="alert">
                                 <strong>{{ $message }}</strong>

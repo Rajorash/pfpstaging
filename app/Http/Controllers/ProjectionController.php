@@ -3,12 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\AccountFlow;
-use App\Allocation;
-use App\AllocationPercentage;
-use App\BankAccount;
-use App\Business;
-use App\Phase;
+use App\Models\AccountFlow;
+use App\Models\Allocation;
+use App\Models\AllocationPercentage;
+use App\Models\BankAccount;
+use App\Models\Business;
+use App\Models\Phase;
 use Carbon\Carbon as Carbon;
 use Illuminate\Support\Facades\Auth;
 
@@ -46,7 +46,7 @@ class ProjectionController extends Controller
          *
          *  "${account_id}" => dates (collection) {
          *      "${Y-m-d}" => allocations (collection) {
-         *          App\Allocation
+         *          App\Models\Allocation
          *      }, ...
          *  }, ...
          */

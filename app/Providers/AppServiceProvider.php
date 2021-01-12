@@ -3,7 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use App\Business;
+use App\Models\Business as Business;
 use App\Observers\BusinessObserver;
 
 class AppServiceProvider extends ServiceProvider

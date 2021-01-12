@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Business as Business;
-use App\License as License;
+use App\Models\Business as Business;
+use App\Models\License as License;
 use Illuminate\Database\Seeder;
 
 class BusinessSeeder extends Seeder
@@ -47,6 +47,6 @@ class BusinessSeeder extends Seeder
             ]);
             $business->license()->save($license);
         });
-        
+
     }
 }

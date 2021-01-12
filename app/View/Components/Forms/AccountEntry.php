@@ -3,7 +3,7 @@
 namespace App\View\Components\Forms;
 
 use Illuminate\View\Component;
-use App\Business;
+use App\Models\Business;
 
 
 class AccountEntry extends Component

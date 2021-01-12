@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Auth;
-use App\User;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
@@ -61,18 +61,18 @@ class UserController extends Controller
         $user->save();
 
         // assign client role
-        $client_role = \App\Role::where('name', 'client')->first();
+        $client_role = \App\Models\Role::where('name', 'client')->first();
         $user->assignRole($client_role);
 
         // add business
-        $business = new \App\Business;
+        $business = new \App\Models\Business;
         $business->name = $data['business_name'];
         $business->owner_id = $user->id;
         $business->save();
 
         // grant license to business
         $advisor = Auth::user();
-        $license = new \App\License;
+        $license = new \App\Models\License;
         $license->account_number = uniqid();
         $license->business_id = $business->id;
         $license->advisor_id = $advisor->id;
@@ -85,20 +85,20 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\User  $user
+     * @param  \App\Models\User  $user
      * @return \Illuminate\Http\Response
      */
     public function show(User $user)
     {
         $this->authorize('view', $user);
-        
+
         return view('user.show', ['user' => $user]);
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\User  $user
+     * @param  \App\Models\User  $user
      * @return \Illuminate\Http\Response
      */
     public function edit(User $user)
@@ -110,7 +110,7 @@ class UserController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\User  $user
+     * @param  \App\Models\User  $user
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, User $user)
@@ -121,7 +121,7 @@ class UserController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\User  $user
+     * @param  \App\Models\User  $user
      * @return \Illuminate\Http\Response
      */
     public function destroy(User $user)

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Collaboration;
+use App\Models\Collaboration;
 use Illuminate\Http\Request;
 
 class CollaborationController extends Controller
@@ -41,7 +41,7 @@ class CollaborationController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Collaboration  $collaboration
+     * @param  \App\Models\Collaboration  $collaboration
      * @return \Illuminate\Http\Response
      */
     public function show(Collaboration $collaboration)
@@ -52,7 +52,7 @@ class CollaborationController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Collaboration  $collaboration
+     * @param  \App\Models\Collaboration  $collaboration
      * @return \Illuminate\Http\Response
      */
     public function edit(Collaboration $collaboration)
@@ -64,7 +64,7 @@ class CollaborationController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Collaboration  $collaboration
+     * @param  \App\Models\Collaboration  $collaboration
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Collaboration $collaboration)
@@ -75,7 +75,7 @@ class CollaborationController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Collaboration  $collaboration
+     * @param  \App\Models\Collaboration  $collaboration
      * @return \Illuminate\Http\Response
      */
     public function destroy(Collaboration $collaboration)

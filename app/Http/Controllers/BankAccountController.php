@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use Auth;
-use App\AccountFlow;
-use App\BankAccount;
-use App\Business;
+use App\Models\AccountFlow;
+use App\Models\BankAccount;
+use App\Models\Business;
 use Illuminate\Http\Request;
 
 class BankAccountController extends Controller
@@ -103,7 +103,7 @@ class BankAccountController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\BankAccount  $account
+     * @param  \App\Models\BankAccount  $account
      * @return \Illuminate\Http\Response
      */
     public function show(BankAccount $account)
@@ -114,7 +114,7 @@ class BankAccountController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\BankAccount  $account
+     * @param  \App\Models\BankAccount  $account
      * @return \Illuminate\Http\Response
      */
     public function edit(Business $business, BankAccount $account)
@@ -128,7 +128,7 @@ class BankAccountController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\BankAccount  $account
+     * @param  \App\Models\BankAccount  $account
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Business $business, BankAccount $account)
@@ -150,7 +150,7 @@ class BankAccountController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\BankAccount  $account
+     * @param  \App\Models\BankAccount  $account
      * @return \Illuminate\Http\Response
      */
     public function editFlow(BankAccount $account, AccountFlow $flow)
@@ -164,7 +164,7 @@ class BankAccountController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\BankAccount  $account
+     * @param  \App\Models\BankAccount  $account
      * @return \Illuminate\Http\Response
      */
     public function updateFlow(Request $request, BankAccount $account, AccountFlow $flow)
@@ -186,7 +186,7 @@ class BankAccountController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\BankAccount  $account
+     * @param  \App\Models\BankAccount  $account
      * @return \Illuminate\Http\Response
      */
     public function destroy(Business $business, BankAccount $account)
@@ -201,7 +201,7 @@ class BankAccountController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\BankAccount  $account
+     * @param  \App\Models\BankAccount  $account
      * @return \Illuminate\Http\Response
      */
     public function destroyFlow(BankAccount $account, AccountFlow $flow)

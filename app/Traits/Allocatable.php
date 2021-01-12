@@ -2,14 +2,14 @@
 
 namespace App\Traits;
 
-use App\Allocation as Allocation;
+use App\Models\Allocation as Allocation;
 use Carbon\Carbon as Carbon;
 
 trait Allocatable
 {
     public function allocations()
     {
-        return $this->morphMany('App\Allocation', 'allocatable');
+        return $this->morphMany('App\Models\Allocation', 'allocatable');
     }
 
     public function allocate($amount, $phase_id = 1, $date = null)

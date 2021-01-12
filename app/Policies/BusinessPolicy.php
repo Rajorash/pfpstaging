@@ -3,8 +3,8 @@
 namespace App\Policies;
 
 use Auth;
-use App\Business;
-use App\User;
+use App\Models\Business;
+use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class BusinessPolicy
@@ -14,7 +14,7 @@ class BusinessPolicy
     /**
      * Determine whether the user can view any businesses.
      *
-     * @param  \App\User  $user
+     * @param  \App\Models\User  $user
      * @return mixed
      */
     public function viewAny(User $user)
@@ -25,8 +25,8 @@ class BusinessPolicy
     /**
      * Determine whether the user can view the business.
      *
-     * @param  \App\User  $user
-     * @param  \App\Business  $business
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Business  $business
      * @return mixed
      */
     public function view(User $user, Business $business)
@@ -42,7 +42,7 @@ class BusinessPolicy
     /**
      * Determine whether the user can create businesses.
      *
-     * @param  \App\User  $user
+     * @param  \App\Models\User  $user
      * @return mixed
      */
     public function create(User $user)
@@ -53,7 +53,7 @@ class BusinessPolicy
     /**
      * Determine whether the user can create businesses.
      *
-     * @param  \App\User  $user
+     * @param  \App\Models\User  $user
      * @return mixed
      */
     public function createBankAccount(User $user, Business $business)
@@ -64,8 +64,8 @@ class BusinessPolicy
     /**
      * Determine whether the user can update the business.
      *
-     * @param  \App\User  $user
-     * @param  \App\Business  $business
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Business  $business
      * @return mixed
      */
     public function update(User $user, Business $business)
@@ -76,8 +76,8 @@ class BusinessPolicy
     /**
      * Determine whether the user can delete the business.
      *
-     * @param  \App\User  $user
-     * @param  \App\Business  $business
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Business  $business
      * @return mixed
      */
     public function delete(User $user, Business $business)
@@ -88,8 +88,8 @@ class BusinessPolicy
     /**
      * Determine whether the user can restore the business.
      *
-     * @param  \App\User  $user
-     * @param  \App\Business  $business
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Business  $business
      * @return mixed
      */
     public function restore(User $user, Business $business)
@@ -100,8 +100,8 @@ class BusinessPolicy
     /**
      * Determine whether the user can permanently delete the business.
      *
-     * @param  \App\User  $user
-     * @param  \App\Business  $business
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Business  $business
      * @return mixed
      */
     public function forceDelete(User $user, Business $business)
@@ -110,11 +110,11 @@ class BusinessPolicy
     }
 
     /**
-     * Returns true if the user is the owner of the account, an advisor to the 
+     * Returns true if the user is the owner of the account, an advisor to the
      * account or an advisor currently collaborating on the account.
-     * 
-     * @param  \App\User  $user
-     * @param  \App\Business  $business
+     *
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Business  $business
      * @return mixed
      */
     public function userHasBusinessAccess(User $user, Business $business) {
@@ -127,7 +127,7 @@ class BusinessPolicy
         if ($business->license && $user->id === $business->license->advisor_id) {
             return true;
         }
-        
+
         // advisors can access the businesses that they collaborate on
         if ($business->collaboration && $user->id === $business->collaboration->advisor_id) {
             // need to add expiry check
