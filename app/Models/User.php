@@ -26,7 +26,12 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'name',
+        'email',
+        'password',
+        'last_login_at',
+        'last_login_ip',
+        'timezone'
     ];
 
     /**
@@ -48,6 +53,8 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'last_login_at' => 'datetime',
+        'password_changed_at' => 'datetime',
     ];
 
     /**
@@ -58,4 +65,28 @@ class User extends Authenticatable
     protected $appends = [
         'profile_photo_url',
     ];
+
+    /**
+     * Return all businesses related to the user
+     */
+    public function businesses()
+    {
+        return $this->hasMany(Business::class, 'owner_id');
+    }
+
+    public function roles() {
+        return $this->belongsToMany(Role::class)->withTimestamps();
+    }
+
+    public function assignRole($role)
+    {
+        $this->roles()->sync($role, false);
+    }
+
+    public function permissions()
+    {
+        // return the permissions associated with any assigned roles, by name.
+        return $this->roles->map->permissions->flatten()->pluck('name')->unique();
+    }
+
 }
