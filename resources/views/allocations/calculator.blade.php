@@ -2,12 +2,12 @@
 
 @section('content')
 <x-business-nav businessId="{{$business->id}}" />
-<div class="container-fluid">
-    <div class="row justify-content-center px-5">
+<div class="container mx-auto sm:px-4 max-w-full mx-auto sm:px-4">
+    <div class="flex flex-wrap  justify-center px-5">
         <h1>{{$business->name}} Allocations</h1>
     </div>
-    <div class="row">
-        <table id="allocationTable" class="table table-hover table-sm table-responsive">
+    <div class="flex flex-wrap ">
+        <table id="allocationTable" class="w-full max-w-full mb-4 bg-transparent table-hover p-1 block w-full overflow-auto scrolling-touch">
             <thead class="thead-inverse">
                 <tr>
                     <th></th>
@@ -39,7 +39,7 @@
                         data-col='{{$loop->iteration}}'>
 
                         @unless ($acc->type == 'revenue')
-                        <input type="text" class="cumulative text-right allocation-value text-bold form-control form-control-sm"
+                        <input type="text" class="cumulative text-right allocation-value text-bold block appearance-none w-full py-1 px-2 mb-1 text-base leading-normal bg-white text-gray-800 border border-gray-200 rounded py-1 px-2 text-sm leading-normal rounded"
                         data-type="BankAccount"
                         data-id="{{$acc->id}}"
                         data-date="{{$date}}"
@@ -49,7 +49,7 @@
                         >
 
                         <input type="text"
-                                class="bg-info projected-total text-right form-control form-control-sm"
+                                class="bg-teal-500 projected-total text-right block appearance-none w-full py-1 px-2 mb-1 text-base leading-normal bg-white text-gray-800 border border-gray-200 rounded py-1 px-2 text-sm leading-normal rounded"
                                 data-hierarchy="{{$acc->type}}"
                                 data-date='{{$date}}'
                                 placeholder="0"
@@ -57,7 +57,7 @@
                         @endunless
 
                         <input type="text"
-                        class="daily-total bg-warning text-right form-control form-control-sm border-info"
+                        class="daily-total bg-yellow-500 text-right block appearance-none w-full py-1 px-2 mb-1 text-base leading-normal bg-white text-gray-800 border border-gray-200 rounded py-1 px-2 text-sm leading-normal rounded border-teal-500"
                         style="min-width: 8em;"
                         data-type="BankAccount"
                         data-hierarchy="{{$acc->type}}"
@@ -80,7 +80,7 @@
                     @foreach($dates as $date)
                     <td class="text-right flow">
                         <input style="min-width: 8em;"
-                            class="text-right allocation-value form-control form-control-sm"
+                            class="text-right allocation-value block appearance-none w-full py-1 px-2 mb-1 text-base leading-normal bg-white text-gray-800 border border-gray-200 rounded py-1 px-2 text-sm leading-normal rounded"
                             data-type="AccountFlow"
                             data-id="{{$flow->id}}"
                             data-date="{{$date}}"

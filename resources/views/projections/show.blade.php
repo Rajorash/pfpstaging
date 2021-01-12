@@ -2,12 +2,12 @@
 
 @section('content')
 <x-business-nav businessId="{{$business->id}}" />
-<div class="container-fluid">
-    <div class="row justify-content-center">
+<div class="container mx-auto sm:px-4 max-w-full mx-auto sm:px-4">
+    <div class="flex flex-wrap  justify-center">
         <h1>{{$business->name}} Projections</h1>
     </div>
-    <div class="row px-2 justify-content-center">
-        <table id="projectionTable" class="table table-hover table-sm">
+    <div class="flex flex-wrap  px-2 justify-center">
+        <table id="projectionTable" class="w-full max-w-full mb-4 bg-transparent table-hover p-1">
             <thead class="thead-inverse">
                 <tr>
                     <th></th>

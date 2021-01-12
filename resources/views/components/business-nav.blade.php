@@ -1,4 +1,4 @@
-<div class="container secondary-nav nav mt-n3 mb-2">
+<div class="container mx-auto sm:px-4 secondary-nav flex flex-wrap list-none pl-0 mb-0 mt-n3 mb-2">
     @foreach ($links as $link => $label)
 
     @if ($loop->first)

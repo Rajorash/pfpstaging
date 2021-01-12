@@ -2,13 +2,13 @@
 
 @section('content')
 <x-business-nav businessId="{{$business->id}}" />
-<div class="container">
-    <div class="row justify-content-center">
+<div class="container mx-auto sm:px-4">
+    <div class="flex flex-wrap  justify-center">
             <h1>{{$business->name}} Allocation Percentages</h1>
     </div>
-    <div class="row justify-content-center">
-        <!-- <div class="col"> -->
-            <table class="table table-responsive table-hover table-sm">
+    <div class="flex flex-wrap  justify-center">
+        <!-- <div class="relative flex-grow max-w-full flex-1 px-4"> -->
+            <table class="w-full max-w-full mb-4 bg-transparent block w-full overflow-auto scrolling-touch table-hover p-1">
                 <thead class="thead-inverse">
                     <tr>
                         <th>Account</th>

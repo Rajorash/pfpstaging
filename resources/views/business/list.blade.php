@@ -1,14 +1,14 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-10">
-            <div class="card">
-                <div class="card-header"><strong>Select A Business To See It's Allocations</strong></div>
+<div class="container mx-auto sm:px-4">
+    <div class="flex flex-wrap  justify-center">
+        <div class="md:w-4/5 pr-4 pl-4">
+            <div class="relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300">
+                <div class="py-3 px-6 mb-0 bg-gray-200 border-b-1 border-gray-300 text-gray-900"><strong>Select A Business To See It's Allocations</strong></div>
 
-                <div class="card-body p-0">
-                <table class="table table-striped">
+                <div class="flex-auto p-6 p-0">
+                <table class="w-full max-w-full mb-4 bg-transparent table-striped">
                     <thead class="thead-inverse">
                         <tr>
                             <th>Business Name</th>
@@ -36,13 +36,13 @@
                             </td>
                             </td>
                             {{-- <td class="text-center">
-                                <a class="btn btn-warning btn-sm" href="/business/{{$business->id}}/tax">Tax rate</a>
+                                <a class="inline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded  no-underline bg-orange-400 text-black hover:bg-orange-500 py-1 px-2 leading-tight text-xs " href="/business/{{$business->id}}/tax">Tax rate</a>
                             </td> --}}
                             <td>
-                                <a class="btn btn-info btn-sm" href="/allocations/{{$business->id}}">See Allocations</a>
+                                <a class="inline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded  no-underline bg-teal-500 text-white hover:bg-teal-600 py-1 px-2 leading-tight text-xs " href="/allocations/{{$business->id}}">See Allocations</a>
                             </td>
                             <td>
-                                <a class="btn btn-info btn-sm" href="/allocations/{{$business->id}}\percentages">See Percentages</a>
+                                <a class="inline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded  no-underline bg-teal-500 text-white hover:bg-teal-600 py-1 px-2 leading-tight text-xs " href="/allocations/{{$business->id}}\percentages">See Percentages</a>
                             </td>
                         </tr>
                         @empty

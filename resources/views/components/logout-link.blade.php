@@ -1,4 +1,4 @@
-<a class="dropdown-item" href="{{ route('logout') }}"
+<a class="block w-full py-1 px-6 font-normal text-gray-900 whitespace-no-wrap border-0" href="{{ route('logout') }}"
 onclick="event.preventDefault();
               document.getElementById('logout-form').submit();">
  {{ $slot }}
