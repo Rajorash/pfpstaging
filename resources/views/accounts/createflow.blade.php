@@ -12,7 +12,9 @@
         <x-ui.card>
 
             <x-slot name="header">
-                <h2 class="text-lg leading-6 font-medium text-black">Create A New Flow For {{$account->name}}</h2>
+                <h2 class="text-lg leading-6 font-medium text-black">
+                    Create A New Flow For {{$account->name}}
+                </h2>
             </x-slot>
 
             <form method="POST" action="/accounts/{{$account->id}}/create-flow">
