@@ -12,7 +12,7 @@
                 <div class="py-3 px-6 mb-0 bg-gray-200 border-b-1 border-gray-300 text-gray-900 flex items-center justify-between">
                     <h2 class="text-lg leading-6 font-medium text-black">Users Visible To You</h2>
                     @if(Auth::user()->roles->pluck('name'))
-                    <a href="/user/create" class="group flex items-center text-center select-none border font-normal whitespace-no-wrap rounded py-1 px-3 leading-normal no-underline bg-green-600 text-white hover:bg-green-800">
+                    <a href="/user/create" class="group flex items-center text-center select-none border font-normal whitespace-no-wrap rounded py-1 px-3 leading-normal no-underline bg-green-500 text-white hover:bg-green-600">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-4 h-4 mr-2"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" /></svg>
                         Create Client
                     </a>
