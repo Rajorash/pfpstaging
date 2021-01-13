@@ -20,7 +20,7 @@ class BusinessController extends Controller
         $filtered = $businesses->filter( function ($business) {
             return Auth::user()->can('view', $business);
         })->values();
-        return view('businesses', ['businesses' => $filtered]);
+        return view('business.list', ['businesses' => $filtered]);
 
     }
 
