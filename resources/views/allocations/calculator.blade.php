@@ -10,7 +10,7 @@
         </x-slot>
 
 
-        <div class="flex flex-wrap ">
+        <div class="flex flex-wrap py-3">
             <table id="allocationTable" class="w-full max-w-full mb-4 bg-transparent table-hover p-1 block w-full overflow-auto scrolling-touch">
                 <thead class="thead-inverse">
                     <tr>

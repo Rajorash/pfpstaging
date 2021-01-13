@@ -1,12 +1,17 @@
-@extends('layouts.app')
+<x-app-layout>
+    <x-slot name="header">
+        <div class="flex content-between">
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                {{$business->name}} > Projections
+            </h2>
 
-@section('content')
-<x-business-nav businessId="{{$business->id}}" />
-<div class="container mx-auto sm:px-4 max-w-full mx-auto sm:px-4">
-    <div class="flex flex-wrap  justify-center">
-        <h1>{{$business->name}} Projections</h1>
-    </div>
-    <div class="flex flex-wrap  px-2 justify-center">
+            <x-business-nav businessId="{{$business->id}}" />
+
+        </div>
+
+    </x-slot>
+
+    <div class="flex flex-wrap py-3 px-2 justify-center">
         <table id="projectionTable" class="w-full max-w-full mb-4 bg-transparent table-hover p-1">
             <thead class="thead-inverse">
                 <tr>
@@ -25,5 +30,4 @@
             </tbody>
         </table>
     </div>
-</div>
-@endsection
+</x-app-layout>
