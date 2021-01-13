@@ -1,22 +1,31 @@
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            Users > Detail
+        </h2>
+    </x-slot>
 
-@extends('layouts.app')
 
-@section('content')
-<div class="container mx-auto sm:px-4">
-    <div class="flex flex-wrap  justify-center">
-        <div class="md:w-2/3 pr-4 pl-4">
-            <div class="relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300">
-                <div class="py-3 px-6 mb-0 bg-gray-200 border-b-1 border-gray-300 text-gray-900"><strong>This User Is</strong></div>
+    <div class="py-12">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
+
+                <div class="py-3 px-6 mb-0 bg-gray-200 border-b-1 border-gray-300 text-gray-900 flex items-center justify-between">
+
+                    <h2>This User Is</h2>
+                </div>
 
                 <div class="flex-auto p-6">
                     <strong>{{ $user->name }}</strong><br>
                     Email: {{ $user->email }}<br>
                     Last login: {{ $user->last_login_at ?: 'Unknown' }}<br>
                     <br>
-                    <a href="/user">Back to User list</a>
+                    <a class="text-blue-500 hover:text-blue-700" href="{{ route('users') }}">Back to User list</a>
                 </div>
+
             </div>
         </div>
     </div>
-</div>
-@endsection
+
+
+</x-layout-app>
