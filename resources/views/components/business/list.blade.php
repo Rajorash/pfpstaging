@@ -4,7 +4,7 @@
     <div class="py-3 px-6 mb-0 bg-gray-200 border-b-1 border-gray-300 text-gray-900"><strong>Select A Business To See It's Allocations</strong></div>
 
     <div class="flex-auto p-6 p-0">
-        <table class="w-full max-w-full mb-4 bg-transparent table-striped">
+        <table class="w-full max-w-full mb-4 bg-transparent ">
             <thead class="thead-inverse">
                 <tr>
             <th>Business Name</th>
@@ -17,7 +17,7 @@
         </thead>
         <tbody>
             @forelse ($businesses as $business)
-        <tr>
+        <tr class="border-t border-gray-200">
             <td class="py-2" scope="row">
                 <a href="/business/{{$business->id}}"><strong>{{ $business->name }}</strong></a>
             </td>
@@ -28,7 +28,7 @@
                 {{$business->license ? $business->license->advisor->name : 'No advisor.'}}
             </td>
             <td class="text-center">
-                <a href="/business/{{$business->id}}/accounts">{{$business->accounts()->count()}}</a>
+                <a class="text-blue-400 hover:text-blue-600" href="/business/{{$business->id}}/accounts">{{$business->accounts()->count()}}</a>
             </td>
         </td>
             {{-- <td class="text-center">
