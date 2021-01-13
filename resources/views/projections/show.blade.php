@@ -17,8 +17,8 @@
                 <tr>
                     <th></th>
                     @foreach($dates as $date)
-                    <th class="text-right">
-                        <span style="{{$today->format('Y-m-j') == $date ? 'color: #bada55' : ''}}">{{ Carbon\Carbon::parse($date)->format("M j Y") }}</span>
+                    <th class="text-center">
+                        <span class="{{$today->format('Y-m-j') == $date ? 'text-green-500' : ''}}">{{ Carbon\Carbon::parse($date)->format("M j Y") }}</span>
                     </th>
                     @endforeach
                 </tr>
