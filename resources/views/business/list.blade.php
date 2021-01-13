@@ -11,7 +11,7 @@
             <h2 class="text-lg leading-6 font-medium text-black">Select A Business To See It's Allocations</h2>
         </x-slot>
 
-        <x-business.table-list :businesses="$businesses" />
+        <x-business.list :businesses="$businesses" />
 
     </x-ui.card>
 
