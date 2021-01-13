@@ -47,7 +47,7 @@ class BankAccountController extends Controller
     {
         $this->authorize('createBankAccount', $account->business);
 
-        return view('accounts.createflow', ['account' => $account]);
+        return view('accounts.createflow', ['account' => $account, 'business' => $account->business]);
     }
 
     /**
@@ -157,7 +157,7 @@ class BankAccountController extends Controller
     {
         $this->authorize('update', $account);
 
-        return view('accounts.editflow', ['flow' => $flow, 'account' => $account, 'curr_type' => $account->type ]);
+        return view('accounts.editflow', ['flow' => $flow, 'account' => $account, 'curr_type' => $account->type, 'business' => $account->business ]);
     }
 
     /**
