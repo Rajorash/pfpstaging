@@ -11,7 +11,7 @@
                 Status
             </th>
             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Role
+                Role/s
             </th>
             <th scope="col" class="relative px-6 py-3">
                 <span class="sr-only">Edit</span>
@@ -47,7 +47,8 @@
                 </span>
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                Client
+                {{-- @dump($user->roles->implode('name', ', ')) --}}
+                {{ ucfirst( $user->roles->implode('name', ', ') ) }}
             </td>
             <td class="px-6 py-4 whitespace-nowrap w-20 text-sm font-medium">
                 <a href="/user/{{$user->id}}" class="group flex items-center text-center select-none border font-normal whitespace-no-wrap rounded py-1 px-3 leading-normal no-underline bg-blue-500 text-white hover:bg-blue-600">
