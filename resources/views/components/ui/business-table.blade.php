@@ -44,7 +44,7 @@
                 </div>
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
-                <div class="text-sm font-medium text-gray-900">Advisor</div>
+                <div class="text-sm font-medium text-gray-900">{{$business->license->advisor->name}}</div>
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-center">
                 <a class="px-2 inline-flex text-sm leading-5 font-semibold rounded-full bg-green-100 text-green-800" href="/business/{{$business->id}}/accounts">{{$business->accounts()->count()}}</a>
