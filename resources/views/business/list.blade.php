@@ -5,14 +5,16 @@
         </h2>
     </x-slot>
 
-    <x-ui.card>
+    <div class="container py-3 mx-auto">
+        {{-- <div class="max-w-7xl mx-auto sm:px-6 lg:px-8"> --}}
+            <x-ui.card bodypadding="0">
+                <x-slot name="header">
+                    <h2 class="text-lg leading-6 font-medium text-black">Businesses Visible To You</h2>
+                </x-slot>
+                <x-ui.business-table :businesses="$businesses" />
+            </x-ui.card>
+        {{-- </div> --}}
+    </div>
 
-        <x-slot name="header">
-            <h2 class="text-lg leading-6 font-medium text-black">Select A Business To See It's Allocations</h2>
-        </x-slot>
-
-        <x-business.list :businesses="$businesses" />
-
-    </x-ui.card>
 
 </x-app-layout>
