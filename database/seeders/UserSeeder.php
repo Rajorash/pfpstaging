@@ -41,6 +41,17 @@ class UserSeeder extends Seeder
         $client->assignRole($client_role);
 
 
+        $advisor2 = User::firstOrCreate([
+            'name' => 'Craig Minter',
+            'email' => 'craig@mintscdconsulting.com.au',
+            'email_verified_at' => now(),
+            'password' => Hash::make('CML9Zy!&$H2#e@e9'),
+            'remember_token' => Str::random(10)
+        ]);
+        $advisor2->assignRole($advisor_role);
+        $advisor2_details = new Advisor($advisor2->id);
+        $advisor2_details->save();
+
 
     }
 }

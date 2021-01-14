@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\User as User;
 use App\Models\Business as Business;
 use App\Models\License as License;
 use Illuminate\Database\Seeder;
@@ -35,6 +36,20 @@ class BusinessSeeder extends Seeder
             $license = factory(License::class)->make([
                 'business_id' => $new_business->id,
                 'advisor_id' => 1,
+            ]);
+            $new_business->license()->save($license);
+        });
+
+
+        factory(Business::class)->create([
+            'name' => 'Craig\'s Client Company',
+            'owner_id' => 2
+            ])->each( function ( $new_business ) {
+            // $craig_id = User::where('name', '=', 'Craig Minter')->id;
+            // generate license, assign business to advisor with id of 1
+            $license = factory(License::class)->make([
+                'business_id' => $new_business->id,
+                'advisor_id' => 3,
             ]);
             $new_business->license()->save($license);
         });
