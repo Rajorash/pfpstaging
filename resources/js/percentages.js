@@ -54,6 +54,8 @@ function calculatePhaseTotal(phase_id) {
 
 }
 
+// allow arrow navigation of table
+$('#percentagesTable').arrowTable();
 // set initial values
 $.each( $('.percentage-total'), updatePercentageTotal );
 

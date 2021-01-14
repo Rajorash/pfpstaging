@@ -10,7 +10,7 @@
         </x-slot>
 
         <div class="w-5/6 py-3 mx-auto">
-        <x-ui.table>
+        <x-ui.table tableId=percentagesTable>
             <thead class="thead-inverse">
                 <tr>
                     <th class="px-2">Account</th>
