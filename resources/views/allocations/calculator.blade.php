@@ -77,7 +77,7 @@
             </tr>
             @forelse ($acc->flows as $flow)
             <tr>
-                <td class="flow-label bg-{{ $flow->negative_flow ? 'red-200' : 'green-200' }}" scope="row">
+                <td class="flow-label {{ $flow->negative_flow ? 'bg-red-200' : 'bg-green-200' }}" scope="row">
                     <label class="align-middle px-3 mt-0 mb-2">{{$flow->label}}</label>
                 </td>
                 @foreach($dates as $date)
