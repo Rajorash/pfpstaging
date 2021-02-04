@@ -52,6 +52,5 @@ class UserSeeder extends Seeder
         $advisor2_details = new Advisor($advisor2->id);
         $advisor2_details->save();
 
-
     }
 }

@@ -2,10 +2,10 @@
     'tableId' => null
 ])
 
-<div {{ $attributes->merge(['class' => "flex flex-col"]) }}>
-    <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-        <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-            <div class="overflow-hidden">
+<div {{ $attributes->merge(['class' => "block w-full overflow-x-auto"]) }}>
+    <div class="block w-full">
+        <div class="py-2 align-middle inline-block min-w-full">
+            <div class="block w-full">
                 <table {{ $tableId ? "id=${tableId}" : '' }} class="min-w-full divide-y divide-gray-200">
                     {{ $slot }}
                 </table>
