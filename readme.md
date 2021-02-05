@@ -73,5 +73,5 @@ If needed you may include more php or js libraries, however this should be a las
 
 If there is an absolute need to use more libraries please use npm and composer to add them to the dependencies and compile with build scripts. Vendor scripts have intentionally been separated in the build process, please ensure this remains so.
 * [Laravel Mix documentation](https://laravel-mix.com/)
-* Example of how 'arrow-table' was installed and saved to dependencies ```bash npm i arrow-table --save``` (note: this should be covered already)
+* Example of how 'arrow-table' was installed and saved to dependencies ```npm i arrow-table --save``` (note: this should be covered already)
 * See "resources\js\app.js" for how to include js liibraries in the build script. 'arrow-table' was included for arrow navigation on the calculator view.
