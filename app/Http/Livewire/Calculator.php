@@ -3,6 +3,7 @@
 namespace App\Http\Livewire;
 
 use Carbon\Carbon;
+use App\Models\BankAccount;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -12,15 +13,19 @@ class Calculator extends Component
 
     public $daysPerPage = 14;
     public $startDate;
+    public $dateInput;
     public $dates;
 
     public $business;
     public $accounts;
+    public $types = ['revenue', 'pretotal', 'salestax', 'prereal', 'postreal'];
 
-    public function mount(Carbon $startDate = null) {
-        // if (! $this->startDate ) {
+    public function mount($startDate = null) {
+        if (! $this->startDate ) {
             $this->startDate = Carbon::now()->firstOfMonth();
-        // }
+        } else {
+            $this->startDate = Carbon::parse($dateInput);
+        }
 
         $this->accounts = $this->sortAccounts();
         $this->dates = $this->getDates($startDate);

@@ -1,4 +1,3 @@
-@props(['acc', 'dates', 'row' => $row, 'first', 'type'])
 <tr>
     <td class="px-2 py-1 whitespace-nowrap bg-blue-300">
         @if ($first)
@@ -16,7 +15,7 @@
         data-hierarchy="{{$type}}"
         {{-- data-phase='{{$phaseDates[$date]}}' --}}
         {{-- data-percentage='{{$allocationPercentages[$phaseDates[$date]][$acc->id]??0}}' --}}
-        data-row='{{$row}}'
+        data-row='{{$rowId}}'
         data-col='{{$loop->iteration}}'
     >
         @if ($first)
