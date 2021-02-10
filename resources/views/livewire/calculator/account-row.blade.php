@@ -23,7 +23,8 @@
         @endif
 
         @unless ($acc->type == 'revenue')
-        <x-ui.input class="block text-right" placeholder=0 />
+        {{-- <x-ui.input class="block text-right" placeholder=0 /> --}}
+        <livewire:calculator.account-value accountId="{{$acc->id}}" :date="$date" />
         <x-ui.input class="block text-right bg-blue-100" placeholder=0 disabled="true" />
         @endunless
         <x-ui.input class="block text-right bg-yellow-100" placeholder=0 disabled="true" />

@@ -17,12 +17,15 @@ class AccountFlow extends Component
     public $phase_id = 1;
 
     public function mount($flowId, $date) {
+
         $this->flowId = $flowId;
         $this->flow = Flow::find($flowId);
         $this->date = $date;
         $this->allocation = self::getAllocation($flowId, $date);
-        $this->amount = $this->allocation ? number_format($this->allocation->amount, 0, '.', '') : 0;
-        // dump($allocation ?? "No allocation ${date}");
+        $this->amount = $this->allocation
+            ? number_format($this->allocation->amount, 0, '.', '')
+            : 0;
+
     }
 
     public function render()
