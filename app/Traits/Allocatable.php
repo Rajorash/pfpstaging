@@ -12,20 +12,24 @@ trait Allocatable
         return $this->morphMany('App\Models\Allocation', 'allocatable');
     }
 
-    public function allocate($amount, $phase_id = 1, $date = null)
+    public function allocate($amount, $date = null, $phase_id = 1)
     {
         // check input
 
         $date = $date ?? Carbon::now();
 
-        $allocation = new Allocation();
-        $allocation->amount = $amount;
-        $allocation->phase_id = $phase_id;
-        $allocation->allocatable_id = $this->id;
-        $allocation->allocatable_type = get_class($this);
-        $allocation->allocation_date = $date;
+        // TODO: change this to updateOrCreate
+        $allocation = Allocation::updateOrCreate([
+            'allocatable_id' => $this->id,
+            'allocatable_type' => get_class($this),
+            'allocation_date' => $date
+        ],
+        [
+            'phase_id' => $phase_id,
+            'amount' => $amount
+        ]);
 
-        $allocation->save();
+        return $allocation;
     }
 
 }

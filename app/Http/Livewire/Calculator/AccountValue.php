@@ -45,11 +45,30 @@ class AccountValue extends Component
     }
 
     public function store() {
+        $this->validate([
+            'amount' => 'numeric|nullable'
+        ]);
 
+        $data = array(
+            'amount' => $this->amount
+        );
+
+        $this->account->allocate([
+            'amount' => $this->amount,
+            'phase_id' => $this->phase_id,
+            'allocation_date' => $this->date
+        ]);
+        // // if a valid amount is entered, store it in the database
+        // $allocation = Allocation::updateOrCreate([
+        //     'allocatable_id' => $this->flowId,
+        //     'allocatable_type' => 'App\Models\AccountFlow',
+        //     'allocation_date' => $this->date,
+        //     'phase_id' => $this->phase_id,
+        // ],$data);
     }
 
     public function updatedAmount() {
-
+        $this->store();
     }
 
 }
