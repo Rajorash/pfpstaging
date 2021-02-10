@@ -4,8 +4,9 @@
         {{ $flow->label }}
     </td>
     @foreach ($dates as $date)
-    <td class="p-1 whitespace-nowrap {{$flow->negative_flow ? 'bg-red-100' : 'bg-green-100' }}">
+    {{-- <td class="p-1 whitespace-nowrap {{$flow->negative_flow ? 'bg-red-100' : 'bg-green-100' }}">
         <x-ui.input class="text-right" placeholder="0" />
-    </td>
+    </td> --}}
+    <livewire:calculator.account-flow :flowId="$flow->id" :date="$date->format('Y-m-d')" key="flow-{{$date}}-{{$flow->id}}">
     @endforeach
 </tr>

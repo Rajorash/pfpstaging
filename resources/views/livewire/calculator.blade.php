@@ -50,7 +50,7 @@
                     $account_row_index++;
                     $first_of_type = $loop->first;
                 @endphp
-                <livewire:calculator.account-row :acc="$acc" :dates="$dates" :first="$first_of_type" :type="$acc->type" rowId="$account_row_index" :key="$acc->id">
+                <livewire:calculator.account-row :acc="$acc" :dates="$dates" :first="$first_of_type" rowId="$account_row_index" :key="$acc->id">
                 {{-- <x-calculator.account-row :acc="$acc" :dates="$dates" :first="$first_of_type" :type="$acc->type" row="{{$account_row_index}}" :key="$acc->id" /> --}}
 
                 @foreach ($acc->flows as $flow)

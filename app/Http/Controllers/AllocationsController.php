@@ -76,8 +76,8 @@ class AllocationsController extends Controller
         $allocationValues = self::buildAllocationValues($dates, $allocatables);
 
         // testing original view and livewire rebuild, comment out the one you don't want. WIP live wire version has some bugs I cannot diagnose, may be easier to remove and start again.
-        $view = 'allocations.calculator';
-        // $view = 'allocations.calculator-lw';
+        // $view = 'allocations.calculator';
+        $view = 'allocations.calculator-lw';
 
         $data = ['business', 'today', 'start_date', 'end_date', 'dates', 'allocations', 'allocatables', 'allocationValues', 'allocationPercentages', 'phaseDates'];
 
@@ -154,7 +154,7 @@ class AllocationsController extends Controller
 
             $new_allocation->phase_id = 1;
             $new_allocation->allocatable_id = $valid['id'];
-            $new_allocation->allocatable_type = "App" . "\\" . $valid['allocation_type'];
+            $new_allocation->allocatable_type = "App" . "\\Models\\" . $valid['allocation_type'];
             $new_allocation->amount = $valid['amount'];
             $new_allocation->allocation_date = $valid['allocation_date'];
 
