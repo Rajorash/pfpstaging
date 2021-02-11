@@ -22,28 +22,42 @@ class AccountValue extends Component
         $this->accountId = $accountId;
         $this->account = BankAccount::find($accountId);
         $this->date = $date;
-        $this->allocation = self::getAllocation($accountId, $date);
+        $this->allocation = self::getAllocation($date);
         $this->amount = $this->allocation
             ? number_format($this->allocation->amount, 0, '.', '')
             : 0;
 
     }
 
-    private function getAllocation($accountId, $date) {
-        $allocation = Allocation::where([
-            ['allocatable_type', '=', 'App\Models\BankAccount'],
-            ['allocatable_id', '=', $accountId],
-            ['allocation_date', '=', $date]
-        ])->first();
+    /**
+     * get the allocation for the account
+     *
+     * @param [type] $accountId
+     * @param [type] $date
+     * @return Allocation
+     */
+    private function getAllocation($date) {
+
+        $allocation = $this->account->getAllocationByDate($date);
 
         return $allocation ?? null;
     }
 
+    /**
+     * The livewire component render method
+     *
+     * @return void
+     */
     public function render()
     {
         return view('livewire.calculator.account-value');
     }
 
+    /**
+     * Validate and store the Allocation
+     *
+     * @return void
+     */
     public function store() {
         $this->validate([
             'amount' => 'numeric|nullable'
@@ -58,15 +72,14 @@ class AccountValue extends Component
             'phase_id' => $this->phase_id,
             'allocation_date' => $this->date
         ]);
-        // // if a valid amount is entered, store it in the database
-        // $allocation = Allocation::updateOrCreate([
-        //     'allocatable_id' => $this->flowId,
-        //     'allocatable_type' => 'App\Models\AccountFlow',
-        //     'allocation_date' => $this->date,
-        //     'phase_id' => $this->phase_id,
-        // ],$data);
+
     }
 
+    /**
+     * Functions carried out once $amount has finished updating
+     *
+     * @return void
+     */
     public function updatedAmount() {
         $this->store();
     }
