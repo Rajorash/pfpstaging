@@ -57,7 +57,7 @@ trait Allocatable
             ['allocatable_type' => get_class($this),
             'allocatable_id' => $this->id,
             'allocation_date' => $date]
-        )->firstOrFail();
+        )->first();
     }
 
     /**

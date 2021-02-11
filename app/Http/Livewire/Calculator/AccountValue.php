@@ -34,7 +34,7 @@ class AccountValue extends Component
      *
      * @param [type] $accountId
      * @param [type] $date
-     * @return Allocation
+     * @return Allocation|null
      */
     private function getAllocation($date) {
 
