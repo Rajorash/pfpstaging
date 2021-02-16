@@ -68,12 +68,12 @@ class AccountValue extends Component
         );
 
         $values = [
-            'amount' => $this->amount,
-            'phase_id' => $this->phase_id,
-            'allocation_date' => $this->date
+            $this->amount,
+            $this->date,
+            $this->phase_id
         ];
 
-        $this->account->allocate($values);
+        $this->account->allocate(...$values);
 
     }
 

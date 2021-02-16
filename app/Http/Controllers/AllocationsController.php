@@ -76,8 +76,8 @@ class AllocationsController extends Controller
         $allocationValues = self::buildAllocationValues($dates, $allocatables);
 
         // testing original view and livewire rebuild, comment out the one you don't want. WIP live wire version has some bugs I cannot diagnose, may be easier to remove and start again.
-        $view = 'allocations.calculator';
-        // $view = 'allocations.calculator-lw';
+        // $view = 'allocations.calculator';
+         $view = 'allocations.calculator-lw';
 
         $data = ['business', 'today', 'start_date', 'end_date', 'dates', 'allocations', 'allocatables', 'allocationValues', 'allocationPercentages', 'phaseDates'];
 
