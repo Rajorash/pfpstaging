@@ -49,7 +49,7 @@ class AccountFlow extends Component
         if($this->amount) {
             $this->store();
         }
-
+        $this->emit('updateAccountTotal', ['account_id'=>$this->flow->account_id, 'date_str'=>$this->date]);
     }
 
     public function store() {
