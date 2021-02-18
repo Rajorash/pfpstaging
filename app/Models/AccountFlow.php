@@ -24,8 +24,4 @@ class AccountFlow extends Model
     {
         return $this->negative_flow;
     }
-
-    public function allocations() {
-        return $this->hasMany(Allocation::class, 'allocatable_id', 'id');
-    }
 }

@@ -61,20 +61,6 @@ trait Allocatable
     }
 
     /**
-     * Return the sum of allocations for the given date and current account
-     *
-     * @param $date
-     * @return mixed
-     */
-    public function getAllocationsTotalByDate($date)
-    {
-        return Allocation::where('allocation_date', $date)
-            ->whereHas('accountFlow', function($query) {
-                return $query->where('account_id', $this->id);
-            })->sum('amount');
-    }
-
-    /**
      * Return an allocation for the current Allocatable model for the given
      * date if one exists
      *

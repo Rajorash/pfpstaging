@@ -32,11 +32,6 @@ class Allocation extends Model
         return $this->belongsTo(Phase::class);
     }
 
-    public function accountFlow()
-    {
-        return $this->belongsTo(AccountFlow::class, 'allocatable_id', 'id');
-    }
-
     public function business()
     {
         return $this->phase->business;

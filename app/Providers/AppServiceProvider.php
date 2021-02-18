@@ -26,5 +26,6 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Business::observe(BusinessObserver::class);
+        \Debugbar::disable();
     }
 }
