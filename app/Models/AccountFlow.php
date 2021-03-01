@@ -17,7 +17,7 @@ class AccountFlow extends Model
 
     public function account()
     {
-        return $this->belongsTo(BankAccount::class, 'id', 'account_id');
+        return $this->belongsTo(BankAccount::class, 'account_id', 'id');
     }
 
     public function isNegative()

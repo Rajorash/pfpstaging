@@ -4,6 +4,7 @@ namespace App\Http\Livewire\Calculator;
 
 use App\Models\Allocation;
 use App\Models\BankAccount;
+use Carbon\Carbon;
 use Livewire\Component;
 
 class AccountValue extends Component
@@ -16,6 +17,7 @@ class AccountValue extends Component
     public $date;
     public $phase_id = 1;
 
+    protected $listeners = ['updateAccountValue'];
     //
     public function mount($accountId, $date) {
 
@@ -75,6 +77,13 @@ class AccountValue extends Component
 
         $this->account->allocate(...$values);
 
+    }
+
+    public function updateAccountValue(array $params)
+    {
+        if ($params['account_id'] == $this->accountId && Carbon::parse($params['date_str']) == $this->date) {
+            $this->amount = $params['amount'];
+        }
     }
 
     /**

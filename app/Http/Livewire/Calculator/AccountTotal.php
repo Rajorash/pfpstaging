@@ -13,7 +13,7 @@ class AccountTotal extends Component
     public $amount;
     public $date;
 
-    protected $listeners = ['updateAccountTotal'];
+    protected $listeners = ['updateRevenueAccountTotal', 'updatePretotalAccountTotal'];
 
     public function mount($accountId, $date) {
 
@@ -29,7 +29,7 @@ class AccountTotal extends Component
      * @param  array  $params
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
      */
-    public function updateAccountTotal(array $params)
+    public function updateRevenueAccountTotal(array $params)
     {
         if ($params['account_id'] == $this->accountId && Carbon::parse($params['date_str']) == $this->date) {
             $newAmount = self:: getTotal();
@@ -37,6 +37,14 @@ class AccountTotal extends Component
                 $this->amount = $newAmount;
                 return $this->render();
             }
+        }
+    }
+
+    public function updatePretotalAccountTotal(array $params)
+    {
+        if ($params['account_id'] == $this->accountId && Carbon::parse($params['date_str']) == $this->date) {
+            $this->amount = $params['amount'];
+            $this->emit('updateAccountValue', $params);
         }
     }
 
