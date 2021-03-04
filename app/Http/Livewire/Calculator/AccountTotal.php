@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Calculator;
 
+use App\Models\Allocation;
 use App\Models\BankAccount;
 use Livewire\Component;
 use Carbon\Carbon;
@@ -10,8 +11,10 @@ class AccountTotal extends Component
 {
     public $accountId;
     public BankAccount $account;
+    public $allocation;
     public $amount;
     public $date;
+    public $phase_id = 1;
 
     protected $listeners = ['updateRevenueAccountTotal', 'updatePretotalAccountTotal'];
 
@@ -20,7 +23,29 @@ class AccountTotal extends Component
         $this->accountId = $accountId;
         $this->account = BankAccount::find($accountId);
         $this->date = $date;
-        $this->amount = self:: getTotal();
+        if ($this->account->type == 'revenue') {
+            $this->amount = self:: getTotal();
+        } else {
+            $this->allocation = self::getAllocation($date);
+            $this->amount = $this->allocation
+                ? number_format($this->allocation->amount, 0, '.', '')
+                : 0;
+        }
+
+    }
+
+    /**
+     * get the allocation for the account
+     *
+     * @param [type] $accountId
+     * @param [type] $date
+     * @return Allocation|null
+     */
+    private function getAllocation($date) {
+
+        $allocation = $this->account->getAllocationByDate($date);
+
+        return $allocation ?? null;
     }
 
     /**
@@ -44,8 +69,37 @@ class AccountTotal extends Component
     {
         if ($params['account_id'] == $this->accountId && Carbon::parse($params['date_str']) == $this->date) {
             $this->amount = $params['amount'];
+            if ($this->account->flows->pluck('negative_flow', 'id')[$params['flow_id']]) {
+                $this->amount *= -1;
+            }
+//            $this->store();
             $this->emit('updateAccountValue', $params);
+            return $this->render();
         }
+    }
+
+    /**
+     * Validate and store the Allocation
+     *
+     * @return void
+     */
+    public function store() {
+        $this->validate([
+            'amount' => 'numeric|nullable'
+        ]);
+
+        $data = array(
+            'amount' => $this->amount
+        );
+
+        $values = [
+            $this->amount,
+            $this->date,
+            $this->phase_id
+        ];
+
+        $this->account->allocate(...$values);
+
     }
 
     public function render()

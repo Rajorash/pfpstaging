@@ -24,9 +24,12 @@
 
         @unless ($acc->type == 'revenue')
         {{-- <x-ui.input class="block text-right" placeholder=0 /> --}}
+        {{-- Account Total --}}
         <livewire:calculator.account-value accountId="{{$acc->id}}" :date="$date" />
-        <x-ui.input class="block text-right bg-blue-100" placeholder=0 disabled="true" />
+        {{-- Transfer In --}}
+        <livewire:calculator.account-transfer accountId="{{$acc->id}}" :date="$date" />
         @endunless
+        {{-- Flow Total --}}
         <livewire:calculator.account-total accountId="{{$acc->id}}" :date="$date" />
     </td>
     @endforeach

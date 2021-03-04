@@ -51,7 +51,7 @@ class AccountFlow extends Component
         }
 
         $this->emit('update'.ucfirst($this->flow->account->type).'AccountTotal',
-            ['account_id'=>$this->flow->account_id, 'date_str'=>$this->date, 'amount'=>$this->amount]);
+            ['account_id'=>$this->flow->account_id, 'flow_id' => $this->flow->id, 'date_str'=>$this->date, 'amount'=>$this->amount]);
     }
 
     public function store() {

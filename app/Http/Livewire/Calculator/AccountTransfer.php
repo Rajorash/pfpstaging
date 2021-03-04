@@ -7,7 +7,7 @@ use App\Models\BankAccount;
 use Carbon\Carbon;
 use Livewire\Component;
 
-class AccountValue extends Component
+class AccountTransfer extends Component
 {
 
     public $accountId;
@@ -52,7 +52,7 @@ class AccountValue extends Component
      */
     public function render()
     {
-        return view('livewire.calculator.account-value');
+        return view('livewire.calculator.account-transfer');
     }
 
     /**
@@ -81,38 +81,14 @@ class AccountValue extends Component
 
     public function updateAccountValue(array $params)
     {
-        if ($params['account_id'] == $this->accountId) {
-            $negative = $this->account->flows->pluck('negative_flow', 'id')[$params['flow_id']];
-            if (Carbon::parse($params['date_str']) == $this->date) {
-                $this->amount = $params['amount'];
-                if ($negative) {
-                    $this->amount *= -1;
-                }
+        if ($params['account_id'] == $this->accountId && Carbon::parse($params['date_str']) == $this->date) {
+            $this->amount = $params['amount'];
+            if ($this->account->flows->pluck('negative_flow', 'id')[$params['flow_id']]) {
+                $this->amount *= -1;
             }
-            $previousDate = clone $this->date;
-            $previousAllocation = self::getAllocation($previousDate->subDays(1));
-            if($previousAllocation) {
-                $flowAmount = self::getFlowAllocation($params['flow_id'], $this->date->toDateString());
-                $this->amount = $previousAllocation->amount +
-                    ($flowAmount
-                        ? ($negative ? $flowAmount->amount * -1 : $flowAmount->amount)
-                        : 0);
-            }
-
-            $this->store();
+//            $this->store();
             return $this->render();
         }
-    }
-
-    private function getFlowAllocation($flowId, $date) {
-        $allocation = Allocation::where([
-            ['allocatable_type', '=', 'App\Models\AccountFlow'],
-            ['allocatable_id', '=', $flowId],
-            ['allocation_date', '=', $date]
-        ])->first();
-
-
-        return $allocation ?? null;
     }
 
     /**
@@ -122,7 +98,6 @@ class AccountValue extends Component
      */
     public function updatedAmount() {
 //        $this->store();
-        $this->emit('updateAccountTotal');
     }
 
 }
