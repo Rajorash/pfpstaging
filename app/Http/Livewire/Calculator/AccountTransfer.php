@@ -12,7 +12,6 @@ class AccountTransfer extends Component
 
     public $accountId;
     public BankAccount $account;
-    public $allocation;
     public $amount;
     public $date;
     public $phase_id = 1;
@@ -24,26 +23,10 @@ class AccountTransfer extends Component
         $this->accountId = $accountId;
         $this->account = BankAccount::find($accountId);
         $this->date = $date;
-        $this->allocation = self::getAllocation($date);
-        $this->amount = $this->allocation
-            ? number_format($this->allocation->amount, 0, '.', '')
-            : 0;
+        $this->amount = $this->account->getAllocationsTotalByDate($this->date);
 
     }
 
-    /**
-     * get the allocation for the account
-     *
-     * @param [type] $accountId
-     * @param [type] $date
-     * @return Allocation|null
-     */
-    private function getAllocation($date) {
-
-        $allocation = $this->account->getAllocationByDate($date);
-
-        return $allocation ?? null;
-    }
 
     /**
      * The livewire component render method
@@ -86,7 +69,7 @@ class AccountTransfer extends Component
             if ($this->account->flows->pluck('negative_flow', 'id')[$params['flow_id']]) {
                 $this->amount *= -1;
             }
-//            $this->store();
+
             return $this->render();
         }
     }

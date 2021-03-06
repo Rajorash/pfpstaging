@@ -67,16 +67,16 @@ class BankAccount extends Model
             ->get()
             ->map( function($item) {
                 return collect($item->toArray())
-                    ->only('allocations')
+                    ->only('negative_flow','allocations')
                     ->all();
             })
             ->map( function($a_item) {
-                return collect($a_item['allocations'])->toArray();
-            })
-            ->map( function($f_item) {
-                return count($f_item)>0 ? collect($f_item[0])->only('amount') : 0;
-            })
-            ->sum('amount');
+                return count($a_item['allocations']) > 0
+                    ? $a_item['negative_flow']
+                        ? $a_item['allocations'][0]['amount'] * -1
+                        : $a_item['allocations'][0]['amount']
+                    : 0;
+            })->sum();
     }
 
     /**

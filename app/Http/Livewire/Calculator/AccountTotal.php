@@ -23,29 +23,7 @@ class AccountTotal extends Component
         $this->accountId = $accountId;
         $this->account = BankAccount::find($accountId);
         $this->date = $date;
-        if ($this->account->type == 'revenue') {
-            $this->amount = self:: getTotal();
-        } else {
-            $this->allocation = self::getAllocation($date);
-            $this->amount = $this->allocation
-                ? number_format($this->allocation->amount, 0, '.', '')
-                : 0;
-        }
-
-    }
-
-    /**
-     * get the allocation for the account
-     *
-     * @param [type] $accountId
-     * @param [type] $date
-     * @return Allocation|null
-     */
-    private function getAllocation($date) {
-
-        $allocation = $this->account->getAllocationByDate($date);
-
-        return $allocation ?? null;
+        $this->amount = $this->account->getAllocationsTotalByDate($this->date);
     }
 
     /**
@@ -57,9 +35,10 @@ class AccountTotal extends Component
     public function updateRevenueAccountTotal(array $params)
     {
         if ($params['account_id'] == $this->accountId && Carbon::parse($params['date_str']) == $this->date) {
-            $newAmount = self:: getTotal();
+            $newAmount = $this->account->getAllocationsTotalByDate($this->date);
             if ($this->amount != $newAmount) {
                 $this->amount = $newAmount;
+                $this->store();
                 return $this->render();
             }
         }
@@ -72,7 +51,7 @@ class AccountTotal extends Component
             if ($this->account->flows->pluck('negative_flow', 'id')[$params['flow_id']]) {
                 $this->amount *= -1;
             }
-//            $this->store();
+
             $this->emit('updateAccountValue', $params);
             return $this->render();
         }
@@ -107,13 +86,4 @@ class AccountTotal extends Component
         return view('livewire.calculator.account-total');
     }
 
-    /**
-     * Get the sum of allocations for the given date and current account
-     *
-     * @return mixed
-     */
-    private function getTotal()
-    {
-        return $this->account->getAllocationsTotalByDate($this->date);
-    }
 }

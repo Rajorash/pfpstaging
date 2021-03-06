@@ -18,7 +18,7 @@ class AccountValue extends Component
     public $phase_id = 1;
 
     protected $listeners = ['updateAccountValue'];
-    //
+
     public function mount($accountId, $date) {
 
         $this->accountId = $accountId;
@@ -92,7 +92,8 @@ class AccountValue extends Component
             $previousDate = clone $this->date;
             $previousAllocation = self::getAllocation($previousDate->subDays(1));
             if($previousAllocation) {
-                $flowAmount = self::getFlowAllocation($params['flow_id'], $this->date->toDateString());
+                $accountFlow = $this->account->flows->where('id', $params['flow_id'])->first();
+                $flowAmount = $accountFlow->getAllocationByDate($this->date->toDateString());
                 $this->amount = $previousAllocation->amount +
                     ($flowAmount
                         ? ($negative ? $flowAmount->amount * -1 : $flowAmount->amount)
@@ -102,17 +103,6 @@ class AccountValue extends Component
             $this->store();
             return $this->render();
         }
-    }
-
-    private function getFlowAllocation($flowId, $date) {
-        $allocation = Allocation::where([
-            ['allocatable_type', '=', 'App\Models\AccountFlow'],
-            ['allocatable_id', '=', $flowId],
-            ['allocation_date', '=', $date]
-        ])->first();
-
-
-        return $allocation ?? null;
     }
 
     /**
