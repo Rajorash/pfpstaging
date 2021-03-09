@@ -19,7 +19,8 @@
         "laravel/sanctum": "^2.6",
         "laravel/tinker": "^2.0",
         "laravelcollective/html": "^6.2",
-        "livewire/livewire": "^2.0"
+        "livewire/livewire": "^2.0",
+        "olssonm/l5-zxcvbn": "^4.4"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.5",
