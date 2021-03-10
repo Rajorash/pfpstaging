@@ -228,9 +228,9 @@ class AllocationsController extends Controller
         $this->authorize('view', $business);
         $rollout = $business->rollout->sortBy('end_date');
 
-        $percentageValues = self::buildPercentageValues($business);
+        $percentages = self::buildPercentageValues($business);
 
-        return view('allocations.percentages', compact('business', 'rollout', 'percentageValues'));
+        return view('allocations.percentages', compact('business', 'rollout', 'percentages'));
     }
 
     /**
@@ -293,15 +293,15 @@ class AllocationsController extends Controller
     {
         $phase_ids = $business->rollout->pluck('id');
 
-        $percentages = AllocationPercentage::whereIn('phase_id', $phase_ids)->get();
+        $percentages = AllocationPercentage::whereIn('phase_id', $phase_ids)->get(['phase_id', 'bank_account_id', 'percent']);
 
-        $percentageValues = array();
-        foreach($percentages as $entry)
-        {
-            $percentageValues[$entry->bank_account_id][$entry->phase_id] = $entry->percent;
-        }
+        $percentageValues = $percentages->groupBy(['bank_account_id', 'phase_id'])->toArray();
+        // foreach($percentages as $entry)
+        // {
+        //     $percentageValues[$entry->bank_account_id][$entry->phase_id] = $entry->percent;
+        // }
 
-        return $percentageValues;
+        return $percentages;
     }
 
 }

@@ -29,6 +29,14 @@
                 <tr>
                     <td scope="row">{{ $acc->name }}</td>
                     @forelse($rollout as $phase)
+                    @php
+                    $percentage = $percentages
+                        ->where('phase_id', '=', $phase->id)
+                        ->where('bank_account_id', '=', $acc->id)
+                        ->pluck('percent')
+                        ->first()
+                        ?? null
+                    @endphp
 
                     <td class="text-center w-30 p-1">
                         <input class="percentage-value text-right w-full"
@@ -37,10 +45,7 @@
                         placeholder="0"
                         name="percentage"
                         type="text"
-                        @php
-                        $value = $percentageValues[$acc->id][$phase->id] ?? null
-                        @endphp
-                        value="{{$value}}"
+                        value="{{$percentage}}"
                         >
                     </td>
                     @empty
