@@ -20,21 +20,22 @@ class Calculator extends Component
     public $accounts;
     public $types = ['revenue', 'pretotal', 'salestax', 'prereal', 'postreal'];
 
-    public function mount($startDate = null) {
+    public function mount() {
+    }
+
+    public function render($startDate = null, $dateInput = null)
+    {
         if (! $this->startDate ) {
             $this->startDate = Carbon::now()->firstOfMonth();
         } else {
-            $this->startDate = Carbon::parse($dateInput);
+            $this->startDate = Carbon::parse($this->dateInput);
         }
 
         $this->accounts = $this->sortAccounts();
         $this->dates = $this->getDates($startDate);
 
-    }
-
-    public function render()
-    {
-        return view('livewire.calculator');
+        $this->emit('calculatorRerender');
+        return view('livewire.calculator', ['dates' => $this->dates, 'accounts' => $this->accounts]);
     }
 
     /**

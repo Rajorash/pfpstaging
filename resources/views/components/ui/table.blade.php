@@ -2,7 +2,7 @@
     'tableId' => null
 ])
 
-<div {{ $attributes->merge(['class' => "block w-full overflow-x-auto"]) }}>
+<div {{ $attributes->merge(['class' => "block w-full"]) }}>
     <div class="block w-full">
         <div class="py-2 align-middle inline-block min-w-full">
             <div class="block w-full">

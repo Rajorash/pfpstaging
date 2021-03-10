@@ -1,14 +1,15 @@
 <div class="">
     <div class="container mx-auto flex text-left font-medium text-gray-700">
         <div class="py-2 pr-6">
-            {{-- <label classfor="">Start date</label> --}}
-            {{-- <input name="startdate" type="date" value="" wire:model="dateInput"> --}}
+            <label for="startdate">Start date</label>
+            <input name="startdate" type="date" value="" wire:model="dateInput">
         </div>
         <div class="py-2 pr-6">
             <label for="range">Range</label>
             <select name="range" id="range" wire:model="daysPerPage">
                 <option class="form-input" value="7">Weekly</option>
                 <option class="form-select" value="14">Fortnightly</option>
+                <option class="form-select" value="31">Monthly</option>
             </select>
         </div>
     </div>
@@ -25,7 +26,7 @@
         <x-ui.table tableId=allocationTable>
 
             <thead class="bg-gray-50">
-                <tr>
+                <tr class="sticky bg-gray-50 top-0">
                     <th scope="col" class="px-2 py-3 text-left font-medium text-gray-500 uppercase tracking-wider">
                     </th>
                     {{-- @dd($dates) --}}
@@ -50,8 +51,8 @@
                     $account_row_index++;
                     $first_of_type = $loop->first;
                 @endphp
-                <livewire:calculator.account-row :acc="$acc" :dates="$dates" :first="$first_of_type" rowId="$account_row_index" :key="$acc->id">
-                {{-- <x-calculator.account-row :acc="$acc" :dates="$dates" :first="$first_of_type" :type="$acc->type" row="{{$account_row_index}}" :key="$acc->id" /> --}}
+                {{-- <livewire:calculator.account-row :acc="$acc" :dates="$dates" :first="$first_of_type" rowId="$account_row_index" :key="$acc->id"> --}}
+                <x-calculator.account-row :acc="$acc" :dates="$dates" :first="$first_of_type" :type="$acc->type" row="{{$account_row_index}}" :key="$acc->id" />
 
                 @foreach ($acc->flows as $flow)
                 {{-- START flow loop --}}
