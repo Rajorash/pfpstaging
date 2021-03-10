@@ -2,7 +2,7 @@
     <div class="container mx-auto flex text-left font-medium text-gray-700">
         <div class="py-2 pr-6">
             <label for="startdate">Start date</label>
-            <input name="startdate" id="startdate" class="rounded px-3 py-0 mx-3 my-0" type="date" wire:model="dateInput">
+            <input name="startdate" id="startdate" class="rounded px-3 py-0 mx-3 my-0" type="date" wire:model="dateInput" value="{{Carbon\Carbon::now()->toDateString()}}">
         </div>
         <div class="py-2 pr-6">
             <label for="range">Range</label>

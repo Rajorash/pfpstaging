@@ -26,7 +26,7 @@ class Calculator extends Component
     public function render($startDate = null, $dateInput = null)
     {
         if (! $this->startDate ) {
-            $this->startDate = Carbon::now()->firstOfMonth();
+            $this->startDate = Carbon::now()->today();
         } else {
             $this->startDate = Carbon::parse($this->dateInput);
         }
@@ -45,7 +45,7 @@ class Calculator extends Component
     public function getDates() {
 
         // fill out the the dates as per the daysPerPage
-        for ($day=0; $day <= $this->daysPerPage; $day++) {
+        for ($day=0; $day < $this->daysPerPage; $day++) {
             $dates[] = Carbon::parse($this->startDate)->addDay($day);
         }
 
