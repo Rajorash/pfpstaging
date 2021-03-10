@@ -2,11 +2,11 @@
     <div class="container mx-auto flex text-left font-medium text-gray-700">
         <div class="py-2 pr-6">
             <label for="startdate">Start date</label>
-            <input name="startdate" type="date" value="" wire:model="dateInput">
+            <input name="startdate" id="startdate" class="rounded px-3 py-0 mx-3 my-0" type="date" wire:model="dateInput">
         </div>
         <div class="py-2 pr-6">
             <label for="range">Range</label>
-            <select name="range" id="range" wire:model="daysPerPage">
+            <select name="range" id="range" class="rounded px-3 py-0 mx-3 my-0" wire:model="daysPerPage">
                 <option class="form-input" value="7">Weekly</option>
                 <option class="form-select" value="14">Fortnightly</option>
                 <option class="form-select" value="31">Monthly</option>
