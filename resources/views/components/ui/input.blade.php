@@ -1,5 +1,5 @@
 @props([
-    'name', 'id' => null, 'type' => 'text', 'disabled' => false, 'value' => null
+    'name' => null, 'id' => null, 'type' => 'text', 'disabled' => false, 'value' => null
 ])
 
 
@@ -8,6 +8,11 @@
     @if ($value != null)
     value="{{$value}}"
     @endif
+    @if ($name != null)
+       name="{{$name}}"
+    @endif
+    @if ($id != null)
+        id="{{$id}}"
+    @endif
     @if ($disabled) disabled @endif
-
     >

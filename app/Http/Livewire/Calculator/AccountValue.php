@@ -82,6 +82,24 @@ class AccountValue extends Component
     public function updateAccountValue(array $params)
     {
         if ($params['account_id'] == $this->accountId) {
+
+            $currentAmount = $this->account->getAllocationsTotalByDate($this->date);
+
+            $previousDate = clone $this->date;
+            $previousAllocation = self::getAllocation($previousDate->subDays(1));
+            if($previousAllocation) {
+                if ($this->amount != ($currentAmount + $previousAllocation->amount)) {
+                    $this->amount = $previousAllocation->amount + $currentAmount;
+                    $this->store();
+                    return $this->render();
+                }
+            } else if ($this->amount != $currentAmount) {
+                $this->amount = $currentAmount;
+                $this->store();
+                return $this->render();
+            }
+        }
+/*        if ($params['account_id'] == $this->accountId) {
             $negative = $this->account->flows->pluck('negative_flow', 'id')[$params['flow_id']];
             if (Carbon::parse($params['date_str']) == $this->date) {
                 $this->amount = $params['amount'];
@@ -89,6 +107,7 @@ class AccountValue extends Component
                     $this->amount *= -1;
                 }
             }
+            $this->amount = self::getAllocation($this->date)->amount;
             $previousDate = clone $this->date;
             $previousAllocation = self::getAllocation($previousDate->subDays(1));
             if($previousAllocation) {
@@ -102,7 +121,7 @@ class AccountValue extends Component
 
             $this->store();
             return $this->render();
-        }
+        }*/
     }
 
     /**

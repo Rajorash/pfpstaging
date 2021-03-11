@@ -16,15 +16,18 @@ class AccountTransfer extends Component
     public $date;
     public $phase_id = 1;
 
-    protected $listeners = ['updateAccountValue'];
+    protected $listeners = ['updateAccountTransfer'];
     //
     public function mount($accountId, $date) {
 
         $this->accountId = $accountId;
         $this->account = BankAccount::find($accountId);
         $this->date = $date;
-        $this->amount = $this->account->getAllocationsTotalByDate($this->date);
-
+        if ($this->account->type == 'pretotal') {
+            $this->amount = $this->account->getAllocationsTotalByDate($this->date);
+        } else {
+            ;
+        }
     }
 
 
@@ -62,7 +65,7 @@ class AccountTransfer extends Component
 
     }
 
-    public function updateAccountValue(array $params)
+    public function updateAccountTransfer(array $params)
     {
         if ($params['account_id'] == $this->accountId && Carbon::parse($params['date_str']) == $this->date) {
             $this->amount = $params['amount'];

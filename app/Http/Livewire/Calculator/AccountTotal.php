@@ -16,7 +16,7 @@ class AccountTotal extends Component
     public $date;
     public $phase_id = 1;
 
-    protected $listeners = ['updateRevenueAccountTotal', 'updatePretotalAccountTotal'];
+    protected $listeners = ['updateRevenueAccountTotal', 'updatePretotalAccountTotal', 'updatePrerealAccountTotal', 'updatePostrealAccountTotal', 'updateSalestaxAccountTotal'];
 
     public function mount($accountId, $date) {
 
@@ -47,14 +47,32 @@ class AccountTotal extends Component
     public function updatePretotalAccountTotal(array $params)
     {
         if ($params['account_id'] == $this->accountId && Carbon::parse($params['date_str']) == $this->date) {
-            $this->amount = $params['amount'];
-            if ($this->account->flows->pluck('negative_flow', 'id')[$params['flow_id']]) {
-                $this->amount *= -1;
-            }
+            $this->amount = $this->account->getAllocationsTotalByDate($this->date);
 
-            $this->emit('updateAccountValue', $params);
+//            $this->emit('updateAccountTransfer', $params);
+//            $this->emit('updateAccountValue', $params);
             return $this->render();
         }
+    }
+
+    public function updatePrerealAccountTotal(array $params)
+    {
+        if ($params['account_id'] == $this->accountId && Carbon::parse($params['date_str']) == $this->date) {
+            $this->amount = $this->account->getAllocationsTotalByDate($this->date);
+
+//            $this->emit('updateAccountValue', $params);
+            return $this->render();
+        }
+    }
+
+    public function updatePostrealAccountTotal(array $params)
+    {
+        $this->updatePrerealAccountTotal($params);
+    }
+
+    public function updateSalestaxAccountTotal(array $params)
+    {
+        $this->updatePrerealAccountTotal($params);
     }
 
     /**
