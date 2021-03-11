@@ -5,6 +5,7 @@ namespace App\Http\Livewire\Calculator;
 use App\Models\AccountFlow as Flow;
 use App\Models\Allocation;
 use Livewire\Component;
+use Carbon\Carbon;
 
 class AccountFlow extends Component
 {
@@ -12,17 +13,25 @@ class AccountFlow extends Component
     public Flow $flow;
     public $allocation;
     public $date;
+    public $datesRange;
     public $account_id;
     public $amount;
     public $phase_id = 1;
 
-    public function mount($flowId, $date) {
+    public function mount($flowId, $date, $datesRange) {
 
-        $this->flowId = $flowId;
-        $this->flow = Flow::find($flowId);
-        $this->date = $date;
+        $this->flowId     = $flowId;
+        $this->flow       = Flow::find($flowId);
+        $this->account_id = $this->flow->account_id;
+        $this->date       = $date;
+        $cdate = Carbon::parse($date);
+        $this->datesRange = array_filter(collect($datesRange)->map(function ($item) use ($cdate) {
+            if ($item >= $cdate) {
+                return $item->toDateString();
+            }
+        })->toArray());
         $this->allocation = self::getAllocation($flowId, $date);
-        $this->amount = $this->allocation
+        $this->amount     = $this->allocation
             ? number_format($this->allocation->amount, 0, '.', '')
             : 0;
 
@@ -47,10 +56,6 @@ class AccountFlow extends Component
 
     public function updatedAmount() {
         $this->store();
-
-        $this->emitTo('account_total_'.$this->flow->account_id.'_'.$this->date,
-            'update'.ucfirst($this->flow->account->type).'AccountTotal',
-            ['account_id'=>$this->flow->account_id, 'flow_id' => $this->flow->id, 'date_str'=>$this->date, 'amount'=>$this->amount]);
     }
 
     public function store() {

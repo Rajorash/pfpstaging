@@ -16,7 +16,7 @@ class AccountTotal extends Component
     public $date;
     public $phase_id = 1;
 
-    protected $listeners = ['updateRevenueAccountTotal', 'updatePretotalAccountTotal', 'updatePrerealAccountTotal', 'updatePostrealAccountTotal', 'updateSalestaxAccountTotal'];
+    protected $listeners = ['updateAccountTotal'];
 
     public function mount($accountId, $date) {
 
@@ -49,8 +49,6 @@ class AccountTotal extends Component
         if ($params['account_id'] == $this->accountId && Carbon::parse($params['date_str']) == $this->date) {
             $this->amount = $this->account->getAllocationsTotalByDate($this->date);
 
-//            $this->emit('updateAccountTransfer', $params);
-//            $this->emit('updateAccountValue', $params);
             return $this->render();
         }
     }
@@ -60,7 +58,6 @@ class AccountTotal extends Component
         if ($params['account_id'] == $this->accountId && Carbon::parse($params['date_str']) == $this->date) {
             $this->amount = $this->account->getAllocationsTotalByDate($this->date);
 
-//            $this->emit('updateAccountValue', $params);
             return $this->render();
         }
     }
@@ -75,6 +72,12 @@ class AccountTotal extends Component
         $this->updatePrerealAccountTotal($params);
     }
 
+    public function updateAccountTotal()
+    {
+        $this->amount = $this->account->getAllocationsTotalByDate($this->date);
+
+        return $this->render();
+    }
     /**
      * Validate and store the Allocation
      *

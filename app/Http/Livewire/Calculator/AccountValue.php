@@ -79,49 +79,23 @@ class AccountValue extends Component
 
     }
 
-    public function updateAccountValue(array $params)
+    public function updateAccountValue()
     {
-        if ($params['account_id'] == $this->accountId) {
+        $currentAmount = $this->account->getAllocationsTotalByDate($this->date);
 
-            $currentAmount = $this->account->getAllocationsTotalByDate($this->date);
-
-            $previousDate = clone $this->date;
-            $previousAllocation = self::getAllocation($previousDate->subDays(1));
-            if($previousAllocation) {
-                if ($this->amount != ($currentAmount + $previousAllocation->amount)) {
-                    $this->amount = $previousAllocation->amount + $currentAmount;
-                    $this->store();
-                    return $this->render();
-                }
-            } else if ($this->amount != $currentAmount) {
-                $this->amount = $currentAmount;
+        $previousDate = clone $this->date;
+        $previousAllocation = self::getAllocation($previousDate->subDays(1));
+        if($previousAllocation) {
+            if ($this->amount != ($currentAmount + $previousAllocation->amount)) {
+                $this->amount = $previousAllocation->amount + $currentAmount;
                 $this->store();
                 return $this->render();
             }
-        }
-/*        if ($params['account_id'] == $this->accountId) {
-            $negative = $this->account->flows->pluck('negative_flow', 'id')[$params['flow_id']];
-            if (Carbon::parse($params['date_str']) == $this->date) {
-                $this->amount = $params['amount'];
-                if ($negative) {
-                    $this->amount *= -1;
-                }
-            }
-            $this->amount = self::getAllocation($this->date)->amount;
-            $previousDate = clone $this->date;
-            $previousAllocation = self::getAllocation($previousDate->subDays(1));
-            if($previousAllocation) {
-                $accountFlow = $this->account->flows->where('id', $params['flow_id'])->first();
-                $flowAmount = $accountFlow->getAllocationByDate($this->date->toDateString());
-                $this->amount = $previousAllocation->amount +
-                    ($flowAmount
-                        ? ($negative ? $flowAmount->amount * -1 : $flowAmount->amount)
-                        : 0);
-            }
-
+        } else if ($this->amount != $currentAmount) {
+            $this->amount = $currentAmount;
             $this->store();
             return $this->render();
-        }*/
+        }
     }
 
     /**
@@ -131,7 +105,7 @@ class AccountValue extends Component
      */
     public function updatedAmount() {
 //        $this->store();
-        $this->emit('updateAccountTotal');
+//        $this->emit('updateAccountTotal');
     }
 
 }

@@ -4,4 +4,5 @@
     :date="$date"
     wire:model="amount"
     placeholder=0
+    id="account_value_{{$account->id}}_{{substr($date,0,10)}}"
 />

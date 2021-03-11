@@ -221,6 +221,3 @@ $('#allocationTable').on('change', function() {
     });
 });
 
-function callEventOnCell(cellId) {
-    console.log(cellId)
-}
