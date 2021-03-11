@@ -28,10 +28,10 @@ var updatePercentageTotal = function (e) {
 
     let total = calculatePhaseTotal(phase_id);
 
-    if(total > 100) {
-        percentageTotalField.addClass('text-danger');
+    if(total != 100) {
+        percentageTotalField.addClass('text-red-500');
     } else {
-        percentageTotalField.removeClass('text-danger');
+        percentageTotalField.removeClass('text-red-500');
     }
 
     percentageTotalField.text( `${total}%` );
@@ -39,7 +39,7 @@ var updatePercentageTotal = function (e) {
 }
 
 function calculatePhaseTotal(phase_id) {
-    let phasePercentagesFields = $(`.percentage-value[data-phase-id='${phase_id}']`);
+    let phasePercentagesFields = $(`.percentage-value.postreal[data-phase-id='${phase_id}']`);
     let total = 0;
 
     phasePercentagesFields.each( function() {

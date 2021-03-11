@@ -4332,17 +4332,17 @@ var updatePercentageTotal = function updatePercentageTotal(e) {
   var percentageTotalField = $(".percentage-total[data-phase-id='".concat(phase_id, "']"));
   var total = calculatePhaseTotal(phase_id);
 
-  if (total > 100) {
-    percentageTotalField.addClass('text-danger');
+  if (total != 100) {
+    percentageTotalField.addClass('text-red-500');
   } else {
-    percentageTotalField.removeClass('text-danger');
+    percentageTotalField.removeClass('text-red-500');
   }
 
   percentageTotalField.text("".concat(total, "%"));
 };
 
 function calculatePhaseTotal(phase_id) {
-  var phasePercentagesFields = $(".percentage-value[data-phase-id='".concat(phase_id, "']"));
+  var phasePercentagesFields = $(".percentage-value.postreal[data-phase-id='".concat(phase_id, "']"));
   var total = 0;
   phasePercentagesFields.each(function () {
     var value = parseFloat($(this).val());
