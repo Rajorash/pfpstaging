@@ -13,6 +13,8 @@ class AccountRow extends Component
     public $first;
     public $type;
 
+    // protected $listeners = ['calculatorRerender' => '$refresh'];
+
     public function render()
     {
         return view('livewire.calculator.account-row');

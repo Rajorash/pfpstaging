@@ -65,16 +65,11 @@ class AccountTransfer extends Component
 
     }
 
-    public function updateAccountTransfer(array $params)
+    public function updateAccountTransfer()
     {
-        if ($params['account_id'] == $this->accountId && Carbon::parse($params['date_str']) == $this->date) {
-            $this->amount = $params['amount'];
-            if ($this->account->flows->pluck('negative_flow', 'id')[$params['flow_id']]) {
-                $this->amount *= -1;
-            }
+        $this->amount = $this->account->getAllocationsTotalByDate($this->date);
 
-            return $this->render();
-        }
+        return $this->render();
     }
 
     /**
