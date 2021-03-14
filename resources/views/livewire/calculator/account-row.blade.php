@@ -1,5 +1,5 @@
 <tr>
-    <th class="px-2 py-1 whitespace-nowrap bg-blue-300 sticky left-0">
+    <td class="px-2 py-1 whitespace-nowrap bg-blue-300 sticky left-0">
         @if ($first)
         <div class="h-8 text-gray-500 font-semibold tracking-tight">{{ucfirst($acc->type)}} Accounts</div>
         @endif
@@ -8,7 +8,7 @@
         <div class="mb-1 text-gray-500">Transfer In</div>
         <div class="text-gray-500">Flow Total</div>
         @endif
-    </th>
+    </td>
     @foreach ($dates as $date)
     <td class="p-1 whitespace-nowrap bg-blue-300"
         data-date='{{$date}}'
