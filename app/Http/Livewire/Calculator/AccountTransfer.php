@@ -9,7 +9,6 @@ use Livewire\Component;
 
 class AccountTransfer extends Component
 {
-
     public $accountId;
     public BankAccount $account;
     public $amount;
@@ -17,19 +16,20 @@ class AccountTransfer extends Component
     public $phase_id = 1;
 
     protected $listeners = ['updateAccountTransfer'];
-    //
-    public function mount($accountId, $date) {
 
+    //
+    public function mount($accountId, $date)
+    {
         $this->accountId = $accountId;
         $this->account = BankAccount::find($accountId);
         $this->date = $date;
+        $this->phase_id = $this->account->business->getPhaseIdByDate($date);
         if ($this->account->type == 'pretotal') {
-            $this->amount = $this->account->getAllocationsTotalByDate($this->date);
+            $this->amount = $this->account->getAllocationsTotalByDate($this->date, $this->phase_id);
         } else {
             ;
         }
     }
-
 
     /**
      * The livewire component render method
@@ -46,7 +46,8 @@ class AccountTransfer extends Component
      *
      * @return void
      */
-    public function store() {
+    public function store()
+    {
         $this->validate([
             'amount' => 'numeric|nullable'
         ]);
@@ -62,12 +63,11 @@ class AccountTransfer extends Component
         ];
 
         $this->account->allocate(...$values);
-
     }
 
     public function updateAccountTransfer()
     {
-        $this->amount = $this->account->getAllocationsTotalByDate($this->date);
+        $this->amount = $this->account->getAllocationsTotalByDate($this->date, $this->phase_id);
 
         return $this->render();
     }
@@ -77,7 +77,8 @@ class AccountTransfer extends Component
      *
      * @return void
      */
-    public function updatedAmount() {
+    public function updatedAmount()
+    {
 //        $this->store();
     }
 

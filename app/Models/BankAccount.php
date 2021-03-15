@@ -58,11 +58,12 @@ class BankAccount extends Model
      * @param $date
      * @return mixed
      */
-    public function getAllocationsTotalByDate($date)
+    public function getAllocationsTotalByDate($date, $phaseId)
     {
         return AccountFlow::where('account_id', $this->id)
-            ->with('allocations', function($query) use ($date) {
-                return $query->where('allocation_date', $date);
+            ->with('allocations', function($query) use ($date, $phaseId) {
+                return $query->where('allocation_date', $date)
+                    ->where('phase_id', $phaseId);
             })
             ->get()
             ->map( function($item) {

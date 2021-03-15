@@ -24,6 +24,7 @@ class AccountFlow extends Component
         $this->flow       = Flow::find($flowId);
         $this->account_id = $this->flow->account_id;
         $this->date       = $date;
+        $this->phase_id   = $this->flow->account->business->getPhaseIdByDate($date);
         $cdate = Carbon::parse($date);
         $this->datesRange = array_filter(collect($datesRange)->map(function ($item) use ($cdate) {
             if ($item >= $cdate) {

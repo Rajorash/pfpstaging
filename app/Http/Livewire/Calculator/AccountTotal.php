@@ -18,12 +18,13 @@ class AccountTotal extends Component
 
     protected $listeners = ['updateAccountTotal'];
 
-    public function mount($accountId, $date) {
-
+    public function mount($accountId, $date)
+    {
         $this->accountId = $accountId;
         $this->account = BankAccount::find($accountId);
         $this->date = $date;
-        $this->amount = $this->account->getAllocationsTotalByDate($this->date);
+        $this->phase_id = $this->account->business->getPhaseIdByDate($date);
+        $this->amount = $this->account->getAllocationsTotalByDate($this->date, $this->phase_id);
     }
 
     /**
@@ -33,7 +34,8 @@ class AccountTotal extends Component
      */
     public function updateAccountTotal()
     {
-        $this->amount = $this->account->getAllocationsTotalByDate($this->date);
+        $this->amount = $this->account->getAllocationsTotalByDate($this->date, $this->phase_id);
+        $this->store();
 
         return $this->render();
     }

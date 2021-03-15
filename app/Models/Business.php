@@ -40,4 +40,10 @@ class Business extends Model
         return Allocation::whereIn('phase_id', $phaseIds)->get();
     }
 
+    public function getPhaseIdByDate($date)
+    {
+        $phase = $this->rollout()->where('end_date', '>=', $date)->first();
+
+        return $phase->id;
+    }
 }

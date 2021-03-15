@@ -25,6 +25,7 @@ class AccountValue extends Component
         $this->account = BankAccount::find($accountId);
         $this->date = $date;
         $this->allocation = self::getAllocation($date);
+        $this->phase_id = $this->account->business->getPhaseIdByDate($date);
         $this->amount = $this->allocation
             ? number_format($this->allocation->amount, 0, '.', '')
             : 0;
@@ -104,6 +105,7 @@ class AccountValue extends Component
      * @return void
      */
     public function updatedAmount() {
+        $s =1;
 //        $this->store();
 //        $this->emit('updateAccountTotal');
     }
