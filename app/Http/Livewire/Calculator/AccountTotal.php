@@ -29,49 +29,8 @@ class AccountTotal extends Component
     /**
      * Update the total if a flow value has changed for the given date
      *
-     * @param  array  $params
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
      */
-    public function updateRevenueAccountTotal(array $params)
-    {
-        if ($params['account_id'] == $this->accountId && Carbon::parse($params['date_str']) == $this->date) {
-            $newAmount = $this->account->getAllocationsTotalByDate($this->date);
-            if ($this->amount != $newAmount) {
-                $this->amount = $newAmount;
-                $this->store();
-                return $this->render();
-            }
-        }
-    }
-
-    public function updatePretotalAccountTotal(array $params)
-    {
-        if ($params['account_id'] == $this->accountId && Carbon::parse($params['date_str']) == $this->date) {
-            $this->amount = $this->account->getAllocationsTotalByDate($this->date);
-
-            return $this->render();
-        }
-    }
-
-    public function updatePrerealAccountTotal(array $params)
-    {
-        if ($params['account_id'] == $this->accountId && Carbon::parse($params['date_str']) == $this->date) {
-            $this->amount = $this->account->getAllocationsTotalByDate($this->date);
-
-            return $this->render();
-        }
-    }
-
-    public function updatePostrealAccountTotal(array $params)
-    {
-        $this->updatePrerealAccountTotal($params);
-    }
-
-    public function updateSalestaxAccountTotal(array $params)
-    {
-        $this->updatePrerealAccountTotal($params);
-    }
-
     public function updateAccountTotal()
     {
         $this->amount = $this->account->getAllocationsTotalByDate($this->date);
