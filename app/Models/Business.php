@@ -46,4 +46,11 @@ class Business extends Model
 
         return $phase->id;
     }
+
+    public function getSalestaxAccount()
+    {
+        $salestax = $this->accounts()->where('type', '=', 'salestax')->first();
+
+        return $salestax->id;
+    }
 }

@@ -80,6 +80,25 @@ class BankAccount extends Model
             })->sum();
     }
 
+    public function getRevenueByDate($businessId, $date)
+    {
+        return self::where('type', 'revenue')->where('business_id',$businessId)
+            ->with('allocations', function($query) use ($date) {
+                return $query->where('allocation_date', $date);
+            })
+            ->get()
+            ->map( function($item) {
+                return collect($item->toArray())
+                    ->only('allocations')
+                    ->all();
+            })
+            ->map( function($a_item) {
+                return count($a_item['allocations']) > 0
+                    ? $a_item['allocations'][0]['amount']
+                    : 0;
+            })->sum();
+    }
+
     /**
      * Return the tax rate for the account (if it has one)
      */

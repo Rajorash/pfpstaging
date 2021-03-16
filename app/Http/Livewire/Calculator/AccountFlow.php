@@ -15,6 +15,7 @@ class AccountFlow extends Component
     public $date;
     public $datesRange;
     public $account_id;
+    public $accountIdToCall;
     public $amount;
     public $phase_id = 1;
 
@@ -25,6 +26,9 @@ class AccountFlow extends Component
         $this->account_id = $this->flow->account_id;
         $this->date       = $date;
         $this->phase_id   = $this->flow->account->business->getPhaseIdByDate($date);
+        if ($this->flow->account->type == 'revenue') {
+            $this->accountIdToCall = $this->flow->account->business->getSalestaxAccount();
+        }
         $cdate = Carbon::parse($date);
         $this->datesRange = array_filter(collect($datesRange)->map(function ($item) use ($cdate) {
             if ($item >= $cdate) {
