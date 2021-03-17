@@ -15,43 +15,49 @@
             <x-ui.th>Allocation $</x-ui.th>
         </tr>
         {{-- Revenue account/s - should only be one? --}}
+        @foreach ($mappedAccounts['revenue'] as $account)
         <tr>
-            <td class="px-3 py-1">Top line revenue - Account "REVENUE"</td>
-            <td class="px-3 py-1 w-1/6"></td>
-            <td class="px-3 py-1 bg-yellow-300 w-1/6"><x-ui.input type="text" value="$11000" /></td>
-            <td class="bg-black w-1/6"></td>
-            <td class="bg-black w-1/6"></td>
+            <td class="px-3 py-1">Top line revenue - Account "{{$account['name']}}"</td>
+            <td class="px-3 py-1 w-32"></td>
+            <td class="px-3 py-1 bg-yellow-300 w-32"><x-ui.input type="text" wire:model="revenue" /></td>
+            <td class="bg-black w-32"></td>
+            <td class="bg-black w-32"></td>
         </tr>
+        @endforeach
         {{-- Sales tax account/s --}}
+        @foreach ($mappedAccounts['salestax'] as $account)
         <tr>
-            <td class="px-3 py-1">Sales tax</td>
-            <td class="px-3 py-1 bg-blue-300"><x-ui.input type="text" /></td>
-            <td class="text-right px-3 py-1 bg-green-300">$1000</td>
+            <td class="px-3 py-1">{{$account['name']}}</td>
+            <td class="px-3 py-1 bg-blue-300 text-right">{{$account['percent']}}%</td>
+            <td class="text-right px-3 py-1 bg-green-300">${{number_format($account['value'], 0)}}</td>
             <td class="bg-black"></td>
             <td class="bg-black"></td>
         </tr>
-        <tr>
+        @endforeach
+        <tr class="border border-blue-100 bg-blue-50">
             <td class="px-3 py-1">Net Cash Receipts</td>
             <td class="px-3 py-1"></td>
-            <td class="text-right px-3 py-1">$10000</td>
-            <td class="bg-black"></td>
-            <td class="bg-black"></td>
+            <td class="text-right px-3 py-1">${{number_format($netCashReceipts, 0)}}</td>
+            <td class="bg-black border border-black"></td>
+            <td class="bg-black border border-black"></td>
         </tr>
         {{-- Pre-real account/s --}}
+        @foreach ($mappedAccounts['prereal'] as $account)
         <tr>
-            <td class="px-3 py-1">Mats & Subs</td>
-            <td class="px-3 py-1 bg-blue-300"><x-ui.input type="text" /></td>
-            <td class="text-right px-3 py-1 bg-green-300">$2000</td>
+            <td class="px-3 py-1">{{$account['name']}}</td>
+            <td class="px-3 py-1 bg-blue-300 text-right">{{$account['percent']}}%</td>
+            <td class="text-right px-3 py-1 bg-green-300">${{number_format($account['value'], 0)}}</td>
             <td class="bg-black"></td>
             <td class="bg-black"></td>
         </tr>
+        @endforeach
         {{-- Net Cash Receipts --}}
-        <tr>
-            <td class="px-3 py-1">Net Cash Receipts</td>
+        <tr class="border border-blue-100 bg-blue-50">
+            <td class="px-3 py-1">Real Revenue</td>
             <td class="px-3 py-1"></td>
-            <td class="text-right px-3 py-1 bg-green-100">$8000</td>
-            <td class="text-right px-3 py-1">100%</td>
-            <td class="bg-black"></td>
+            <td class="text-right px-3 py-1 bg-green-100">${{number_format($realRevenue, 0)}}</td>
+            <td class="text-right px-3 py-1">{{$postrealPercentageSum}}%</td>
+            <td class="bg-black border border-black"></td>
         </tr>
         {{-- Post-real accounts --}}
         @foreach ($mappedAccounts['postreal'] as $account)
@@ -59,17 +65,17 @@
             <td class="px-3 py-1">{{$account['name']}}</td>
             <td class="px-3 py-1"></td>
             <td class="bg-green-100"></td>
-            <td class="text-right px-3 py-1 bg-blue-300"><x-ui.input value="10%" /></td>
-            <td class="text-right px-3 py-1 bg-green-300">Amount</td>
+            <td class="text-right px-3 py-1 bg-blue-300">{{$account['percent']}}%</td>
+            <td class="text-right px-3 py-1 bg-green-300">${{number_format($account['value'], 0)}}</td>
         </tr>
         @endforeach
         {{-- Check sum --}}
-        <tr class="bg-gray-100">
+        <tr class="bg-gray-100 border border-gray-200">
             <td class="px-3 py-1">Allocation Sum</td>
             <td></td>
             <td></td>
             <td></td>
-            <td class="text-right px-3 py-1">$11000</td>
+            <td class="text-right px-3 py-1">${{number_format($allocationSum, 2)}}</td>
         </tr>
 
 
