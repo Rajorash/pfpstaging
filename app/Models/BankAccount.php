@@ -56,6 +56,7 @@ class BankAccount extends Model
      * Return the sum of allocations for the given date and current account
      *
      * @param $date
+     * @param $phaseId
      * @return mixed
      */
     public function getAllocationsTotalByDate($date, $phaseId)
@@ -97,6 +98,21 @@ class BankAccount extends Model
                     ? $a_item['allocations'][0]['amount']
                     : 0;
             })->sum();
+    }
+
+    public function getTransferAmount($date, $phase_id)
+    {
+        $revenue = $this->getRevenueByDate($this->business_id, $date);
+        $percent = $this->getAllocationPercentages($phase_id)
+            ->map(function($item) {
+                return isset($item['percent'])
+                    ? $item['percent']
+                    : 0;})
+            ->first();
+
+        return ($revenue > 0 && is_numeric($percent))
+            ? round($revenue / ($percent + 1), 2)
+            : 0;
     }
 
     /**

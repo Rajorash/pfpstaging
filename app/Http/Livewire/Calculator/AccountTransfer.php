@@ -24,9 +24,7 @@ class AccountTransfer extends Component
         $this->account = BankAccount::find($accountId);
         $this->date = $date;
         $this->phase_id = $this->account->business->getPhaseIdByDate($date);
-//        if ($this->account->type == 'pretotal') {
-//            $this->amount = $this->account->getAllocationsTotalByDate($this->date, $this->phase_id);
-//        }
+        $this->amount = $this->account->getTransferAmount($this->date, $this->phase_id);
     }
 
     /**
@@ -65,18 +63,9 @@ class AccountTransfer extends Component
 
     public function updateAccountTransfer()
     {
-        $revenue = $this->account->getRevenueByDate($this->account->business_id, $this->date);
-        $percent = $this->account->getAllocationPercentages($this->phase_id)
-            ->map(function($item) {
-                return isset($item['percent'])
-                    ? $item['percent']
-                    : 0;})
-            ->first();
-        $this->amount = ($revenue > 0 && is_numeric($percent))
-            ? round($revenue / ($percent + 1), 2)
-            : 0;
+        $this->amount = $this->account->getTransferAmount($this->date, $this->phase_id);
 
-        $this->store();
+//        $this->store();
 
         return $this->render();
     }

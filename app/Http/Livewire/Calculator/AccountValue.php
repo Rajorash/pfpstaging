@@ -82,7 +82,8 @@ class AccountValue extends Component
 
     public function updateAccountValue()
     {
-        $currentAmount = $this->account->getAllocationsTotalByDate($this->date, $this->phase_id);
+        $currentAmount = $this->account->getAllocationsTotalByDate($this->date, $this->phase_id)
+            + $this->account->getTransferAmount($this->date, $this->phase_id);
 
         $previousDate = clone $this->date;
         $previousAllocation = self::getAllocation($previousDate->subDays(1));
