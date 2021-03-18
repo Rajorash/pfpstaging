@@ -20,8 +20,8 @@
             <td class="px-3 py-1">Top line revenue - Account "{{$account['name']}}"</td>
             <td class="px-3 py-1 w-32"></td>
             <td class="px-3 py-1 bg-yellow-300 w-32"><x-ui.input type="text" wire:model="revenue" /></td>
-            <td class="bg-black w-32"></td>
-            <td class="bg-black w-32"></td>
+            <td class="bg-gray-500 w-32"></td>
+            <td class="bg-gray-500 w-32"></td>
         </tr>
         @endforeach
         {{-- Sales tax account/s --}}
@@ -30,16 +30,16 @@
             <td class="px-3 py-1">{{$account['name']}}</td>
             <td class="px-3 py-1 bg-blue-300 text-right">{{$account['percent']}}%</td>
             <td class="text-right px-3 py-1 bg-green-300">${{number_format($account['value'], 0)}}</td>
-            <td class="bg-black"></td>
-            <td class="bg-black"></td>
+            <td class="bg-gray-500"></td>
+            <td class="bg-gray-500"></td>
         </tr>
         @endforeach
         <tr class="border border-blue-100 bg-blue-50">
             <td class="px-3 py-1">Net Cash Receipts</td>
             <td class="px-3 py-1"></td>
             <td class="text-right px-3 py-1">${{number_format($netCashReceipts, 0)}}</td>
-            <td class="bg-black border border-black"></td>
-            <td class="bg-black border border-black"></td>
+            <td class="bg-gray-500 border border-gray-500"></td>
+            <td class="bg-gray-500 border border-gray-500"></td>
         </tr>
         {{-- Pre-real account/s --}}
         @foreach ($mappedAccounts['prereal'] as $account)
@@ -47,8 +47,8 @@
             <td class="px-3 py-1">{{$account['name']}}</td>
             <td class="px-3 py-1 bg-blue-300 text-right">{{$account['percent']}}%</td>
             <td class="text-right px-3 py-1 bg-green-300">${{number_format($account['value'], 0)}}</td>
-            <td class="bg-black"></td>
-            <td class="bg-black"></td>
+            <td class="bg-gray-500"></td>
+            <td class="bg-gray-500"></td>
         </tr>
         @endforeach
         {{-- Net Cash Receipts --}}
@@ -57,7 +57,7 @@
             <td class="px-3 py-1"></td>
             <td class="text-right px-3 py-1 bg-green-100">${{number_format($realRevenue, 0)}}</td>
             <td class="text-right px-3 py-1 {!! ($postrealPercentageSum > 100 || $postrealPercentageSum < 100) ? 'text-red-500' : '';!!}">{{$postrealPercentageSum}}%</td>
-            <td class="bg-black border border-black"></td>
+            <td class="bg-gray-500 border border-gray-500"></td>
         </tr>
         {{-- Post-real accounts --}}
         @foreach ($mappedAccounts['postreal'] as $account)
