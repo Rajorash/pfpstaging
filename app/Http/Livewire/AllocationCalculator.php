@@ -12,9 +12,9 @@ class AllocationCalculator extends Component
     public $revenue;
     public $netCashReceipts;
     public $realRevenue;
+    public $postrealPercentageSum;
     public $allocationSum;
     public $checksum;
-    public $postrealPercentageSum;
 
     public $selectOptions;
     public $selectedBusinessId;
@@ -25,11 +25,6 @@ class AllocationCalculator extends Component
     public function mount()
     {
         $this->selectOptions = $this->mapBusinessSelect();
-        $this->business = auth()->user()->businesses->first();
-        $this->selectedBusinessId = $this->business->id;
-        $this->mappedAccounts = $this->mapBusinessAccounts();
-        $this->postrealPercentageSum = $this->getPercentageSum();
-
         $this->fill([
             'allocationSum' => 0,
             'checksum' => 0
@@ -39,10 +34,8 @@ class AllocationCalculator extends Component
 
     public function updatedSelectedBusinessId($new_value)
     {
-        // $this->selectedBusinessId = $business_id;
-        $this->business = Business::find($new_value);
+        $this->selectedBusinessId = $new_value;
         $refresh;
-
     }
 
     public function updatedRevenue($new_value)
@@ -54,32 +47,29 @@ class AllocationCalculator extends Component
 
     public function render()
     {
-        $this->business = Business::find($this->selectedBusinessId) ?? auth()->user()->businesses->first();
+        $this->business = Business::find($this->selectedBusinessId) ?? $this->businesses->first();
+        $this->mappedAccounts = $this->mapBusinessAccounts();
         $this->netCashReceipts = $this->calculateNetCashReceipts();
+
         // calculate first to get base for realrevenue
         $this->mappedAccounts = $this->mapBusinessAccounts();
         $this->realRevenue = $this->calculateRealRevenue();
+
         // refresh after realrevenue
         $this->mappedAccounts = $this->mapBusinessAccounts();
+
+        // calculate checksums
         $this->allocationSum = $this->calculateAllocationSum();
-        $this->postrealPercentageSum = $this->getPercentageSum();
+        $this->postrealPercentageSum = $this->calculatePercentageSum();
+        $this->checksum = $this->allocationSum - $this->revenue;
+
         return view('livewire.allocation-calculator');
-    }
-
-    public function mapBusinessSelect()
-    {
-        $businesses = auth()->user()->businesses;
-
-        return $businesses->keyBy('id')->map(
-            function ($business) {
-                return $business->name;
-            }
-        );
     }
 
     public function mapBusinessAccounts()
     {
         $current_phase = $this->business->getPhaseIdByDate(today());
+
         return $this->business->accounts->mapToGroups(
             function($account) use ($current_phase)
             {
@@ -99,9 +89,19 @@ class AllocationCalculator extends Component
         )->toArray();
     }
 
+    public function mapBusinessSelect()
+    {
+        return $this->businesses->keyBy('id')->map(
+            function ($business) {
+                return $business->name;
+            }
+        );
+    }
+
     public function calculateNetCashReceipts()
     {
         // assumes only a single salestax account, will cause issues with multiple
+        // advised by client that this should not happen
         $salestaxPercent = ($this->mappedAccounts['salestax'][0]['percent'] / 100);
 
         return round($this->revenue / ($salestaxPercent + 1), 4);
@@ -149,8 +149,25 @@ class AllocationCalculator extends Component
         return array_sum($account_values);
     }
 
-    public function getPercentageSum()
+    public function calculatePercentageSum()
     {
-        return array_sum(data_get($this->mappedAccounts, 'postreal.*.percent'));
+        return array_sum(
+            data_get(
+                $this->mappedAccounts, 'postreal.*.percent'
+            )
+        );
+    }
+
+
+    public function getBusinessProperty()
+    {
+        return $this->selectedBusinessId
+            ? $this->businesses->first()
+            : Business::find($this->selectedBusinessId);
+    }
+
+    public function getBusinessesProperty()
+    {
+        return auth()->user()->businesses;
     }
 }

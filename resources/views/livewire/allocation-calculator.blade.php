@@ -56,7 +56,7 @@
             <td class="px-3 py-1">Real Revenue</td>
             <td class="px-3 py-1"></td>
             <td class="text-right px-3 py-1 bg-green-100">${{number_format($realRevenue, 0)}}</td>
-            <td class="text-right px-3 py-1">{{$postrealPercentageSum}}%</td>
+            <td class="text-right px-3 py-1 {!! ($postrealPercentageSum > 100 || $postrealPercentageSum < 100) ? 'text-red-500' : '';!!}">{{$postrealPercentageSum}}%</td>
             <td class="bg-black border border-black"></td>
         </tr>
         {{-- Post-real accounts --}}
@@ -71,11 +71,16 @@
         @endforeach
         {{-- Check sum --}}
         <tr class="bg-gray-100 border border-gray-200">
-            <td class="px-3 py-1">Allocation Sum</td>
+            <td class="px-3 py-1">
+                Allocation Sum<br>
+                Error Check
+            </td>
             <td></td>
             <td></td>
             <td></td>
-            <td class="text-right px-3 py-1">${{number_format($allocationSum, 2)}}</td>
+            <td class="text-right px-3 py-1">
+                ${{number_format($allocationSum, 2)}}<br>
+                <span class="{!! round($checksum, 2) == 0 ? '' : 'text-red-500';!!}">${{number_format($checksum, 2)}}</span>
         </tr>
 
 
