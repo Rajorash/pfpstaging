@@ -24,6 +24,11 @@ class BankAccount extends Model
         return $this->hasMany(AccountFlow::class, 'account_id');
     }
 
+    public function percentages()
+    {
+        return $this->hasMany(AllocationPercentage::class, 'bank_account_id');
+    }
+
     public static function type_list()
     {
         return [
@@ -50,6 +55,21 @@ class BankAccount extends Model
 
         return AllocationPercentage::where('bank_account_id', '=', $this->id)->get();
 
+    }
+
+    public function getAllAllocationPercentages($phaseId)
+    {
+        $all = BankAccount::where('business_id', $this->business_id)
+            ->with('percentages', function ($query) use ($phaseId) {
+                return $query->where('phase_id', $phaseId);
+            })
+            ->get()
+            ->map(function ($item) {
+                return ['id'=>$item->id, 'value' => [$item->type, count($item->percentages) ? $item->percentages[0]->percent : null]];
+            })->toArray()
+        ;
+
+        return array_column($all, 'value', 'id');
     }
 
     /**
@@ -103,16 +123,29 @@ class BankAccount extends Model
     public function getTransferAmount($date, $phase_id)
     {
         $revenue = $this->getRevenueByDate($this->business_id, $date);
-        $percent = $this->getAllocationPercentages($phase_id)
-            ->map(function($item) {
-                return isset($item['percent'])
-                    ? $item['percent']
-                    : 0;})
-            ->first();
+        $amount = 0;
+        $percents = $this->getAllAllocationPercentages($phase_id);
 
-        return ($revenue > 0 && is_numeric($percent))
-            ? round($revenue / ($percent + 1), 2)
-            : 0;
+        switch ($this->type)
+        {
+            case 'salestax':
+                $percent = $this->getAllocationPercentages($phase_id)
+                    ->map(function($item) {
+                        return isset($item['percent'])
+                            ? $item['percent']
+                            : 0;})
+                    ->first();
+
+                $amount = ($revenue > 0 && is_numeric($percent))
+                    ? round($revenue / ($percent + 1), 2)
+                    : 0;
+                break;
+
+            case 'pretotal':
+
+        }
+
+        return $amount;
     }
 
     /**
