@@ -1,5 +1,5 @@
 <div class="p-6 sm:px-20 bg-white border-b border-gray-200">
-    <div class="text-lg font-semibold text-center">Allocation Calculator for {{$this->business->name}}
+    <div class="text-lg font-semibold text-center">Allocation Calculator For {{$this->business->name}}
         <select class="rounded pl-3 pr-8 py-0 mx-3 my-0" name="" id=""  wire:model="selectedBusinessId">
             @foreach ($selectOptions as $business_id => $business_name)
             <option value="{{$business_id}}">{{$business_name}}</option>

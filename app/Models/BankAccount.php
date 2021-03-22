@@ -59,17 +59,19 @@ class BankAccount extends Model
 
     public function getAllAllocationPercentages($phaseId)
     {
-        $all = BankAccount::where('business_id', $this->business_id)
+        return BankAccount::where('business_id', $this->business_id)
             ->with('percentages', function ($query) use ($phaseId) {
                 return $query->where('phase_id', $phaseId);
             })
             ->get()
-            ->map(function ($item) {
-                return ['id'=>$item->id, 'value' => [$item->type, count($item->percentages) ? $item->percentages[0]->percent : null]];
-            })->toArray()
-        ;
-
-        return array_column($all, 'value', 'id');
+            ->mapToGroups(function ($item, $key) {
+                return [$item->type => [
+                    'id'=>$item->id,
+                    'val' => count($item->percentages) ? $item->percentages[0]->percent : null]
+                ];
+            })->map(function($a_item){
+                return array_column(collect($a_item)->toArray(), 'val', 'id');
+            })->toArray();
     }
 
     /**
@@ -101,6 +103,11 @@ class BankAccount extends Model
             })->sum();
     }
 
+    /**
+     * @param $businessId integer
+     * @param $date       string
+     * @return mixed
+     */
     public function getRevenueByDate($businessId, $date)
     {
         return self::where('type', 'revenue')->where('business_id',$businessId)
@@ -120,6 +127,11 @@ class BankAccount extends Model
             })->sum();
     }
 
+    /**
+     * @param $date     string
+     * @param $phase_id integer
+     * @return float|int
+     */
     public function getTransferAmount($date, $phase_id)
     {
         $revenue = $this->getRevenueByDate($this->business_id, $date);
@@ -129,20 +141,23 @@ class BankAccount extends Model
         switch ($this->type)
         {
             case 'salestax':
-                $percent = $this->getAllocationPercentages($phase_id)
-                    ->map(function($item) {
-                        return isset($item['percent'])
-                            ? $item['percent']
-                            : 0;})
-                    ->first();
-
-                $amount = ($revenue > 0 && is_numeric($percent))
-                    ? round($revenue / ($percent + 1), 2)
+                $amount = ($revenue > 0 )
+                    ? round($revenue - $revenue / ($percents[$this->type][$this->id] / 100 + 1), 4)
                     : 0;
                 break;
 
             case 'pretotal':
-
+                $salestax = data_get($percents, 'salestax');
+                $salestax = count($salestax) > 0 ? key($salestax) : null;
+//                $ncr = ($revenue > 0 && is_numeric($salestax)) ? $revenue / ($salestax / 100 + 1) : 0;
+                $ncr = 0;
+                if (is_integer($salestax)) {
+                    $allocation = Allocation::where('allocatable_id', $salestax)->where('allocation_date', $date)->first();
+                    $ncr = $revenue > 0 && $allocation ? $revenue - $allocation->amount : 0;
+                }
+                $amount = ($ncr > 0 && is_numeric($percents[$this->type][$this->id]))
+                    ? round($ncr - $ncr / ($percents[$this->type][$this->id] / 100 + 1), 4)
+                    : 0;
         }
 
         return $amount;

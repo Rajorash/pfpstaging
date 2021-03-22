@@ -65,8 +65,6 @@ class AccountTransfer extends Component
     {
         $this->amount = $this->account->getTransferAmount($this->date, $this->phase_id);
 
-//        $this->store();
-
         return $this->render();
     }
 

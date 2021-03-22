@@ -1,5 +1,5 @@
 <x-ui.input
-    class="block text-right"
+    class="block text-right account_value_{{substr($date,0,10)}}"
     :account="$account"
     :date="$date"
     wire:model="amount"

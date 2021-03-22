@@ -26,10 +26,9 @@ class AccountValue extends Component
         $this->date = $date;
         $this->allocation = self::getAllocation($date);
         $this->phase_id = $this->account->business->getPhaseIdByDate($date);
-        $this->amount = $this->account->getAllocationsTotalByDate($this->date, $this->phase_id) +
-            ($this->allocation
+        $this->amount = $this->allocation
             ? number_format($this->allocation->amount, 0, '.', '')
-            : 0);
+            : 0;
     }
 
     /**

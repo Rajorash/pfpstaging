@@ -16,7 +16,7 @@
         foreach ($datesRange as $a_date) {
             $onChange .= 'component'.++$cnt.' = document.getElementById(\''.$value_cell_key.$a_date.'\');
             lw_'.$cnt.'_component = window.livewire.find(component'.$cnt.'.getAttribute(\'wire:id\'));
-            setTimeout(function(){lw_'.$cnt.'_component.call(\'updateAccountValue\');}, '.(1200+(100*$cnt)).');
+            setTimeout(function(){console.log(\''.$value_cell_key.$a_date.'\'); lw_'.$cnt.'_component.call(\'updateAccountValue\');}, '.(1200+(100*$cnt)).');
             ';
         }
     } else {
@@ -26,7 +26,7 @@
             foreach ($datesRange as $a_date) {
                 $onChange .= 'component'.++$cnt.' = document.getElementById(\''.$value_cell_key.$a_date.'\');
                 lw_'.$cnt.'_component = window.livewire.find(component'.$cnt.'.getAttribute(\'wire:id\'));
-                setTimeout(function(){lw_'.$cnt.'_component.call(\'updateAccountValue\');}, '.(1200+(100*$cnt)).');
+                setTimeout(function(){console.log(\''.$value_cell_key.$a_date.'\'); lw_'.$cnt.'_component.call(\'updateAccountValue\');}, '.(1200+(100*$cnt)).');
                 ';
             }
         }
