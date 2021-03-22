@@ -5,5 +5,5 @@
     wire:model="amount"
     placeholder=0
     disabled="true"
-    id="account_transfer_{{$account->id}}_{{substr($date,0,10)}}"
+    :uid="$uid"
 />

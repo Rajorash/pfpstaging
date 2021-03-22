@@ -14,17 +14,23 @@ class AccountTransfer extends Component
     public $amount;
     public $date;
     public $phase_id = 1;
+    public $uid;
 
-    protected $listeners = ['updateAccountTransfer'];
+//    protected $listeners = ['updateAccountTransfer','testEvent'];
 
     //
     public function mount($accountId, $date)
     {
+        $this->uid = 'account_transfer_'.$accountId.'_'.substr($date,0,10);
         $this->accountId = $accountId;
         $this->account = BankAccount::find($accountId);
         $this->date = $date;
         $this->phase_id = $this->account->business->getPhaseIdByDate($date);
         $this->amount = $this->account->getTransferAmount($this->date, $this->phase_id);
+    }
+    protected function getListeners()
+    {
+        return ['updateAccountTransfer:'.$this->uid => 'updateAccountTransfer'];
     }
 
     /**

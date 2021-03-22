@@ -47,10 +47,16 @@ class Business extends Model
         return $phase->id;
     }
 
-    public function getSalestaxAccount()
+    /**
+     * Get id of the FIRST account of the given type for the current business
+     *
+     * @param $accountType string
+     * @return integer
+     */
+    public function getAccountIdByType($accountType)
     {
-        $salestax = $this->accounts()->where('type', '=', 'salestax')->first();
+        $account = $this->accounts()->where('type', '=', $accountType)->first();
 
-        return $salestax->id;
+        return $account->id;
     }
 }

@@ -57,6 +57,17 @@ class BankAccount extends Model
 
     }
 
+    /**
+     * Get all percentages for the current business on given phase
+     *
+     * @param $phaseId integer
+     * @return array
+     *  [<account_type> =>
+     *      [
+     *          <account_id> => <percentage_value>
+     *      ]
+     *  ]
+     */
     public function getAllAllocationPercentages($phaseId)
     {
         return BankAccount::where('business_id', $this->business_id)
@@ -134,9 +145,9 @@ class BankAccount extends Model
      */
     public function getTransferAmount($date, $phase_id)
     {
+        $percents = $this->getAllAllocationPercentages($phase_id);
         $revenue = $this->getRevenueByDate($this->business_id, $date);
         $amount = 0;
-        $percents = $this->getAllAllocationPercentages($phase_id);
 
         switch ($this->type)
         {
@@ -149,13 +160,13 @@ class BankAccount extends Model
             case 'pretotal':
                 $salestax = data_get($percents, 'salestax');
                 $salestax = count($salestax) > 0 ? key($salestax) : null;
-//                $ncr = ($revenue > 0 && is_numeric($salestax)) ? $revenue / ($salestax / 100 + 1) : 0;
-                $ncr = 0;
+                $ncr = ($revenue > 0 && is_numeric($salestax)) ? $revenue / ($salestax / 100 + 1) : 0;
+/*                $ncr = 0;
                 if (is_integer($salestax)) {
                     $allocation = Allocation::where('allocatable_id', $salestax)->where('allocation_date', $date)->first();
                     $ncr = $revenue > 0 && $allocation ? $revenue - $allocation->amount : 0;
-                }
-                $amount = ($ncr > 0 && is_numeric($percents[$this->type][$this->id]))
+                }*/
+                $amount = (/*$ncr > 0 &&*/ is_numeric($percents[$this->type][$this->id]))
                     ? round($ncr - $ncr / ($percents[$this->type][$this->id] / 100 + 1), 4)
                     : 0;
         }

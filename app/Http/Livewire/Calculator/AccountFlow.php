@@ -26,9 +26,6 @@ class AccountFlow extends Component
         $this->account_id = $this->flow->account_id;
         $this->date       = $date;
         $this->phase_id   = $this->flow->account->business->getPhaseIdByDate($date);
-        if ($this->flow->account->type == 'revenue') {
-            $this->accountIdToCall = $this->flow->account->business->getSalestaxAccount();
-        }
         $cdate = Carbon::parse($date);
         $this->datesRange = array_filter(collect($datesRange)->map(function ($item) use ($cdate) {
             if ($item >= $cdate) {
@@ -61,6 +58,12 @@ class AccountFlow extends Component
 
     public function updatedAmount() {
         $this->store();
+        $this->emit('updateAccountTotal:account_total_'.$this->account_id.'_'.substr($this->date,0,10),
+            [
+                'salestax_id' => $this->flow->account->business->getAccountIdByType('salestax'),
+                'pretotal_id' => $this->flow->account->business->getAccountIdByType('pretotal')
+            ]
+        );
     }
 
     public function store() {
