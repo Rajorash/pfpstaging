@@ -19,6 +19,7 @@ class AllocationCalculator extends Component
     public $selectOptions;
     public $selectedBusinessId;
     public Business $business;
+    public $businesses;
 
     public $mappedAccounts;
 
@@ -29,7 +30,6 @@ class AllocationCalculator extends Component
             'allocationSum' => 0,
             'checksum' => 0
         ]);
-
     }
 
     public function updatedSelectedBusinessId($new_value)
@@ -166,8 +166,4 @@ class AllocationCalculator extends Component
             : Business::find($this->selectedBusinessId);
     }
 
-    public function getBusinessesProperty()
-    {
-        return auth()->user()->businesses;
-    }
 }

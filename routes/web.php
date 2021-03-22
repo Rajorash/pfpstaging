@@ -39,12 +39,21 @@ Route::group(['middleware' => 'auth'], function () {
     // account balance entries.
     Route::get('/business/{business}/account-entry', 'BankAccountEntryController@edit');
     Route::patch('/business/{business}/account-entry', 'BankAccountEntryController@update');
-    // allocation calculator routing.
+
+    // Allocation Calculator
+    Route::get('/calculator', 'AllocationCalculatorController@index')->name('allocation-calculator');
+
+    // Projection forecast tool
+    //
+    // Projection Forecast data entry routing (formerly labeled as allocation calculator) routing.
     Route::get('/allocations', 'AllocationsController@index')->name('allocations');
     Route::get('/allocations/{business}', 'AllocationsController@allocations');
+
+    // Rollout Percentages routing
     Route::get('/allocations/{business}/percentages', 'AllocationsController@percentages');
     Route::post('/allocations/update', 'AllocationsController@updateAllocation');
     Route::post('/percentages/update', 'AllocationsController@updatePercentage');
+
     // Projections
     Route::get('/projections/{business}', 'ProjectionController@index')->name('projections');
 
