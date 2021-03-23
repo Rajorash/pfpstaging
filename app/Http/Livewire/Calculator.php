@@ -75,6 +75,10 @@ class Calculator extends Component
         }
 
         return $sortedAccounts;
+    }
 
+    public function updatedDaysPerPage()
+    {
+        $this->render();
     }
 }

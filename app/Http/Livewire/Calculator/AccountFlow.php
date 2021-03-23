@@ -4,6 +4,7 @@ namespace App\Http\Livewire\Calculator;
 
 use App\Models\AccountFlow as Flow;
 use App\Models\Allocation;
+use Illuminate\Http\Request;
 use Livewire\Component;
 use Carbon\Carbon;
 
@@ -57,13 +58,28 @@ class AccountFlow extends Component
     }
 
     public function updatedAmount() {
-        $this->store();
-        $this->emit('updateAccountTotal:account_total_'.$this->account_id.'_'.substr($this->date,0,10),
-            [
-                'salestax_id' => $this->flow->account->business->getAccountIdByType('salestax'),
-                'pretotal_id' => $this->flow->account->business->getAccountIdByType('pretotal')
-            ]
-        );
+
+        $valid = $this->validate([
+            'amount' => 'present|numeric|nullable'
+        ]);
+
+        if (!$valid['amount'] && is_object($this->allocation)) {
+            $this->allocation->delete();
+            return ;
+        }
+
+        if (is_numeric($this->amount)) {
+            $this->store();
+            $this->emit('updateAccountTotal:account_total_'.$this->account_id.'_'.substr($this->date, 0, 10),
+                [
+                    'salestax_id' => $this->flow->account->business->getAccountIdByType('salestax'),
+                    'pretotal_id' => $this->flow->account->business->getAccountIdByType('pretotal'),
+                    'dates_range' => $this->datesRange
+                ]
+            );
+        } else {
+
+        }
     }
 
     public function store() {

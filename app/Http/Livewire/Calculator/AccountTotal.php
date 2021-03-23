@@ -45,6 +45,13 @@ class AccountTotal extends Component
         $this->emit('updateAccountTransfer:account_transfer_'.$params['salestax_id'].'_'.substr($this->date,0,10));
         $this->emit('updateAccountTransfer:account_transfer_'.$params['pretotal_id'].'_'.substr($this->date,0,10));
 
+        if (count($params['dates_range']) > 0) {
+            foreach ($params['dates_range'] as $aDate) {
+                $this->emit('updateAccountValue:account_value_'.$params['salestax_id'].'_'.$aDate);
+                $this->emit('updateAccountValue:account_value_'.$params['pretotal_id'].'_'.$aDate);
+            }
+        }
+
         return $this->render();
     }
 

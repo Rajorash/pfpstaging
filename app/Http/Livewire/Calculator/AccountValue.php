@@ -16,11 +16,11 @@ class AccountValue extends Component
     public $amount;
     public $date;
     public $phase_id = 1;
+    public $uid;
 
-    protected $listeners = ['updateAccountValue'];
-
-    public function mount($accountId, $date) {
-
+    public function mount($accountId, $date)
+    {
+        $this->uid = 'account_value_'.$accountId.'_'.substr($date,0,10);
         $this->accountId = $accountId;
         $this->account = BankAccount::find($accountId);
         $this->date = $date;
@@ -77,6 +77,11 @@ class AccountValue extends Component
 
         $this->account->allocate(...$values);
 
+    }
+
+    protected function getListeners()
+    {
+        return ['updateAccountValue:'.$this->uid => 'updateAccountValue'];
     }
 
     public function updateAccountValue()
