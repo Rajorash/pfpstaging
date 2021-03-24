@@ -59,4 +59,17 @@ class Business extends Model
 
         return $account->id;
     }
+
+    /**
+     * Get IDs of All accounts of the given type for the current business
+     *
+     * @param $accountType
+     * @return array
+     */
+    public function getAllAccountIdsByType($accountType)
+    {
+        $accountIds = $this->accounts()->where('type', '=', $accountType)->pluck('id')->toArray();
+
+        return $accountIds;
+    }
 }

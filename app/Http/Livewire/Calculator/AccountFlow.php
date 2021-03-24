@@ -74,6 +74,7 @@ class AccountFlow extends Component
                 [
                     'salestax_id' => $this->flow->account->business->getAccountIdByType('salestax'),
                     'pretotal_id' => $this->flow->account->business->getAccountIdByType('pretotal'),
+                    'prereal_ids' => $this->flow->account->business->getAllAccountIdsByType('prereal'),
                     'dates_range' => $this->datesRange
                 ]
             );

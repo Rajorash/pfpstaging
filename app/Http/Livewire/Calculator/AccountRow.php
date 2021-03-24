@@ -13,7 +13,7 @@ class AccountRow extends Component
     public $first;
     public $type;
 
-    // protected $listeners = ['calculatorRerender' => '$refresh'];
+//    protected $listeners = ['calculatorRerender' => 'calculatorRerender'];
 
     public function render()
     {

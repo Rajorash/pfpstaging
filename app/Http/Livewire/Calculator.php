@@ -11,7 +11,7 @@ class Calculator extends Component
 {
     use WithPagination;
 
-    public $daysPerPage = 14;
+    public $daysPerPage;
     public $startDate;
     public $dateInput;
     public $dates;
@@ -21,6 +21,7 @@ class Calculator extends Component
     public $types = ['revenue', 'pretotal', 'salestax', 'prereal', 'postreal'];
 
     public function mount() {
+        $this->daysPerPage = 14;
     }
 
     public function render($startDate = null, $dateInput = null)
@@ -34,8 +35,8 @@ class Calculator extends Component
         $this->accounts = $this->sortAccounts();
         $this->dates = $this->getDates($startDate);
 
-        $this->emit('calculatorRerender');
-        return view('livewire.calculator', ['dates' => $this->dates, 'accounts' => $this->accounts]);
+//        $this->emit('calculatorRerender', $this->dates);
+        return view('components.calculator.table', ['dates' => $this->dates, 'accounts' => $this->accounts]);
     }
 
     /**
