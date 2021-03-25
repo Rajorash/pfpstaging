@@ -110,9 +110,7 @@ class AccountValue extends Component
      * @return void
      */
     public function updatedAmount() {
-        $s =1;
-//        $this->store();
-//        $this->emit('updateAccountTotal');
+        $this->store();
     }
 
 }

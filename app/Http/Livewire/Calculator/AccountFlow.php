@@ -72,10 +72,11 @@ class AccountFlow extends Component
             $this->store();
             $this->emit('updateAccountTotal:account_total_'.$this->account_id.'_'.substr($this->date, 0, 10),
                 [
-                    'salestax_id' => $this->flow->account->business->getAccountIdByType('salestax'),
-                    'pretotal_id' => $this->flow->account->business->getAccountIdByType('pretotal'),
-                    'prereal_ids' => $this->flow->account->business->getAllAccountIdsByType('prereal'),
-                    'dates_range' => $this->datesRange
+                    'salestax_id'  => $this->flow->account->business->getAccountIdByType('salestax'),
+                    'pretotal_id'  => $this->flow->account->business->getAccountIdByType('pretotal'),
+                    'prereal_ids'  => $this->flow->account->business->getAllAccountIdsByType('prereal'),
+                    'postreal_ids' => $this->flow->account->business->getAllAccountIdsByType('postreal'),
+                    'dates_range'  => $this->datesRange
                 ]
             );
         } else {

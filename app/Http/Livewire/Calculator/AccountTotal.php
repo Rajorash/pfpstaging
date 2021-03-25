@@ -47,13 +47,18 @@ class AccountTotal extends Component
         foreach ($params['prereal_ids'] as $prerealId) {
             $this->emit('updateAccountTransfer:account_transfer_'.$prerealId.'_'.substr($this->date,0,10));
         }
-
+        foreach ($params['postreal_ids'] as $postrealId) {
+            $this->emit('updateAccountTransfer:account_transfer_'.$postrealId.'_'.substr($this->date,0,10));
+        }
         if (count($params['dates_range']) > 0) {
             foreach ($params['dates_range'] as $aDate) {
                 $this->emit('updateAccountValue:account_value_'.$params['salestax_id'].'_'.$aDate);
                 $this->emit('updateAccountValue:account_value_'.$params['pretotal_id'].'_'.$aDate);
                 foreach ($params['prereal_ids'] as $prerealId) {
                     $this->emit('updateAccountValue:account_value_'.$prerealId.'_'.$aDate);
+                }
+                foreach ($params['postreal_ids'] as $postrealId) {
+                    $this->emit('updateAccountValue:account_value_'.$postrealId.'_'.$aDate);
                 }
             }
         }

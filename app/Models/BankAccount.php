@@ -45,6 +45,10 @@ class BankAccount extends Model
         return $this->morphMany('App\Models\Allocation', 'allocatable');
     }
 */
+    /**
+     * @param  null  $phase_id
+     * @return mixed
+     */
     public function getAllocationPercentages($phase_id = null)
     {
 
@@ -115,6 +119,8 @@ class BankAccount extends Model
     }
 
     /**
+     * Get revenue (income) for whole business on a given date
+     *
      * @param $businessId integer
      * @param $date       string
      * @return mixed
@@ -139,6 +145,8 @@ class BankAccount extends Model
     }
 
     /**
+     * Get the amount on Transfer In for different account types
+     *
      * @param $date     string
      * @param $phase_id integer
      * @return float|int
@@ -146,32 +154,70 @@ class BankAccount extends Model
     public function getTransferAmount($date, $phase_id)
     {
         $percents = $this->getAllAllocationPercentages($phase_id);
-        $revenue = $this->getRevenueByDate($this->business_id, $date);
+        $income = $this->getRevenueByDate($this->business_id, $date);
         $amount = 0;
 
+        // NSP = $income / ($percents['salestax'][<account id>] / 100 + 1)
+        // Tax amount = $income - NSP
         switch ($this->type)
         {
-            case 'salestax':
-                $amount = ($revenue > 0 )
-                    ? round($revenue - $revenue / ($percents[$this->type][$this->id] / 100 + 1), 4)
+            case 'salestax': // Tax amt
+                $amount = ($income > 0 )
+                    ? round($income - $income / ($percents[$this->type][$this->id] / 100 + 1), 4)
                     : 0;
                 break;
 
             case 'pretotal':
                 $salestax = data_get($percents, 'salestax');
-                $salestax = count($salestax) > 0 ? key($salestax) : null;
-                $ncr = ($revenue > 0 && is_numeric($salestax)) ? $revenue / ($salestax / 100 + 1) : 0;
-/*                $ncr = 0;
-                if (is_integer($salestax)) {
-                    $allocation = Allocation::where('allocatable_id', $salestax)->where('allocation_date', $date)->first();
-                    $ncr = $revenue > 0 && $allocation ? $revenue - $allocation->amount : 0;
-                }*/
-                $amount = (/*$ncr > 0 &&*/ is_numeric($percents[$this->type][$this->id]))
-                    ? round($ncr - $ncr / ($percents[$this->type][$this->id] / 100 + 1), 4)
+                $salestax = count($salestax) > 0 ? $salestax[key($salestax)] : null;
+                $nsp = ($income > 0 && is_numeric($salestax)) ? $income / ($salestax / 100 + 1) : 0;
+                $amount = (is_numeric($percents[$this->type][$this->id]))
+                    ? round($nsp * ($percents[$this->type][$this->id] / 100), 4)
                     : 0;
+                break;
+
+            case 'prereal':
+                $prereal = $this->getPrePrereal($income, $percents);
+
+                $amount = (is_numeric($percents[$this->type][$this->id]))
+                        ? round($prereal * ($percents[$this->type][$this->id] / 100), 4)
+                        : 0;
+                break;
+
+            case 'postreal':
+                $prereal = $this->getPrePrereal($income, $percents);
+                $prereal_percents = array_sum($percents['prereal']);
+
+                // Real Revenue = $prereal - $prereal * ($prereal_percents / 100)
+                $amount = (is_numeric($percents[$this->type][$this->id]))
+                    ? round(($prereal - $prereal * ($prereal_percents / 100)) * ($percents[$this->type][$this->id] / 100), 4)
+                    : 0;
+                break;
         }
 
         return $amount;
+    }
+
+    /**
+     * Get the value of revenue after excluding sales tax and saving to drip account
+     *
+     * @param $income
+     * @param $percents
+     * @return float|int
+     */
+    private function getPrePrereal($income, $percents)
+    {
+        $salestax = data_get($percents, 'salestax');
+        $salestax = count($salestax) > 0 ? $salestax[key($salestax)] : null;
+        $nsp = ($income > 0 && is_numeric($salestax)) ? $income / ($salestax / 100 + 1) : 0;
+
+        $pretotal = data_get($percents, 'pretotal');
+        $pretotal = count($pretotal) > 0 ? $pretotal[key($pretotal)] : null;
+        $pretotal_amt = (is_numeric($pretotal))
+            ? round($nsp * ($pretotal / 100), 4)
+            : 0;
+
+        return $nsp - $pretotal_amt;
     }
 
     /**

@@ -16,9 +16,6 @@ class AccountTransfer extends Component
     public $phase_id = 1;
     public $uid;
 
-//    protected $listeners = ['updateAccountTransfer','testEvent'];
-
-    //
     public function mount($accountId, $date)
     {
         $this->uid = 'account_transfer_'.$accountId.'_'.substr($date,0,10);
