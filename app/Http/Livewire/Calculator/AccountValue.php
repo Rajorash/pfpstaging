@@ -4,11 +4,14 @@ namespace App\Http\Livewire\Calculator;
 
 use App\Models\Allocation;
 use App\Models\BankAccount;
+use App\Traits\GettersTrait;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Cache;
 use Livewire\Component;
 
 class AccountValue extends Component
 {
+    use GettersTrait;
 
     public $accountId;
     public BankAccount $account;
@@ -20,9 +23,10 @@ class AccountValue extends Component
 
     public function mount($accountId, $date)
     {
-        $this->uid = 'account_value_'.$accountId.'_'.substr($date,0,10);
+        $this->uid = 'account_value_'.$accountId.'_'.substr($date, 0, 10);
         $this->accountId = $accountId;
-        $this->account = BankAccount::find($accountId);
+//        $this->account = BankAccount::find($accountId);
+        $this->account = $this->getBackAccount($accountId);
         $this->date = $date;
         $this->allocation = self::getAllocation($date);
         $this->phase_id = $this->account->business->getPhaseIdByDate($date);
@@ -38,9 +42,15 @@ class AccountValue extends Component
      * @param [type] $date
      * @return Allocation|null
      */
-    private function getAllocation($date) {
+    private function getAllocation($date)
+    {
+        $key = 'BankAccount_'.$date;
+        $allocation = Cache::get($key);
 
-        $allocation = $this->account->getAllocationByDate($date);
+        if ($allocation === null) {
+            $allocation = $this->account->getAllocationByDate($date);
+            Cache::put($key, $allocation);
+        }
 
         return $allocation ?? null;
     }
@@ -60,7 +70,8 @@ class AccountValue extends Component
      *
      * @return void
      */
-    public function store() {
+    public function store()
+    {
         $this->validate([
             'amount' => 'numeric|nullable'
         ]);
@@ -91,16 +102,18 @@ class AccountValue extends Component
 
         $previousDate = clone $this->date;
         $previousAllocation = self::getAllocation($previousDate->subDays(1));
-        if($previousAllocation) {
+        if ($previousAllocation) {
             if ($this->amount != ($currentAmount + $previousAllocation->amount)) {
                 $this->amount = $previousAllocation->amount + $currentAmount;
                 $this->store();
                 return $this->render();
             }
-        } else if ($this->amount != $currentAmount) {
-            $this->amount = $currentAmount;
-            $this->store();
-            return $this->render();
+        } else {
+            if ($this->amount != $currentAmount) {
+                $this->amount = $currentAmount;
+                $this->store();
+                return $this->render();
+            }
         }
     }
 
@@ -109,7 +122,8 @@ class AccountValue extends Component
      *
      * @return void
      */
-    public function updatedAmount() {
+    public function updatedAmount()
+    {
         $this->store();
     }
 

@@ -45,13 +45,11 @@ class TaxRateController extends Controller
         ]);
 
         $bank_account = BankAccount::find($data['account_id']);
-        if (!$bank_account)
-        {
+        if (!$bank_account) {
             return response('Account not found', 404);
         }
 
-        if (!$bank_account->taxRate)
-        {
+        if (!$bank_account->taxRate) {
             $taxrate = new TaxRate();
             $taxrate->rate = $data['rate'];
             $taxrate->bank_account_id = $data['account_id'];

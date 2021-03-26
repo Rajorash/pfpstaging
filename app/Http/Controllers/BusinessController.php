@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Traits\GettersTrait;
 use Auth;
 use App\Models\Business;
 use Illuminate\Http\Request;
 
 class BusinessController extends Controller
 {
+    use GettersTrait;
+
     /**
      * Display a listing of the resource.
      *
@@ -15,13 +18,13 @@ class BusinessController extends Controller
      */
     public function index()
     {
-        $businesses = Business::all();
+        $businesses = $this->getBusinessAll();
 
         $filtered = $businesses->filter( function ($business) {
             return Auth::user()->can('view', $business);
         })->values();
-        return view('business.list', ['businesses' => $filtered]);
 
+        return view('business.list', ['businesses' => $filtered]);
     }
 
     /**

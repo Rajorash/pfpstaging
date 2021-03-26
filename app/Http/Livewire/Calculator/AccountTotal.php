@@ -4,11 +4,14 @@ namespace App\Http\Livewire\Calculator;
 
 use App\Models\Allocation;
 use App\Models\BankAccount;
+use App\Traits\GettersTrait;
 use Livewire\Component;
 use Carbon\Carbon;
 
 class AccountTotal extends Component
 {
+    use GettersTrait;
+
     public $accountId;
     public BankAccount $account;
     public $allocation;
@@ -19,9 +22,10 @@ class AccountTotal extends Component
 
     public function mount($accountId, $date)
     {
-        $this->uid = 'account_total_'.$accountId.'_'.substr($date,0,10);
+        $this->uid = 'account_total_'.$accountId.'_'.substr($date, 0, 10);
         $this->accountId = $accountId;
-        $this->account = BankAccount::find($accountId);
+//        $this->account = BankAccount::find($accountId);
+        $this->account = $this->getBackAccount($accountId);
         $this->date = $date;
         $this->phase_id = $this->account->business->getPhaseIdByDate($date);
         $this->amount = $this->account->getAllocationsTotalByDate($this->date, $this->phase_id);
@@ -42,13 +46,13 @@ class AccountTotal extends Component
         $this->amount = $this->account->getAllocationsTotalByDate($this->date, $this->phase_id);
         $this->store();
 
-        $this->emit('updateAccountTransfer:account_transfer_'.$params['salestax_id'].'_'.substr($this->date,0,10));
-        $this->emit('updateAccountTransfer:account_transfer_'.$params['pretotal_id'].'_'.substr($this->date,0,10));
+        $this->emit('updateAccountTransfer:account_transfer_'.$params['salestax_id'].'_'.substr($this->date, 0, 10));
+        $this->emit('updateAccountTransfer:account_transfer_'.$params['pretotal_id'].'_'.substr($this->date, 0, 10));
         foreach ($params['prereal_ids'] as $prerealId) {
-            $this->emit('updateAccountTransfer:account_transfer_'.$prerealId.'_'.substr($this->date,0,10));
+            $this->emit('updateAccountTransfer:account_transfer_'.$prerealId.'_'.substr($this->date, 0, 10));
         }
         foreach ($params['postreal_ids'] as $postrealId) {
-            $this->emit('updateAccountTransfer:account_transfer_'.$postrealId.'_'.substr($this->date,0,10));
+            $this->emit('updateAccountTransfer:account_transfer_'.$postrealId.'_'.substr($this->date, 0, 10));
         }
         if (count($params['dates_range']) > 0) {
             foreach ($params['dates_range'] as $aDate) {
@@ -71,7 +75,8 @@ class AccountTotal extends Component
      *
      * @return void
      */
-    public function store() {
+    public function store()
+    {
         $this->validate([
             'amount' => 'numeric|nullable'
         ]);

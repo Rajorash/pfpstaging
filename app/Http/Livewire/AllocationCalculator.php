@@ -4,6 +4,7 @@ namespace App\Http\Livewire;
 
 use App\Models\Business;
 use App\Models\AllocationPercentage;
+use Illuminate\Support\Facades\Cache;
 use Livewire\Component;
 
 class AllocationCalculator extends Component
@@ -45,9 +46,22 @@ class AllocationCalculator extends Component
 
     }
 
+    private function getBusiness($selectedBusinessId)
+    {
+        $key = 'getBusiness_'.$selectedBusinessId;
+        $getBusiness = Cache::get($key);
+
+        if ($getBusiness === null) {
+            $getBusiness = Business::find($selectedBusinessId);
+            Cache::put($key, $getBusiness);
+        }
+
+        return $getBusiness;
+    }
+
     public function render()
     {
-        $this->business = Business::find($this->selectedBusinessId) ?? $this->businesses->first();
+        $this->business = $this->getBusiness($this->selectedBusinessId) ?? $this->businesses->first();
         $this->mappedAccounts = $this->mapBusinessAccounts();
         $this->netCashReceipts = $this->calculateNetCashReceipts();
 
@@ -66,25 +80,46 @@ class AllocationCalculator extends Component
         return view('livewire.allocation-calculator');
     }
 
+    private function getAllocationPercentage($current_phase, $account_id)
+    {
+        $key = 'getAllocationPercentage_'.$current_phase.'_'.$account_id;
+        $getAllocationPercentage = Cache::get($key);
+
+        if ($getAllocationPercentage === null) {
+            $getAllocationPercentage = AllocationPercentage::where([
+                ['phase_id', $current_phase],
+                ['bank_account_id', $account_id]
+            ])->value('percent');
+
+            Cache::put($key, $getAllocationPercentage);
+        }
+
+        return $getAllocationPercentage;
+    }
+
     public function mapBusinessAccounts()
     {
         $current_phase = $this->business->getPhaseIdByDate(today());
 
         return $this->business->accounts->mapToGroups(
-            function($account) use ($current_phase)
-            {
-                $percent = AllocationPercentage::where([
-                    ['phase_id', $current_phase],['bank_account_id', $account->id]
-                ])->value('percent') ?? 0;
+            function ($account) use ($current_phase) {
+//                $percent = AllocationPercentage::where([
+//                        ['phase_id', $current_phase],
+//                        ['bank_account_id', $account->id]
+//                    ])->value('percent') ?? 0;
+
+                $percent = $this->getAllocationPercentage($current_phase, $account->id);
 
                 $value = $this->calculateAllocation($account->type, $percent);
 
-                return [$account->type => [
-                    'id' => $account['id'],
-                    'name' => $account['name'],
-                    'percent' => $percent,
-                    'value' => $value,
-                ]];
+                return [
+                    $account->type => [
+                        'id' => $account['id'],
+                        'name' => $account['name'],
+                        'percent' => $percent,
+                        'value' => $value,
+                    ]
+                ];
             }
         )->toArray();
     }
@@ -158,12 +193,12 @@ class AllocationCalculator extends Component
         );
     }
 
-
     public function getBusinessProperty()
     {
         return $this->selectedBusinessId
             ? $this->businesses->first()
-            : Business::find($this->selectedBusinessId);
+            : $this->getBusiness($this->selectedBusinessId);
+//            : Business::find($this->selectedBusinessId);
     }
 
 }

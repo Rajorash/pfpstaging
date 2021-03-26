@@ -8,12 +8,18 @@ use App\Models\AllocationPercentage;
 use App\Models\BankAccount;
 use App\Models\Business;
 use App\Models\Phase;
+use App\Traits\GettersTrait;
 use Carbon\Carbon as Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 
 class AllocationsController extends Controller
 {
+    use GettersTrait;
+
+    const CACHE_KEY_PERCENTAGE = 'buildPercentageValues';
+
     /**
      * Display a listing of the businesses the authorised user can see to select from
      *
@@ -21,7 +27,7 @@ class AllocationsController extends Controller
      */
     public function index()
     {
-        $businesses = Business::all();
+        $businesses = $this->getBusinessAll();
 
         $filtered = $businesses->filter(function ($business) {
             return Auth::user()->can('view', $business);
@@ -29,7 +35,6 @@ class AllocationsController extends Controller
 
         return view('business.list', ['businesses' => $filtered]);
     }
-
 
     /**
      * Show the allocations for the selected business
@@ -50,7 +55,7 @@ class AllocationsController extends Controller
 
 //        $allocations = $business->allocations()->sortBy('allocation_date');
 
-        $businessObj = Business::find($business->id)->with(['accounts'])->first();
+        $businessObj = $this->getBusinessById($business->id);
         $allocations = $businessObj->allocations()->sortBy('allocation_date');
         $allocatables = array();
         // $taxRates = array();
@@ -88,19 +93,23 @@ class AllocationsController extends Controller
 
     public static function buildPhaseDates(array $dates, Business $business)
     {
-
         $phaseDates = array();
 
-        $phases = Phase::where('business_id', '=', $business->id)->orderBy('end_date')->get();
+//        $phases = Phase::where('business_id', '=', $business->id)->orderBy('end_date')->get();
+        $key = 'getPhaseById_'.$business->id;
+        $phases = Cache::get($key);
+
+        if ($phases === null) {
+            $phases = Phase::where('business_id', '=', $business->id)->orderBy('end_date')->get();
+            Cache::put($key, $phases);
+        }
 
         $currentEndDate = 0;
         foreach ($phases as $phase) {
             foreach ($dates as $date) {
-
                 if (Carbon::parse($date) <= Carbon::parse($phase->end_date) && Carbon::parse($date) > Carbon::parse($currentEndDate)) {
                     $phaseDates[$date] = $phase->id;
                 }
-
             }
             $currentEndDate = $phase->end_date;
         }
@@ -110,7 +119,6 @@ class AllocationsController extends Controller
 
     public static function buildAllocationPercentages(Business $business)
     {
-
         $allocationPercentages = [];
 
         foreach ($business->accounts as $account) {
@@ -125,7 +133,6 @@ class AllocationsController extends Controller
         }
 
         return $allocationPercentages;
-
     }
 
     /**
@@ -144,7 +151,8 @@ class AllocationsController extends Controller
         // find allocation matching type and id
         $allocations = Allocation::where('allocatable_id', '=', $valid['id'])
             ->where('allocatable_type', 'like', "%".$valid['allocation_type'])
-            ->where('allocation_date', '=', $valid['allocation_date'])->get();
+            ->where('allocation_date', '=', $valid['allocation_date'])
+            ->get();
 
         // if there is no existing allocation, insert one.
         if ($allocations->count() < 1) {
@@ -172,6 +180,7 @@ class AllocationsController extends Controller
         // if amount is empty remove the allocation -- please note that 0 is a valid amount
         if (!$valid['amount']) {
             $allocation->delete();
+
             return response()->JSON([
                 "msg" => "allocation successfully deleted."
             ]);
@@ -217,10 +226,23 @@ class AllocationsController extends Controller
         }
 
         foreach ($searchArray as $type => $idsArray) {
-            $allocation = Allocation::whereIn('allocation_date', $dates)
-                ->whereIn('allocatable_id', $idsArray)
-                ->where('allocatable_type', 'like', '%'.$type)
-                ->get()->toArray();
+
+            $key = 'Allocation_'.implode('|', $dates).'_'.implode('|', $idsArray).'_'.$type;
+
+            $allocation = Cache::get($key);
+
+            if ($allocation === null) {
+                $allocation = Allocation::whereIn('allocation_date', $dates)
+                    ->whereIn('allocatable_id', $idsArray)
+                    ->where('allocatable_type', 'like', '%'.$type)
+                    ->get()->toArray();
+                Cache::put($key, $allocation);
+            }
+//
+//            $allocation = Allocation::whereIn('allocation_date', $dates)
+//                ->whereIn('allocatable_id', $idsArray)
+//                ->where('allocatable_type', 'like', '%'.$type)
+//                ->get()->toArray();
 
             if (count($allocation)) {
                 foreach ($allocation as $row) {
@@ -256,16 +278,19 @@ class AllocationsController extends Controller
      */
     public function updatePercentage(Request $request)
     {
-
         $valid = $request->validate([
             'phase_id' => 'required|numeric',
             'bank_account_id' => 'required|numeric',
             'percent' => 'present|numeric|min:0|max:100|nullable'
         ]);
 
+        Cache::forget(self::CACHE_KEY_PERCENTAGE);
+
         // find allocation matching type and id
-        $percentages = AllocationPercentage::where('phase_id', '=', $valid['phase_id'])->where('bank_account_id', '=',
-            $valid['bank_account_id'])->get();
+        $percentages = AllocationPercentage::where('phase_id', '=', $valid['phase_id'])
+            ->where('bank_account_id', '=',
+                $valid['bank_account_id'])
+            ->get();
 
         // if there is no existing allocation, insert one.
         if ($percentages->isEmpty()) {
@@ -283,7 +308,6 @@ class AllocationsController extends Controller
             return response()->JSON([
                 "msg" => "created new percentage value"
             ]);
-
         }
 
         // return response()->JSON($percentages);
@@ -292,6 +316,7 @@ class AllocationsController extends Controller
         // if percent is empty remove the percentage -- please note that 0 is a valid percent
         if (!$valid['percent']) {
             $percentage->delete();
+
             return response()->JSON([
                 "msg" => "percentage successfully deleted."
             ]);
@@ -312,17 +337,50 @@ class AllocationsController extends Controller
     {
         $phase_ids = $business->rollout->pluck('id');
 
-        $percentages = AllocationPercentage::whereIn('phase_id', $phase_ids)->get([
-            'phase_id', 'bank_account_id', 'percent'
-        ]);
+//        $key = 'buildPercentageValues_'.$phase_ids->implode('|');
 
-        $percentageValues = $percentages->groupBy(['bank_account_id', 'phase_id'])->toArray();
+        $percentages = Cache::get(self::CACHE_KEY_PERCENTAGE);
+
+        if ($percentages === null) {
+            $percentages = AllocationPercentage::whereIn('phase_id', $phase_ids)->get([
+                'phase_id', 'bank_account_id', 'percent'
+            ]);
+            Cache::put(self::CACHE_KEY_PERCENTAGE, $percentages);
+        }
+
+//         $percentageValues = $percentages->groupBy(['bank_account_id', 'phase_id'])->toArray();
         // foreach($percentages as $entry)
         // {
         //     $percentageValues[$entry->bank_account_id][$entry->phase_id] = $entry->percent;
         // }
 
         return $percentages;
+    }
+
+    private function getBusinessById($business_id)
+    {
+        $key = 'getBusinessById_'.$business_id;
+        $getBusinessById = Cache::get($key);
+
+        if ($getBusinessById === null) {
+            $getBusinessById = Business::find($business_id)->with(['accounts'])->first();
+            Cache::put($key, $getBusinessById);
+        }
+
+        return $getBusinessById;
+    }
+
+    private function getPhaseById($business_id)
+    {
+        $key = 'getPhaseById_'.$business_id;
+        $getPhaseById = Cache::get($key);
+
+        if ($getPhaseById === null) {
+            $getPhaseById = Phase::where('business_id', '=', $business_id)->orderBy('end_date')->get();
+            Cache::put($key, $getPhaseById);
+        }
+
+        return $getPhaseById;
     }
 
 }

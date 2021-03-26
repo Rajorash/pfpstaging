@@ -3,11 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\Business;
+use App\Traits\GettersTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 
 class AllocationCalculatorController extends Controller
 {
+    use GettersTrait;
+
     /**
      * render the view of the allocation calculator
      *
@@ -15,7 +19,7 @@ class AllocationCalculatorController extends Controller
      */
     public function index()
     {
-        $businesses = Business::all();
+        $businesses = $this->getBusinessAll();
 
         $filtered = $businesses->filter(function ($business) {
             return Auth::user()->can('view', $business);

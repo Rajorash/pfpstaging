@@ -71,7 +71,6 @@ class BankAccountController extends Controller
         $account->save();
 
         return redirect("business/".$business->id."/accounts");
-
     }
 
     /**
@@ -97,7 +96,6 @@ class BankAccountController extends Controller
         $flow->save();
 
         return redirect("business/".$account->business->id."/accounts");
-
     }
 
     /**
@@ -191,7 +189,6 @@ class BankAccountController extends Controller
      */
     public function destroy(Business $business, BankAccount $account)
     {
-
         $this->authorize('view', $business);
 
         $account->delete();
@@ -206,7 +203,6 @@ class BankAccountController extends Controller
      */
     public function destroyFlow(BankAccount $account, AccountFlow $flow)
     {
-
         $this->authorize('view', $account->business);
 
         $flow->delete();

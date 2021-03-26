@@ -3,15 +3,16 @@
 namespace App\Models;
 
 use App\Models\Allocation as Allocation;
-use App\Traits\Allocatable;
 use App\Models\AllocationPercentage;
+use App\Traits\Allocatable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
 
 class BankAccount extends Model
 {
     use Allocatable;
 
-    protected $fillable = ['name','type'];
+    protected $fillable = ['name', 'type'];
     protected $with = ['flows'];
 
     public function business()
@@ -39,25 +40,43 @@ class BankAccount extends Model
             5 => 'postreal'
         ];
     }
-/*
-    public function allocations()
-    {
-        return $this->morphMany('App\Models\Allocation', 'allocatable');
-    }
-*/
+    /*
+        public function allocations()
+        {
+            return $this->morphMany('App\Models\Allocation', 'allocatable');
+        }
+    */
     /**
      * @param  null  $phase_id
      * @return mixed
      */
     public function getAllocationPercentages($phase_id = null)
     {
+        $key = 'getAllocationPercentages_'.$phase_id.'|'.$this->id;
 
-        if($phase_id)
-        {
-            return AllocationPercentage::where('bank_account_id', '=', $this->id)->where('phase_id', '=', $phase_id)->get();
+        $getAllocationPercentages = Cache::get($key);
+
+        if ($getAllocationPercentages === null) {
+            if ($phase_id) {
+                $getAllocationPercentages = AllocationPercentage
+                    ::where('bank_account_id', '=', $this->id)
+                    ->where('phase_id', '=', $phase_id)
+                    ->get();
+            } else {
+                $getAllocationPercentages = AllocationPercentage
+                    ::where('bank_account_id', '=', $this->id)
+                    ->get();
+            }
+            Cache::put($key, $getAllocationPercentages);
         }
+        return $getAllocationPercentages;
 
-        return AllocationPercentage::where('bank_account_id', '=', $this->id)->get();
+//        if($phase_id)
+//        {
+//            return AllocationPercentage::where('bank_account_id', '=', $this->id)->where('phase_id', '=', $phase_id)->get();
+//        }
+//
+//        return AllocationPercentage::where('bank_account_id', '=', $this->id)->get();
 
     }
 
@@ -74,19 +93,30 @@ class BankAccount extends Model
      */
     public function getAllAllocationPercentages($phaseId)
     {
-        return BankAccount::where('business_id', $this->business_id)
-            ->with('percentages', function ($query) use ($phaseId) {
-                return $query->where('phase_id', $phaseId);
-            })
-            ->get()
-            ->mapToGroups(function ($item, $key) {
-                return [$item->type => [
-                    'id'=>$item->id,
-                    'val' => count($item->percentages) ? $item->percentages[0]->percent : null]
-                ];
-            })->map(function($a_item){
-                return array_column(collect($a_item)->toArray(), 'val', 'id');
-            })->toArray();
+        $key = 'getAllAllocationPercentages_'.$phaseId.'_'.$this->business_id;
+
+        $getAllAllocationPercentages = Cache::get($key);
+
+        if ($getAllAllocationPercentages === null) {
+            $getAllAllocationPercentages = BankAccount::where('business_id', $this->business_id)
+                ->with('percentages', function ($query) use ($phaseId) {
+                    return $query->where('phase_id', $phaseId);
+                })
+                ->get()
+                ->mapToGroups(function ($item, $key) {
+                    return [
+                        $item->type => [
+                            'id' => $item->id,
+                            'val' => count($item->percentages) ? $item->percentages[0]->percent : null
+                        ]
+                    ];
+                })->map(function ($a_item) {
+                    return array_column(collect($a_item)->toArray(), 'val', 'id');
+                })->toArray();
+            Cache::put($key, $getAllAllocationPercentages);
+        }
+
+        return $getAllAllocationPercentages;
     }
 
     /**
@@ -98,24 +128,33 @@ class BankAccount extends Model
      */
     public function getAllocationsTotalByDate($date, $phaseId)
     {
-        return AccountFlow::where('account_id', $this->id)
-            ->with('allocations', function($query) use ($date, $phaseId) {
-                return $query->where('allocation_date', $date)
-                    ->where('phase_id', $phaseId);
-            })
-            ->get()
-            ->map( function($item) {
-                return collect($item->toArray())
-                    ->only('negative_flow','allocations')
-                    ->all();
-            })
-            ->map( function($a_item) {
-                return count($a_item['allocations']) > 0
-                    ? $a_item['negative_flow']
-                        ? $a_item['allocations'][0]['amount'] * -1
-                        : $a_item['allocations'][0]['amount']
-                    : 0;
-            })->sum();
+        $key = 'getAllocationsTotalByDate_'.$date.'_'.$phaseId;
+
+//        $getAllocationsTotalByDate = Cache::get($key);
+
+//        if ($getAllocationsTotalByDate === null) {
+            $getAllocationsTotalByDate = AccountFlow::where('account_id', $this->id)
+                ->with('allocations', function ($query) use ($date, $phaseId) {
+                    return $query->where('allocation_date', $date)
+                        ->where('phase_id', $phaseId);
+                })
+                ->get()
+                ->map(function ($item) {
+                    return collect($item->toArray())
+                        ->only('negative_flow', 'allocations')
+                        ->all();
+                })
+                ->map(function ($a_item) {
+                    return count($a_item['allocations']) > 0
+                        ? $a_item['negative_flow']
+                            ? $a_item['allocations'][0]['amount'] * -1
+                            : $a_item['allocations'][0]['amount']
+                        : 0;
+                })->sum();
+//            Cache::put($key, $getAllocationsTotalByDate);
+//        }
+
+        return $getAllocationsTotalByDate;
     }
 
     /**
@@ -127,21 +166,29 @@ class BankAccount extends Model
      */
     public function getRevenueByDate($businessId, $date)
     {
-        return self::where('type', 'revenue')->where('business_id',$businessId)
-            ->with('allocations', function($query) use ($date) {
-                return $query->where('allocation_date', $date);
-            })
-            ->get()
-            ->map( function($item) {
-                return collect($item->toArray())
-                    ->only('allocations')
-                    ->all();
-            })
-            ->map( function($a_item) {
-                return count($a_item['allocations']) > 0
-                    ? $a_item['allocations'][0]['amount']
-                    : 0;
-            })->sum();
+        $key = 'getRevenueByDate_'.$businessId.'_'.$date;
+        $getRevenueByDate = Cache::get($key);
+
+        if ($getRevenueByDate === null) {
+            $getRevenueByDate = self::where('type', 'revenue')->where('business_id', $businessId)
+                ->with('allocations', function ($query) use ($date) {
+                    return $query->where('allocation_date', $date);
+                })
+                ->get()
+                ->map(function ($item) {
+                    return collect($item->toArray())
+                        ->only('allocations')
+                        ->all();
+                })
+                ->map(function ($a_item) {
+                    return count($a_item['allocations']) > 0
+                        ? $a_item['allocations'][0]['amount']
+                        : 0;
+                })->sum();
+            Cache::put($key, $getRevenueByDate);
+        }
+
+        return $getRevenueByDate;
     }
 
     /**
@@ -159,10 +206,9 @@ class BankAccount extends Model
 
         // NSP = $income / ($percents['salestax'][<account id>] / 100 + 1)
         // Tax amount = $income - NSP
-        switch ($this->type)
-        {
+        switch ($this->type) {
             case 'salestax': // Tax amt
-                $amount = ($income > 0 )
+                $amount = ($income > 0)
                     ? round($income - $income / ($percents[$this->type][$this->id] / 100 + 1), 4)
                     : 0;
                 break;
@@ -180,8 +226,8 @@ class BankAccount extends Model
                 $prereal = $this->getPrePrereal($income, $percents);
 
                 $amount = (is_numeric($percents[$this->type][$this->id]))
-                        ? round($prereal * ($percents[$this->type][$this->id] / 100), 4)
-                        : 0;
+                    ? round($prereal * ($percents[$this->type][$this->id] / 100), 4)
+                    : 0;
                 break;
 
             case 'postreal':
@@ -190,7 +236,8 @@ class BankAccount extends Model
 
                 // Real Revenue = $prereal - $prereal * ($prereal_percents / 100)
                 $amount = (is_numeric($percents[$this->type][$this->id]))
-                    ? round(($prereal - $prereal * ($prereal_percents / 100)) * ($percents[$this->type][$this->id] / 100), 4)
+                    ? round(($prereal - $prereal * ($prereal_percents / 100)) * ($percents[$this->type][$this->id] / 100),
+                        4)
                     : 0;
                 break;
         }

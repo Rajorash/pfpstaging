@@ -103,7 +103,6 @@ class BankAccountEntryController extends Controller
         }
 
         return redirect()->back()->with('success', 'Account entries successfully entered.');
-
     }
 
     /**

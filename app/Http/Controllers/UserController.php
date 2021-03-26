@@ -19,10 +19,11 @@ class UserController extends Controller
     {
         $users = User::all();
 
-        $filtered = $users->filter( function ($user) {
+        $filtered = $users->filter(function ($user) {
             return Auth::user()->can('view', $user);
         })->values();
         // return $filtered;
+
         return view('user.list', ['users' => $filtered]);
     }
 
@@ -44,7 +45,6 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-
         $data = $request->validate([
             'name' => 'required',
             'business_name' => 'required',

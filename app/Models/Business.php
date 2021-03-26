@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
 
 class Business extends Model
 {
@@ -37,12 +38,26 @@ class Business extends Model
     {
         $phaseIds = $this->rollout()->pluck('id');
 
-        return Allocation::whereIn('phase_id', $phaseIds)->get();
+        $key = 'allocations_'.$phaseIds->implode('_');
+        $allocations = Cache::get($key);
+
+        if ($allocations === null) {
+            $allocations = Allocation::whereIn('phase_id', $phaseIds)->get();
+            Cache::put($key, $allocations);
+        }
+
+        return $allocations;
     }
 
     public function getPhaseIdByDate($date)
     {
-        $phase = $this->rollout()->where('end_date', '>=', $date)->first();
+        $key = 'getPhaseIdByDate_'.$date;
+        $phase = Cache::get($key);
+
+        if ($phase === null) {
+            $phase = $this->rollout()->where('end_date', '>=', $date)->first();
+            Cache::put($key, $phase);
+        }
 
         return $phase->id;
     }
@@ -55,7 +70,14 @@ class Business extends Model
      */
     public function getAccountIdByType($accountType)
     {
-        $account = $this->accounts()->where('type', '=', $accountType)->first();
+        $key = 'getAccountIdByType_'.$accountType;
+
+        $account = Cache::get($key);
+
+        if ($account === null) {
+            $account = $this->accounts()->where('type', '=', $accountType)->first();
+            Cache::put($key, $account);
+        }
 
         return $account->id;
     }
@@ -68,7 +90,14 @@ class Business extends Model
      */
     public function getAllAccountIdsByType($accountType)
     {
-        $accountIds = $this->accounts()->where('type', '=', $accountType)->pluck('id')->toArray();
+        $key = 'getAllAccountIdsByType_'.$accountType;
+
+        $accountIds = Cache::get($key);
+
+        if ($accountIds === null) {
+            $accountIds = $this->accounts()->where('type', '=', $accountType)->pluck('id')->toArray();
+            Cache::put($key, $accountIds);
+        }
 
         return $accountIds;
     }
