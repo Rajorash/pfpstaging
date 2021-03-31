@@ -4071,6 +4071,7 @@ $(function () {
       this.debug = true;
       this.ajaxUrl = window.allocationsControllerUpdate;
       this.elementAllocationTablePlace = $('#allocationTablePlace');
+      this.elementLoadingSpinner = $('#loadingSpinner');
     }
 
     _createClass(AllocationCalculator, [{
@@ -4103,6 +4104,26 @@ $(function () {
         $(document).on('change', '#currentRangeValue', $this.loadData.bind($this));
       }
     }, {
+      key: "showSpinner",
+      value: function showSpinner() {
+        var $this = this;
+        $('html, body').css({
+          overflow: 'hidden',
+          height: '100%'
+        });
+        $this.elementLoadingSpinner.show();
+      }
+    }, {
+      key: "hideSpinner",
+      value: function hideSpinner() {
+        var $this = this;
+        $('html, body').css({
+          overflow: 'auto',
+          height: 'auto'
+        });
+        $this.elementLoadingSpinner.hide();
+      }
+    }, {
       key: "loadData",
       value: function loadData() {
         var $this = this;
@@ -4116,12 +4137,18 @@ $(function () {
           type: 'POST',
           url: $this.ajaxUrl,
           data: $this.data,
+          beforeSend: function beforeSend() {
+            $this.showSpinner();
+          },
           success: function success(data) {
             if ($this.debug) {
               console.log('loadData', data);
             }
 
             $this.renderData(data);
+          },
+          complete: function complete() {
+            $this.hideSpinner();
           }
         });
       }

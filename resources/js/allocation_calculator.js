@@ -11,6 +11,7 @@ $(function () {
 
             this.ajaxUrl = window.allocationsControllerUpdate;
             this.elementAllocationTablePlace = $('#allocationTablePlace');
+            this.elementLoadingSpinner = $('#loadingSpinner');
         }
 
         init() {
@@ -44,6 +45,28 @@ $(function () {
             $(document).on('change', '#currentRangeValue', $this.loadData.bind($this));
         }
 
+        showSpinner() {
+            let $this = this;
+
+            $('html, body').css({
+                overflow: 'hidden',
+                height: '100%'
+            });
+
+            $this.elementLoadingSpinner.show();
+        }
+
+        hideSpinner() {
+            let $this = this;
+
+            $('html, body').css({
+                overflow: 'auto',
+                height: 'auto'
+            });
+
+            $this.elementLoadingSpinner.hide();
+        }
+
         loadData() {
             let $this = this;
 
@@ -57,11 +80,17 @@ $(function () {
                 type: 'POST',
                 url: $this.ajaxUrl,
                 data: $this.data,
+                beforeSend: function () {
+                    $this.showSpinner()
+                },
                 success: function (data) {
                     if ($this.debug) {
                         console.log('loadData', data);
                     }
                     $this.renderData(data);
+                },
+                complete: function () {
+                    $this.hideSpinner();
                 }
             });
         }

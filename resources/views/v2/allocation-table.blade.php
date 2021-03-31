@@ -3,13 +3,13 @@
         <thead>
         <tr>
             <th class="border border-gray-300"></th>
-{{--            today --}}
+            {{--            today --}}
             <th class="border border-gray-300 text-blue p-4">
                 <span class="block text-xs font-normal">Mar 2021</span>
                 <span class="block text-xl">31</span>
                 <span class="block text-xs font-normal">Web</span>
             </th>
-{{--            regular days--}}
+            {{--            regular days--}}
             @for($i = 0; $i < 6; $i++)
                 <th class="border border-gray-300 p-4">
                     <span class="block text-xs font-normal">Mar 2021</span>
@@ -28,14 +28,16 @@
             @for($i = 0; $i < 7; $i++)
                 <td class="border border-gray-300 text-right p-1 bg-indigo-100"><input
                         class="px-2 py-0 w-20 text-right bg-transparent border-none"
-                        type="text" value="0" disabled /></td>
+                        type="text" value="0" disabled/></td>
             @endfor
         </tr>
         <tr>
             <td class="border border-gray-300 whitespace-nowrap p-1 pr-2 pl-6">Accounts Receivable</td>
             @for($i = 0; $i < 7; $i++)
                 <td class="border border-gray-300 text-right p-1"><input
-                        class="px-2 py-0 w-20 text-right bg-transparent border-0 border-b border-transparent focus:border-yellow-700 focus:outline-none"
+                        class="px-2 py-0 w-20 text-right bg-transparent border-0 border-b border-transparent outline-none
+                        focus:border-yellow-700 focus:outline-none focus:shadow-none focus:ring-0"
+                        id="someOwnKey_1_{{$i}}"
                         type="text" value="0"/></td>
             @endfor
         </tr>
@@ -43,7 +45,9 @@
             <td class="border border-gray-300 whitespace-nowrap p-1 pr-2 pl-6">Estimated Activity</td>
             @for($i = 0; $i < 7; $i++)
                 <td class="border border-gray-300 text-right p-1"><input
-                        class="px-2 py-0 w-20 text-right bg-transparent border-none"
+                        class="px-2 py-0 w-20 text-right bg-transparent border-0 border-b border-transparent outline-none
+                        focus:border-yellow-700 focus:outline-none focus:shadow-none focus:ring-0"
+                        id="someOwnKey_2_{{$i}}"
                         type="text" value="0"/></td>
             @endfor
         </tr>
@@ -54,7 +58,9 @@
             <td class="border border-gray-300 whitespace-nowrap p-1 pr-2 pl-6">Estimated Activity</td>
             @for($i = 0; $i < 7; $i++)
                 <td class="border border-gray-300 text-right p-1"><input
-                        class="px-2 py-0 w-20 text-right bg-transparent border-none"
+                        class="px-2 py-0 w-20 text-right bg-transparent border-0 border-b border-transparent outline-none
+                        focus:border-yellow-700 focus:outline-none focus:shadow-none focus:ring-0"
+                        id="someOwnKey_3_{{$i}}"
                         type="text" value="0"/></td>
             @endfor
         </tr>
