@@ -8,27 +8,52 @@ $(function () {
     class AllocationCalculator {
         constructor() {
             this.ajaxUrl = window.allocationsControllerUpdate;
+
+            this.resetData();
         }
 
         init() {
             let $this = this;
 
-            console.log($this.ajaxUrl);
-
             $this.events();
+        }
+
+        resetData() {
+            let $this = this;
+
+            $this.data = {};
         }
 
         collectData() {
             let $this = this;
+
+            $this.data.startDate = $('#startDate').val();
+            $this.data.rangeValue = $('#currentRangeValue').val();
         }
 
         events() {
             let $this = this;
 
-            document.on('change', '#startdate', $this.reloadPage.bind($this));
+            $(document).on('change', '#startDate', $this.loadData.bind($this));
+            $(document).on('change', '#currentRangeValue', $this.loadData.bind($this));
         }
 
-        reloadPage() {
+        loadData() {
+            let $this = this;
+
+            $this.collectData();
+
+            console.log('collectData', $this.data);
+
+            $.ajax({
+                type: 'POST',
+                url: $this.ajaxUrl,
+                data: $this.data,
+                success: function (data) {
+                    console.log('loadData', data);
+                }
+            });
+
         }
     }
 

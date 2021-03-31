@@ -34,7 +34,22 @@ class AllocationsCalendar extends Controller
 
     public function updateData(Request $request)
     {
+        $startDate = $request->startDate;
+        $rangeValue = $request->rangeValue;
 
-        dd($request);
+        $response = [
+            'error' => [],
+            'data' => [],
+        ];
+
+        if (!$startDate) {
+            $response['error'][] = 'Start date not set';
+        }
+
+        if (!$rangeValue) {
+            $response['error'][] = 'Range value not set';
+        }
+
+        return response()->json($response);
     }
 }

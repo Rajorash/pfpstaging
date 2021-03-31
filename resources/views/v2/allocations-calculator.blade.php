@@ -9,13 +9,12 @@
         <div class="flex content-between">
             <div class="py-2 pr-6">
                 <label for="startdate">Start date</label>
-                <input name="startdate" id="startdate" class="form-input rounded py-0 mx-3 my-0" type="date"
+                <input name="startdate" id="startDate" class="form-input rounded py-0 mx-3 my-0" type="date"
                        value="{{\Carbon\Carbon::now()->format('Y-m-d')}}">
             </div>
             <div class="py-2 pr-6">
                 <label for="range">Range</label>
-                <select name="range" id="currentRangeValue" class="form-select rounded py-0 mx-3 my-0"
-                        wire:model="daysPerPage">
+                <select name="range" id="currentRangeValue" class="form-select rounded py-0 mx-3 my-0">
                     @foreach ($rangeArray as $key => $value)
                         <option value="{{$key}}" @if($key == $currentRangeValue) selected @endif>{{$value}}</option>
                     @endforeach

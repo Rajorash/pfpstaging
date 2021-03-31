@@ -4069,29 +4069,50 @@ $(function () {
       _classCallCheck(this, AllocationCalculator);
 
       this.ajaxUrl = window.allocationsControllerUpdate;
+      this.resetData();
     }
 
     _createClass(AllocationCalculator, [{
       key: "init",
       value: function init() {
         var $this = this;
-        console.log($this.ajaxUrl);
         $this.events();
+      }
+    }, {
+      key: "resetData",
+      value: function resetData() {
+        var $this = this;
+        $this.data = {};
       }
     }, {
       key: "collectData",
       value: function collectData() {
         var $this = this;
+        $this.data.startDate = $('#startDate').val();
+        $this.data.rangeValue = $('#currentRangeValue').val();
       }
     }, {
       key: "events",
       value: function events() {
         var $this = this;
-        document.on('change', '#startdate', $this.reloadPage.bind($this));
+        $(document).on('change', '#startDate', $this.loadData.bind($this));
+        $(document).on('change', '#currentRangeValue', $this.loadData.bind($this));
       }
     }, {
-      key: "reloadPage",
-      value: function reloadPage() {}
+      key: "loadData",
+      value: function loadData() {
+        var $this = this;
+        $this.collectData();
+        console.log('collectData', $this.data);
+        $.ajax({
+          type: 'POST',
+          url: $this.ajaxUrl,
+          data: $this.data,
+          success: function success(data) {
+            console.log('loadData', data);
+          }
+        });
+      }
     }]);
 
     return AllocationCalculator;
