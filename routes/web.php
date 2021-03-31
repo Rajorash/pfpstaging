@@ -11,6 +11,10 @@
 |
 */
 
+use App\Http\Controllers\AllocationsCalendar;
+use App\Http\Controllers\AllocationsController;
+use Illuminate\Support\Facades\Route;
+
 Route::get('/', function () {
     return view('welcome');
 });
@@ -47,7 +51,7 @@ Route::group(['middleware' => 'auth'], function () {
     //
     // Projection Forecast data entry routing (formerly labeled as allocation calculator) routing.
     Route::get('/allocations', 'AllocationsController@index')->name('allocations');
-    Route::get('/allocations/{business}', 'AllocationsController@allocations');
+//    Route::get('/allocations/{business}', 'AllocationsController@allocations');
 
     // Rollout Percentages routing
     Route::get('/allocations/{business}/percentages', 'AllocationsController@percentages');
@@ -57,6 +61,12 @@ Route::group(['middleware' => 'auth'], function () {
     // Projections
     Route::get('/projections/{business}', 'ProjectionController@index')->name('projections');
 
+
+    //ajax calls
+    Route::post('/allocations/ajax/update',
+        [AllocationsCalendar::class, 'updateData'])->name('allocations-controller-update');
+    Route::get('/allocations/{business}',
+        [AllocationsCalendar::class, 'calendar'])->name('allocations-calendar');
 });
 
 Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {

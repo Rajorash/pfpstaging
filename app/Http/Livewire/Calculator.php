@@ -26,8 +26,9 @@ class Calculator extends Component
 
     public function render($startDate = null, $dateInput = null)
     {
-        if (! $this->startDate ) {
+        if (!$this->startDate ) {
             $this->startDate = Carbon::now()->today();
+            $this->dateInput = Carbon::now()->toDateString();
         } else {
             $this->startDate = Carbon::parse($this->dateInput);
         }
