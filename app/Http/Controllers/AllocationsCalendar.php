@@ -39,7 +39,7 @@ class AllocationsCalendar extends Controller
 
         $response = [
             'error' => [],
-            'data' => [],
+            'html' => [],
         ];
 
         if (!$startDate) {
@@ -49,6 +49,10 @@ class AllocationsCalendar extends Controller
         if (!$rangeValue) {
             $response['error'][] = 'Range value not set';
         }
+
+        $tableData = [];
+
+        $response['html'] = view('v2.allocation-table')->with('tableData', $tableData)->render();
 
         return response()->json($response);
     }

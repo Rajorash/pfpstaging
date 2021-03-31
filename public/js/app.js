@@ -4068,15 +4068,18 @@ $(function () {
     function AllocationCalculator() {
       _classCallCheck(this, AllocationCalculator);
 
+      this.debug = true;
       this.ajaxUrl = window.allocationsControllerUpdate;
-      this.resetData();
+      this.elementAllocationTablePlace = $('#allocationTablePlace');
     }
 
     _createClass(AllocationCalculator, [{
       key: "init",
       value: function init() {
         var $this = this;
+        $this.resetData();
         $this.events();
+        $this.loadData();
       }
     }, {
       key: "resetData",
@@ -4088,6 +4091,7 @@ $(function () {
       key: "collectData",
       value: function collectData() {
         var $this = this;
+        $this.resetData();
         $this.data.startDate = $('#startDate').val();
         $this.data.rangeValue = $('#currentRangeValue').val();
       }
@@ -4103,15 +4107,32 @@ $(function () {
       value: function loadData() {
         var $this = this;
         $this.collectData();
-        console.log('collectData', $this.data);
+
+        if ($this.debug) {
+          console.log('collectData', $this.data);
+        }
+
         $.ajax({
           type: 'POST',
           url: $this.ajaxUrl,
           data: $this.data,
           success: function success(data) {
-            console.log('loadData', data);
+            if ($this.debug) {
+              console.log('loadData', data);
+            }
+
+            $this.renderData(data);
           }
         });
+      }
+    }, {
+      key: "renderData",
+      value: function renderData(data) {
+        var $this = this;
+
+        if (data.error.length === 0) {
+          $this.elementAllocationTablePlace.html(data.html);
+        }
       }
     }]);
 
@@ -39757,3 +39778,4 @@ process.umask = function() { return 0; };
 /******/ 	
 /******/ })()
 ;
+//# sourceMappingURL=app.js.map

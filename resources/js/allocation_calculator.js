@@ -7,15 +7,19 @@ $(function () {
 
     class AllocationCalculator {
         constructor() {
-            this.ajaxUrl = window.allocationsControllerUpdate;
+            this.debug = true;
 
-            this.resetData();
+            this.ajaxUrl = window.allocationsControllerUpdate;
+            this.elementAllocationTablePlace = $('#allocationTablePlace');
         }
 
         init() {
             let $this = this;
 
+            $this.resetData();
             $this.events();
+
+            $this.loadData();
         }
 
         resetData() {
@@ -26,6 +30,8 @@ $(function () {
 
         collectData() {
             let $this = this;
+
+            $this.resetData();
 
             $this.data.startDate = $('#startDate').val();
             $this.data.rangeValue = $('#currentRangeValue').val();
@@ -43,17 +49,29 @@ $(function () {
 
             $this.collectData();
 
-            console.log('collectData', $this.data);
+            if ($this.debug) {
+                console.log('collectData', $this.data);
+            }
 
             $.ajax({
                 type: 'POST',
                 url: $this.ajaxUrl,
                 data: $this.data,
                 success: function (data) {
-                    console.log('loadData', data);
+                    if ($this.debug) {
+                        console.log('loadData', data);
+                    }
+                    $this.renderData(data);
                 }
             });
+        }
 
+        renderData(data) {
+            let $this = this;
+
+            if (data.error.length === 0) {
+                $this.elementAllocationTablePlace.html(data.html);
+            }
         }
     }
 

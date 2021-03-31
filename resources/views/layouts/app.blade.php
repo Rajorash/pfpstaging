@@ -8,7 +8,9 @@
     <title>{{ config('app.name', 'Laravel') }}</title>
 
     <!-- Fonts -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    {{--    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap">--}}
+    <link href="https://fonts.googleapis.com/css2?family=Questrial&display=swap" rel="stylesheet">
 
     <!-- Styles -->
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
@@ -36,7 +38,7 @@
 @endif
 
 <!-- Page Content -->
-    <main>
+    <main class="w-full mx-auto py-6 px-4 sm:px-6 lg:px-8">
         {{ $slot }}
     </main>
 </div>

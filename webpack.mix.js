@@ -1,4 +1,6 @@
+require('dotenv').config();
 const mix = require('laravel-mix');
+let productionSourceMaps = true;
 
 /*
  |--------------------------------------------------------------------------
@@ -16,8 +18,12 @@ mix.js('resources/js/app.js', 'public/js')
         require('postcss-import'),
         require('tailwindcss'),
         require('autoprefixer'),
-    ]);
+    ])
+    .sourceMaps(productionSourceMaps, 'source-map');
 
 if (mix.inProduction()) {
     mix.version();
+}
+if (process.env.APP_ENV !== 'production') {
+    mix.browserSync(process.env.APP_URL);
 }

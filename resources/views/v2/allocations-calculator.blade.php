@@ -23,7 +23,9 @@
         </div>
     </x-slot>
 
-    <div class="py-1"></div>
+    <div id="allocationTablePlace">
+
+    </div>
 
     <script type="text/javascript">
         window.allocationsControllerUpdate = "{{route('allocations-controller-update')}}";
