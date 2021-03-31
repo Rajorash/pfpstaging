@@ -19,7 +19,10 @@ mix.js('resources/js/app.js', 'public/js')
         require('tailwindcss'),
         require('autoprefixer'),
     ])
-    .sourceMaps(productionSourceMaps, 'source-map');
+    .sourceMaps(productionSourceMaps, 'source-map')
+    .copy('resources/images', 'public/images')
+    .copy('resources/favicons', 'public/favicons')
+    .copy('resources/favicons/favicon.ico', 'public/favicon.ico');
 
 if (mix.inProduction()) {
     mix.version();

@@ -5,7 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>{{ config('app.name', 'Mints CD Consulting') }}</title>
+
+    <link rel="apple-touch-icon" sizes="180x180" href="{{url('/favicons/apple-touch-icon.png')}}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{url('/favicons/favicon-32x32.png')}}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{url('/favicons/favicon-16x16.png')}}">
+    <link rel="manifest" href="{{url('/favicons/site.webmanifest')}}">
+    <link rel="mask-icon" href="{{url('/favicons/safari-pinned-tab.svg')}}" color="#3e04e2">
+    <link rel="shortcut icon" href="{{url('/favicons/favicon.ico')}}">
+    <meta name="msapplication-TileColor" content="#3e04e2">
+    <meta name="msapplication-config" content="{{url('/favicons/browserconfig.xml')}}">
+    <meta name="theme-color" content="#ffffff">
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.gstatic.com">

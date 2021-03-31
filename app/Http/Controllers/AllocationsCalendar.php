@@ -36,6 +36,8 @@ class AllocationsCalendar extends Controller
     {
         $startDate = $request->startDate;
         $rangeValue = $request->rangeValue;
+        $cellId = $request->cellId;
+        $cellValue = floatval($request->cellValue);
 
         $response = [
             'error' => [],
