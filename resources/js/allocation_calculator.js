@@ -29,13 +29,17 @@ $(function () {
             $this.data = {};
         }
 
-        collectData() {
+        collectData(cellId) {
             let $this = this;
 
             $this.resetData();
 
             $this.data.startDate = $('#startDate').val();
             $this.data.rangeValue = $('#currentRangeValue').val();
+            if (cellId) {
+                $this.data.cellId = cellId;
+                $this.data.cellValue = $('#' + cellId).val();
+            }
         }
 
         events() {
@@ -43,6 +47,9 @@ $(function () {
 
             $(document).on('change', '#startDate', $this.loadData.bind($this));
             $(document).on('change', '#currentRangeValue', $this.loadData.bind($this));
+            $(document).on('change', '#allocationTablePlace input', function (event) {
+                $this.loadData(event.target.id);
+            });
         }
 
         showSpinner() {
@@ -67,10 +74,10 @@ $(function () {
             $this.elementLoadingSpinner.hide();
         }
 
-        loadData() {
+        loadData(cellId) {
             let $this = this;
 
-            $this.collectData();
+            $this.collectData(cellId);
 
             if ($this.debug) {
                 console.log('collectData', $this.data);

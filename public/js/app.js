@@ -4090,11 +4090,16 @@ $(function () {
       }
     }, {
       key: "collectData",
-      value: function collectData() {
+      value: function collectData(cellId) {
         var $this = this;
         $this.resetData();
         $this.data.startDate = $('#startDate').val();
         $this.data.rangeValue = $('#currentRangeValue').val();
+
+        if (cellId) {
+          $this.data.cellId = cellId;
+          $this.data.cellValue = $('#' + cellId).val();
+        }
       }
     }, {
       key: "events",
@@ -4102,6 +4107,9 @@ $(function () {
         var $this = this;
         $(document).on('change', '#startDate', $this.loadData.bind($this));
         $(document).on('change', '#currentRangeValue', $this.loadData.bind($this));
+        $(document).on('change', '#allocationTablePlace input', function (event) {
+          $this.loadData(event.target.id);
+        });
       }
     }, {
       key: "showSpinner",
@@ -4125,9 +4133,9 @@ $(function () {
       }
     }, {
       key: "loadData",
-      value: function loadData() {
+      value: function loadData(cellId) {
         var $this = this;
-        $this.collectData();
+        $this.collectData(cellId);
 
         if ($this.debug) {
           console.log('collectData', $this.data);
