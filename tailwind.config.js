@@ -19,7 +19,8 @@ module.exports = {
                 dark_gray: '#2D3748',
                 dark_gray2: '#2F2F2F',
                 light_gray: '#848484',
-                blue: '#3E04E2'
+                blue: '#3E04E2',
+                dashboard: '#FBFBFF'
             },
             boxShadow: {
                 shadow1: '0px 75px 100px rgba(206, 208, 229, 0.71)',

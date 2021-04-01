@@ -50,10 +50,10 @@
                 <a class="px-2 inline-flex text-sm leading-5 font-semibold rounded-full bg-green-100 text-green-800" href="/business/{{$business->id}}/accounts">{{$business->accounts()->count()}}</a>
             </td>
             <td>
-                <a class="inline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded  no-underline bg-blue-500 text-white hover:bg-blue-600 py-1 px-2 leading-tight text-xs " href="/allocations/{{$business->id}}">See Allocations</a>
+                <a class="inline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded  no-underline bg-blue text-white hover:bg-dark_gray2 py-1 px-2 leading-tight text-xs " href="/allocations/{{$business->id}}">See Allocations</a>
             </td>
             <td>
-                <a class="inline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded  no-underline bg-blue-500 text-white hover:bg-blue-600 py-1 px-2 leading-tight text-xs " href="/allocations/{{$business->id}}\percentages">See Percentages</a>
+                <a class="inline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded  no-underline bg-blue text-white hover:bg-dark_gray2 py-1 px-2 leading-tight text-xs " href="/allocations/{{$business->id}}\percentages">See Percentages</a>
             </td>
         </tr>
         @endforeach

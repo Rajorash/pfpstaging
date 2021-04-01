@@ -30,10 +30,10 @@
     <!-- Scripts -->
     <script src="{{ mix('js/app.js') }}" defer></script>
 </head>
-<body class="font-sans antialiased relative">
+<body class="font-sans antialiased relative text-light_gray">
 <x-jet-banner/>
 
-<div class="min-h-screen bg-light_purple2">
+<div class="min-h-screen bg-light_purple2 bg-right-bottom bg-no-repeat" style="background-image: url({{asset('images/bg.svg')}})">
     <div class="bg-white shadow-shadow4">
         @livewire('navigation-menu')
     </div>
