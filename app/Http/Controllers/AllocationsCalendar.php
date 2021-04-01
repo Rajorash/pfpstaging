@@ -39,11 +39,12 @@ class AllocationsCalendar extends Controller
 
     public function updateData(Request $request)
     {
+
         $startDate = '2021-03-25';//$request->startDate;
         $rangeValue = 14;//$request->rangeValue;
         $endDate = Carbon::parse($startDate)->addDays($rangeValue-1)->format('Y-m-d');
-        $cellId = $request->cellId;
-        $cellValue = floatval($request->cellValue);
+        $cells = $request->cells;
+
 
         $period = CarbonPeriod::create($startDate, $endDate);
         $tableData = $this->getGridData($startDate, $endDate);
@@ -60,8 +61,6 @@ class AllocationsCalendar extends Controller
         if (!$rangeValue) {
             $response['error'][] = 'Range value not set';
         }
-
-//        $tableData = [];
 
         $response['html'] = view('v2.allocation-table')
             ->with([
@@ -119,9 +118,7 @@ class AllocationsCalendar extends Controller
             foreach ($account_item->account_values as $key => $value)
                 $flat[$key] = $value;
         }
-//        dd($flat);
 
-//dd($response);
         $percents = BankAccount::where('business_id', $businessId)
             ->with('percentages', function ($query) use ($phaseId) {
                 return $query->where('phase_id', $phaseId);
@@ -137,8 +134,6 @@ class AllocationsCalendar extends Controller
             })->map(function ($a_item) {
                 return array_column(collect($a_item)->toArray(), 'val', 'id');
             })->toArray();
-
-//dd($percents);
 
         $period = CarbonPeriod::create($dateFrom, $dateTo);
 
