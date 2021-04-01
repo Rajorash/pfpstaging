@@ -12,6 +12,12 @@ class BankAccount extends Model
 {
     use Allocatable;
 
+    const ACCOUNT_TYPE_REVENUE  = 'revenue';
+    const ACCOUNT_TYPE_PRETOTAL = 'pretotal';
+    const ACCOUNT_TYPE_SALESTAX = 'salestax';
+    const ACCOUNT_TYPE_PREREAL  = 'prereal';
+    const ACCOUNT_TYPE_POSTREAL = 'postreal';
+
     protected $fillable = ['name', 'type'];
     protected $with = ['flows'];
 
@@ -33,11 +39,11 @@ class BankAccount extends Model
     public static function type_list()
     {
         return [
-            1 => 'revenue',
-            2 => 'pretotal',
-            3 => 'salestax',
-            4 => 'prereal',
-            5 => 'postreal'
+            1 => self::ACCOUNT_TYPE_REVENUE,
+            2 => self::ACCOUNT_TYPE_PRETOTAL,
+            3 => self::ACCOUNT_TYPE_SALESTAX,
+            4 => self::ACCOUNT_TYPE_PREREAL,
+            5 => self::ACCOUNT_TYPE_POSTREAL
         ];
     }
     /*
