@@ -23,7 +23,7 @@
         </div>
     </x-slot>
 
-    <div id="loadingSpinner" class="hidden w-screen h-screen absolute z-50 bg-opacity-50 bg-gray-500 top-0 left-0">
+    <div id="loadingSpinner" class="hidden w-screen h-screen absolute z-50 bg-opacity-30 bg-gray-500 top-0 left-0">
         <div class="w-20 h-20 absolute left-1/2 top-1/2 -ml-10 -mt-10">
             <svg version="1.1"
                  class="svg-loader"

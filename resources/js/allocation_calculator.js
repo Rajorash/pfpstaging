@@ -36,7 +36,7 @@ $(function () {
 
             $this.data.startDate = $('#startDate').val();
             $this.data.rangeValue = $('#currentRangeValue').val();
-            if (cellId) {
+            if (typeof cellId === 'string') {
                 $this.data.cellId = cellId;
                 $this.data.cellValue = $('#' + cellId).val();
             }
@@ -76,6 +76,8 @@ $(function () {
 
         loadData(cellId) {
             let $this = this;
+
+            console.log(cellId);
 
             $this.collectData(cellId);
 

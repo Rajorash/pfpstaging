@@ -4096,7 +4096,7 @@ $(function () {
         $this.data.startDate = $('#startDate').val();
         $this.data.rangeValue = $('#currentRangeValue').val();
 
-        if (cellId) {
+        if (typeof cellId === 'string') {
           $this.data.cellId = cellId;
           $this.data.cellValue = $('#' + cellId).val();
         }
@@ -4135,6 +4135,7 @@ $(function () {
       key: "loadData",
       value: function loadData(cellId) {
         var $this = this;
+        console.log(cellId);
         $this.collectData(cellId);
 
         if ($this.debug) {
