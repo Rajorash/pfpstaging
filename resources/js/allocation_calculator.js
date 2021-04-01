@@ -12,6 +12,10 @@ $(function () {
             this.ajaxUrl = window.allocationsControllerUpdate;
             this.elementAllocationTablePlace = $('#allocationTablePlace');
             this.elementLoadingSpinner = $('#loadingSpinner');
+
+            this.changesCounter = 0;
+
+            this.timeout;
         }
 
         init() {
@@ -26,19 +30,37 @@ $(function () {
         resetData() {
             let $this = this;
 
+            if ($this.debug) {
+                console.log('resetData');
+            }
+
+            $this.changesCounter = 0;
             $this.data = {};
+            $this.data.cells = [];
         }
 
         collectData(cellId) {
             let $this = this;
 
-            $this.resetData();
+            $this.changesCounter++;
 
             $this.data.startDate = $('#startDate').val();
             $this.data.rangeValue = $('#currentRangeValue').val();
             if (typeof cellId === 'string') {
-                $this.data.cellId = cellId;
-                $this.data.cellValue = $('#' + cellId).val();
+                $this.data.cells.push({
+                    cellId: cellId,
+                    cellValue: $('#' + cellId).val()
+                });
+            }
+
+            if ($this.changesCounter) {
+                $('#processCounter').html('...changes ready for calculation <b>' + $this.changesCounter + '</b>').show();
+            } else {
+                $('#processCounter').html('').hide();
+            }
+
+            if ($this.debug) {
+                console.log('collectData', $this.data);
             }
         }
 
@@ -77,31 +99,29 @@ $(function () {
         loadData(cellId) {
             let $this = this;
 
-            console.log(cellId);
-
             $this.collectData(cellId);
 
-            if ($this.debug) {
-                console.log('collectData', $this.data);
-            }
-
-            $.ajax({
-                type: 'POST',
-                url: $this.ajaxUrl,
-                data: $this.data,
-                beforeSend: function () {
-                    $this.showSpinner()
-                },
-                success: function (data) {
-                    if ($this.debug) {
-                        console.log('loadData', data);
+            clearTimeout($this.timedOut);
+            $this.timedOut = setTimeout(function () {
+                $.ajax({
+                    type: 'POST',
+                    url: $this.ajaxUrl,
+                    data: $this.data,
+                    beforeSend: function () {
+                        $this.showSpinner()
+                    },
+                    success: function (data) {
+                        if ($this.debug) {
+                            console.log('loadData', data);
+                        }
+                        $this.renderData(data);
+                    },
+                    complete: function () {
+                        $this.hideSpinner();
+                        $this.resetData();
                     }
-                    $this.renderData(data);
-                },
-                complete: function () {
-                    $this.hideSpinner();
-                }
-            });
+                });
+            }, 2000);
         }
 
         renderData(data) {

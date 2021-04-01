@@ -2,7 +2,9 @@
     <table id="allocationTable" cellpadding="0" cellspacing="0" class="border-collapse rounded-xl bg-white w-full">
         <thead>
         <tr>
-            <th class="border border-gray-300"></th>
+            <th class="border border-gray-300">
+                <span id="processCounter" class="hidden opacity-50 font-normal text-xs"></span>
+            </th>
             {{--            today --}}
             <th class="border border-gray-300 text-blue p-4">
                 <span class="block text-xs font-normal">Mar 2021</span>
