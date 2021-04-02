@@ -1,5 +1,6 @@
 <div class="rounded-xl">
-    <table id="allocationTable" cellpadding="0" cellspacing="0" class="border-collapse rounded-xl bg-white w-full text-dark_gray2">
+    <table id="allocationTable" cellpadding="0" cellspacing="0"
+           class="border-collapse rounded-xl bg-white w-full text-dark_gray2">
         <thead>
         <tr>
             <th class="border border-gray-300">
@@ -37,7 +38,7 @@
                             <tr>
                                 <td class="border border-gray-300 whitespace-nowrap p-1 pr-2 pl-6">{{$ext_data['name']}}</td>
                                 @foreach($period as $date)
-                                    <td class="border border-gray-300 text-right p-1"><input
+                                    <td class="border border-gray-300 text-right p-1 hover:bg-yellow-100"><input
                                             class="px-2 py-0 w-20 text-right bg-transparent border-0 border-b border-transparent outline-none
                     focus:border-yellow-700 focus:outline-none focus:shadow-none focus:ring-0"
                                             id="someOwnKey_1_{{$key}}"
@@ -61,11 +62,11 @@
                         @if(is_array($ext_data))
                             @if($key == 'transfer')
                                 <tr>
-                                    <td class="border border-gray-300 whitespace-nowrap p-1 pr-2 pl-4 bg-indigo-100">
+                                    <td class="border border-gray-300 whitespace-nowrap p-1 pr-2 pl-6">
                                         Transfer In
                                     </td>
                                     @foreach($period as $date)
-                                        <td class="border border-gray-300 text-right p-1 bg-indigo-100"><input
+                                        <td class="border border-gray-300 text-right p-1"><input
                                                 class="px-2 py-0 w-20 text-right bg-transparent border-none"
                                                 type="text" value="{{$ext_data[$date->format('Y-m-d')]}}" disabled/>
                                         </td>
@@ -73,11 +74,11 @@
                                 </tr>
                             @elseif($key == 'total')
                                 <tr>
-                                    <td class="border border-gray-300 whitespace-nowrap p-1 pr-2 pl-4 bg-indigo-100">
+                                    <td class="border border-gray-300 whitespace-nowrap p-1 pr-2 pl-6">
                                         Flow Total
                                     </td>
                                     @foreach($period as $date)
-                                        <td class="border border-gray-300 text-right p-1 bg-indigo-100"><input
+                                        <td class="border border-gray-300 text-right p-1"><input
                                                 class="px-2 py-0 w-20 text-right bg-transparent border-none"
                                                 type="text" value="{{$ext_data[$date->format('Y-m-d')]}}" disabled/>
                                         </td>
@@ -87,14 +88,20 @@
                                 <tr>
                                     <td class="border border-gray-300 whitespace-nowrap p-1 pr-2 pl-4 bg-indigo-100">{{$ext_data['name']}}</td>
                                     @foreach($period as $date)
-                                        <td class="border border-gray-300 text-right p-1 bg-indigo-100"><input
-                                                class="px-2 py-0 w-20 text-right bg-transparent border-none"
+                                        <td class="border border-gray-300 text-right p-1 bg-indigo-100 hover:bg-yellow-100">
+                                            <input
+                                                class="px-2 py-0 w-20 text-right bg-transparent border-0 border-b border-transparent outline-none
+                                                focus:border-yellow-700 focus:outline-none focus:shadow-none focus:ring-0"
+                                                id="someOwnKey_2_{{$key}}"
                                                 type="text" value="{{$ext_data[$date->format('Y-m-d')]}}"/></td>
                                     @endforeach
                                 </tr>
                             @endif
                         @endif
                     @endforeach
+                    <tr class="bg-light_blue">
+                        <td class="h-1" colspan="{{$range+1}}"></td>
+                    </tr>
                 @endforeach
             @endif
 
