@@ -47,6 +47,7 @@ $(function () {
             $this.data.businessId = $('#businessId').val();
             $this.data.startDate = $('#startDate').val();
             $this.data.rangeValue = $('#currentRangeValue').val();
+
             if (typeof cellId === 'string') {
                 $this.data.cells.push({
                     cellId: cellId,

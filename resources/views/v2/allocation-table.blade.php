@@ -3,7 +3,7 @@
            class="border-collapse rounded-xl bg-white w-full text-dark_gray2">
         <thead>
         <tr>
-            <th class="border border-gray-300">
+            <th class="border border-gray-300 rounded-t-xl">
                 <span id="processCounter" class="hidden opacity-50 font-normal text-xs"></span>
             </th>
             @foreach($period as $date)

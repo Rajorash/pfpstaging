@@ -2,7 +2,9 @@
     <x-slot name="header">
         <div class="flex content-between">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                {{$business->name}} > Allocations
+                {{$business->name}}
+                <x-icons.chevron-right :class="'h-2.5 w-auto inline-block px-2'"/>
+                Allocations
             </h2>
             <x-business-nav businessId="{{$business->id}}"/>
         </div>
@@ -11,7 +13,7 @@
             <div class="py-2 pr-6">
                 <label for="startdate">Start date</label>
                 <input name="startdate" id="startDate" class="form-input rounded py-0 mx-3 my-0" type="date"
-                       value="{{\Carbon\Carbon::now()->format('Y-m-d')}}">
+                       value="{{$startDate}}">
             </div>
             <div class="py-2 pr-6">
                 <label for="range">Range</label>
@@ -24,7 +26,7 @@
         </div>
     </x-slot>
 
-    <div id="allocationTablePlace"></div>
+    <div id="allocationTablePlace" class=" global_nice_scroll"></div>
 
     <div id="loadingSpinner" class="hidden w-screen h-screen absolute z-50 bg-opacity-30 bg-gray-500 top-0 left-0">
         <div class="w-20 h-20 absolute left-1/2 top-1/2 -ml-10 -mt-10">
