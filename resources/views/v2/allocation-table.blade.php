@@ -59,7 +59,48 @@
                     @endforeach
                 @endforeach
             @else
-
+                @foreach($accounts as $id => $data)
+                    <tr>
+                        <td class="border border-gray-300 whitespace-nowrap p-1 pr-2 pl-4 bg-indigo-100">{{$data['name']}}</td>
+                        @foreach($period as $date)
+                            <td class="border border-gray-300 text-right p-1 bg-indigo-100"><input
+                                    class="px-2 py-0 w-20 text-right bg-transparent border-none"
+                                    type="text" value="{{$data[$date->format('Y-m-d')]}}" disabled/></td>
+                        @endforeach
+                    </tr>
+                    @foreach($data as $key => $ext_data)
+                        @if(is_array($ext_data))
+                            @if($key == 'transfer')
+                    <tr>
+                        <td class="border border-gray-300 whitespace-nowrap p-1 pr-2 pl-4 bg-indigo-100">Transfer In</td>
+                        @foreach($period as $date)
+                            <td class="border border-gray-300 text-right p-1 bg-indigo-100"><input
+                                    class="px-2 py-0 w-20 text-right bg-transparent border-none"
+                                    type="text" value="{{$ext_data[$date->format('Y-m-d')]}}" disabled/></td>
+                        @endforeach
+                    </tr>
+                            @elseif($key == 'total')
+                    <tr>
+                        <td class="border border-gray-300 whitespace-nowrap p-1 pr-2 pl-4 bg-indigo-100">Flow Total</td>
+                        @foreach($period as $date)
+                            <td class="border border-gray-300 text-right p-1 bg-indigo-100"><input
+                                    class="px-2 py-0 w-20 text-right bg-transparent border-none"
+                                    type="text" value="{{$ext_data[$date->format('Y-m-d')]}}" disabled/></td>
+                        @endforeach
+                    </tr>
+                            @elseif(is_integer($key))
+                    <tr>
+                        <td class="border border-gray-300 whitespace-nowrap p-1 pr-2 pl-4 bg-indigo-100">{{$ext_data['name']}}</td>
+                                    @foreach($period as $date)
+                            <td class="border border-gray-300 text-right p-1 bg-indigo-100"><input
+                                    class="px-2 py-0 w-20 text-right bg-transparent border-none"
+                                    type="text" value="{{$ext_data[$date->format('Y-m-d')]}}"/></td>
+                                    @endforeach
+                    </tr>
+                            @endif
+                        @endif
+                    @endforeach
+                @endforeach
             @endif
 
         @endforeach
