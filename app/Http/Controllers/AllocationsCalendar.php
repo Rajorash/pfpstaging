@@ -73,7 +73,7 @@ class AllocationsCalendar extends Controller
         return response()->json($response);
     }
 
-    private function getGridData($rangeValue, $dateFrom, $dateTo, $businessId, $phaseId = 10)
+    private function getGridData($rangeValue, $dateFrom, $dateTo, $businessId)
     {
         // Need accounts to be sorted as below
         $response = [
@@ -83,33 +83,9 @@ class AllocationsCalendar extends Controller
             BankAccount::ACCOUNT_TYPE_PREREAL => [],
             BankAccount::ACCOUNT_TYPE_POSTREAL => []
         ];
+        $business = Business::where('id', $businessId)->first();
 
-        $result = BankAccount::where('business_id', 2)
-            ->with('flows.allocations', function ($query) use ($dateFrom, $dateTo) {
-                return $query->where('allocation_date', '>=', $dateFrom)
-                    ->where('allocation_date', '<=', $dateTo);
-            })
-            ->with('allocations', function ($query) use ($dateFrom, $dateTo) {
-                return $query->where('allocation_date', '>=', $dateFrom)
-                    ->where('allocation_date', '<=', $dateTo);
-            })
-            ->get()
-            ->map(function ($item) {
-                $flows = [];
-                foreach ($item->flows as $flow) {
-                    $flows += [
-                        $flow->id => $flow->allocations->pluck('amount', 'allocation_date')->toArray()
-                            + ['negative' => (bool) $flow->negative_flow]
-                            + ['name' => $flow->label]
-                    ];
-                }
-
-                $item->account_values = [
-                    $item->id => $item->allocations->pluck('amount', 'allocation_date')->toArray()
-                        + $flows
-                ];
-                return $item;
-            })->all();
+        $result = $this->getRawData($businessId, $dateFrom, $dateTo);
 
         $flat = [];
         $names = [];
@@ -120,11 +96,13 @@ class AllocationsCalendar extends Controller
             }
         }
 
-        $percents = $this->getPercentValues ($phaseId, $businessId);
         $period = CarbonPeriod::create($dateFrom, $dateTo);
         $complete = $rangeValue + 1;
 
-        foreach ($percents as $type => $acc_id) {
+        $phaseId = $business->getPhaseIdByDate($dateFrom);
+        $types = $this->getPercentValues ($phaseId, $businessId);
+
+        foreach ($types as $type => $acc_id) {
             foreach ($flat as $id => $account_item) {
 
                 if (!array_key_exists($id, $acc_id)) {
@@ -133,6 +111,8 @@ class AllocationsCalendar extends Controller
                 $flows = [];
                 foreach ($period as $date) {
                     $income = $this->getIncomeByDate($businessId, $date);
+                    $phaseId = $business->getPhaseIdByDate($date);
+                    $percents = $this->getPercentValues ($phaseId, $businessId);
 
                     switch ($type) {
                         case BankAccount::ACCOUNT_TYPE_REVENUE:
@@ -286,6 +266,36 @@ class AllocationsCalendar extends Controller
         }
 
         return $response;
+    }
+
+    private function getRawData($businessId, $dateFrom, $dateTo)
+    {
+        return BankAccount::where('business_id', $businessId)
+            ->with('flows.allocations', function ($query) use ($dateFrom, $dateTo) {
+                return $query->where('allocation_date', '>=', $dateFrom)
+                    ->where('allocation_date', '<=', $dateTo);
+            })
+            ->with('allocations', function ($query) use ($dateFrom, $dateTo) {
+                return $query->where('allocation_date', '>=', $dateFrom)
+                    ->where('allocation_date', '<=', $dateTo);
+            })
+            ->get()
+            ->map(function ($item) {
+                $flows = [];
+                foreach ($item->flows as $flow) {
+                    $flows += [
+                        $flow->id => $flow->allocations->pluck('amount', 'allocation_date')->toArray()
+                            + ['negative' => (bool) $flow->negative_flow]
+                            + ['name' => $flow->label]
+                    ];
+                }
+
+                $item->account_values = [
+                    $item->id => $item->allocations->pluck('amount', 'allocation_date')->toArray()
+                        + $flows
+                ];
+                return $item;
+            })->all();
     }
 
     private function getIncomeByDate($businessId, $date)
