@@ -24,7 +24,7 @@ $(function () {
             $this.resetData();
             $this.events();
 
-            $this.loadData();
+            $this.firstLoadData();
         }
 
         resetData() {
@@ -44,6 +44,7 @@ $(function () {
 
             $this.changesCounter++;
 
+            $this.data.businessId = $('#businessId').val();
             $this.data.startDate = $('#startDate').val();
             $this.data.rangeValue = $('#currentRangeValue').val();
             if (typeof cellId === 'string') {
@@ -103,25 +104,38 @@ $(function () {
 
             clearTimeout($this.timedOut);
             $this.timedOut = setTimeout(function () {
-                $.ajax({
-                    type: 'POST',
-                    url: $this.ajaxUrl,
-                    data: $this.data,
-                    beforeSend: function () {
-                        $this.showSpinner()
-                    },
-                    success: function (data) {
-                        if ($this.debug) {
-                            console.log('loadData', data);
-                        }
-                        $this.renderData(data);
-                    },
-                    complete: function () {
-                        $this.hideSpinner();
-                        $this.resetData();
-                    }
-                });
+                $this.ajaxLoadWorker();
             }, 2000);
+        }
+
+        firstLoadData() {
+            let $this = this;
+
+            $this.collectData();
+            $this.ajaxLoadWorker();
+        }
+
+        ajaxLoadWorker() {
+            let $this = this;
+
+            $.ajax({
+                type: 'POST',
+                url: $this.ajaxUrl,
+                data: $this.data,
+                beforeSend: function () {
+                    $this.showSpinner()
+                },
+                success: function (data) {
+                    if ($this.debug) {
+                        console.log('loadData', data);
+                    }
+                    $this.renderData(data);
+                },
+                complete: function () {
+                    $this.hideSpinner();
+                    $this.resetData();
+                }
+            });
         }
 
         renderData(data) {

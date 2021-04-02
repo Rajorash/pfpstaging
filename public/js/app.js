@@ -4082,7 +4082,7 @@ $(function () {
         var $this = this;
         $this.resetData();
         $this.events();
-        $this.loadData();
+        $this.firstLoadData();
       }
     }, {
       key: "resetData",
@@ -4102,6 +4102,7 @@ $(function () {
       value: function collectData(cellId) {
         var $this = this;
         $this.changesCounter++;
+        $this.data.businessId = $('#businessId').val();
         $this.data.startDate = $('#startDate').val();
         $this.data.rangeValue = $('#currentRangeValue').val();
 
@@ -4159,26 +4160,39 @@ $(function () {
         $this.collectData(cellId);
         clearTimeout($this.timedOut);
         $this.timedOut = setTimeout(function () {
-          $.ajax({
-            type: 'POST',
-            url: $this.ajaxUrl,
-            data: $this.data,
-            beforeSend: function beforeSend() {
-              $this.showSpinner();
-            },
-            success: function success(data) {
-              if ($this.debug) {
-                console.log('loadData', data);
-              }
-
-              $this.renderData(data);
-            },
-            complete: function complete() {
-              $this.hideSpinner();
-              $this.resetData();
-            }
-          });
+          $this.ajaxLoadWorker();
         }, 2000);
+      }
+    }, {
+      key: "firstLoadData",
+      value: function firstLoadData() {
+        var $this = this;
+        $this.collectData();
+        $this.ajaxLoadWorker();
+      }
+    }, {
+      key: "ajaxLoadWorker",
+      value: function ajaxLoadWorker() {
+        var $this = this;
+        $.ajax({
+          type: 'POST',
+          url: $this.ajaxUrl,
+          data: $this.data,
+          beforeSend: function beforeSend() {
+            $this.showSpinner();
+          },
+          success: function success(data) {
+            if ($this.debug) {
+              console.log('loadData', data);
+            }
+
+            $this.renderData(data);
+          },
+          complete: function complete() {
+            $this.hideSpinner();
+            $this.resetData();
+          }
+        });
       }
     }, {
       key: "renderData",
