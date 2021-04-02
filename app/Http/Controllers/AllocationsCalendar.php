@@ -22,8 +22,8 @@ class AllocationsCalendar extends Controller
         $data = [
             'rangeArray' => $this->getRangeArray(),
             'business' => $business,
-            'startDate' => session()->get('startDate', Carbon::now()->format('Y-m-d')),
-            'currentRangeValue' => session()->get('rangeValue', $this->defaultCurrentRangeValue),
+            'startDate' => session()->get('startDate_'.$business->id, Carbon::now()->format('Y-m-d')),
+            'currentRangeValue' => session()->get('rangeValue_'.$business->id, $this->defaultCurrentRangeValue),
         ];
 
         return view('v2.allocations-calculator', $data);
@@ -53,13 +53,13 @@ class AllocationsCalendar extends Controller
         if (!$startDate) {
             $response['error'][] = 'Start date not set';
         } else {
-            session(['startDate' => $startDate]);
+            session(['startDate_'.$businessId => $startDate]);
         }
 
         if (!$rangeValue) {
             $response['error'][] = 'Range value not set';
         } else {
-            session(['rangeValue' => $rangeValue]);
+            session(['rangeValue_'.$businessId => $rangeValue]);
         }
 
         $endDate = Carbon::parse($startDate)->addDays($rangeValue - 1)->format('Y-m-d');
