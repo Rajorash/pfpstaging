@@ -62,7 +62,7 @@ class AllocationsCalendar extends Controller
 
 
         $period = CarbonPeriod::create($startDate, $endDate);
-        $tableData = $this->getGridData($startDate, $endDate);
+        $tableData = $this->getGridData($rangeValue, $startDate, $endDate);
 
 
         $response['html'] = view('v2.allocation-table')
@@ -76,7 +76,7 @@ class AllocationsCalendar extends Controller
         return response()->json($response);
     }
 
-    private function getGridData($dateFrom = '2021-03-30', $dateTo = '2021-04-05', $businessId = 2, $phaseId = 10)
+    private function getGridData($rangeValue, $dateFrom = '2021-03-30', $dateTo = '2021-04-05', $businessId = 2, $phaseId = 10)
     {
         // Need accounts to be sorted as below
         $response = [
@@ -123,23 +123,9 @@ class AllocationsCalendar extends Controller
             }
         }
 
-        $percents = BankAccount::where('business_id', $businessId)
-            ->with('percentages', function ($query) use ($phaseId) {
-                return $query->where('phase_id', $phaseId);
-            })
-            ->get()
-            ->mapToGroups(function ($item, $key) {
-                return [
-                    $item->type => [
-                        'id' => $item->id,
-                        'val' => count($item->percentages) ? $item->percentages[0]->percent : null
-                    ]
-                ];
-            })->map(function ($a_item) {
-                return array_column(collect($a_item)->toArray(), 'val', 'id');
-            })->toArray();
-
+        $percents = $this->getPercentValues ($phaseId, $businessId);
         $period = CarbonPeriod::create($dateFrom, $dateTo);
+        $complete = $rangeValue + 1;
 
         foreach ($percents as $type => $acc_id) {
             foreach ($flat as $id => $account_item) {
@@ -147,7 +133,7 @@ class AllocationsCalendar extends Controller
                 if (!array_key_exists($id, $acc_id)) {
                     continue;
                 }
-
+                $flows = [];
                 foreach ($period as $date) {
                     $income = $this->getIncomeByDate($businessId, $date);
 
@@ -180,18 +166,20 @@ class AllocationsCalendar extends Controller
                             $flow_total = 0;
                             foreach ($account_item as $key => $value) {
                                 if (is_integer($key)) {
-                                    $response[BankAccount::ACCOUNT_TYPE_SALESTAX][$id][$key]['name'] = $value['name'];
-                                    $response[BankAccount::ACCOUNT_TYPE_SALESTAX][$id][$key][$date->format('Y-m-d')]
-                                        = array_key_exists($date->format('Y-m-d 00:00:00'),
-                                        $value)
+                                    $flows[$id][$key]['name'] = $value['name'];
+                                    $flows[$id][$key][$date->format('Y-m-d')]
+                                        = array_key_exists($date->format('Y-m-d 00:00:00'), $value)
                                         ? $value[$date->format('Y-m-d 00:00:00')]
                                         : 0;
                                     $flow_total = $value['negative']
-                                        ? $flow_total - $response[BankAccount::ACCOUNT_TYPE_SALESTAX][$id][$key][$date->format('Y-m-d')]
-                                        : $flow_total + $response[BankAccount::ACCOUNT_TYPE_SALESTAX][$id][$key][$date->format('Y-m-d')];
+                                        ? $flow_total - $flows[$id][$key][$date->format('Y-m-d')]
+                                        : $flow_total + $flows[$id][$key][$date->format('Y-m-d')];
                                 }
                             }
                             $response[BankAccount::ACCOUNT_TYPE_SALESTAX][$id]['total'][$date->format('Y-m-d')] = $flow_total;
+                            if(array_key_exists($key, $flows[$id]) && count($flows[$id][$key]) == $complete) {
+                                $response[BankAccount::ACCOUNT_TYPE_SALESTAX][$id] += $flows[$id];
+                            }
                             break;
 
                         case BankAccount::ACCOUNT_TYPE_PRETOTAL:
@@ -211,18 +199,20 @@ class AllocationsCalendar extends Controller
                             $flow_total = 0;
                             foreach ($account_item as $key => $value) {
                                 if (is_integer($key)) {
-                                    $response[BankAccount::ACCOUNT_TYPE_PRETOTAL][$id][$key]['name'] = $value['name'];
-                                    $response[BankAccount::ACCOUNT_TYPE_PRETOTAL][$id][$key][$date->format('Y-m-d')]
-                                        = array_key_exists($date->format('Y-m-d 00:00:00'),
-                                        $value)
+                                    $flows[$id][$key]['name'] = $value['name'];
+                                    $flows[$id][$key][$date->format('Y-m-d')]
+                                        = array_key_exists($date->format('Y-m-d 00:00:00'), $value)
                                         ? $value[$date->format('Y-m-d 00:00:00')]
                                         : 0;
                                     $flow_total = $value['negative']
-                                        ? $flow_total - $response[BankAccount::ACCOUNT_TYPE_PRETOTAL][$id][$key][$date->format('Y-m-d')]
-                                        : $flow_total + $response[BankAccount::ACCOUNT_TYPE_PRETOTAL][$id][$key][$date->format('Y-m-d')];
+                                        ? $flow_total - $flows[$id][$key][$date->format('Y-m-d')]
+                                        : $flow_total + $flows[$id][$key][$date->format('Y-m-d')];
                                 }
                             }
                             $response[BankAccount::ACCOUNT_TYPE_PRETOTAL][$id]['total'][$date->format('Y-m-d')] = $flow_total;
+                            if(array_key_exists($key, $flows[$id]) && count($flows[$id][$key]) == $complete) {
+                                $response[BankAccount::ACCOUNT_TYPE_PRETOTAL][$id] += $flows[$id];
+                            }
                             break;
 
                         case BankAccount::ACCOUNT_TYPE_PREREAL:
@@ -238,19 +228,23 @@ class AllocationsCalendar extends Controller
                                 = (is_numeric($percents[$type][$id]))
                                 ? round($prereal * ($percents[$type][$id] / 100), 4)
                                 : 0;
+                            $flow_total = 0;
                             foreach ($account_item as $key => $value) {
                                 if (is_integer($key)) {
-                                    $response[BankAccount::ACCOUNT_TYPE_PREREAL][$id][$key]['name'] = $value['name'];
-                                    $response[BankAccount::ACCOUNT_TYPE_PREREAL][$id][$key][$date->format('Y-m-d')]
+                                    $flows[$id][$key]['name'] = $value['name'];
+                                    $flows[$id][$key][$date->format('Y-m-d')]
                                         = array_key_exists($date->format('Y-m-d 00:00:00'), $value)
                                         ? $value[$date->format('Y-m-d 00:00:00')]
                                         : 0;
                                     $flow_total = $value['negative']
-                                        ? $flow_total - $response[BankAccount::ACCOUNT_TYPE_PREREAL][$id][$key][$date->format('Y-m-d')]
-                                        : $flow_total + $response[BankAccount::ACCOUNT_TYPE_PREREAL][$id][$key][$date->format('Y-m-d')];
+                                        ? $flow_total - $flows[$id][$key][$date->format('Y-m-d')]
+                                        : $flow_total + $flows[$id][$key][$date->format('Y-m-d')];
                                 }
                             }
                             $response[BankAccount::ACCOUNT_TYPE_PREREAL][$id]['total'][$date->format('Y-m-d')] = $flow_total;
+                            if(array_key_exists($key, $flows[$id]) && count($flows[$id][$key]) == $complete) {
+                                $response[BankAccount::ACCOUNT_TYPE_PREREAL][$id] += $flows[$id];
+                            }
                             break;
 
                         case BankAccount::ACCOUNT_TYPE_POSTREAL:
@@ -271,19 +265,23 @@ class AllocationsCalendar extends Controller
                                     4
                                 )
                                 : 0;
+                            $flow_total = 0;
                             foreach ($account_item as $key => $value) {
                                 if (is_integer($key)) {
-                                    $response[BankAccount::ACCOUNT_TYPE_POSTREAL][$id][$key]['name'] = $value['name'];
-                                    $response[BankAccount::ACCOUNT_TYPE_POSTREAL][$id][$key][$date->format('Y-m-d')]
+                                    $flows[$id][$key]['name'] = $value['name'];
+                                    $flows[$id][$key][$date->format('Y-m-d')]
                                         = array_key_exists($date->format('Y-m-d 00:00:00'), $value)
                                         ? $value[$date->format('Y-m-d 00:00:00')]
                                         : 0;
                                     $flow_total = $value['negative']
-                                        ? $flow_total - $response[BankAccount::ACCOUNT_TYPE_POSTREAL][$id][$key][$date->format('Y-m-d')]
-                                        : $flow_total + $response[BankAccount::ACCOUNT_TYPE_POSTREAL][$id][$key][$date->format('Y-m-d')];
+                                        ? $flow_total - $flows[$id][$key][$date->format('Y-m-d')]
+                                        : $flow_total + $flows[$id][$key][$date->format('Y-m-d')];
                                 }
                             }
                             $response[BankAccount::ACCOUNT_TYPE_POSTREAL][$id]['total'][$date->format('Y-m-d')] = $flow_total;
+                            if(array_key_exists($key, $flows[$id]) && count($flows[$id][$key]) == $complete) {
+                                $response[BankAccount::ACCOUNT_TYPE_POSTREAL][$id] += $flows[$id];
+                            }
                             break;
                     }
                 }
@@ -340,5 +338,35 @@ class AllocationsCalendar extends Controller
             : 0;
 
         return $nsp - $pretotal_amt;
+    }
+
+    private function getPercentValues ($phaseId, $businessId)
+    {
+        $key = 'phasePercentValues_'.$phaseId.'_'.$businessId;
+
+        $phasePercentValues = Cache::get($key);
+
+        if ($phasePercentValues === null) {
+
+            $phasePercentValues = BankAccount::where('business_id', $businessId)
+                ->with('percentages', function ($query) use ($phaseId) {
+                    return $query->where('phase_id', $phaseId);
+                })
+                ->get()
+                ->mapToGroups(function ($item, $key) {
+                    return [
+                        $item->type => [
+                            'id' => $item->id,
+                            'val' => count($item->percentages) ? $item->percentages[0]->percent : null
+                        ]
+                    ];
+                })->map(function ($a_item) {
+                    return array_column(collect($a_item)->toArray(), 'val', 'id');
+                })->toArray();
+
+            Cache::put($key, $phasePercentValues);
+        }
+
+        return $phasePercentValues;
     }
 }
