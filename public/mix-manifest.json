@@ -1,7 +1,6 @@
 {
     "/js/app.js": "/js/app.js",
     "/css/app.css": "/css/app.css",
-    "/images/bg.svg": "/images/bg.svg",
     "/images/logo.png": "/images/logo.png",
     "/favicons/android-chrome-144x144.png": "/favicons/android-chrome-144x144.png",
     "/favicons/apple-touch-icon.png": "/favicons/apple-touch-icon.png",
@@ -12,5 +11,7 @@
     "/favicons/mstile-150x150.png": "/favicons/mstile-150x150.png",
     "/favicons/safari-pinned-tab.svg": "/favicons/safari-pinned-tab.svg",
     "/favicons/site.webmanifest": "/favicons/site.webmanifest",
-    "/favicon.ico": "/favicon.ico"
+    "/favicon.ico": "/favicon.ico",
+    "/images/2users.svg": "/images/2users.svg",
+    "/images/bg.svg": "/images/bg.svg"
 }
