@@ -30,6 +30,7 @@
                         @foreach($period as $date)
                             <td class="border border-gray-300 text-right p-1 bg-indigo-100"><input
                                     class="px-2 py-0 w-20 text-right bg-transparent border-none"
+                                    id="account_{{$id}}_{{$date->format('Y-m-d')}}"
                                     type="text" value="{{$data[$date->format('Y-m-d')]}}" disabled/></td>
                         @endforeach
                     </tr>
@@ -41,7 +42,7 @@
                                     <td class="border border-gray-300 text-right p-1 hover:bg-yellow-100"><input
                                             class="px-2 py-0 w-20 text-right bg-transparent border-0 border-b border-transparent outline-none
                     focus:border-yellow-700 focus:outline-none focus:shadow-none focus:ring-0"
-                                            id="someOwnKey_1_{{$key}}"
+                                            id="flow_{{$key}}_{{$date->format('Y-m-d')}}"
                                             type="text" value="{{$ext_data[$date->format('Y-m-d')]}}"/></td>
                                 @endforeach
                             </tr>
@@ -92,7 +93,7 @@
                                             <input
                                                 class="px-2 py-0 w-20 text-right bg-transparent border-0 border-b border-transparent outline-none
                                                 focus:border-yellow-700 focus:outline-none focus:shadow-none focus:ring-0"
-                                                id="someOwnKey_2_{{$key}}"
+                                                id="flow_{{$key}}_{{$date->format('Y-m-d')}}"
                                                 type="text" value="{{$ext_data[$date->format('Y-m-d')]}}"/></td>
                                     @endforeach
                                 </tr>
