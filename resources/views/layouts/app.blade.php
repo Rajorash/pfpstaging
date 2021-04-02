@@ -33,7 +33,8 @@
 <body class="font-sans antialiased relative text-light_gray">
 <x-jet-banner/>
 
-<div class="min-h-screen bg-light_purple2 bg-right-bottom bg-no-repeat" style="background-image: url({{asset('images/bg.svg')}})">
+<div class="min-h-screen bg-light_purple2 bg-right-bottom bg-no-repeat"
+     style="background-image: url({{asset('images/bg.svg')}})">
     <div class="bg-white shadow-shadow4">
         @livewire('navigation-menu')
     </div>
@@ -41,9 +42,9 @@
     <!-- Page Heading -->
     @if(isset($header))
         <header class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-            <div class="">
+            <h2 class="font-normal text-4xl text-dark_gray2 leading-tight mt-8">
                 {{ $header }}
-            </div>
+            </h2>
         </header>
 @endif
 

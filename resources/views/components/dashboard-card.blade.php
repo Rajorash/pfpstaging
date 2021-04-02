@@ -12,7 +12,7 @@
 </div>
 
 <a href="{{ $route}}">
-    <div class="mt-3 flex items-center text-sm font-normal text-blue">
+    <div class="mt-3 flex items-center text-sm font-normal text-blue flex justify-start">
         <div>{{$linkTitle}}</div>
         <div class="ml-2 text-blue">
             <x-icons.arrow-right/>
