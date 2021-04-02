@@ -13,7 +13,7 @@ use function PHPUnit\Framework\containsIdentical;
 class AllocationsCalendar extends Controller
 {
 
-    protected $currentRangeValue = 14;
+    protected $defaultCurrentRangeValue = 14;
 
     public function calendar(Request $request)
     {
@@ -21,8 +21,9 @@ class AllocationsCalendar extends Controller
 
         $data = [
             'rangeArray' => $this->getRangeArray(),
-            'currentRangeValue' => $this->currentRangeValue,
-            'business' => $business
+            'business' => $business,
+            'startDate' => session()->get('startDate', Carbon::now()->format('Y-m-d')),
+            'currentRangeValue' => session()->get('rangeValue', $this->defaultCurrentRangeValue),
         ];
 
         return view('v2.allocations-calculator', $data);
@@ -51,10 +52,14 @@ class AllocationsCalendar extends Controller
 
         if (!$startDate) {
             $response['error'][] = 'Start date not set';
+        } else {
+            session(['startDate' => $startDate]);
         }
 
         if (!$rangeValue) {
             $response['error'][] = 'Range value not set';
+        } else {
+            session(['rangeValue' => $rangeValue]);
         }
 
         $endDate = Carbon::parse($startDate)->addDays($rangeValue - 1)->format('Y-m-d');
@@ -120,7 +125,7 @@ class AllocationsCalendar extends Controller
             }
         }
 
-        $percents = $this->getPercentValues ($phaseId, $businessId);
+        $percents = $this->getPercentValues($phaseId, $businessId);
         $period = CarbonPeriod::create($dateFrom, $dateTo);
         $complete = $rangeValue + 1;
 
@@ -174,7 +179,7 @@ class AllocationsCalendar extends Controller
                                 }
                             }
                             $response[BankAccount::ACCOUNT_TYPE_SALESTAX][$id]['total'][$date->format('Y-m-d')] = $flow_total;
-                            if(array_key_exists($key, $flows[$id]) && count($flows[$id][$key]) == $complete) {
+                            if (array_key_exists($key, $flows[$id]) && count($flows[$id][$key]) == $complete) {
                                 $response[BankAccount::ACCOUNT_TYPE_SALESTAX][$id] += $flows[$id];
                             }
                             break;
@@ -207,7 +212,7 @@ class AllocationsCalendar extends Controller
                                 }
                             }
                             $response[BankAccount::ACCOUNT_TYPE_PRETOTAL][$id]['total'][$date->format('Y-m-d')] = $flow_total;
-                            if(array_key_exists($key, $flows[$id]) && count($flows[$id][$key]) == $complete) {
+                            if (array_key_exists($key, $flows[$id]) && count($flows[$id][$key]) == $complete) {
                                 $response[BankAccount::ACCOUNT_TYPE_PRETOTAL][$id] += $flows[$id];
                             }
                             break;
@@ -239,7 +244,7 @@ class AllocationsCalendar extends Controller
                                 }
                             }
                             $response[BankAccount::ACCOUNT_TYPE_PREREAL][$id]['total'][$date->format('Y-m-d')] = $flow_total;
-                            if(array_key_exists($key, $flows[$id]) && count($flows[$id][$key]) == $complete) {
+                            if (array_key_exists($key, $flows[$id]) && count($flows[$id][$key]) == $complete) {
                                 $response[BankAccount::ACCOUNT_TYPE_PREREAL][$id] += $flows[$id];
                             }
                             break;
@@ -276,7 +281,7 @@ class AllocationsCalendar extends Controller
                                 }
                             }
                             $response[BankAccount::ACCOUNT_TYPE_POSTREAL][$id]['total'][$date->format('Y-m-d')] = $flow_total;
-                            if(array_key_exists($key, $flows[$id]) && count($flows[$id][$key]) == $complete) {
+                            if (array_key_exists($key, $flows[$id]) && count($flows[$id][$key]) == $complete) {
                                 $response[BankAccount::ACCOUNT_TYPE_POSTREAL][$id] += $flows[$id];
                             }
                             break;
@@ -337,7 +342,7 @@ class AllocationsCalendar extends Controller
         return $nsp - $pretotal_amt;
     }
 
-    private function getPercentValues ($phaseId, $businessId)
+    private function getPercentValues($phaseId, $businessId)
     {
         $key = 'phasePercentValues_'.$phaseId.'_'.$businessId;
 

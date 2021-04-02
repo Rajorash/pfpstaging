@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Business;
 use App\Traits\GettersTrait;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
@@ -25,6 +26,8 @@ class AllocationCalculatorController extends Controller
             return Auth::user()->can('view', $business);
         })->values();
 
-        return view('calculator.allocation-calculator', ['businesses' => $filtered]);
+        return view('calculator.allocation-calculator', [
+            'businesses' => $filtered
+        ]);
     }
 }
