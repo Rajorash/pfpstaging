@@ -7,7 +7,7 @@
             <x-business-nav businessId="{{$business->id}}"/>
         </div>
         <div class="flex content-between">
-            <input type="hidden" name="businessId" value="{{ $business->id }}">
+            <input type="hidden" id="businessId" name="businessId" value="{{$business->id}}"/>
             <div class="py-2 pr-6">
                 <label for="startdate">Start date</label>
                 <input name="startdate" id="startDate" class="form-input rounded py-0 mx-3 my-0" type="date"

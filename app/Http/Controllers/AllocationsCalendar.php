@@ -57,11 +57,7 @@ class AllocationsCalendar extends Controller
             $response['error'][] = 'Range value not set';
         }
 
-//        $startDate = '2021-03-25';//$request->startDate;
-//        $rangeValue = 14;//$request->rangeValue;
         $endDate = Carbon::parse($startDate)->addDays($rangeValue - 1)->format('Y-m-d');
-
-
         $period = CarbonPeriod::create($startDate, $endDate);
         $tableData = $this->getGridData($rangeValue, $startDate, $endDate, $businessId);
 
