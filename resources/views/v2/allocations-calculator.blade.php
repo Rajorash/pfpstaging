@@ -2,7 +2,9 @@
     <x-slot name="header">
         <div class="flex content-between">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                {{$business->name}} > Allocations
+                {{$business->name}}
+                <x-icons.chevron-right :class="'h-2.5 w-auto inline-block px-2'"/>
+                Allocations
             </h2>
             <x-business-nav businessId="{{$business->id}}"/>
         </div>
