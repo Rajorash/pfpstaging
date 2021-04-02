@@ -17,7 +17,7 @@ class AllocationsCalendar extends Controller
 
     public function calendar(Request $request)
     {
-        $business = Business::find($request->business)->with(['accounts'])->first();
+        $business = Business::where('id', $request->business)->first();
 
         $data = [
             'rangeArray' => $this->getRangeArray(),
@@ -46,6 +46,7 @@ class AllocationsCalendar extends Controller
 
         $startDate = $request->startDate;
         $rangeValue = $request->rangeValue;
+        $businessId = $request->businessId;
         $cells = $request->cells;
 
         if (!$startDate) {
@@ -62,7 +63,7 @@ class AllocationsCalendar extends Controller
 
 
         $period = CarbonPeriod::create($startDate, $endDate);
-        $tableData = $this->getGridData($rangeValue, $startDate, $endDate);
+        $tableData = $this->getGridData($rangeValue, $startDate, $endDate, $businessId);
 
 
         $response['html'] = view('v2.allocation-table')
@@ -76,7 +77,7 @@ class AllocationsCalendar extends Controller
         return response()->json($response);
     }
 
-    private function getGridData($rangeValue, $dateFrom = '2021-03-30', $dateTo = '2021-04-05', $businessId = 2, $phaseId = 10)
+    private function getGridData($rangeValue, $dateFrom, $dateTo, $businessId, $phaseId = 10)
     {
         // Need accounts to be sorted as below
         $response = [
