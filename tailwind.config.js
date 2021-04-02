@@ -20,6 +20,7 @@ module.exports = {
                 dark_gray2: '#2F2F2F',
                 light_gray: '#848484',
                 blue: '#3E04E2',
+                green: '#94B140',
                 dashboard: '#FBFBFF'
             },
             boxShadow: {

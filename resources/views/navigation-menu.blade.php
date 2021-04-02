@@ -118,22 +118,26 @@
                             </div>
 
                             <x-jet-dropdown-link href="{{ route('profile.show') }}">
-                                <span class="inline-block mr-4 pt-0.5 w-4 text-center"><x-icons.profile :class="'w-4 h-auto'"/></span>
+                                <span class="inline-block mr-4 pt-0.5 w-4 text-center"><x-icons.profile
+                                        :class="'w-4 h-auto'"/></span>
                                 {{ __('Profile') }}
                             </x-jet-dropdown-link>
 
                             <x-jet-dropdown-link href="#">
-                                <span class="inline-block mr-4 pt-0.5 w-4 text-center"><x-icons.case :class="'w-4 h-auto'"/></span>
+                                <span class="inline-block mr-4 pt-0.5 w-4 text-center"><x-icons.case
+                                        :class="'w-4 h-auto'"/></span>
                                 {{ __('Create A Business') }}
                             </x-jet-dropdown-link>
 
                             <x-jet-dropdown-link href="#">
-                                <span class="inline-block mr-4 pt-0.5 w-4 text-center"><x-icons.user-add :class="'w-4 h-auto'"/></span>
+                                <span class="inline-block mr-4 pt-0.5 w-4 text-center"><x-icons.user-add
+                                        :class="'w-4 h-auto'"/></span>
                                 {{ __('Add An User') }}
                             </x-jet-dropdown-link>
 
                             <x-jet-dropdown-link href="#">
-                                <span class="inline-block mr-4 pt-0.5 w-4 text-center"><x-icons.gear :class="'w-4 h-auto'"/></span>
+                                <span class="inline-block mr-4 pt-0.5 w-4 text-center"><x-icons.gear
+                                        :class="'w-4 h-auto'"/></span>
                                 {{ __('Settings') }}
                             </x-jet-dropdown-link>
 
@@ -150,9 +154,9 @@
                                 @csrf
 
                                 <x-jet-dropdown-link href="{{ route('logout') }}"
-                                                     onclick="event.preventDefault();
-                                                this.closest('form').submit();">
-                                    <span class="inline-block mr-4 pt-0.5 w-4 text-center"><x-icons.logout :class="'w-4 h-auto'"/></span>
+                                                     onclick="event.preventDefault(); this.closest('form').submit();">
+                                    <span class="inline-block mr-4 pt-0.5 w-4 text-center"><x-icons.logout
+                                            :class="'w-4 h-auto'"/></span>
                                     {{ __('Logout') }}
                                 </x-jet-dropdown-link>
                             </form>
