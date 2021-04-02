@@ -28,13 +28,13 @@
         @foreach ($mappedAccounts['salestax'] as $account)
         <tr>
             <td class="px-3 py-1">{{$account['name']}}</td>
-            <td class="px-3 py-1 bg-blue-300 text-right">{{$account['percent']}}%</td>
+            <td class="px-3 py-1 bg-blue text-right">{{$account['percent']}}%</td>
             <td class="text-right px-3 py-1 bg-green-300">${{number_format($account['value'], 0)}}</td>
             <td class="bg-gray-500"></td>
             <td class="bg-gray-500"></td>
         </tr>
         @endforeach
-        <tr class="border border-blue-100 bg-blue-50">
+        <tr class="border border-blue bg-dark_gray2">
             <td class="px-3 py-1">Net Cash Receipts</td>
             <td class="px-3 py-1"></td>
             <td class="text-right px-3 py-1">${{number_format($netCashReceipts, 0)}}</td>
@@ -45,14 +45,14 @@
         @foreach ($mappedAccounts['prereal'] as $account)
         <tr>
             <td class="px-3 py-1">{{$account['name']}}</td>
-            <td class="px-3 py-1 bg-blue-300 text-right">{{$account['percent']}}%</td>
+            <td class="px-3 py-1 bg-blue text-right">{{$account['percent']}}%</td>
             <td class="text-right px-3 py-1 bg-green-300">${{number_format($account['value'], 0)}}</td>
             <td class="bg-gray-500"></td>
             <td class="bg-gray-500"></td>
         </tr>
         @endforeach
         {{-- Net Cash Receipts --}}
-        <tr class="border border-blue-100 bg-blue-50">
+        <tr class="border border-blue bg-dark_gray2">
             <td class="px-3 py-1">Real Revenue</td>
             <td class="px-3 py-1"></td>
             <td class="text-right px-3 py-1 bg-green-100">${{number_format($realRevenue, 0)}}</td>
@@ -65,7 +65,7 @@
             <td class="px-3 py-1">{{$account['name']}}</td>
             <td class="px-3 py-1"></td>
             <td class="bg-green-100"></td>
-            <td class="text-right px-3 py-1 bg-blue-300">{{$account['percent']}}%</td>
+            <td class="text-right px-3 py-1 bg-dark_gray2">{{$account['percent']}}%</td>
             <td class="text-right px-3 py-1 bg-green-300">${{number_format($account['value'], 0)}}</td>
         </tr>
         @endforeach

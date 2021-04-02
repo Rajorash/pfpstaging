@@ -13,7 +13,7 @@
       <tbody>
           @forelse ($business->accounts as $acc)
           <tr class="w-full align-middle">
-              <td class="account-row bg-blue-200" scope="row">
+              <td class="account-row bg-blue" scope="row">
                   <label class="align-middle block px-3 mt-0 mb-2">{{$acc->name}}</label>
                   @unless ($acc->type == 'revenue')
                   <label class="align-middle block px-3 mt-0 mb-2 text-gray-500">Transfer in</label>
@@ -21,7 +21,7 @@
                   @endunless
               </td>
               @foreach($dates as $date)
-              <td class="account text-right py-1 bg-blue-200"
+              <td class="account text-right py-1 bg-blue"
                   data-date='{{$date}}'
                   data-hierarchy="{{$acc->type}}"
                   data-phase='{{$phaseDates[$date]}}'
@@ -41,7 +41,7 @@
                   >
 
                   <input type="text"
-                      class="bg-teal-500 projected-total text-right block appearance-none w-full py-1 px-2 mb-1 text-base leading-normal bg-blue-100 text-gray-800 border border-gray-200 rounded py-1 px-2 text-sm leading-normal rounded w-full"
+                      class="bg-teal-500 projected-total text-right block appearance-none w-full py-1 px-2 mb-1 text-base leading-normal bg-blue text-gray-800 border border-gray-200 rounded py-1 px-2 text-sm leading-normal rounded w-full"
                       data-hierarchy="{{$acc->type}}"
                       data-date='{{$date}}'
                       placeholder="0"

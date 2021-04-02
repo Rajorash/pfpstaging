@@ -4,12 +4,12 @@
     <div>
         <div class="flex flex-row content-end w-full space-x-6 py-3 px-6">
             @auth
-            <a class="text-blue-400 hover:text-blue-600 block ml-auto" href="{{ url('/dashboard') }}">Dashboard</a>
+            <a class="text-blue hover:text-dark_gray2 block ml-auto" href="{{ url('/dashboard') }}">Dashboard</a>
             @else
-            <a class="text-blue-400 hover:text-blue-600 block ml-auto" href="{{ route('login') }}">Login</a>
+            <a class="text-blue hover:text-dark_gray2 block ml-auto" href="{{ route('login') }}">Login</a>
 
             @if (Route::has('register'))
-            <a class="text-blue-400 hover:text-blue-600 block" href="{{ route('register') }}">Register</a>
+            <a class="text-blue hover:text-dark_gray2 block" href="{{ route('register') }}">Register</a>
             @endif
             @endauth
         </div>

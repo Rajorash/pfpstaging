@@ -1,5 +1,5 @@
 <x-ui.input
-    class="block text-right bg-blue-100"
+    class="block text-right bg-blue"
     :account="$account"
     :date="$date"
     wire:model="amount"

@@ -2,11 +2,11 @@
     @foreach ($links as $link => $label)
 
     @if ($loop->first)
-    <a class="text-blue-500 hover:text-blue-600 hover:underline ml-auto mr-2" href="{{$link}}">{{$label}}</a> |
+    <a class="text-blue hover:text-dark_gray2 hover:underline ml-auto mr-2" href="{{$link}}">{{$label}}</a> |
     @elseif (!$loop->last)
-    <a class="text-blue-500 hover:text-blue-600 hover:underline mx-2" href="{{$link}}">{{$label}}</a> |
+    <a class="text-blue hover:text-dark_gray2 hover:underline mx-2" href="{{$link}}">{{$label}}</a> |
     @else
-    <a class="text-blue-500 hover:text-blue-600 hover:underline ml-2" href="{{$link}}">{{$label}}</a>
+    <a class="text-blue hover:text-dark_gray2 hover:underline ml-2" href="{{$link}}">{{$label}}</a>
     @endif
 
     @endforeach

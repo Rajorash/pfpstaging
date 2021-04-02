@@ -33,7 +33,7 @@
                         'pretotal' => 'bg-red-300',
                         'salestax' => 'bg-gray-300',
                         'prereal' => 'bg-yellow-300',
-                        'postreal' => 'bg-blue-300'
+                        'postreal' => 'bg-blue
                     ];
                 @endphp
                 @forelse($sorted as $acc)
@@ -79,7 +79,7 @@
                 <tr>
                     <td></td>
                     @forelse($rollout as $phase)
-                    <td class="bg-blue-300 percentage-total text-right" data-phase-id="{{ $phase->id }}" data-value="0">0%</td>
+                    <td class="bg-blue percentage-total text-right" data-phase-id="{{ $phase->id }}" data-value="0">0%</td>
                     @empty
                     <th class="text-center">No phases exist...</th>
                     @endforelse

@@ -21,7 +21,7 @@
                                 <div class="input-group-text">%</div>
                             </div>
                           </div>
-                          <button type="submit" class="inline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded py-1 px-3 leading-normal no-underline bg-blue-600 text-white hover:bg-blue-600 mb-2">Submit</button>
+                          <button type="submit" class="inline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded py-1 px-3 leading-normal no-underline bg-blue text-white hover:bg-dark_gray2 mb-2">Submit</button>
                     </form>
                     @empty
                     No accounts with 'salestax' designation.

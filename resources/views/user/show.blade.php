@@ -20,7 +20,7 @@
                     Email: {{ $user->email }}<br>
                     Last login: {{ $user->last_login_at ?: 'Unknown' }}<br>
                     <br>
-                    <a class="text-blue-500 hover:text-blue-700" href="{{ route('users') }}">Back to User list</a>
+                    <a class="text-blue hover:text-dark_gray2" href="{{ route('users') }}">Back to User list</a>
                 </div>
 
             </div>

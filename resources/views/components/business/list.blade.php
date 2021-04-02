@@ -22,7 +22,7 @@
                 {{$business->license ? $business->license->advisor->name : 'No advisor.'}}
             </td>
             <td class="text-center">
-                <a class="text-blue-400 hover:text-blue-600" href="/business/{{$business->id}}/accounts">{{$business->accounts()->count()}}</a>
+                <a class="text-blue hover:text-dark_gray2" href="/business/{{$business->id}}/accounts">{{$business->accounts()->count()}}</a>
             </td>
         </td>
         {{-- <td class="text-center">
