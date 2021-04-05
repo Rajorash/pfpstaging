@@ -35,6 +35,7 @@ $(function () {
                 $this.loadData(event);
             });
 
+            // $(document).on('hover', 'td, th', function(){});
         }
 
         resetData() {
@@ -158,7 +159,7 @@ $(function () {
         }
     }
 
-    if ($('#allocationTable').length) {
+    if ($('#allocationTablePlace').length) {
         let AllocationCalculatorClass = new AllocationCalculator();
         AllocationCalculatorClass.init();
     }

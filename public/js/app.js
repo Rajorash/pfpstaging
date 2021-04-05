@@ -4091,7 +4091,7 @@ $(function () {
         var $this = this;
         $(document).on('change', '#startDate, #currentRangeValue, #allocationTablePlace input', function (event) {
           $this.loadData(event);
-        });
+        }); // $(document).on('hover', 'td, th', function(){});
       }
     }, {
       key: "resetData",
@@ -4215,7 +4215,7 @@ $(function () {
     return AllocationCalculator;
   }();
 
-  if ($('#allocationTable').length) {
+  if ($('#allocationTablePlace').length) {
     var AllocationCalculatorClass = new AllocationCalculator();
     AllocationCalculatorClass.init();
   }
