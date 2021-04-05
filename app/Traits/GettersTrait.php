@@ -4,6 +4,7 @@ namespace App\Traits;
 
 
 use App\Models\BankAccount;
+use App\Models\AccountFlow;
 use App\Models\Business;
 use Illuminate\Support\Facades\Cache;
 
@@ -21,6 +22,20 @@ trait GettersTrait
         }
 
         return $bankAccount;
+    }
+
+    private function getFlowAccount($accountId)
+    {
+        $key = 'FlowAccount_'.$accountId;
+
+        $flowAccount = Cache::get($key);
+
+        if ($flowAccount === null) {
+            $flowAccount = AccountFlow::find($accountId);
+            Cache::put($key, $flowAccount);
+        }
+
+        return $flowAccount;
     }
 
     private function getBusinessAll()
