@@ -13,6 +13,7 @@
 
 use App\Http\Controllers\AllocationsCalendar;
 use App\Http\Controllers\AllocationsController;
+use App\Http\Controllers\ProjectionController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -54,13 +55,13 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/allocations/{business}', 'AllocationsController@allocations');
 
     // Rollout Percentages routing
-    Route::get('/allocations/{business}/percentages', 'AllocationsController@percentages');
+    Route::get('/allocations/{business}/percentages',
+        [AllocationsController::class, 'percentages'])->name('allocations-percentages');
     Route::post('/allocations/update', 'AllocationsController@updateAllocation');
     Route::post('/percentages/update', 'AllocationsController@updatePercentage');
 
     // Projections
-    Route::get('/projections/{business}', 'ProjectionController@index')->name('projections');
-
+    Route::get('/projections/{business}', [ProjectionController::class ,'index'])->name('projections');
 
     //ajax calls
     Route::post('/business/allocations_calendar/ajax/update',

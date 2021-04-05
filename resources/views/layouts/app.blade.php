@@ -45,8 +45,11 @@
             <h2 class="font-normal text-4xl text-dark_gray2 leading-tight mt-8">
                 {{ $header }}
             </h2>
+            @if(isset($subHeader))
+                {{$subHeader}}
+            @endif
         </header>
-@endif
+    @endif
 
 <!-- Page Content -->
     <main class="w-full mx-auto py-6 px-4 sm:px-6 lg:px-8">
