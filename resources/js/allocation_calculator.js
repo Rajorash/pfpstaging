@@ -14,6 +14,7 @@ $(function () {
             this.elementLoadingSpinner = $('#loadingSpinner');
 
             this.changesCounter = 0;
+            this.lastCoordinatesElementId = '';
 
             this.timeout;
         }
@@ -25,6 +26,15 @@ $(function () {
             $this.events();
 
             $this.firstLoadData();
+        }
+
+        events() {
+            let $this = this;
+
+            $(document).on('change', '#startDate, #currentRangeValue, #allocationTablePlace input', function (event) {
+                $this.loadData(event);
+            });
+
         }
 
         resetData() {
@@ -39,7 +49,7 @@ $(function () {
             $this.data.cells = [];
         }
 
-        collectData(cellId) {
+        collectData(event) {
             let $this = this;
 
             $this.changesCounter++;
@@ -48,11 +58,17 @@ $(function () {
             $this.data.startDate = $('#startDate').val();
             $this.data.rangeValue = $('#currentRangeValue').val();
 
-            if (typeof cellId === 'string') {
-                $this.data.cells.push({
-                    cellId: cellId,
-                    cellValue: $('#' + cellId).val()
-                });
+            if (event && typeof event.target.id === 'string') {
+
+                $this.lastCoordinatesElementId = event.target.id;
+
+                if (event.target.id !== 'currentRangeValue'
+                    && event.target.id !== 'startDate') {
+                    $this.data.cells.push({
+                        cellId: event.target.id,
+                        cellValue: $('#' + event.target.id).val()
+                    });
+                }
             }
 
             if ($this.changesCounter) {
@@ -64,16 +80,6 @@ $(function () {
             if ($this.debug) {
                 console.log('collectData', $this.data);
             }
-        }
-
-        events() {
-            let $this = this;
-
-            $(document).on('change', '#startDate', $this.loadData.bind($this));
-            $(document).on('change', '#currentRangeValue', $this.loadData.bind($this));
-            $(document).on('change', '#allocationTablePlace input', function (event) {
-                $this.loadData(event.target.id);
-            });
         }
 
         showSpinner() {
@@ -98,10 +104,10 @@ $(function () {
             $this.elementLoadingSpinner.hide();
         }
 
-        loadData(cellId) {
+        loadData(event) {
             let $this = this;
 
-            $this.collectData(cellId);
+            $this.collectData(event);
 
             clearTimeout($this.timedOut);
             $this.timedOut = setTimeout(function () {
@@ -144,10 +150,16 @@ $(function () {
 
             if (data.error.length === 0) {
                 $this.elementAllocationTablePlace.html(data.html);
+
+                if ($this.lastCoordinatesElementId) {
+                    $('#' + $this.lastCoordinatesElementId).focus();
+                }
             }
         }
     }
 
-    let AllocationCalculatorClass = new AllocationCalculator();
-    AllocationCalculatorClass.init();
+    if ($('#allocationTable').length) {
+        let AllocationCalculatorClass = new AllocationCalculator();
+        AllocationCalculatorClass.init();
+    }
 });

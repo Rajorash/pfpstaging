@@ -4073,6 +4073,7 @@ $(function () {
       this.elementAllocationTablePlace = $('#allocationTablePlace');
       this.elementLoadingSpinner = $('#loadingSpinner');
       this.changesCounter = 0;
+      this.lastCoordinatesElementId = '';
       this.timeout;
     }
 
@@ -4083,6 +4084,14 @@ $(function () {
         $this.resetData();
         $this.events();
         $this.firstLoadData();
+      }
+    }, {
+      key: "events",
+      value: function events() {
+        var $this = this;
+        $(document).on('change', '#startDate, #currentRangeValue, #allocationTablePlace input', function (event) {
+          $this.loadData(event);
+        });
       }
     }, {
       key: "resetData",
@@ -4099,18 +4108,22 @@ $(function () {
       }
     }, {
       key: "collectData",
-      value: function collectData(cellId) {
+      value: function collectData(event) {
         var $this = this;
         $this.changesCounter++;
         $this.data.businessId = $('#businessId').val();
         $this.data.startDate = $('#startDate').val();
         $this.data.rangeValue = $('#currentRangeValue').val();
 
-        if (typeof cellId === 'string') {
-          $this.data.cells.push({
-            cellId: cellId,
-            cellValue: $('#' + cellId).val()
-          });
+        if (event && typeof event.target.id === 'string') {
+          $this.lastCoordinatesElementId = event.target.id;
+
+          if (event.target.id !== 'currentRangeValue' && event.target.id !== 'startDate') {
+            $this.data.cells.push({
+              cellId: event.target.id,
+              cellValue: $('#' + event.target.id).val()
+            });
+          }
         }
 
         if ($this.changesCounter) {
@@ -4122,16 +4135,6 @@ $(function () {
         if ($this.debug) {
           console.log('collectData', $this.data);
         }
-      }
-    }, {
-      key: "events",
-      value: function events() {
-        var $this = this;
-        $(document).on('change', '#startDate', $this.loadData.bind($this));
-        $(document).on('change', '#currentRangeValue', $this.loadData.bind($this));
-        $(document).on('change', '#allocationTablePlace input', function (event) {
-          $this.loadData(event.target.id);
-        });
       }
     }, {
       key: "showSpinner",
@@ -4155,9 +4158,9 @@ $(function () {
       }
     }, {
       key: "loadData",
-      value: function loadData(cellId) {
+      value: function loadData(event) {
         var $this = this;
-        $this.collectData(cellId);
+        $this.collectData(event);
         clearTimeout($this.timedOut);
         $this.timedOut = setTimeout(function () {
           $this.ajaxLoadWorker();
@@ -4201,6 +4204,10 @@ $(function () {
 
         if (data.error.length === 0) {
           $this.elementAllocationTablePlace.html(data.html);
+
+          if ($this.lastCoordinatesElementId) {
+            $('#' + $this.lastCoordinatesElementId).focus();
+          }
         }
       }
     }]);
@@ -4208,8 +4215,10 @@ $(function () {
     return AllocationCalculator;
   }();
 
-  var AllocationCalculatorClass = new AllocationCalculator();
-  AllocationCalculatorClass.init();
+  if ($('#allocationTable').length) {
+    var AllocationCalculatorClass = new AllocationCalculator();
+    AllocationCalculatorClass.init();
+  }
 });
 
 /***/ }),
