@@ -137,6 +137,8 @@ class AllocationsCalendar extends Controller
     {
         $this->business = Business::where('id', $businessId)->first();
 
+        $this->authorize('view', $this->business);
+
         // Need accounts to be sorted as below
         $response = [
             BankAccount::ACCOUNT_TYPE_REVENUE => [],
@@ -379,11 +381,6 @@ class AllocationsCalendar extends Controller
         }
 
         return $response;
-    }
-
-    private function recalculateData($startRecalculate, $endDate, $businessId)
-    {
-        ;
     }
 
     private function getRawData($businessId, $dateFrom, $dateTo)

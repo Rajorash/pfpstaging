@@ -33,7 +33,7 @@
                         'pretotal' => 'bg-red-300',
                         'salestax' => 'bg-gray-300',
                         'prereal' => 'bg-yellow-300',
-                        'postreal' => 'bg-blue
+                        'postreal' => 'bg-blue'
                     ];
                 @endphp
                 @forelse($sorted as $acc)
