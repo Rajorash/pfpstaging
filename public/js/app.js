@@ -4062,7 +4062,15 @@ $(function () {
     headers: {
       'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
     }
-  });
+  }); // $.fn.column = function() {
+  //     return $(this)
+  //         .filter('th, td')
+  //         .filter(':not([colspan])')
+  //         .closest('table')
+  //         .find('tr')
+  //         .filter(':not(:has([colspan]))')
+  //         .children(':nth-child(' + ($(this).index()+1) + ')');
+  // }
 
   var AllocationCalculator = /*#__PURE__*/function () {
     function AllocationCalculator() {
@@ -4091,7 +4099,7 @@ $(function () {
         var $this = this;
         $(document).on('change', '#startDate, #currentRangeValue, #allocationTablePlace input', function (event) {
           $this.loadData(event);
-        }); // $(document).on('hover', 'td, th', function(){});
+        });
       }
     }, {
       key: "resetData",

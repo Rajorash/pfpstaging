@@ -5,6 +5,16 @@ $(function () {
         }
     });
 
+    // $.fn.column = function() {
+    //     return $(this)
+    //         .filter('th, td')
+    //         .filter(':not([colspan])')
+    //         .closest('table')
+    //         .find('tr')
+    //         .filter(':not(:has([colspan]))')
+    //         .children(':nth-child(' + ($(this).index()+1) + ')');
+    // }
+
     class AllocationCalculator {
         constructor() {
             this.debug = true;
@@ -34,8 +44,6 @@ $(function () {
             $(document).on('change', '#startDate, #currentRangeValue, #allocationTablePlace input', function (event) {
                 $this.loadData(event);
             });
-
-            // $(document).on('hover', 'td, th', function(){});
         }
 
         resetData() {
