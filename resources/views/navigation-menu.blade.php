@@ -12,14 +12,14 @@
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ml-20 sm:flex">
-                    <x-jet-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
+                    <x-jet-nav-link href="{{ route('dashboard') }}" :active="request()->is('*dashboard.*')">
                         {{ __('Dashboard') }}
                     </x-jet-nav-link>
                     <x-jet-nav-link href="{{ route('allocation-calculator') }}"
                                     :active="request()->routeIs('allocation-calculator')">
                         {{ __('Calculator') }}
                     </x-jet-nav-link>
-                    <x-jet-nav-link href="{{ route('businesses') }}" :active="request()->routeIs('businesses')">
+                    <x-jet-nav-link href="{{ route('businesses') }}" :active="request()->is('*business/*') || request()->is('business')">
                         {{ __('Businesses') }}
                     </x-jet-nav-link>
                     <x-jet-nav-link href="{{ route('users') }}" :active="request()->routeIs('users')">

@@ -63,9 +63,9 @@ Route::group(['middleware' => 'auth'], function () {
 
 
     //ajax calls
-    Route::post('/ac/ajax/update',
+    Route::post('/business/allocations_calendar/ajax/update',
         [AllocationsCalendar::class, 'updateData'])->name('allocations-controller-update');
-    Route::get('/ac/{business}',
+    Route::get('/business/{business}/allocations_calendar',
         [AllocationsCalendar::class, 'calendar'])->name('allocations-calendar');
 });
 
