@@ -1,12 +1,14 @@
 <x-app-layout>
     <x-slot name="header">
+        {{$business->name}}
+        <x-icons.chevron-right :class="'h-2.5 w-auto inline-block px-2'"/>
+        Allocations
+    </x-slot>
+
+
+    <x-slot name="subHeader">
         <div class="flex content-between">
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                {{$business->name}}
-                <x-icons.chevron-right :class="'h-2.5 w-auto inline-block px-2'"/>
-                Allocations
-            </h2>
-            <x-business-nav businessId="{{$business->id}}"/>
+            <x-business-nav businessId="{{$business->id}}" :business="$business"/>
         </div>
         <div class="flex content-between">
             <input type="hidden" id="businessId" name="businessId" value="{{$business->id}}"/>
