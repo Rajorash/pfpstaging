@@ -1,13 +1,26 @@
-<div class="ml-auto sm:px-4 secondary-nav flex flex-wrap list-none pl-0 mb-0 mt-n3 mb-2">
+<div class="ml-auto secondary-nav flex flex-wrap mt-8">
 
-    @foreach ($links as $link => $label)
+    @foreach ($links as $link => $labelData)
+
+        <a class="text-blue hover:text-dark_gray2 hover:underline
+            @if ($loop->first)
+            ml-auto mr-2
+            @elseif (!$loop->last)
+            mx-2
+            @else
+            ml-2
+            @endif
+            @if($labelData['active'])
+            text-dark_gray2 underline
+            @endif
+            " href="{{$link}}">{{$labelData['title']}}</a>
 
         @if ($loop->first)
-            <a class="text-blue hover:text-dark_gray2 hover:underline ml-auto mr-2" href="{{$link}}">{{$label}}</a> |
+            |
         @elseif (!$loop->last)
-            <a class="text-blue hover:text-dark_gray2 hover:underline mx-2" href="{{$link}}">{{$label}}</a> |
+            |
         @else
-            <a class="text-blue hover:text-dark_gray2 hover:underline ml-2" href="{{$link}}">{{$label}}</a>
+
         @endif
 
     @endforeach

@@ -35,13 +35,26 @@ class BusinessNav extends Component
     public function buildLinks($businessId)
     {
         $links = collect([
-            "/business/${businessId}/accounts" => "Accounts",
-//            "/allocations/${businessId}" => "Allocations",
-            route('allocations-calendar', ['business' => $this->business]) => "Allocations",
-//            "/allocations/${businessId}/percentages" => "Percentages",
-            route('allocations-percentages', ['business' => $this->business]) => "Percentages",
-//            "/projections/${businessId}" => "Projections",
-            route('projections', ['business' => $this->business]) => "Projections",
+            "/business/${businessId}/accounts" => [
+                'title' => "Accounts",
+                'active' => (
+                        request()->is('*business/*')
+                        || request()->is('business')
+                    )
+                    && !request()->routeIs('allocations-calendar')
+            ],
+            route('allocations-calendar', ['business' => $this->business]) => [
+                'title' => "Allocations",
+                'active' => request()->routeIs('allocations-calendar')
+            ],
+            route('allocations-percentages', ['business' => $this->business]) => [
+                'title' => "Percentages",
+                'active' => request()->routeIs('allocations-percentages')
+            ],
+            route('projections', ['business' => $this->business]) => [
+                'title' => "Projections",
+                'active' => request()->routeIs('projections')
+            ],
         ]);
 
         return $links;
