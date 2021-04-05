@@ -10,10 +10,13 @@
             @else
             ml-2
             @endif
-            @if($labelData['active'])
+        @if($labelData['active'])
             text-dark_gray2 underline
             @endif
-            " href="{{$link}}">{{$labelData['title']}}</a>
+            " href="{{$link}}">
+
+            {{$labelData['title']}}
+        </a>
 
         @if ($loop->first)
             |

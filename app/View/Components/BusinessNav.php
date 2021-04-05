@@ -37,6 +37,7 @@ class BusinessNav extends Component
         $links = collect([
             "/business/${businessId}/accounts" => [
                 'title' => "Accounts",
+                'iconView' => 'icons.vallet',
                 'active' => (
                         request()->is('*business/*')
                         || request()->is('business')
@@ -45,14 +46,17 @@ class BusinessNav extends Component
             ],
             route('allocations-calendar', ['business' => $this->business]) => [
                 'title' => "Allocations",
+                'iconView' => 'icons.calculator',
                 'active' => request()->routeIs('allocations-calendar')
             ],
             route('allocations-percentages', ['business' => $this->business]) => [
                 'title' => "Percentages",
+                'iconView' => 'icons.pie',
                 'active' => request()->routeIs('allocations-percentages')
             ],
             route('projections', ['business' => $this->business]) => [
                 'title' => "Projections",
+                'iconView' => 'icons.presentation-chart',
                 'active' => request()->routeIs('projections')
             ],
         ]);
