@@ -9,18 +9,17 @@
         <x-business-nav businessId="{{$business->id}}" :business="$business"/>
     </x-slot>
 
-
     <div class="rounded-xl">
         <table id="percentagesTable" cellpadding="0" cellspacing="0"
                class="border-collapse rounded-xl bg-white w-full text-dark_gray2">
             <thead>
             <tr>
-                <th class="border border-gray-300 p-4 rounded-t-xl">
+                <th class="border border-gray-300 p-4 rounded-t-xl w-40">
                     Account
                 </th>
 
                 @forelse($rollout as $phase)
-                    <th class="border border-gray-300 p-4 {{ Carbon\Carbon::parse($phase->end_date)->isToday() ? 'text-blue': '' }} ">
+                    <th class="w-24 border border-gray-300 p-4 {{ Carbon\Carbon::parse($phase->end_date)->isToday() ? 'text-blue': '' }} ">
                         {{--                        <span class="block text-xs">Phase Ends:</span>--}}
                         <span
                             class="block text-xs font-normal">{{Carbon\Carbon::parse($phase->end_date)->format('M Y')}}</span>
@@ -43,7 +42,7 @@
                 $account_class = [
                     'pretotal' => 'bg-red-100',
                     'salestax' => 'bg-gray-100',
-                    'prereal' => 'bg-yellow-100',
+                    'prereal' => 'bg-yellow-200',
                     'postreal' => 'bg-indigo-100'
                 ];
             @endphp
@@ -63,10 +62,11 @@
                                 ?? null
                         @endphp
 
-                        <td class="border border-gray-300 text-right p-1">
+                        <td class="border border-gray-300 text-right hover:bg-yellow-100">
                             <input class="percentage-value {{$acc->type}}
-                                px-2 py-0 w-20 text-right bg-transparent border-0 border-b border-transparent outline-none
-                                focus:border-yellow-700 focus:outline-none focus:shadow-none focus:ring-0
+                                border-0 border-transparent bg-transparent
+                                focus:outline-none focus:ring-1 focus:shadow-none focus:bg-white
+                                m-0 outline-none percentage-value postreal text-right w-full
                                 "
                                    data-phase-id={{$phase->id}}
                                        data-account-id={{$acc->id}}
@@ -95,7 +95,7 @@
             <tr>
                 <td class="bg-transparent"></td>
                 @forelse($rollout as $phase)
-                    <td class="border bg-indigo-200 border-gray-300 p-1 pr-2 pl-6 percentage-total text-right" data-phase-id="{{ $phase->id }}" data-value="0">
+                    <td class="border bg-indigo-200 border-gray-300 p-2 pr-2 pl-6 percentage-total text-right" data-phase-id="{{ $phase->id }}" data-value="0">
                         0%
                     </td>
                 @empty
