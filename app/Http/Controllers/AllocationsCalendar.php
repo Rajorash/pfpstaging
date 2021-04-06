@@ -44,18 +44,14 @@ class AllocationsCalendar extends Controller
     public function store($cells)
     {
         if(is_array($cells) && count($cells) > 0) {
-            $recalculateDates = [];
             foreach ($cells as $singleCell){
                 preg_match('/\w+_(\d+)_(\d{4}-\d{2}-\d{2})/', $singleCell['cellId'], $matches);
                 $allocation_id = (integer) $matches[1];
                 $date = $matches[2];
-                $recalculateDates[] = $date;
-                                $value = (float) $singleCell['cellValue'];
+                $value = (float) $singleCell['cellValue'];
 
                 $this->storeSingle('flow', $allocation_id, $value, $date);
             }
-
-            return $recalculateDates;
         }
 
         return null;
@@ -118,9 +114,9 @@ class AllocationsCalendar extends Controller
         $endDate = Carbon::parse($startDate)->addDays($rangeValue - 1)->format('Y-m-d');
         $period = CarbonPeriod::create($startDate, $endDate);
 
-        $recalculateDates = $this->store($cells);
+        $this->store($cells);
 
-        $tableData = $this->getGridData($rangeValue, $startDate, $endDate, $businessId, $recalculateDates);
+        $tableData = $this->getGridData($rangeValue, $startDate, $endDate, $businessId);
 
         $response['html'] = view('v2.allocation-table')
             ->with([
@@ -133,7 +129,7 @@ class AllocationsCalendar extends Controller
         return response()->json($response);
     }
 
-    private function getGridData($rangeValue, $dateFrom, $dateTo, $businessId, $recalculateDates=null)
+    private function getGridData($rangeValue, $dateFrom, $dateTo, $businessId)
     {
         $this->business = Business::where('id', $businessId)->first();
 
@@ -234,6 +230,11 @@ class AllocationsCalendar extends Controller
                             $previousDate = Carbon::parse($date->format('Y-m-d'))->subDays(1)->format('Y-m-d');
                             if (array_key_exists($previousDate, $response[BankAccount::ACCOUNT_TYPE_SALESTAX][$id])) {
                                 $actualValue += $response[BankAccount::ACCOUNT_TYPE_SALESTAX][$id][$previousDate];
+                            } else {
+                                $previousNonZero = $this->getPreviousNonZeroValue($id, $dateFrom);
+                                if (is_numeric($previousNonZero)) {
+                                    $actualValue += $previousNonZero;
+                                }
                             }
                             if ($response[BankAccount::ACCOUNT_TYPE_SALESTAX][$id][$date->format('Y-m-d')] != $actualValue) {
                                 $response[BankAccount::ACCOUNT_TYPE_SALESTAX][$id][$date->format('Y-m-d')] = $actualValue;
@@ -278,6 +279,11 @@ class AllocationsCalendar extends Controller
                             $previousDate = Carbon::parse($date->format('Y-m-d'))->subDays(1)->format('Y-m-d');
                             if (array_key_exists($previousDate, $response[BankAccount::ACCOUNT_TYPE_PRETOTAL][$id])) {
                                 $actualValue += $response[BankAccount::ACCOUNT_TYPE_PRETOTAL][$id][$previousDate];
+                            } else {
+                                $previousNonZero = $this->getPreviousNonZeroValue($id, $dateFrom);
+                                if (is_numeric($previousNonZero)) {
+                                    $actualValue += $previousNonZero;
+                                }
                             }
                             if ($response[BankAccount::ACCOUNT_TYPE_PRETOTAL][$id][$date->format('Y-m-d')] != $actualValue) {
                                 $response[BankAccount::ACCOUNT_TYPE_PRETOTAL][$id][$date->format('Y-m-d')] = $actualValue;
@@ -321,6 +327,11 @@ class AllocationsCalendar extends Controller
                             $previousDate = Carbon::parse($date->format('Y-m-d'))->subDays(1)->format('Y-m-d');
                             if (array_key_exists($previousDate, $response[BankAccount::ACCOUNT_TYPE_PREREAL][$id])) {
                                 $actualValue += $response[BankAccount::ACCOUNT_TYPE_PREREAL][$id][$previousDate];
+                            } else {
+                                $previousNonZero = $this->getPreviousNonZeroValue($id, $dateFrom);
+                                if (is_numeric($previousNonZero)) {
+                                    $actualValue += $previousNonZero;
+                                }
                             }
                             if ($response[BankAccount::ACCOUNT_TYPE_PREREAL][$id][$date->format('Y-m-d')] != $actualValue) {
                                 $response[BankAccount::ACCOUNT_TYPE_PREREAL][$id][$date->format('Y-m-d')] = $actualValue;
@@ -369,6 +380,11 @@ class AllocationsCalendar extends Controller
                             $previousDate = Carbon::parse($date->format('Y-m-d'))->subDays(1)->format('Y-m-d');
                             if (array_key_exists($previousDate, $response[BankAccount::ACCOUNT_TYPE_POSTREAL][$id])) {
                                 $actualValue += $response[BankAccount::ACCOUNT_TYPE_POSTREAL][$id][$previousDate];
+                            } else {
+                                $previousNonZero = $this->getPreviousNonZeroValue($id, $dateFrom);
+                                if (is_numeric($previousNonZero)) {
+                                    $actualValue += $previousNonZero;
+                                }
                             }
                             if ($response[BankAccount::ACCOUNT_TYPE_POSTREAL][$id][$date->format('Y-m-d')] != $actualValue) {
                                 $response[BankAccount::ACCOUNT_TYPE_POSTREAL][$id][$date->format('Y-m-d')] = $actualValue;
@@ -438,6 +454,22 @@ class AllocationsCalendar extends Controller
         }
 
         return $getIncomeByDate;
+    }
+
+    private function getPreviousNonZeroValue($accountId, $dateFrom)
+    {
+        $result = BankAccount::where('id', $accountId)
+            ->with('allocations', function ($query) use ($dateFrom) {
+                return $query->where('allocation_date', '<', $dateFrom)
+                    ->where('amount', '>', 0)
+                    ->orderBy('allocation_date', 'desc');
+            })
+            ->get()//;
+            ->map(function($item){
+                return $item->allocations->slice(0,1)->pluck(['amount']);
+            })->pop()->toArray();
+
+        return (count($result) > 0) ? $result[0] : null;
     }
 
     /**
