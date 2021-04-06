@@ -5,6 +5,7 @@ require('arrow-table');
 // require('./allocations');
 // require('./percentages');
 require('./allocation_calculator');
+require('./percentages_calculator');
 
 $('.global_nice_scroll').niceScroll();
 let resizeTimer;

@@ -5,22 +5,12 @@ $(function () {
         }
     });
 
-    // $.fn.column = function() {
-    //     return $(this)
-    //         .filter('th, td')
-    //         .filter(':not([colspan])')
-    //         .closest('table')
-    //         .find('tr')
-    //         .filter(':not(:has([colspan]))')
-    //         .children(':nth-child(' + ($(this).index()+1) + ')');
-    // }
-
-    class AllocationCalculator {
+    class PercentagesCalculator {
         constructor() {
             this.debug = true;
 
-            this.ajaxUrl = window.allocationsControllerUpdate;
-            this.elementAllocationTablePlace = $('#allocationTablePlace');
+            this.ajaxUrl = window.percentagesControllerUpdate;
+            this.elementPercentagesTablePlace = $('#percentagesTablePlace');
             this.elementLoadingSpinner = $('#loadingSpinner');
 
             this.changesCounter = 0;
@@ -42,7 +32,7 @@ $(function () {
         events() {
             let $this = this;
 
-            $(document).on('change', '#startDate, #currentRangeValue, #allocationTablePlace input', function (event) {
+            $(document).on('change', 'input.percentage-value', function (event) {
                 $this.loadData(event);
             });
         }
@@ -64,27 +54,24 @@ $(function () {
 
             $this.changesCounter++;
 
-            $this.data.businessId = $('#businessId').val();
-            $this.data.startDate = $('#startDate').val();
-            $this.data.rangeValue = $('#currentRangeValue').val();
+            $this.data.businessId = window.percentagesBusinessId;
 
             if (event && typeof event.target.id === 'string') {
 
                 $this.lastCoordinatesElementId = event.target.id;
 
-                if (event.target.id !== 'currentRangeValue'
-                    && event.target.id !== 'startDate') {
-                    $this.data.cells.push({
-                        cellId: event.target.id,
-                        cellValue: $('#' + event.target.id).val()
-                    });
-                }
+                $this.data.cells.push({
+                    cellId: event.target.id,
+                    phaseId: $('#' + event.target.id).data('phase-id'),
+                    accountId: $('#' + event.target.id).data('account-id'),
+                    cellValue: $('#' + event.target.id).val()
+                });
             }
 
             if ($this.changesCounter) {
-                $('#'+$this.changesCounterId).html('...changes ready for calculation <b>' + $this.changesCounter + '</b>').show();
+                $('#' + $this.changesCounterId).html('...changes ready for calculation <b>' + $this.changesCounter + '</b>').show();
             } else {
-                $('#'+$this.changesCounterId).html('').hide();
+                $('#' + $this.changesCounterId).html('').hide();
             }
 
             if ($this.debug) {
@@ -159,7 +146,7 @@ $(function () {
             let $this = this;
 
             if (data.error.length === 0) {
-                $this.elementAllocationTablePlace.html(data.html);
+                $this.elementPercentagesTablePlace.html(data.html);
 
                 if ($this.lastCoordinatesElementId) {
                     $('#' + $this.lastCoordinatesElementId).focus();
@@ -168,8 +155,8 @@ $(function () {
         }
     }
 
-    if ($('#allocationTablePlace').length) {
-        let AllocationCalculatorClass = new AllocationCalculator();
-        AllocationCalculatorClass.init();
+    if ($('#percentagesTablePlace').length) {
+        let PercentagesCalculatorClass = new PercentagesCalculator();
+        PercentagesCalculatorClass.init();
     }
 });

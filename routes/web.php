@@ -57,6 +57,9 @@ Route::group(['middleware' => 'auth'], function () {
     // Rollout Percentages routing
     Route::get('/allocations/{business}/percentages',
         [AllocationsController::class, 'percentages'])->name('allocations-percentages');
+    Route::post('/allocations/percentages/ajax/update',
+        [AllocationsController::class, 'updatePercentages'])->name('allocations-percentages-update');
+
     Route::post('/allocations/update', 'AllocationsController@updateAllocation');
     Route::post('/percentages/update', 'AllocationsController@updatePercentage');
 

@@ -266,11 +266,41 @@ class AllocationsController extends Controller
     public function percentages(Business $business)
     {
         $this->authorize('view', $business);
+//        $rollout = $business->rollout->sortBy('end_date');
+//
+//        $percentages = self::buildPercentageValues($business);
+
+        return view('v2.percentages', ['business' => $business]);
+    }
+
+    public function updatePercentages(Request $request)
+    {
+        $response = [
+            'error' => [],
+            'html' => [],
+        ];
+
+        $businessId = $request->businessId;
+
+        if (!$businessId) {
+            $response['error'][] = 'Business ID not set';
+        } else {
+        }
+
+        $business = Business::find($businessId);
+
         $rollout = $business->rollout->sortBy('end_date');
 
         $percentages = self::buildPercentageValues($business);
 
-        return view('v2.percentages', compact('business', 'rollout', 'percentages'));
+        $response['html'] = view('v2.percentages-table')
+            ->with([
+                'percentages' => $percentages,
+                'rollout' => $rollout,
+                'business' => $business
+            ])->render();
+
+        return response()->json($response);
     }
 
     /**

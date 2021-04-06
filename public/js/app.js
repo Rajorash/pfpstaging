@@ -4081,6 +4081,7 @@ $(function () {
       this.elementAllocationTablePlace = $('#allocationTablePlace');
       this.elementLoadingSpinner = $('#loadingSpinner');
       this.changesCounter = 0;
+      this.changesCounterId = 'processCounter';
       this.lastCoordinatesElementId = '';
       this.timeout;
     }
@@ -4135,9 +4136,9 @@ $(function () {
         }
 
         if ($this.changesCounter) {
-          $('#processCounter').html('...changes ready for calculation <b>' + $this.changesCounter + '</b>').show();
+          $('#' + $this.changesCounterId).html('...changes ready for calculation <b>' + $this.changesCounter + '</b>').show();
         } else {
-          $('#processCounter').html('').hide();
+          $('#' + $this.changesCounterId).html('').hide();
         }
 
         if ($this.debug) {
@@ -4247,6 +4248,8 @@ __webpack_require__(/*! arrow-table */ "./node_modules/arrow-table/src/arrow-tab
 
 __webpack_require__(/*! ./allocation_calculator */ "./resources/js/allocation_calculator.js");
 
+__webpack_require__(/*! ./percentages_calculator */ "./resources/js/percentages_calculator.js");
+
 $('.global_nice_scroll').niceScroll();
 var resizeTimer;
 $(window).on('resize', function () {
@@ -4297,6 +4300,182 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
  */
 
 
+
+/***/ }),
+
+/***/ "./resources/js/percentages_calculator.js":
+/*!************************************************!*\
+  !*** ./resources/js/percentages_calculator.js ***!
+  \************************************************/
+/***/ (() => {
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+$(function () {
+  $.ajaxSetup({
+    headers: {
+      'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    }
+  });
+
+  var PercentagesCalculator = /*#__PURE__*/function () {
+    function PercentagesCalculator() {
+      _classCallCheck(this, PercentagesCalculator);
+
+      this.debug = true;
+      this.ajaxUrl = window.percentagesControllerUpdate;
+      this.elementPercentagesTablePlace = $('#percentagesTablePlace');
+      this.elementLoadingSpinner = $('#loadingSpinner');
+      this.changesCounter = 0;
+      this.changesCounterId = 'processCounter';
+      this.lastCoordinatesElementId = '';
+      this.timeout;
+    }
+
+    _createClass(PercentagesCalculator, [{
+      key: "init",
+      value: function init() {
+        var $this = this;
+        $this.resetData();
+        $this.events();
+        $this.firstLoadData();
+      }
+    }, {
+      key: "events",
+      value: function events() {
+        var $this = this;
+        $(document).on('change', 'input.percentage-value', function (event) {
+          $this.loadData(event);
+        });
+      }
+    }, {
+      key: "resetData",
+      value: function resetData() {
+        var $this = this;
+
+        if ($this.debug) {
+          console.log('resetData');
+        }
+
+        $this.changesCounter = 0;
+        $this.data = {};
+        $this.data.cells = [];
+      }
+    }, {
+      key: "collectData",
+      value: function collectData(event) {
+        var $this = this;
+        $this.changesCounter++;
+        $this.data.businessId = window.percentagesBusinessId;
+
+        if (event && typeof event.target.id === 'string') {
+          $this.lastCoordinatesElementId = event.target.id;
+          $this.data.cells.push({
+            cellId: event.target.id,
+            phaseId: $('#' + event.target.id).data('phase-id'),
+            accountId: $('#' + event.target.id).data('account-id'),
+            cellValue: $('#' + event.target.id).val()
+          });
+        }
+
+        if ($this.changesCounter) {
+          $('#' + $this.changesCounterId).html('...changes ready for calculation <b>' + $this.changesCounter + '</b>').show();
+        } else {
+          $('#' + $this.changesCounterId).html('').hide();
+        }
+
+        if ($this.debug) {
+          console.log('collectData', $this.data);
+        }
+      }
+    }, {
+      key: "showSpinner",
+      value: function showSpinner() {
+        var $this = this;
+        $('html, body').css({
+          overflow: 'hidden',
+          height: '100%'
+        });
+        $this.elementLoadingSpinner.show();
+      }
+    }, {
+      key: "hideSpinner",
+      value: function hideSpinner() {
+        var $this = this;
+        $('html, body').css({
+          overflow: 'auto',
+          height: 'auto'
+        });
+        $this.elementLoadingSpinner.hide();
+      }
+    }, {
+      key: "loadData",
+      value: function loadData(event) {
+        var $this = this;
+        $this.collectData(event);
+        clearTimeout($this.timedOut);
+        $this.timedOut = setTimeout(function () {
+          $this.ajaxLoadWorker();
+        }, 2000);
+      }
+    }, {
+      key: "firstLoadData",
+      value: function firstLoadData() {
+        var $this = this;
+        $this.collectData();
+        $this.ajaxLoadWorker();
+      }
+    }, {
+      key: "ajaxLoadWorker",
+      value: function ajaxLoadWorker() {
+        var $this = this;
+        $.ajax({
+          type: 'POST',
+          url: $this.ajaxUrl,
+          data: $this.data,
+          beforeSend: function beforeSend() {
+            $this.showSpinner();
+          },
+          success: function success(data) {
+            if ($this.debug) {
+              console.log('loadData', data);
+            }
+
+            $this.renderData(data);
+          },
+          complete: function complete() {
+            $this.hideSpinner();
+            $this.resetData();
+          }
+        });
+      }
+    }, {
+      key: "renderData",
+      value: function renderData(data) {
+        var $this = this;
+
+        if (data.error.length === 0) {
+          $this.elementPercentagesTablePlace.html(data.html);
+
+          if ($this.lastCoordinatesElementId) {
+            $('#' + $this.lastCoordinatesElementId).focus();
+          }
+        }
+      }
+    }]);
+
+    return PercentagesCalculator;
+  }();
+
+  if ($('#percentagesTablePlace').length) {
+    var PercentagesCalculatorClass = new PercentagesCalculator();
+    PercentagesCalculatorClass.init();
+  }
+});
 
 /***/ }),
 
