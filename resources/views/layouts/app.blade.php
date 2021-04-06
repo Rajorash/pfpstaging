@@ -42,9 +42,14 @@
     <!-- Page Heading -->
     @if(isset($header))
         <header class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-            <h2 class="font-normal text-4xl text-dark_gray2 leading-tight mt-8">
-                {{ $header }}
-            </h2>
+            <div class="flex content-between">
+                <h2 class="font-normal text-4xl text-dark_gray2 leading-tight mt-8">
+                    {{ $header }}
+                </h2>
+                @if(isset($subMenu))
+                    {{$subMenu}}
+                @endif
+            </div>
             @if(isset($subHeader))
                 {{$subHeader}}
             @endif

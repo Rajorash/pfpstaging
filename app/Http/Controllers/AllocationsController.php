@@ -270,7 +270,7 @@ class AllocationsController extends Controller
 
         $percentages = self::buildPercentageValues($business);
 
-        return view('allocations.percentages', compact('business', 'rollout', 'percentages'));
+        return view('v2.percentages', compact('business', 'rollout', 'percentages'));
     }
 
     /**

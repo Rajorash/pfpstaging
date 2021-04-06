@@ -9,20 +9,28 @@
         <x-business-nav businessId="{{$business->id}}" :business="$business"/>
     </x-slot>
 
-
-    <div class="w-5/6 py-3 mx-auto">
-        <x-ui.table tableId=percentagesTable>
-            <thead class="thead-inverse">
+    <div class="rounded-xl">
+        <table id="percentagesTable" cellpadding="0" cellspacing="0"
+               class="border-collapse rounded-xl bg-white w-full text-dark_gray2">
+            <thead>
             <tr>
-                <th class="px-2">Account</th>
+                <th class="border border-gray-300 p-4 rounded-t-xl w-40">
+                    Account
+                </th>
+
                 @forelse($rollout as $phase)
-                    <th class="px-2 text-center">Phase
-                        Ends:<br> {{ Carbon\Carbon::parse($phase->end_date)->format("D j M") }}</th>
+                    <th class="w-24 border border-gray-300 p-4 {{ Carbon\Carbon::parse($phase->end_date)->isToday() ? 'text-blue': '' }} ">
+                        {{--                        <span class="block text-xs">Phase Ends:</span>--}}
+                        <span
+                            class="block text-xs font-normal">{{Carbon\Carbon::parse($phase->end_date)->format('M Y')}}</span>
+                        <span class="block text-xl">{{Carbon\Carbon::parse($phase->end_date)->format('j')}}</span>
+                    </th>
                 @empty
-                    <th class="px-2 text-center">No phases exist...</th>
+                    <th class="border border-gray-300 p-4">No phases exist...</th>
                 @endforelse
             </tr>
             </thead>
+
             <tbody>
             @php
                 $account_order = ['revenue','pretotal','salestax','prereal','postreal'];
@@ -32,10 +40,10 @@
                 });
 
                 $account_class = [
-                    'pretotal' => 'bg-red-300',
-                    'salestax' => 'bg-gray-300',
-                    'prereal' => 'bg-yellow-300',
-                    'postreal' => 'bg-blue'
+                    'pretotal' => 'bg-red-100',
+                    'salestax' => 'bg-gray-100',
+                    'prereal' => 'bg-yellow-200',
+                    'postreal' => 'bg-indigo-100'
                 ];
             @endphp
             @forelse($sorted as $acc)
@@ -43,7 +51,7 @@
                     @continue
                 @endif
                 <tr class="{{$account_class[$acc->type]}}">
-                    <td scope="row" class="px-3">{{ $acc->name }}</td>
+                    <td scope="row" class="border border-gray-300 whitespace-nowrap p-1 pr-2 pl-4">{{ $acc->name }}</td>
                     @forelse($rollout as $phase)
                         @php
                             $percentage = $percentages
@@ -54,8 +62,12 @@
                                 ?? null
                         @endphp
 
-                        <td class="text-center w-30 p-1">
-                            <input class="percentage-value {{$acc->type}} text-right w-full py-0 rounded"
+                        <td class="border border-gray-300 text-right hover:bg-yellow-100">
+                            <input class="percentage-value {{$acc->type}}
+                                border-0 border-transparent bg-transparent
+                                focus:outline-none focus:ring-1 focus:shadow-none focus:bg-white
+                                m-0 outline-none percentage-value postreal text-right w-full
+                                "
                                    data-phase-id={{$phase->id}}
                                        data-account-id={{$acc->id}}
                                        placeholder="0"
@@ -65,29 +77,32 @@
                             >
                         </td>
                     @empty
-                        <td class="text-center">N/A</td>
+                        <td class="text-center border border-gray-300 p-1 pr-2 pl-6">N/A</td>
                     @endforelse
                 </tr>
             @empty
                 <tr>
                     <td scope="row">N/A</td>
                     @forelse($rollout as $phase)
-                        <td class="text-center">N/A</td>
+                        <td class="text-center border border-gray-300 p-1 pr-2 pl-6">N/A</td>
                     @empty
 
                     @endforelse
                 </tr>
             @endforelse
+            </tbody>
+            <tfoot>
             <tr>
-                <td></td>
+                <td class="bg-transparent"></td>
                 @forelse($rollout as $phase)
-                    <td class="bg-blue percentage-total text-right" data-phase-id="{{ $phase->id }}" data-value="0">0%
+                    <td class="border bg-indigo-200 border-gray-300 p-2 pr-2 pl-6 percentage-total text-right" data-phase-id="{{ $phase->id }}" data-value="0">
+                        0%
                     </td>
                 @empty
-                    <th class="text-center">No phases exist...</th>
+                    <td class="text-center">No phases exist...</td>
                 @endforelse
             </tr>
-            </tbody>
-        </x-ui.table>
+            </tfoot>
+        </table>
     </div>
 </x-app-layout>
