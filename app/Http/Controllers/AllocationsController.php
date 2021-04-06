@@ -18,8 +18,6 @@ class AllocationsController extends Controller
 {
     use GettersTrait;
 
-    const CACHE_KEY_PERCENTAGE = 'buildPercentageValues';
-
     /**
      * Display a listing of the businesses the authorised user can see to select from
      *
@@ -282,6 +280,21 @@ class AllocationsController extends Controller
 
         $businessId = $request->businessId;
 
+        if (isset($request->cells) && count($request->cells) > 0) {
+            foreach ($request->cells as $cell) {
+                AllocationPercentage::updateOrCreate([
+                    'phase_id' => $cell['phaseId'],
+                    'bank_account_id' => $cell['accountId']
+                ], [
+                    'phase_id' => $cell['phaseId'],
+                    'bank_account_id' => $cell['accountId'],
+                    'percent' => $cell['cellValue']
+                ]);
+                $key = 'phasePercentValues_'.$cell['phaseId'].'_'.$businessId;
+                Cache::forget($key);
+            }
+        }
+
         if (!$businessId) {
             $response['error'][] = 'Business ID not set';
         } else {
@@ -289,9 +302,19 @@ class AllocationsController extends Controller
 
         $business = Business::find($businessId);
 
-        $rollout = $business->rollout->sortBy('end_date');
-
         $percentages = self::buildPercentageValues($business);
+
+        $totals = $percentages->groupBy('phase_id')
+            ->map(function ($item){
+                return $item->sum('percent');
+            })->toArray();
+
+        $rollout = $business->rollout
+            ->sortBy('end_date')
+            ->map(function($item) use ($totals) {
+                $item['total'] = $totals[$item->id];
+                return $item;
+            });
 
         $response['html'] = view('v2.percentages-table')
             ->with([
@@ -313,8 +336,6 @@ class AllocationsController extends Controller
             'bank_account_id' => 'required|numeric',
             'percent' => 'present|numeric|min:0|max:100|nullable'
         ]);
-
-        Cache::forget(self::CACHE_KEY_PERCENTAGE);
 
         // find allocation matching type and id
         $percentages = AllocationPercentage::where('phase_id', '=', $valid['phase_id'])
@@ -367,16 +388,9 @@ class AllocationsController extends Controller
     {
         $phase_ids = $business->rollout->pluck('id');
 
-//        $key = 'buildPercentageValues_'.$phase_ids->implode('|');
-
-        $percentages = Cache::get(self::CACHE_KEY_PERCENTAGE);
-
-        if ($percentages === null) {
-            $percentages = AllocationPercentage::whereIn('phase_id', $phase_ids)->get([
-                'phase_id', 'bank_account_id', 'percent'
-            ]);
-            Cache::put(self::CACHE_KEY_PERCENTAGE, $percentages);
-        }
+        $percentages = AllocationPercentage::whereIn('phase_id', $phase_ids)->get([
+            'phase_id', 'bank_account_id', 'percent'
+        ]);
 
 //         $percentageValues = $percentages->groupBy(['bank_account_id', 'phase_id'])->toArray();
         // foreach($percentages as $entry)
