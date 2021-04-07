@@ -11,6 +11,7 @@
 |
 */
 
+use App\Http\Controllers\AllocationCalculatorController;
 use App\Http\Controllers\AllocationsCalendar;
 use App\Http\Controllers\AllocationsController;
 use App\Http\Controllers\ProjectionController;
@@ -28,7 +29,7 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::get('/user', 'UserController@index')->name('users');
     Route::post('/user', 'UserController@store');
-    Route::get('/user/create', 'UserController@create');
+    Route::get('/user/create', 'UserController@create')->name('users.create');
     Route::get('/user/{user}', 'UserController@show');
 
     Route::resource('business.accounts', 'BankAccountController');
@@ -46,7 +47,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::patch('/business/{business}/account-entry', 'BankAccountEntryController@update');
 
     // Allocation Calculator
-    Route::get('/calculator', 'AllocationCalculatorController@index')->name('allocation-calculator');
+    Route::get('/calculator', [AllocationCalculatorController::class, 'index'])->name('allocation-calculator');
 
     // Projection forecast tool
     //

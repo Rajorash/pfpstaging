@@ -4,7 +4,7 @@
 
 
 <input type="{{$type}}"
-    {{ $attributes->merge(['class' => 'text-right w-full py-1 px-2 mb-1 text-base leading-normal bg-white text-gray-800 border border-gray-200 text-sm leading-normal rounded h-6'])}}
+    {{ $attributes->merge(['class' => 'form-input text-right w-full p-2 mb-1 text-base leading-normal border-gray-200 rounded h-6'])}}
     @if ($value != null)
     value="{{$value}}"
     @endif
