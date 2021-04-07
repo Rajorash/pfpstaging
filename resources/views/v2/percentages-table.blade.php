@@ -1,6 +1,6 @@
 <div class="rounded-xl">
     <table id="percentagesTable" cellpadding="0" cellspacing="0"
-           class="border-collapse rounded-xl bg-white w-full text-dark_gray2">
+           class="table_hover_rows_cols border-collapse rounded-xl bg-white w-full text-dark_gray2">
         <thead>
         <tr>
             <th class="border border-gray-300 p-4 rounded-t-xl w-40">
@@ -39,7 +39,7 @@
             @if ($acc->type == "revenue")
                 @continue
             @endif
-            <tr class="{{$account_class[$acc->type]}}">
+            <tr class="{{$account_class[$acc->type]}} hover:bg-yellow-100">
                 <td scope="row" class="border border-gray-300 whitespace-nowrap p-1 pr-2 pl-4">{{ $acc->name }}</td>
                 @forelse($rollout as $phase)
                     @php
@@ -51,7 +51,7 @@
                             ?? null
                     @endphp
 
-                    <td class="border border-gray-300 text-right hover:bg-yellow-100">
+                    <td class="border border-gray-300 text-right">
                         <input class="percentage-value {{$acc->type}}
                             border-0 border-transparent bg-transparent
                             focus:outline-none focus:ring-1 focus:shadow-none focus:bg-white
@@ -81,17 +81,17 @@
         @endforelse
         </tbody>
         <tfoot>
-        <tr>
-            <td class="bg-transparent">
+        <tr class="bg-indigo-200">
+            <td class="bg-transparent border border-gray-300">
                 <span id="processCounter" class="hidden opacity-50 font-normal text-xs"></span>
             </td>
             @forelse($rollout as $phase)
-                <td class="border bg-indigo-200 border-gray-300 p-2 pr-2 pl-6 percentage-total text-right"
+                <td class="border border-gray-300 p-2 pr-2 pl-6 percentage-total text-right"
                     data-phase-id="{{ $phase->id }}" data-value="0">
                     {{$phase->total}}%
                 </td>
             @empty
-                <td class="text-center">No phases exist...</td>
+                <td class="text-center border border-gray-300">No phases exist...</td>
             @endforelse
         </tr>
         </tfoot>
