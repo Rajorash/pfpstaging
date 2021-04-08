@@ -1,6 +1,6 @@
 <x-ui.table-table>
     <thead>
-    <tr class="border-light_blue divide-x">
+    <tr class="border-light_blue divide-x border-b">
         <x-ui.table-th class="text-center" baseClass="w-24 text-dark_gray font-normal">
             Account
         </x-ui.table-th>
@@ -80,16 +80,16 @@
         @endforelse
     </x-ui.table-tbody>
     <tfoot>
-    <tr class="bg-indigo-200 border-light_blue divide-x">
-        <x-ui.table-td padding="p-2" class="text-center">
+    <tr class="bg-blue border-light_blue divide-x">
+        <x-ui.table-td padding="p-2" class="text-center" baseClass="text-white">
             <span id="processCounter" class="hidden opacity-50 font-normal text-xs"></span>
         </x-ui.table-td>
         @forelse($rollout as $phase)
-            <x-ui.table-td padding="p-2 pr-2 pl-6 percentage-total" class="text-right">
+            <x-ui.table-td padding="p-2 pr-2 pl-6 percentage-total" class="text-right" baseClass="text-white">
                 {{$phase->total}}%
             </x-ui.table-td>
         @empty
-            <x-ui.table-td padding="p-2 pr-2 pl-6 percentage-total" class="text-center">
+            <x-ui.table-td padding="p-2 pr-2 pl-6 percentage-total" class="text-center" baseClass="text-white">
                 No phases exist...
             </x-ui.table-td>
         @endforelse

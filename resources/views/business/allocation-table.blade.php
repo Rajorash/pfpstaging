@@ -1,6 +1,6 @@
 <x-ui.table-table>
     <thead>
-    <tr class="border-light_blue divide-x">
+    <tr class="border-light_blue divide-x border-b">
         <x-ui.table-th class="text-center" baseClass="w-10 text-dark_gray font-normal">
             <span id="processCounter" class="hidden opacity-50 font-normal text-xs"></span>
         </x-ui.table-th>
@@ -122,8 +122,6 @@
                     </tr>
                 @endforeach
             @endif
-
         @endforeach
-
     </x-ui.table-tbody>
 </x-ui.table-table>
