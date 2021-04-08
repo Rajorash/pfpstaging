@@ -29,6 +29,9 @@ class UserPolicy
      */
     public function view(User $user, User $model)
     {
+        if ($user->isSuperAdmin()) {
+            return true;
+        }
 
         // a user can view themselves
         if ($user->id === $model->id)
@@ -73,6 +76,9 @@ class UserPolicy
      */
     public function update(User $user, User $model)
     {
+        if ($user->isSuperAdmin()) {
+            return true;
+        }
 
         // a user can update themselves
         if ($user->id === $model->id)

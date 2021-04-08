@@ -19,10 +19,14 @@ class UserController extends Controller
     {
         $users = User::all();
 
-        $filtered = $users->filter(function ($user) {
-            return Auth::user()->can('view', $user);
-        })->values();
-        // return $filtered;
+        if (Auth::user()->isSuperAdmin()) {
+            $filtered = $users;
+        } else {
+            $filtered = $users->filter(function ($user) {
+                return Auth::user()->can('view', $user);
+            })->values();
+            // return $filtered;
+        }
 
         return view('user.list', ['users' => $filtered]);
     }
@@ -103,7 +107,9 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        //
+        $this->authorize('update', $user);
+
+        return view('user.show', ['user' => $user]);
     }
 
     /**

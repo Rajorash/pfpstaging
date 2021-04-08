@@ -20,6 +20,11 @@ class User extends Authenticatable
     use Notifiable;
     use TwoFactorAuthenticatable;
 
+    public const ROLE_SUPERADMIN = 'superuser';
+    public const ROLE_ADMIN = 'admin';
+    public const ROLE_ADVISOR = 'advisor';
+    public const ROLE_CLIENT = 'client';
+
     /**
      * The attributes that are mass assignable.
      *
@@ -89,4 +94,12 @@ class User extends Authenticatable
         return $this->roles->map->permissions->flatten()->pluck('name')->unique();
     }
 
+    public function isSuperAdmin()
+    {
+        if (is_null($this->roles->firstWhere('name', self::ROLE_SUPERADMIN))) {
+            return false;
+        }
+
+        return true;
+    }
 }

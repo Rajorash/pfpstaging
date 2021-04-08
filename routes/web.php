@@ -30,6 +30,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/user', 'UserController@store');
     Route::get('/user/create', 'UserController@create');
     Route::get('/user/{user}', 'UserController@show');
+    Route::get('/user/edit/{user}', 'UserController@edit');
 
     Route::resource('business.accounts', 'BankAccountController');
     Route::get('/accounts/{account}/create-flow', 'BankAccountController@createFlow');
