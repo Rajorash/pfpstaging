@@ -40,7 +40,7 @@
             @endif
             <tr class="{{$account_class[$acc->type]}} hover:bg-yellow-100 border-light_blue divide-x">
                 <x-ui.table-td padding="p-1 pr-2 pl-4">{{ $acc->name }}</x-ui.table-td>
-                {{--                <td scope="row" class="border border-gray-300 whitespace-nowrap p-1 pr-2 pl-4">{{ $acc->name }}</td>--}}
+
                 @forelse($rollout as $phase)
                     @php
                         $percentage = $percentages

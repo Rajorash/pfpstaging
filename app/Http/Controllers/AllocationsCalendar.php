@@ -29,7 +29,7 @@ class AllocationsCalendar extends Controller
             'currentRangeValue' => session()->get('rangeValue_'.$this->business->id, $this->defaultCurrentRangeValue),
         ];
 
-        return view('v2.allocations-calculator', $data);
+        return view('business.allocations-calculator', $data);
     }
 
     private function getRangeArray()
@@ -118,7 +118,7 @@ class AllocationsCalendar extends Controller
 
         $tableData = $this->getGridData($rangeValue, $startDate, $endDate, $businessId);
 
-        $response['html'] = view('v2.allocation-table')
+        $response['html'] = view('business.allocation-table')
             ->with([
                 'tableData' => $tableData,
                 'period' => $period,
