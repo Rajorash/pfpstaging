@@ -1,12 +1,13 @@
 @props([
-    'tableId' => null
+'tableId' => null
 ])
 
 <div {{ $attributes->merge(['class' => "block w-full"]) }}>
     <div class="block w-full">
         <div class="py-2 align-middle inline-block min-w-full">
             <div class="block w-full">
-                <table {{ $tableId ? "id=${tableId}" : '' }} class="min-w-full divide-y divide-gray-200">
+                <table
+                    {{ $tableId ? "id=${tableId}" : '' }} class="min-w-full table_hover_rows_cols border-collapse rounded-xl bg-white w-full text-dark_gray2">
                     {{ $slot }}
                 </table>
             </div>

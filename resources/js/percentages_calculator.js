@@ -7,7 +7,7 @@ $(function () {
 
     class PercentagesCalculator {
         constructor() {
-            this.debug = true;
+            this.debug = false;
 
             this.ajaxUrl = window.percentagesControllerUpdate;
             this.elementPercentagesTablePlace = $('#percentagesTablePlace');

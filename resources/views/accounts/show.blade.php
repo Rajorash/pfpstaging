@@ -12,7 +12,7 @@
         <x-slot name="header">
             <h2 class="text-lg leading-6 font-medium text-black">{{$business->name}} Bank Accounts</h2>
             <a href="/{{ Request::path() }}/create"
-               class="group flex items-center text-center select-none border font-normal whitespace-no-wrap rounded py-1 px-3 leading-normal no-underline bg-green-500 text-white hover:bg-green-600">
+               class="group flex items-center text-center select-none border font-normal whitespace-no-wrap rounded py-1 px-3 leading-normal no-underline bg-green text-white hover:bg-dark_gray">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
                      class="w-4 h-4 mr-2">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -24,9 +24,9 @@
 
         <x-ui.table tableId="accountsTable">
             <thead class="bg-gray-50">
-            <x-ui.th>Account</x-ui.th>
+            <x-ui.th :class="'border-l-0'">Account</x-ui.th>
             <x-ui.th>Flows</x-ui.th>
-            <x-ui.th>Edit Account</x-ui.th>
+            <x-ui.th :class="'border-r-0'">Edit Account</x-ui.th>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
             @forelse($accounts as $acc)
