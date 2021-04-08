@@ -24,10 +24,32 @@
             <x-ui.table-tbody>
                 <tr>
                     <x-ui.table-td class="text-center bg-gray-100" padding="px-72 py-4">
-                        <div class="flex-auto p-6">
-                            <strong class="text-dark_gray2">{{ $user->name }}</strong><br>
-                            Email: {{ $user->email }}<br>
-                            Last login: {{ $user->last_login_at ?: 'Unknown' }}<br>
+                        <div class="table w-full">
+                            <div class="table-row">
+                                <div class="table-cell w-1/3 text-left">
+                                    <img class="h-36 w-36 rounded-full" src="{{ $user->profile_photo_url }}" alt="">
+                                </div>
+                                <div class="table-cell w-2/3 text-left">
+                                    <div class="table w-full float-left">
+                                        <div class="table-row">
+                                            <div class="table-cell pb-2 w-1/3">{{__('Name')}}</div>
+                                            <div class="table-cell pb-2 w-2/3">{{ $user->name }}</div>
+                                        </div>
+                                        <div class="table-row">
+                                            <div class="table-cell pb-2">{{__('Role/s')}}</div>
+                                            <div class="table-cell pb-2">n/a</div>
+                                        </div>
+                                        <div class="table-row">
+                                            <div class="table-cell pb-2">{{__('Email Adress')}}</div>
+                                            <div class="table-cell pb-2">{{ $user->email }}</div>
+                                        </div>
+                                        <div class="table-row">
+                                            <div class="table-cell pb-2">{{__('Last Login')}}</div>
+                                            <div class="table-cell pb-2">{{ $user->last_login_at ?: 'Unknown' }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </x-ui.table-td>
                 </tr>
