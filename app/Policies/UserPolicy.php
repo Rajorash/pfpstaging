@@ -51,7 +51,6 @@ class UserPolicy
             return true;
         }
 
-
         return false;
     }
 
@@ -63,8 +62,16 @@ class UserPolicy
      */
     public function create(User $user)
     {
+        if ($user->isSuperAdmin()) {
+            return true;
+        }
+
         $roles = $user->roles->pluck('name');
-        return in_array('advisor', $roles);
+        if (in_array(User::ROLE_ADMIN, $roles) || in_array(User::ROLE_ADVISOR, $roles)) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -80,24 +87,57 @@ class UserPolicy
             return true;
         }
 
-        // a user can update themselves
+        // users can update themselves
         if ($user->id === $model->id)
         {
             return true;
         }
 
-        // an advisor can update any clients they have
+        // advisors can update any clients they have
         if ( $model->businesses->map->license->pluck('advisor_id')->contains($user->id) )
         {
             return true;
         }
 
-        // an advisor can update any clients they are collaborating on
+        // advisors can update any clients they are collaborating on
         if ( $model->businesses->map->collaboration->pluck('advisor_id')->contains($user->id) )
         {
             return true;
         }
 
+        return false;
+    }
+
+    /**
+     * Determine whether the user can edit the model.
+     *
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\User  $model
+     * @return mixed
+     */
+    public function edit(User $user, User $model)
+    {
+        if ($user->isSuperAdmin()) {
+            return true;
+        }
+
+        // users can update themselves
+        if ($user->id === $model->id)
+        {
+            return true;
+        }
+
+        // advisors can update any clients they have
+        if ( $model->businesses->map->license->pluck('advisor_id')->contains($user->id) )
+        {
+            return true;
+        }
+
+        // advisors can update any clients they are collaborating on
+        if ( $model->businesses->map->collaboration->pluck('advisor_id')->contains($user->id) )
+        {
+            return true;
+        }
 
         return false;
     }

@@ -2,7 +2,7 @@
     <x-slot name="header">
         Users
         <x-icons.chevron-right :class="'h-4 w-auto inline-block px-2'"/>
-        Create New
+        Edit User
     </x-slot>
 
 
@@ -10,7 +10,7 @@
 
         <x-ui.table-table>
             <x-ui.table-caption class="pt-12 pb-6 px-72 relative">
-                Create a New Client User
+                Edit User {{$user->name}}
 
                 <x-slot name="left">
                     <div class="absolute left-12 top-12">
@@ -25,9 +25,9 @@
             <x-ui.table-tbody>
                 <tr>
                     <x-ui.table-td class="text-center bg-gray-100" padding="px-72 py-4">
-                        <form method="POST" action="{{route('users')}}">
+                        <form method="POST" action="{{route('users.update', ['user'=>$user])}}">
                             @csrf
-
+                            @method('PUT')
                             <div class="table w-full mt-10">
 
                                 <div class="table-row">
@@ -36,7 +36,7 @@
                                     </div>
                                     <div class="table-cell w-3/4 pb-4">
                                         <x-jet-input id="name" class=" w-full" type="text" name="name"
-                                                     :value="old('name')" required autofocus/>
+                                                     value="{{$user->name}}" required autofocus/>
                                         <x-jet-input-error for="name" class="mt-2"/>
                                     </div>
                                 </div>
@@ -47,7 +47,7 @@
                                     </div>
                                     <div class="table-cell w-3/4 pb-4">
                                         <x-jet-input id="email" class=" w-full" type="email" name="email"
-                                                     :value="old('email')" required autofocus/>
+                                                     value="{{$user->email}}" required autofocus/>
                                         <x-jet-input-error for="email" class="mt-2"/>
                                     </div>
                                 </div>
@@ -64,24 +64,12 @@
                                             <option>Select your timezone</option>
                                             @foreach (timezone_identifiers_list(64) as $timezone)
                                                 <option
-                                                    value="{{ $timezone }}"{{ $timezone == old('timezone') ? ' selected' : '' }}>{{ $timezone }}</option>
+                                                    value="{{ $timezone }}"{{ $timezone == $user->timezone ? ' selected' : '' }}>{{ $timezone }}</option>
                                             @endforeach
                                         </select>
                                         <x-jet-input-error for="timezone" class="mt-2"/>
                                     </div>
                                 </div>
-
-                                <div class="table-row">
-                                    <div class="table-cell w-1/4 pb-4 text-left">
-                                        {{ __('Business Name') }}
-                                    </div>
-                                    <div class="table-cell w-3/4 pb-4">
-                                        <x-jet-input id="business_name" class=" w-full" type="text" name="business_name"
-                                                     :value="old('business_name')" required autofocus/>
-                                        <x-jet-input-error for="business_name" class="mt-2"/>
-                                    </div>
-                                </div>
-
 
                             </div>
 
@@ -89,7 +77,7 @@
                                 <div class="table-row">
                                     <div class="table-cell w-full pb-4 text-right">
                                         <x-ui.button-normal class="uppercase" type="button">
-                                            Create User
+                                            Save User
                                         </x-ui.button-normal>
                                     </div>
                                 </div>

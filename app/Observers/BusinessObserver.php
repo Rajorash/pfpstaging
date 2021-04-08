@@ -18,10 +18,10 @@ class BusinessObserver
         // create empty phases and assign to the business, each 3 months apart on end_date
         for ($i=0; $i < Phase::DEFAULT_PHASE_COUNT; $i++) {
             # code...
-            $phase = Phase::create([
-                'business_id' => $business->id,
-                'end_date' => Carbon::now()->addMonths(3 * $i)
-            ]);
+            $phase = new Phase;
+            $phase->business_id = $business->id;
+            $phase->end_date = Carbon::now()->addMonths(3 * $i);
+            $phase->save();
         }
 
     }

@@ -34,10 +34,13 @@ class UserController extends Controller
     /**
      * Show the form for creating a new resource.
      *
+     * @param  \App\Models\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(User $user)
     {
+        $this->authorize('create', $user);
+
         return view('user.create');
     }
 
@@ -107,9 +110,9 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        $this->authorize('update', $user);
+        $this->authorize('edit', $user);
 
-        return view('user.show', ['user' => $user]);
+        return view('user.edit', ['user' => $user]);
     }
 
     /**
@@ -121,7 +124,18 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        //
+        $request->validate([
+            'name' => 'required',
+            'email' => 'required|email|unique:users,email,'.$user->id,
+            'timezone' => 'present|timezone',
+        ]);
+
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->timezone = $request->timezone;
+        $user->save();
+
+        return redirect("user");
     }
 
     /**

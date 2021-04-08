@@ -15,6 +15,7 @@ use App\Http\Controllers\AllocationCalculatorController;
 use App\Http\Controllers\AllocationsCalendar;
 use App\Http\Controllers\AllocationsController;
 use App\Http\Controllers\ProjectionController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -31,7 +32,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/user', 'UserController@store');
     Route::get('/user/create', 'UserController@create')->name('users.create');
     Route::get('/user/{user}', 'UserController@show');
-    Route::get('/user/edit/{user}', 'UserController@edit');
+    Route::get('/user/edit/{user}', [UserController::class, 'edit']);
+    Route::put('/user/{user}', [UserController::class, 'update'])->name('users.update');
 
     Route::resource('business.accounts', 'BankAccountController');
     Route::get('/accounts/{account}/create-flow', 'BankAccountController@createFlow');
