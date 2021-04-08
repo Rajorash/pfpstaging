@@ -9,7 +9,9 @@
         <x-business-nav businessId="{{$business->id}}" :business="$business"/>
     </x-slot>
 
-    <div id="percentagesTablePlace" class="global_nice_scroll"></div>
+    <x-ui.main>
+        <div id="percentagesTablePlace" class="global_nice_scroll"></div>
+    </x-ui.main>
 
     <x-spinner-block/>
 
