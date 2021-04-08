@@ -264,11 +264,8 @@ class AllocationsController extends Controller
     public function percentages(Business $business)
     {
         $this->authorize('view', $business);
-//        $rollout = $business->rollout->sortBy('end_date');
-//
-//        $percentages = self::buildPercentageValues($business);
 
-        return view('v2.percentages', ['business' => $business]);
+        return view('business.percentages', ['business' => $business]);
     }
 
     public function updatePercentages(Request $request)
@@ -316,7 +313,7 @@ class AllocationsController extends Controller
                 return $item;
             });
 
-        $response['html'] = view('v2.percentages-table')
+        $response['html'] = view('business.percentages-table')
             ->with([
                 'percentages' => $percentages,
                 'rollout' => $rollout,
