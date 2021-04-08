@@ -5,106 +5,102 @@
         Create New
     </x-slot>
 
-    <div class="container mx-auto sm:px-4">
-        <div class="flex flex-wrap justify-center">
-            <div class="md:w-2/3 pr-4 pl-4">
-                <div
-                    class="relative flex flex-col min-w-0 rounded break-words border bg-white border-1 border-gray-300">
-                    <div class="py-3 px-6 mb-0 bg-gray-200 border-b-1 border-gray-300 text-dark_gray"><strong>Create A
-                            New Client User</strong></div>
 
-                    <div class="flex-auto p-6">
-                        <form method="POST" action="/user">
+    <x-ui.main>
+
+        <x-ui.table-table>
+            <x-ui.table-caption class="pt-12 pb-6 px-72 relative">
+                Create a New Client User
+
+                <x-slot name="left">
+                    <div class="absolute left-12 top-12">
+                        <x-ui.button-normal href="{{route('users')}}">
+                            <x-icons.chevron-left :class="'h-3 w-auto'"/>
+                            <span class="ml-2">Go back</span>
+                        </x-ui.button-normal>
+                    </div>
+                </x-slot>
+
+            </x-ui.table-caption>
+            <x-ui.table-tbody>
+                <tr>
+                    <x-ui.table-td class="text-center bg-gray-100" padding="px-72 py-4">
+                        <form method="POST" action="{{route('users')}}">
                             @csrf
 
-                            <div class="mb-4 flex flex-wrap ">
-                                <label for="name"
-                                       class="md:w-1/3 pr-4 pl-4 pt-2 pb-2 mb-0 leading-normal md:text-right">{{ __('Name') }}</label>
+                            <div class="table w-full mt-10">
 
-                                <div class="md:w-1/2 pr-4 pl-4">
-                                    <input id="name" type="text"
-                                           class="form-input block appearance-none w-full py-1 px-2 mb-1 text-base leading-normal bg-white text-gray-800 border border-gray-200 rounded @error('name') bg-red-700 @enderror"
-                                           name="name" value="{{ old('name') }}" required autocomplete="name" autofocus>
+                                <div class="table-row">
+                                    <div class="table-cell w-1/4 pb-4 text-left">
+                                        {{ __('Name') }}
+                                    </div>
+                                    <div class="table-cell w-3/4 pb-4">
+                                        <x-jet-input id="name" class=" w-full" type="text" name="name"
+                                                     :value="old('name')" required autofocus/>
+                                        <x-jet-input-error for="name" class="mt-2"/>
+                                    </div>
+                                </div>
 
-                                    @error('name')
-                                    <span class="hidden mt-1 text-sm text-red" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                    @enderror
+                                <div class="table-row">
+                                    <div class="table-cell w-1/4 pb-4 text-left">
+                                        {{ __('E-Mail Address') }}
+                                    </div>
+                                    <div class="table-cell w-3/4 pb-4">
+                                        <x-jet-input id="email" class=" w-full" type="email" name="name"
+                                                     :value="old('email')" required autofocus/>
+                                        <x-jet-input-error for="email" class="mt-2"/>
+                                    </div>
+                                </div>
+
+                                <div class="table-row">
+                                    <div class="table-cell w-1/4 pb-4 text-left">
+                                        {{ __('Timezone:') }}
+                                    </div>
+                                    <div class="table-cell w-3/4 pb-4">
+                                        <select name="timezone" id="timezone"
+                                                class="w-full form-input border-light_blue
+                                                        focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50
+                                                        rounded-md shadow-sm">
+                                            <option>Select your timezone</option>
+                                            @foreach (timezone_identifiers_list(64) as $timezone)
+                                                <option
+                                                    value="{{ $timezone }}"{{ $timezone == old('timezone') ? ' selected' : '' }}>{{ $timezone }}</option>
+                                            @endforeach
+                                        </select>
+                                        <x-jet-input-error for="timezone" class="mt-2"/>
+                                    </div>
+                                </div>
+
+                                <div class="table-row">
+                                    <div class="table-cell w-1/4 pb-4 text-left">
+                                        {{ __('Business Name') }}
+                                    </div>
+                                    <div class="table-cell w-3/4 pb-4">
+                                        <x-jet-input id="business_name" class=" w-full" type="text" name="business_name"
+                                                     :value="old('business_name')" required autofocus/>
+                                        <x-jet-input-error for="business_name" class="mt-2"/>
+                                    </div>
+                                </div>
+
+
+                            </div>
+
+                            <div class="table w-full mt-4">
+                                <div class="table-row">
+                                    <div class="table-cell w-full pb-4 text-right">
+                                        <x-ui.button-normal class="uppercase" type="button">
+                                            Create User
+                                        </x-ui.button-normal>
+                                    </div>
                                 </div>
                             </div>
 
-                            <div class="mb-4 flex flex-wrap ">
-                                <label for="email"
-                                       class="md:w-1/3 pr-4 pl-4 pt-2 pb-2 mb-0 leading-normal md:text-right">{{ __('E-Mail Address') }}</label>
-
-                                <div class="md:w-1/2 pr-4 pl-4">
-                                    <input id="email" type="email"
-                                           class="form-input block appearance-none w-full py-1 px-2 mb-1 text-base leading-normal bg-white text-gray-800 border border-gray-200 rounded @error('email') bg-red-700 @enderror"
-                                           name="email" value="{{ old('email') }}" required autocomplete="email">
-
-                                    @error('email')
-                                    <span class="hidden mt-1 text-sm text-red" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                    @enderror
-                                </div>
-                            </div>
-
-                            <div class="mb-4 flex flex-wrap ">
-                                <label
-                                    class="md:w-1/3 pr-4 pl-4 pt-2 pb-2 mb-0 leading-normal md:text-right">Timezone:</label>
-                                <div class="md:w-1/2 pr-4 pl-4">
-                                    <select name="timezone" id="timezone"
-                                            class="form-select block appearance-none w-full py-1 px-2 mb-1 text-base leading-normal bg-white text-gray-800 border border-gray-200 rounded ">
-                                        <option>Select your timezone</option>
-                                        @foreach (timezone_identifiers_list(64) as $timezone)
-                                            <option
-                                                value="{{ $timezone }}"{{ $timezone == old('timezone') ? ' selected' : '' }}>{{ $timezone }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-
-                                @error('timezone')
-                                <span class="hidden mt-1 text-sm text-red" role="alert">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                                @enderror
-                            </div>
-
-                            <div class="mb-4 flex flex-wrap ">
-                                <label for="business_name"
-                                       class="md:w-1/3 pr-4 pl-4 pt-2 pb-2 mb-0 leading-normal md:text-right">{{ __('Business Name') }}</label>
-
-                                <div class="md:w-1/2 pr-4 pl-4">
-                                    <input id="business_name" type="text"
-                                           class="form-input block appearance-none w-full py-1 px-2 mb-1 text-base leading-normal bg-white text-gray-800 border border-gray-200 rounded @error('business_name') bg-red-700 @enderror"
-                                           name="business_name" value="{{ old('business_name') }}" required
-                                           autocomplete="business_name" autofocus>
-
-                                    @error('business_name')
-                                    <span class="hidden mt-1 text-sm text-red" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                    @enderror
-                                </div>
-                            </div>
-
-                            <div class="mb-4 flex flex-wrap mb-0">
-                                <div class="w-full text-center">
-                                    <button type="submit"
-                                            class="inline-block align-middle text-center select-none border font-normal
-                                            whitespace-no-wrap rounded py-1 px-3 leading-normal no-underline bg-blue
-                                            text-white hover:bg-dark_gray2">
-                                        {{ __('Create User') }}
-                                    </button>
-                                </div>
-                                <a class="mt-4 text-blue hover:text-dark_gray2" href="{{ route('users') }}">Back to User list</a>
-                            </div>
                         </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+                    </x-ui.table-td>
+                </tr>
+            </x-ui.table-tbody>
+        </x-ui.table-table>
+
+    </x-ui.main>
+
 </x-app-layout>

@@ -2,28 +2,38 @@
     <x-slot name="header">
         Users
         <x-icons.chevron-right :class="'h-4 w-auto inline-block px-2'"/>
-        Detail
+        User Details
     </x-slot>
 
+    <x-ui.main>
 
-    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-        <div class="bg-white overflow-hidden sm:rounded-lg">
+        <x-ui.table-table>
+            <x-ui.table-caption class="pt-12 pb-6 px-72 relative">
+                User Details
 
-            <div
-                class="py-3 px-6 mb-0 bg-gray-200 border-b-1 border-gray-300 text-dark_gray flex items-center justify-between">
-                <h2>This User Is</h2>
-            </div>
+                <x-slot name="left">
+                    <div class="absolute left-12 top-12">
+                        <x-ui.button-normal href="{{route('users')}}">
+                            <x-icons.chevron-left :class="'h-3 w-auto'"/>
+                            <span class="ml-2">Go back</span>
+                        </x-ui.button-normal>
+                    </div>
+                </x-slot>
 
-            <div class="flex-auto p-6">
-                <strong class="text-dark_gray2">{{ $user->name }}</strong><br>
-                Email: {{ $user->email }}<br>
-                Last login: {{ $user->last_login_at ?: 'Unknown' }}<br>
-                <br>
-                <a class="text-blue hover:text-dark_gray2" href="{{ route('users') }}">Back to User list</a>
-            </div>
+            </x-ui.table-caption>
+            <x-ui.table-tbody>
+                <tr>
+                    <x-ui.table-td class="text-center bg-gray-100" padding="px-72 py-4">
+                        <div class="flex-auto p-6">
+                            <strong class="text-dark_gray2">{{ $user->name }}</strong><br>
+                            Email: {{ $user->email }}<br>
+                            Last login: {{ $user->last_login_at ?: 'Unknown' }}<br>
+                        </div>
+                    </x-ui.table-td>
+                </tr>
+            </x-ui.table-tbody>
+        </x-ui.table-table>
 
-        </div>
-    </div>
-
+    </x-ui.main>
 
 </x-app-layout>

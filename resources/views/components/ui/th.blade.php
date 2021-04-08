@@ -1,3 +1,4 @@
-<th scope="col" class="border border-gray-300 p-4 whitespace-nowrap uppercase tracking-wider">
-    {{ $slot }}
+@props(['class' => ''])
+<th scope="col" class="border border-gray-300 p-4 text-left uppercase tracking-wider {{$class}}">
+    {{ $slot }} {{$class}}
 </th>
