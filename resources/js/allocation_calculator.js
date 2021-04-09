@@ -5,19 +5,9 @@ $(function () {
         }
     });
 
-    // $.fn.column = function() {
-    //     return $(this)
-    //         .filter('th, td')
-    //         .filter(':not([colspan])')
-    //         .closest('table')
-    //         .find('tr')
-    //         .filter(':not(:has([colspan]))')
-    //         .children(':nth-child(' + ($(this).index()+1) + ')');
-    // }
-
     class AllocationCalculator {
         constructor() {
-            this.debug = true;
+            this.debug = false;
 
             this.ajaxUrl = window.allocationsControllerUpdate;
             this.elementAllocationTablePlace = $('#allocationTablePlace');
@@ -82,9 +72,9 @@ $(function () {
             }
 
             if ($this.changesCounter) {
-                $('#'+$this.changesCounterId).html('...changes ready for calculation <b>' + $this.changesCounter + '</b>').show();
+                $('#' + $this.changesCounterId).html('...changes ready for calculation <b>' + $this.changesCounter + '</b>').show();
             } else {
-                $('#'+$this.changesCounterId).html('').hide();
+                $('#' + $this.changesCounterId).html('').hide();
             }
 
             if ($this.debug) {
