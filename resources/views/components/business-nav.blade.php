@@ -7,7 +7,7 @@
                         )
                         && !request()->routeIs('allocations-calendar');
     @endphp
-    <a href="/business/{{$businessId}}/accounts" title="Accounts"
+    <a href="{{url('/business/'.$businessId.'/accounts')}}" title="Accounts"
        class="bg-white block rounded box-border p-3 flex mr-6 h-12
         @if($active) text-blue @else text-gray-700 @endif
            ">

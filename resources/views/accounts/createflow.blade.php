@@ -1,70 +1,88 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex content-between">
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                {{$business->name}} > Create Flow
-            </h2>
-            <x-business-nav businessId="{{$business->id}}" :business="$business" />
-            </div>
+        {{$business->name}}
+        <x-icons.chevron-right :class="'h-4 w-auto inline-block px-2'"/>
+        Create Flow
+    </x-slot>
 
-        </x-slot>
+    <x-slot name="subMenu">
+        <x-business-nav businessId="{{$business->id}}" :business="$business"/>
+    </x-slot>
 
-        <x-ui.card>
 
-            <x-slot name="header">
-                <h2 class="text-lg leading-6 font-medium text-black">
-                    Create A New Flow For {{$account->name}}
-                </h2>
-            </x-slot>
+    <x-ui.main>
+        <x-ui.table-table>
+            <x-ui.table-caption class="pt-12 pb-6 px-72 relative">
+                Create A New Flow For {{$account->name}}
 
-            <form method="POST" action="/accounts/{{$account->id}}/create-flow">
-                @csrf
-
-                <div class="mb-4 flex flex-wrap ">
-                    <label for="label" class="md:w-1/3 pr-4 pl-4 pt-2 pb-2 mb-0 leading-normal md:text-right">{{ __('Label') }}</label>
-
-                    <div class="md:w-1/2 pr-4 pl-4">
-                        <input id="label" type="text" class="block appearance-none w-full py-1 px-2 mb-1 text-base leading-normal bg-white text-gray-800 border border-gray-200 rounded @error('label') bg-red-700 @enderror" name="label" value="{{ old('label') }}" required autocomplete="label" autofocus>
-
-                        @error('label')
-                        <span class="hidden mt-1 text-sm text-red" role="alert">
-                            <strong>{{ $message }}</strong>
-                        </span>
-                        @enderror
+                <x-slot name="left">
+                    <div class="absolute left-12 top-12">
+                        <x-ui.button-normal href="{{url('/business/'.$business->id.'/accounts')}}">
+                            <x-icons.chevron-left :class="'h-3 w-auto'"/>
+                            <span class="ml-2">Go back</span>
+                        </x-ui.button-normal>
                     </div>
-                </div>
+                </x-slot>
 
-                <div class="mb-4 flex flex-wrap ">
-                    <label class="md:w-1/3 pr-4 pl-4 pt-2 pb-2 mb-0 leading-normal md:text-right">Flow Type:</label>
-                    <div class="md:w-1/2 pr-4 pl-4">
-                        <div class="relative inline-flex align-middle" >
-                            <label class="inline-block align-middle text-center select-none font-normal whitespace-no-wrap py-2 pr-3 leading-normal no-underline">
-                                <input type="radio" name="flow-direction" id="flow-in" autocomplete="off" value="0" checked>
-                                Positive
-                            </label>
-                            <label class="inline-block align-middle text-center select-none font-normal whitespace-no-wrap py-2 pr-3 leading-normal no-underline">
-                                <input type="radio" name="flow-direction" id="flow-out" autocomplete="off" value="1">
-                                Negative
-                            </label>
-                        </div>
-                    </div>
+            </x-ui.table-caption>
+            <x-ui.table-tbody>
+                <tr>
+                    <x-ui.table-td class="text-center bg-gray-100" padding="px-72 py-4">
+                        <form method="POST" action="{{url('/accounts/'.$account->id.'/create-flow')}}">
+                            @csrf
+                            <div class="table w-full mt-10">
 
-                    @error('flow-direction')
-                    <span class="hidden mt-1 text-sm text-red" role="alert">
-                        <strong>{{ $message }}</strong>
-                    </span>
-                    @enderror
-                </div>
+                                <div class="table-row">
+                                    <div class="table-cell w-1/4 pb-4 text-left">
+                                        {{ __('Label') }}
+                                    </div>
+                                    <div class="table-cell w-3/4 pb-4">
+                                        <x-jet-input id="label" class="w-full" type="text" name="label"
+                                                     value="{{old('label')}}" required autofocus/>
+                                        <x-jet-input-error for="label" class="mt-2"/>
+                                    </div>
+                                </div>
 
-                <div class="mb-4 flex flex-wrap  mb-0">
-                    <div class="md:w-1/3 pr-4 pl-4 pt-2 pb-2 mb-0"></div>
-                    <div class="md:w-1/2 pr-4 pl-4 md:mx-1/3">
-                        <button type="submit" class="inline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded py-1 px-3 leading-normal no-underline bg-blue text-white hover:bg-dark_gray2">
-                            {{ __('Add Flow') }}
-                        </button>
-                    </div>
-                </div>
-            </form>
-        </x-ui.card>
+                                <div class="table-row">
+                                    <div class="table-cell w-1/4 pb-4 text-left">
+                                        {{ __('Flow Type') }}
+                                    </div>
+                                    <div class="table-cell w-3/4 pb-4 text-left">
+                                        <label
+                                            class="mr-4">
+                                            <input class="form-radio" type="radio" name="flow-direction" id="flow-in"
+                                                   autocomplete="off"
+                                                   value="0">
+                                            Positive
+                                        </label>
+                                        <label
+                                            class="">
+                                            <input class="form-radio" type="radio" name="flow-direction" id="flow-out"
+                                                   autocomplete="off"
+                                                   value="1">
+                                            Negative
+                                        </label>
+                                        <x-jet-input-error for="flow-direction" class="mt-2"/>
+                                    </div>
+                                </div>
 
-    </x-app-layout>
+                            </div>
+
+                            <div class="table w-full mt-4">
+                                <div class="table-row">
+                                    <div class="table-cell w-full pb-4 text-right">
+                                        <x-ui.button-normal class="uppercase" type="button">
+                                            Add Flow
+                                        </x-ui.button-normal>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </form>
+                    </x-ui.table-td>
+                </tr>
+            </x-ui.table-tbody>
+        </x-ui.table-table>
+    </x-ui.main>
+
+</x-app-layout>
