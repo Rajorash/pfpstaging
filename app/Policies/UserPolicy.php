@@ -66,7 +66,7 @@ class UserPolicy
             return true;
         }
 
-        $roles = $user->roles->pluck('name');
+        $roles = $user->roles->pluck('name')->toArray();
         if (in_array(User::ROLE_ADMIN, $roles) || in_array(User::ROLE_ADVISOR, $roles)) {
             return true;
         }

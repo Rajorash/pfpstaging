@@ -8,11 +8,15 @@
         <x-ui.table-table>
             <x-ui.table-caption>
                 <span>Users Visible To You</span>
-                @if( Auth::user()->roles->pluck('name')->contains('advisor') )
+                @if(
+                    Auth::user()->isSuperAdmin() ||
+                    Auth::user()->roles->pluck('name')->contains('admin') ||
+                    Auth::user()->roles->pluck('name')->contains('advisor')
+                    )
                     <x-slot name="right">
                         <x-ui.button-normal href="{{route('users.create')}}">
                             <x-icons.user-add/>
-                            <span class="ml-2">Create Client</span>
+                            <span class="ml-2">Create User</span>
                         </x-ui.button-normal>
                     </x-slot>
                 @endif
@@ -23,6 +27,7 @@
                 <x-ui.table-th>Title</x-ui.table-th>
                 <x-ui.table-th class="text-center">Status</x-ui.table-th>
                 <x-ui.table-th>Roles</x-ui.table-th>
+                <x-ui.table-th></x-ui.table-th>
                 <x-ui.table-th></x-ui.table-th>
             </tr>
             </thead>
@@ -61,7 +66,11 @@
                                 See Client
                             </x-ui.button-small>
                         </x-ui.table-td>
-
+                        <x-ui.table-td>
+                            <x-ui.button-small href="{{route('users.edit', ['user'=>$user])}}">
+                                Edit Client
+                            </x-ui.button-small>
+                        </x-ui.table-td>
                     </tr>
                 @endforeach
 
