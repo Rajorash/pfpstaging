@@ -1,93 +1,123 @@
 <x-app-layout>
     <x-slot name="header">
-        {{$business->name}} <x-icons.chevron-right :class="'h-4 w-auto inline-block px-2'"/> Accounts
+        {{$business->name}}
+        <x-icons.chevron-right :class="'h-4 w-auto inline-block px-2'"/>
+        Accounts
     </x-slot>
 
     <x-slot name="subMenu">
         <x-business-nav businessId="{{$business->id}}" :business="$business"/>
     </x-slot>
+    <x-ui.main>
+        <x-ui.table-table>
+            <x-ui.table-caption>
+                <span>{{$business->name}} Bank Accounts</span>
 
-    <x-ui.card bodypadding="0">
+                <x-slot name="right">
+                    <x-ui.button-normal href="{{url(Request::path().'/create')}}">
+                        <x-icons.document-add/>
+                        <span class="ml-2">New Account</span>
+                    </x-ui.button-normal>
+                </x-slot>
 
-        <x-slot name="header">
-            <h2 class="text-lg leading-6 font-medium text-black">{{$business->name}} Bank Accounts</h2>
-            <a href="/{{ Request::path() }}/create"
-               class="group flex items-center text-center select-none border font-normal whitespace-no-wrap rounded py-1 px-3 leading-normal no-underline bg-green text-white hover:bg-dark_gray">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                     class="w-4 h-4 mr-2">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                </svg>
-                New Account
-            </a>
-        </x-slot>
+            </x-ui.table-caption>
 
-        <x-ui.table tableId="accountsTable">
-            <thead class="bg-gray-50">
-            <x-ui.th :class="'border-l-0'">Account</x-ui.th>
-            <x-ui.th>Flows</x-ui.th>
-            <x-ui.th :class="'border-r-0'">Edit Account</x-ui.th>
+            <thead>
+            <tr class="border-light_blue border-t border-b">
+                <x-ui.table-th padding="pl-12 pr-2 py-4">Account</x-ui.table-th>
+                <x-ui.table-th>Flows</x-ui.table-th>
+                <x-ui.table-th>Edit Account</x-ui.table-th>
+            </tr>
             </thead>
-            <tbody class="bg-white divide-y divide-gray-200">
-            @forelse($accounts as $acc)
-                <tr class="align-top">
-                    <x-ui.td>
-                        <div class="px-2 py-1">
-                            <strong class="uppercase block">{{ $acc->name }}</strong>
-                            <em class="block text-gray-500">{{ $acc->type }}</em>
-                        </div>
-                    </x-ui.td>
-                    <x-ui.td>
-                        <div class="">
-                            <strong class="block">Account Flows</strong>
+
+            <x-ui.table-tbody>
+                @forelse($accounts as $acc)
+                    <tr>
+                        <x-ui.table-td class="whitespace-nowrap align-top" padding="pl-12 pr-2 py-4">
+                            <div class="text-blue text-2xl">{{ $acc->name }}</div>
+                            <div class="text-light_gray">{{ $acc->type }}</div>
+                        </x-ui.table-td>
+
+                        <x-ui.table-td class="align-top">
+                            <div class="pb-2 text-lg">Account Flows</div>
                             @forelse($acc->flows as $flow)
-                                <div
-                                    class="flex justify-between items-center pt-2  text-{{$flow->isNegative() ? 'red-500' : 'green-600' }}">
-                                    {{ $flow->label }}
-                                    <span class="inline-block text-right"><a
-                                            href="/accounts/{{$acc->id}}/flow/{{$flow->id}}/edit"
-                                            class="inline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded  no-underline py-1 px-2 leading-tight text-xs  bg-yellow-500 text-white hover:bg-yellow-600 mr-1">Edit Flow</a>
-                                        <form class="inline" action="/accounts/{{$acc->id}}/flow/{{$flow->id}}"
+                                <div class="table">
+                                    <div class="table-row">
+                                        <div
+                                            class="table-cell pb-2 text-sm pr-4 text-{{$flow->isNegative() ? 'red-500' : 'green' }}">
+                                            {{ $flow->label }}
+                                        </div>
+                                        <div class="table-cell">
+                                            <x-ui.button-small attr="title=Edit"
+                                                               class="w-auto h-6 mr-4 text-light_purple" padding="py-1 px-1"
+                                                               background="bg-transparent hover:bg-transparent border-transparent border-transparent"
+                                                               href="{{url('/accounts/'.$acc->id.'/flow/'.$flow->id.'/edit')}}">
+                                                <x-icons.edit class="w-3 h-auto"/>
+                                            </x-ui.button-small>
+                                        </div>
+                                        <div class="table-cell pb-2 w-28">
+                                            <form class="inline"
+                                                  action="{{url('/accounts/'.$acc->id.'/flow/'.$flow->id)}}"
+                                                  method="POST">
+                                                @method('DELETE')
+                                                @csrf
+                                                <x-ui.button-small background="bg-transparent hover:bg-transparent" padding="py-1 px-1"
+                                                                   class="w-auto h-6 mr-4 text-red-300 hover:text-red-700 border-transparent"
+                                                                   attr="title=Delete" type="button">
+                                                    <x-icons.delete class="w-3 h-auto"/>
+                                                </x-ui.button-small>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            @empty
+                                <div class="">No flows added.</div>
+                            @endforelse
+                        </x-ui.table-td>
+
+                        <x-ui.table-td class="align-top">
+                            <div class="table">
+                                <div class="table-row">
+                                    <div class="table-cell pb-2 w-28 pr-4">
+                                        <x-ui.button-small background="bg-green hover:bg-dark_gray2"
+                                                           href="{{url('/accounts/'.$acc->id.'/create-flow')}}">
+                                            <x-icons.add class="w-3 h-auto mr-2"/>
+                                            Add Flow
+                                        </x-ui.button-small>
+                                    </div>
+                                    <div class="table-cell pb-2 w-16 pr-4">
+                                        <x-ui.button-small
+                                            href="{{url(Request::path().'/'.$acc->id.'/edit')}}">
+                                            <x-icons.edit class="w-3 h-auto mr-2"/>
+                                            Edit
+                                        </x-ui.button-small>
+                                    </div>
+                                    <div class="table-cell pb-2 w-16">
+                                        <form class="inline"
+                                              action="{{url(Request::path().'/'.$acc->id)}}"
                                               method="POST">
                                             @method('DELETE')
                                             @csrf
-                                            <button type="submit"
-                                                    class="inline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded  no-underline py-1 px-2 leading-tight text-xs  bg-red-600 text-white hover:bg-red-700">Delete Flow</button>
+                                            <x-ui.button-small background="bg-red-500 hover:bg-dark_gray2"
+                                                               type="button">
+                                                <x-icons.delete class="w-3 h-auto mr-2"/>
+                                                Delete
+                                            </x-ui.button-small>
                                         </form>
-                                    </span>
+                                    </div>
                                 </div>
-                            @empty
-                                <div class="py-2 pl-4 pr-2">No flows added.</div>
-                            @endforelse
-                        </div>
-                    </x-ui.td>
-                    <x-ui.td>
-                            <span class="inline-block text-right">
-                                <a href="/accounts/{{ $acc->id }}/create-flow"
-                                   class="inline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded  no-underline py-1 px-2 leading-tight text-xs  bg-green-500 text-white hover:bg-green-600 mr-1">+ Flow</a>
-                                <a href="/{{ Request::path() }}/{{$acc->id}}/edit"
-                                   class="inline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded  no-underline py-1 px-2 leading-tight text-xs  bg-yellow-500 text-white hover:bg-yellow-600 mr-1">Edit</a>
-                                <form class="inline" action="/{{ Request::path() }}/{{$acc->id}}" method="POST">
-                                    @method('DELETE')
-                                    @csrf
-                                    <button type="submit"
-                                            class="inline-block align-middle text-center select-none border font-normal whitespace-no-wrap rounded  no-underline py-1 px-2 leading-tight text-xs  bg-red-600 text-white hover:bg-red-700">Delete</button>
-                                </form>
-                            </span>
-                    </x-ui.td>
-
-                </tr>
-            @empty
-                <x-ui.tr>
-                    <x-ui.td>
-                        <div class="flex justify-between items-center px-2 py-1">
-                            <strong>No accounts created.</strong>
-                        </div>
-                    </x-ui.td>
-                </x-ui.tr>
-            @endforelse
-            </tbody>
-        </x-ui.table>
-    </x-ui.card>
+                            </div>
+                        </x-ui.table-td>
+                    </tr>
+                @empty
+                    <tr>
+                        <x-ui.table-td attr="colspan=3" class="text-center">
+                            No accounts created.
+                        </x-ui.table-td>
+                    </tr>
+                @endforelse
+            </x-ui.table-tbody>
+        </x-ui.table-table>
+    </x-ui.main>
 
 </x-app-layout>

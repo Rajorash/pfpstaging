@@ -10,7 +10,7 @@
                 $date = Carbon\Carbon::parse($date);
             @endphp
             <x-ui.table-th class="text-center {{ $date->isToday() ? 'text-blue': '' }}"
-                           baseClass="w-24 text-dark_gray font-normal">
+                           baseClass="w-24 min-w-20 text-dark_gray font-normal">
                 <span class="block text-xs font-normal">{{$date->format('M Y')}}</span>
                 <span class="block text-xl">{{$date->format('j')}}</span>
                 <span class="block text-xs font-normal">{{$date->format('D')}}</span>

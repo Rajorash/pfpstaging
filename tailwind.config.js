@@ -28,6 +28,15 @@ module.exports = {
                 shadow2: '0px 25px 50px rgba(206, 208, 229, 0.5)',
                 shadow3: '0px 50px 100px rgba(206, 208, 229, 0.5)',
                 shadow4: '0px 25px 75px rgba(206, 208, 229, 0.5)'
+            },
+            minWidth: {
+                '8': '2rem',
+                '12': '3rem',
+                '16': '4rem',
+                '20': '5rem',
+                '24': '6rem',
+                '28': '7rem',
+                '32': '8rem'
             }
         },
     },

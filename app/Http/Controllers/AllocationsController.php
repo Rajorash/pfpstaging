@@ -309,7 +309,9 @@ class AllocationsController extends Controller
         $rollout = $business->rollout
             ->sortBy('end_date')
             ->map(function($item) use ($totals) {
-                $item['total'] = $totals[$item->id];
+                if(isset($totals[$item->id])) {
+                    $item['total'] = $totals[$item->id];
+                }
                 return $item;
             });
 

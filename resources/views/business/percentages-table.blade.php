@@ -6,14 +6,14 @@
         </x-ui.table-th>
 
         @forelse($rollout as $phase)
-            <x-ui.table-th class="text-center" baseClass="w-24 text-dark_gray font-normal"
+            <x-ui.table-th class="text-center min-w-20" baseClass="w-24 text-dark_gray font-normal"
                            class="{{ Carbon\Carbon::parse($phase->end_date)->isToday() ? 'text-blue': '' }} ">
                 <span
                     class="block text-xs font-normal">{{Carbon\Carbon::parse($phase->end_date)->format('M Y')}}</span>
                 <span class="block text-xl">{{Carbon\Carbon::parse($phase->end_date)->format('j')}}</span>
             </x-ui.table-th>
         @empty
-            <x-ui.table-th class="text-center" baseClass="w-24 text-dark_gray font-normal">No phases exist...
+            <x-ui.table-th class="text-center min-w-20" baseClass="w-24 text-dark_gray font-normal">No phases exist...
             </x-ui.table-th>
         @endforelse
     </tr>
