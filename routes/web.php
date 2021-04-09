@@ -32,7 +32,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/user', 'UserController@store');
     Route::get('/user/create', 'UserController@create')->name('users.create');
     Route::get('/user/{user}', 'UserController@show');
-    Route::get('/user/edit/{user}', [UserController::class, 'edit']);
+    Route::get('/user/edit/{user}', [UserController::class, 'edit'])->name('users.edit');
     Route::put('/user/{user}', [UserController::class, 'update'])->name('users.update');
 
     Route::resource('business.accounts', 'BankAccountController');

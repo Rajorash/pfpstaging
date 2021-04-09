@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Auth;
 use App\Models\User;
+use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
@@ -41,7 +42,10 @@ class UserController extends Controller
     {
         $this->authorize('create', $user);
 
-        return view('user.create');
+        $ownerRoleId = auth()->user()->roles->min('id');
+        $roles = Role::where('id', '>', $ownerRoleId)->get()->pluck('label', 'id')->toArray();
+
+        return view('user.create', ['roles' => $roles]);
     }
 
     /**
@@ -57,6 +61,7 @@ class UserController extends Controller
             'business_name' => 'required',
             'email' => 'unique:users,email|required|email',
             'timezone' => 'present|timezone',
+            'roles' => 'required',
         ]);
 
         // create and add user
@@ -67,9 +72,15 @@ class UserController extends Controller
         $user->timezone = $data['timezone'];
         $user->save();
 
+        $ownerRoleId = auth()->user()->roles->min('id');
         // assign client role
-        $client_role = \App\Models\Role::where('name', 'client')->first();
-        $user->assignRole($client_role);
+        foreach ($data['roles'] as $role_id)
+        {
+            if ($ownerRoleId > $role_id) {
+                $client_role = Role::find($role_id);
+                $user->assignRole($client_role);
+            }
+        }
 
         // add business
         $business = new \App\Models\Business;
@@ -112,7 +123,11 @@ class UserController extends Controller
     {
         $this->authorize('edit', $user);
 
-        return view('user.edit', ['user' => $user]);
+        $ownerRoleId = auth()->user()->roles->min('id');
+        $roles = Role::where('id', '>', $ownerRoleId)->get()->pluck('label', 'id')->toArray();
+        $userRoles = $user->roles->pluck('id')->toArray();
+
+        return view('user.edit', ['user' => $user, 'userRoles' => $userRoles, 'roles' => $roles]);
     }
 
     /**
@@ -128,12 +143,30 @@ class UserController extends Controller
             'name' => 'required',
             'email' => 'required|email|unique:users,email,'.$user->id,
             'timezone' => 'present|timezone',
+            'roles' => 'required',
         ]);
 
         $user->name = $request->name;
         $user->email = $request->email;
         $user->timezone = $request->timezone;
         $user->save();
+
+        $ownerRoleId = auth()->user()->roles->min('id');
+        $userRoles = $user->roles->pluck('id')->toArray();
+        $toDetach = [];
+        foreach ($userRoles as $role_id) {
+            if ($ownerRoleId > $role_id) {
+                $toDetach[] = $role_id;
+            }
+        }
+        $user->roles()->detach($toDetach);
+        foreach ($request->roles as $role_id)
+        {
+            if ($ownerRoleId > $role_id) {
+                $client_role = Role::find($role_id);
+                $user->assignRole($client_role);
+            }
+        }
 
         return redirect("user");
     }

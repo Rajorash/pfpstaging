@@ -51,7 +51,27 @@
                                         <x-jet-input-error for="email" class="mt-2"/>
                                     </div>
                                 </div>
-
+                                @if(count($roles) > 1)
+                                    <div class="table-row">
+                                        <div class="table-cell w-1/4 pb-4 text-left">
+                                            {{ __('Roles:') }}
+                                        </div>
+                                        <div class="table-cell w-3/4 pb-4">
+                                            <select name="roles[]" id="roles"
+                                                    class="w-full form-input border-light_blue
+                                                    focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50
+                                                    rounded-md shadow-sm" multiple size="{{count($roles)}}">
+                                                @foreach ($roles as $role_id => $role_label)
+                                                    <option
+                                                        value="{{ $role_id }}"{{ is_array($userRoles) && in_array($role_id, $userRoles) ? ' selected' : '' }}>{{ $role_label }}</option>
+                                                @endforeach
+                                            </select>
+                                            <x-jet-input-error for="roles" class="mt-2"/>
+                                        </div>
+                                    </div>
+                                @else
+                                    <input type="hidden" name="roles[0]" id="roles" value="{{array_key_first($userRoles)}}">
+                                @endif
                                 <div class="table-row">
                                     <div class="table-cell w-1/4 pb-4 text-left">
                                         {{ __('Timezone:') }}

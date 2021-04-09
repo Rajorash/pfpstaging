@@ -37,7 +37,7 @@
                                         </div>
                                         <div class="table-row">
                                             <div class="table-cell pb-2">{{__('Role/s')}}</div>
-                                            <div class="table-cell pb-2">n/a</div>
+                                            <div class="table-cell pb-2">{{ implode(', ',$user->roles->pluck('label')->toArray()) }}</div>
                                         </div>
                                         <div class="table-row">
                                             <div class="table-cell pb-2">{{__('Email Adress')}}</div>
