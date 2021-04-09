@@ -4062,21 +4062,13 @@ $(function () {
     headers: {
       'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
     }
-  }); // $.fn.column = function() {
-  //     return $(this)
-  //         .filter('th, td')
-  //         .filter(':not([colspan])')
-  //         .closest('table')
-  //         .find('tr')
-  //         .filter(':not(:has([colspan]))')
-  //         .children(':nth-child(' + ($(this).index()+1) + ')');
-  // }
+  });
 
   var AllocationCalculator = /*#__PURE__*/function () {
     function AllocationCalculator() {
       _classCallCheck(this, AllocationCalculator);
 
-      this.debug = true;
+      this.debug = false;
       this.ajaxUrl = window.allocationsControllerUpdate;
       this.elementAllocationTablePlace = $('#allocationTablePlace');
       this.elementLoadingSpinner = $('#loadingSpinner');

@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        {{ __('Dashboard') }}
+        {{ __('Allocations Calculator') }}
     </x-slot>
 
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
