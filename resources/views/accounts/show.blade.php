@@ -56,7 +56,7 @@
                                             </x-ui.button-small>
                                         </div>
                                         <div class="table-cell pb-2 w-28">
-                                            <form class="inline"
+                                            <form class="inline-block"
                                                   action="{{url('/accounts/'.$acc->id.'/flow/'.$flow->id)}}"
                                                   method="POST">
                                                 @method('DELETE')
@@ -93,7 +93,7 @@
                                         </x-ui.button-small>
                                     </div>
                                     <div class="table-cell pb-2 w-16">
-                                        <form class="inline"
+                                        <form class="inline-block"
                                               action="{{url(Request::path().'/'.$acc->id)}}"
                                               method="POST">
                                             @method('DELETE')

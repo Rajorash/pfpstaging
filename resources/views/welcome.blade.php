@@ -1,24 +1,25 @@
 <x-guest-layout>
-    <div class="flex flex-col h-screen w-screen">
-    @if (Route::has('login'))
-    <div>
-        <div class="flex flex-row content-end w-full space-x-6 py-3 px-6">
-            @auth
-            <a class="text-blue hover:text-dark_gray2 block ml-auto" href="{{ url('/dashboard') }}">Dashboard</a>
-            @else
-            <a class="text-blue hover:text-dark_gray2 block ml-auto" href="{{ route('login') }}">Login</a>
-
-            @if (Route::has('register'))
-            <a class="text-blue hover:text-dark_gray2 block" href="{{ route('register') }}">Register</a>
-            @endif
-            @endauth
+    <div class="h-screen w-screen">
+        <div class="pt-48">
+            <h1 class="text-blue text-center text-5xl">PFP MVP</h1>
+            <h2 class="pt-8 text-dark_gray2 text-center text-xl">Coming soon</h2>
         </div>
-    </div>
-    @endif
 
-    <div class="flex-grow">
-        <h1 class="font-sans text-gray-600 subpixel-antialiased text-center text-5xl">PFP MVP</h1>
-        <h2 class="font-sans text-gray-600 subpixel-antialiased text-center text-xl">Coming soon</h2>
-    </div>
+        @if (Route::has('login'))
+            <div>
+                <div class="text-center w-48 space-x-6 pt-24 px-6 mx-auto">
+                    @auth
+                        <x-ui.button-normal href="{{ url('/dashboard') }}">Dashboard</x-ui.button-normal>
+                    @else
+                        <x-ui.button-normal href="{{ route('login') }}">Login</x-ui.button-normal>
+
+                        @if (Route::has('register'))
+                            <x-ui.button-normal href="{{ route('register') }}">Register</x-ui.button-normal>
+                        @endif
+                    @endauth
+                </div>
+            </div>
+        @endif
+
     </div>
 </x-guest-layout>
