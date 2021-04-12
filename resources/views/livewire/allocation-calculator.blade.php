@@ -72,7 +72,7 @@
                 <td class="px-2 py-1 border border-gray-300">{{$account['name']}}</td>
                 <td class="px-2 py-1 border border-gray-300"></td>
                 <td class="bg-green-100px-2 py-1 border border-gray-300"></td>
-                <td class="text-right px-2 py-1 border border-gray-300 bg-dark_gray2">{{$account['percent']}}%</td>
+                <td class="text-right px-2 py-1 border border-gray-300 bg-gray-400">{{$account['percent']}}%</td>
                 <td class="text-right px-2 py-1 border border-gray-300 bg-green-200">
                     ${{number_format($account['value'], 0)}}</td>
             </tr>
