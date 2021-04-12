@@ -17,4 +17,9 @@ class License extends Model
     {
         return $this->hasOne(Business::class);
     }
+
+    public function setAccountNumberAttribute()
+    {
+        $this->attributes['account_number'] = uniqid();
+    }
 }

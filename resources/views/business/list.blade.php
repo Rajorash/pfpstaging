@@ -40,7 +40,7 @@
                                 </div>
                             </div>
                         </x-ui.table-td>
-                        <x-ui.table-td>{{$business->license->advisor->name}}</x-ui.table-td>
+                        <x-ui.table-td>{{is_object($business->license) ? $business->license->advisor->name : __('Not licensed')}}</x-ui.table-td>
                         <x-ui.table-td class="text-center">
                             <a href="{{url('/business/'.$business->id.'/accounts')}}">
                                 <x-ui.badge> {{$business->accounts()->count()}}</x-ui.badge>

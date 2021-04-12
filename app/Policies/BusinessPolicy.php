@@ -117,7 +117,12 @@ class BusinessPolicy
      * @param  \App\Models\Business  $business
      * @return mixed
      */
-    public function userHasBusinessAccess(User $user, Business $business) {
+    public function userHasBusinessAccess(User $user, Business $business)
+    {
+        if ($user->isSuperAdmin()) {
+            return true;
+        }
+
         // owners can access their own business
         if ($business->owner && $user->id === $business->owner->id) {
             return true;

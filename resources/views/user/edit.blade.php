@@ -53,7 +53,7 @@
                                 </div>
                                 @if(count($roles) > 1)
                                     <div class="table-row">
-                                        <div class="table-cell w-1/4 pb-4 text-left">
+                                        <div class="table-cell w-1/4 pb-4 text-left align-top">
                                             {{ __('Roles:') }}
                                         </div>
                                         <div class="table-cell w-3/4 pb-4">
@@ -71,6 +71,25 @@
                                     </div>
                                 @else
                                     <input type="hidden" name="roles[0]" id="roles" value="{{array_key_first($userRoles)}}">
+                                @endif
+                                @if (count($businesses) > 0)
+                                    <div class="table-row">
+                                        <div class="table-cell w-1/4 pb-4 text-left align-top">
+                                            {{ __('Available for licensing:') }}
+                                        </div>
+                                        <div class="table-cell w-3/4 pb-4">
+                                            <select name="licenses[]" id="licenses"
+                                                    class="w-full form-input border-light_blue
+                                                    focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50
+                                                    rounded-md shadow-sm" multiple size="{{min([count($businesses), 5])}}">
+                                                @foreach ($businesses as $business_id => $business_name)
+                                                    <option
+                                                        value="{{ $business_id }}"{{ is_array($licenses) && in_array($business_id, $licenses) ? ' selected' : '' }}>{{ $business_name }}</option>
+                                                @endforeach
+                                            </select>
+                                            <x-jet-input-error for="roles" class="mt-2"/>
+                                        </div>
+                                    </div>
                                 @endif
                                 <div class="table-row">
                                     <div class="table-cell w-1/4 pb-4 text-left">

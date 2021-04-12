@@ -25,6 +25,13 @@ class User extends Authenticatable
     public const ROLE_ADVISOR = 'advisor';
     public const ROLE_CLIENT = 'client';
 
+    public const ROLE_IDS = [
+        self::ROLE_SUPERADMIN => 1,
+        self::ROLE_ADMIN => 2,
+        self::ROLE_ADVISOR => 3,
+        self::ROLE_CLIENT => 4
+    ];
+
     /**
      * The attributes that are mass assignable.
      *
@@ -86,6 +93,16 @@ class User extends Authenticatable
     public function assignRole($role)
     {
         $this->roles()->sync($role, false);
+    }
+
+    public function licenses()
+    {
+        return $this->belongsToMany(Business::class, 'licenses','advisor_id', 'business_id');
+    }
+
+    public function assignLicense($business)
+    {
+        $this->licenses()->sync($business, false);
     }
 
     public function permissions()

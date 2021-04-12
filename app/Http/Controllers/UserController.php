@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Business;
+use App\Traits\GettersTrait;
 use Auth;
 use App\Models\User;
 use App\Models\Role;
@@ -11,6 +13,8 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
+    use GettersTrait;
+
     /**
      * Display a listing of the resource.
      *
@@ -127,7 +131,29 @@ class UserController extends Controller
         $roles = Role::where('id', '>', $ownerRoleId)->get()->pluck('label', 'id')->toArray();
         $userRoles = $user->roles->pluck('id')->toArray();
 
-        return view('user.edit', ['user' => $user, 'userRoles' => $userRoles, 'roles' => $roles]);
+        $businesses = $licenses = [];
+        if (in_array(User::ROLE_IDS[User::ROLE_ADVISOR], $userRoles)) {
+
+            $businesses = $this->getBusinessAll();
+            if (!Auth::user()->isSuperAdmin()) {
+                $businesses = $businesses->filter(function ($business) {
+                    return Auth::user()->can('view', $business);
+                })->values();
+            }
+            $businesses = $businesses->pluck('name', 'id')->toArray();
+            $licenses = $user->licenses->pluck('id')->toArray();
+        }
+
+        return view(
+            'user.edit',
+            [
+                'user' => $user,
+                'userRoles' => $userRoles,
+                'roles' => $roles,
+                'businesses' => $businesses,
+                'licenses' => $licenses
+            ]
+        );
     }
 
     /**
@@ -151,11 +177,28 @@ class UserController extends Controller
         $user->timezone = $request->timezone;
         $user->save();
 
+        $user->licenses()->detach();
+        if (is_array($request->licenses)) {
+
+            $time_created = date('Y-m-d h:i:s', time());
+            foreach ($request->licenses as $license)
+            {
+                $business = Business::find($license);
+                $user->assignLicense([
+                    $business->id => [
+                        'account_number' => uniqid(),
+                        'created_at' => $time_created,
+                        'updated_at' => $time_created
+                    ]
+                ]);
+            }
+        }
+
         $ownerRoleId = auth()->user()->roles->min('id');
         $userRoles = $user->roles->pluck('id')->toArray();
         $toDetach = [];
         foreach ($userRoles as $role_id) {
-            if ($ownerRoleId > $role_id) {
+            if ($ownerRoleId > $role_id && ($role_id != User::ROLE_ADVISOR || empty($request->licenses))) {
                 $toDetach[] = $role_id;
             }
         }
