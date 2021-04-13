@@ -67,6 +67,9 @@
                                                 @endforeach
                                             </select>
                                             <x-jet-input-error for="roles" class="mt-2"/>
+                                            @if($errors->has('roles'))
+                                            <p class="text-sm text-red-600 mt-2">{{ $errors->first('roles') }}</p>
+                                            @endif
                                         </div>
                                     </div>
                                 @else

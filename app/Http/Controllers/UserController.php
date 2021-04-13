@@ -80,7 +80,7 @@ class UserController extends Controller
         // assign client role
         foreach ($data['roles'] as $role_id)
         {
-            if ($ownerRoleId > $role_id) {
+            if ($ownerRoleId < $role_id) {
                 $client_role = Role::find($role_id);
                 $user->assignRole($client_role);
             }
@@ -165,12 +165,56 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        $request->validate([
+        $validator = \Validator::make($request->all(), [
             'name' => 'required',
             'email' => 'required|email|unique:users,email,'.$user->id,
             'timezone' => 'present|timezone',
             'roles' => 'required',
         ]);
+        $validator->validate();
+
+        $advisorId = User::ROLE_IDS[User::ROLE_ADVISOR];
+        $validator->after(function ($validator) use ($request, $advisorId) {
+            if (
+                is_array($request->licenses) &&
+                is_array($request->roles) &&
+                !in_array($advisorId, $request->roles)
+            ) {
+                $validator->errors()->add(
+                    'roles', 'Advisor role can not be revoked if at least one business is selected for licensing.'
+                );
+            }
+        });
+
+        if ($validator->fails()) {
+            $userRoles = $user->roles->pluck('id')->toArray();
+            $ownerRoleId = auth()->user()->roles->min('id');
+            $roles = Role::where('id', '>', $ownerRoleId)->get()->pluck('label', 'id')->toArray();
+            $businesses = $licenses = [];
+            if (in_array(User::ROLE_IDS[User::ROLE_ADVISOR], $userRoles)) {
+
+                $businesses = $this->getBusinessAll();
+                if (!Auth::user()->isSuperAdmin()) {
+                    $businesses = $businesses->filter(function ($business) {
+                        return Auth::user()->can('view', $business);
+                    })->values();
+                }
+                $businesses = $businesses->pluck('name', 'id')->toArray();
+                $licenses = $user->licenses->pluck('id')->toArray();
+            }
+
+            return view(
+                'user.edit',
+                [
+                    'user' => $user,
+                    'userRoles' => $userRoles,
+                    'roles' => $roles,
+                    'businesses' => $businesses,
+                    'licenses' => $licenses,
+                    "errors"  => $validator->messages()
+                ]
+            );
+        }
 
         $user->name = $request->name;
         $user->email = $request->email;
@@ -205,7 +249,7 @@ class UserController extends Controller
         $user->roles()->detach($toDetach);
         foreach ($request->roles as $role_id)
         {
-            if ($ownerRoleId > $role_id) {
+            if ($ownerRoleId < $role_id) {
                 $client_role = Role::find($role_id);
                 $user->assignRole($client_role);
             }

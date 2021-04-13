@@ -63,12 +63,12 @@
                         </x-ui.table-td>
                         <x-ui.table-td>
                             <x-ui.button-small href="{{url('/user/'.$user->id)}}">
-                                See Client
+                                See User
                             </x-ui.button-small>
                         </x-ui.table-td>
                         <x-ui.table-td>
                             <x-ui.button-small href="{{route('users.edit', ['user'=>$user])}}">
-                                Edit Client
+                                Edit User
                             </x-ui.button-small>
                         </x-ui.table-td>
                     </tr>
