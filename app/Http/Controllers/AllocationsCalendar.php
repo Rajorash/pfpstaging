@@ -173,13 +173,14 @@ class AllocationsCalendar extends Controller
                     $phaseId = $this->business->getPhaseIdByDate($date);
                     $percents = $this->getPercentValues($phaseId, $businessId);
 
+                    $response[$type][$id]['name'] = $names[$id];
+                    $response[$type][$id][$date->format('Y-m-d')]
+                        = array_key_exists($date->format('Y-m-d 00:00:00'), $account_item)
+                        ? $account_item[$date->format('Y-m-d 00:00:00')]
+                        : 0;
+
                     switch ($type) {
                         case BankAccount::ACCOUNT_TYPE_REVENUE:
-                            $response[BankAccount::ACCOUNT_TYPE_REVENUE][$id]['name'] = $names[$id];
-                            $response[BankAccount::ACCOUNT_TYPE_REVENUE][$id][$date->format('Y-m-d')]
-                                = array_key_exists($date->format('Y-m-d 00:00:00'), $account_item)
-                                ? $account_item[$date->format('Y-m-d 00:00:00')]
-                                : 0;
                             $totalRevenue = 0;
                             foreach ($account_item as $key => $value) {
                                 if (is_integer($key)) {
@@ -199,11 +200,6 @@ class AllocationsCalendar extends Controller
                             }
                             break;
                         case BankAccount::ACCOUNT_TYPE_SALESTAX: // Tax amt
-                            $response[BankAccount::ACCOUNT_TYPE_SALESTAX][$id]['name'] = $names[$id];
-                            $response[BankAccount::ACCOUNT_TYPE_SALESTAX][$id][$date->format('Y-m-d')]
-                                = array_key_exists($date->format('Y-m-d 00:00:00'), $account_item)
-                                ? $account_item[$date->format('Y-m-d 00:00:00')]
-                                : 0;
                             $response[BankAccount::ACCOUNT_TYPE_SALESTAX][$id]['transfer'][$date->format('Y-m-d')] = ($income > 0)
                                 ? round($income - $income / ($percents[$type][$id] / 100 + 1), 4)
                                 : 0;
@@ -243,12 +239,6 @@ class AllocationsCalendar extends Controller
                             break;
 
                         case BankAccount::ACCOUNT_TYPE_PRETOTAL:
-                            $response[BankAccount::ACCOUNT_TYPE_PRETOTAL][$id]['name'] = $names[$id];
-                            $response[BankAccount::ACCOUNT_TYPE_PRETOTAL][$id][$date->format('Y-m-d')]
-                                = array_key_exists($date->format('Y-m-d 00:00:00'),
-                                $account_item)
-                                ? $account_item[$date->format('Y-m-d 00:00:00')]
-                                : 0;
                             $salestax = data_get($percents, 'salestax');
                             $salestax = count($salestax) > 0 ? $salestax[key($salestax)] : null;
                             $nsp = ($income > 0 && is_numeric($salestax)) ? $income / ($salestax / 100 + 1) : 0;
@@ -292,12 +282,6 @@ class AllocationsCalendar extends Controller
                             break;
 
                         case BankAccount::ACCOUNT_TYPE_PREREAL:
-                            $response[BankAccount::ACCOUNT_TYPE_PREREAL][$id]['name'] = $names[$id];
-                            $response[BankAccount::ACCOUNT_TYPE_PREREAL][$id][$date->format('Y-m-d')]
-                                = array_key_exists($date->format('Y-m-d 00:00:00'),
-                                $account_item)
-                                ? $account_item[$date->format('Y-m-d 00:00:00')]
-                                : 0;
                             $prereal = $this->getPrePrereal($income, $percents);
 
                             $response[BankAccount::ACCOUNT_TYPE_PREREAL][$id]['transfer'][$date->format('Y-m-d')]
@@ -340,12 +324,6 @@ class AllocationsCalendar extends Controller
                             break;
 
                         case BankAccount::ACCOUNT_TYPE_POSTREAL:
-                            $response[BankAccount::ACCOUNT_TYPE_POSTREAL][$id]['name'] = $names[$id];
-                            $response[BankAccount::ACCOUNT_TYPE_POSTREAL][$id][$date->format('Y-m-d')]
-                                = array_key_exists($date->format('Y-m-d 00:00:00'),
-                                $account_item)
-                                ? $account_item[$date->format('Y-m-d 00:00:00')]
-                                : 0;
                             $prereal = $this->getPrePrereal($income, $percents);
                             $prereal_percents = array_sum($percents[BankAccount::ACCOUNT_TYPE_PREREAL]);
 
