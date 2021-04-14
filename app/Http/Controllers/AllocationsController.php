@@ -11,6 +11,7 @@ use App\Models\Phase;
 use App\Traits\GettersTrait;
 use Carbon\Carbon as Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 
@@ -301,7 +302,12 @@ class AllocationsController extends Controller
 
         $percentages = self::buildPercentageValues($business);
 
-        $totals = $percentages->groupBy('phase_id')
+        // percentage total is based only on postreal accounts. ie. all postreal percentage values should add to 100%;
+        $totals = $percentages
+            ->filter( function($percent) {
+                return $percent->type == BankAccount::ACCOUNT_TYPE_POSTREAL;
+            })
+            ->groupBy('phase_id')
             ->map(function ($item){
                 return $item->sum('percent');
             })->toArray();
@@ -391,11 +397,10 @@ class AllocationsController extends Controller
             'phase_id', 'bank_account_id', 'percent'
         ]);
 
-//         $percentageValues = $percentages->groupBy(['bank_account_id', 'phase_id'])->toArray();
-        // foreach($percentages as $entry)
-        // {
-        //     $percentageValues[$entry->bank_account_id][$entry->phase_id] = $entry->percent;
-        // }
+        $percentages->each( function( $percent ) {
+            $type = BankAccount::without('flows')->find($percent->bank_account_id)->type;
+            Arr::add($percent, 'type', $type);
+        });
 
         return $percentages;
     }
@@ -406,7 +411,7 @@ class AllocationsController extends Controller
         $getBusinessById = Cache::get($key);
 
         if ($getBusinessById === null) {
-            $getBusinessById = Business::find($business_id)->with(['accounts'])->first();
+            $getBusinessById = Business::with(['accounts'])->find($business_id);
             Cache::put($key, $getBusinessById);
         }
 
