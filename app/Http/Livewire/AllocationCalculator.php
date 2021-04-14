@@ -48,13 +48,13 @@ class AllocationCalculator extends Component
 
     private function getBusiness($selectedBusinessId)
     {
-        $key = 'getBusiness_'.$selectedBusinessId;
-        $getBusiness = Cache::get($key);
+        // $key = 'getBusiness_'.$selectedBusinessId;
+        // $getBusiness = Cache::get($key);
 
-        if ($getBusiness === null) {
+        // if ($getBusiness === null) {
             $getBusiness = Business::find($selectedBusinessId);
-            Cache::put($key, $getBusiness);
-        }
+        //     Cache::put($key, $getBusiness);
+        // }
 
         return $getBusiness;
     }
