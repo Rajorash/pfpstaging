@@ -5,8 +5,6 @@ This project is a tool to enable users to implement the Profit First methodology
 
 [Reference sheet](https://docs.google.com/spreadsheets/d/1k_18QLHUDgwWaw9ymOtyv89gBJcqcbs80-jNh2AdS5g/edit?usp=sharing)
 
-[Github repository](https://github.com/PounceMarketingDev/pfp/tree/maryan) -  please make any commits to your assigned branch.
-
 ### Setup
 pull down the repository, then install the dependency with 
 ```bash
