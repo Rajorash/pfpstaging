@@ -3,7 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use App\Business;
+use App\Models\Business as Business;
 use App\Observers\BusinessObserver;
 
 class AppServiceProvider extends ServiceProvider
@@ -26,5 +26,6 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Business::observe(BusinessObserver::class);
+        // \Debugbar::disable();
     }
 }

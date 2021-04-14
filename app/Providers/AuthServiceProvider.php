@@ -2,8 +2,13 @@
 
 namespace App\Providers;
 
+use App\Models\Team;
+use App\Models\Business;
+use App\Models\BankAccount;
+use App\Policies\BusinessPolicy;
+use App\Policies\BankAccountPolicy;
+use App\Policies\TeamPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
-use Illuminate\Support\Facades\Gate;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -15,6 +20,7 @@ class AuthServiceProvider extends ServiceProvider
     protected $policies = [
         Business::class => BusinessPolicy::class,
         BankAccount::class => BankAccountPolicy::class,
+        Team::class => TeamPolicy::class,
     ];
 
     /**
@@ -26,8 +32,6 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        // Gate::before(function ($user, $permission) {
-        //     return $user->permissions()->contains($permission);
-        // });
+        //
     }
 }

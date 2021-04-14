@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
-use App\AccountFlow as AccountFlow;
-use App\BankAccount as BankAccount;
-use App\Business as Business;
+use App\Models\AccountFlow as AccountFlow;
+use App\Models\BankAccount as BankAccount;
+use App\Models\Business as Business;
 use Illuminate\Database\Seeder;
 
 class AccountSeeder extends Seeder

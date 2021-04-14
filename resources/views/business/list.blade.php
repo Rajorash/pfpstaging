@@ -1,62 +1,68 @@
-@extends('layouts.app')
+<x-app-layout>
 
-@section('content')
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-10">
-            <div class="card">
-                <div class="card-header"><strong>Select A Business To See It's Allocations</strong></div>
+    <x-slot name="header">
+        {{ __('Businesses') }}
+    </x-slot>
 
-                <div class="card-body p-0">
-                <table class="table table-striped">
-                    <thead class="thead-inverse">
-                        <tr>
-                            <th>Business Name</th>
-                            <th>Owner</th>
-                            <th>Advisor</th>
-                            <th class="text-center">Accounts</th>
-                            <th></th>
-                            <th></th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        @forelse ($businesses as $business)
-                        <tr>
-                            <td scope="row">
-                                <a href="/business/{{$business->id}}"><strong>{{ $business->name }}</strong></a>
-                            </td>
-                            <td>
-                                <a href="/user/{{$business->owner->id}}">{{$business->owner->name}}</a>
-                            </td>
-                            <td>
-                                {{$business->license ? $business->license->advisor->name : 'No advisor.'}}
-                            </td>
-                            <td class="text-center">
-                                <a href="/business/{{$business->id}}/accounts">{{$business->accounts()->count()}}</a>
-                            </td>
-                            </td>
-                            {{-- <td class="text-center">
-                                <a class="btn btn-warning btn-sm" href="/business/{{$business->id}}/tax">Tax rate</a>
-                            </td> --}}
-                            <td>
-                                <a class="btn btn-info btn-sm" href="/allocations/{{$business->id}}">See Allocations</a>
-                            </td>
-                            <td>
-                                <a class="btn btn-info btn-sm" href="/allocations/{{$business->id}}\percentages">See Percentages</a>
-                            </td>
-                        </tr>
-                        @empty
-                        <tr>
-                            <td scope="row">N/A</td>
-                            <td>N/A</td>
-                            <td>N/A</td>
-                        </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-@endsection
+    <x-ui.main>
+
+        <x-ui.table-table>
+            <x-ui.table-caption>Businesses Visible To You</x-ui.table-caption>
+            <thead>
+            <tr class="border-light_blue border-t border-b">
+                <x-ui.table-th padding="pl-12 pr-2 py-4">Business Name</x-ui.table-th>
+                <x-ui.table-th>Owner</x-ui.table-th>
+                <x-ui.table-th>Advisor</x-ui.table-th>
+                <x-ui.table-th class="text-center">Accounts</x-ui.table-th>
+                <x-ui.table-th></x-ui.table-th>
+                <x-ui.table-th></x-ui.table-th>
+            </tr>
+            </thead>
+
+            <x-ui.table-tbody>
+                @foreach ($businesses as $business)
+                    <tr>
+                        <x-ui.table-td class="whitespace-nowrap"
+                                       padding="pl-12 pr-2 py-4">{{ $business->name }}</x-ui.table-td>
+                        <x-ui.table-td>
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0 h-10 w-10">
+                                    <img class="h-10 w-10 rounded-full" src="{{ $business->owner->profile_photo_url }}"
+                                         alt="">
+                                </div>
+                                <div class="ml-4">
+                                    <div class="">
+                                        {{ $business->owner->name }}
+                                    </div>
+                                    <div class="text-sm text-light_gray">
+                                        {{ $business->owner->email }}
+                                    </div>
+                                </div>
+                            </div>
+                        </x-ui.table-td>
+                        <x-ui.table-td>{{is_object($business->license) ? $business->license->advisor->name : __('Not licensed')}}</x-ui.table-td>
+                        <x-ui.table-td class="text-center">
+                            <a href="{{url('/business/'.$business->id.'/accounts')}}">
+                                <x-ui.badge> {{$business->accounts()->count()}}</x-ui.badge>
+                            </a>
+                        </x-ui.table-td>
+                        <x-ui.table-td>
+                            <x-ui.button-small href="{{route('allocations-calendar', ['business' => $business])}}">See
+                                Allocations
+                            </x-ui.button-small>
+                        </x-ui.table-td>
+                        <x-ui.table-td>
+                            <x-ui.button-small href="{{url('/allocations/'.$business->id.'/percentages')}}">See
+                                Percentages
+                            </x-ui.button-small>
+                        </x-ui.table-td>
+                    </tr>
+                @endforeach
+
+            </x-ui.table-tbody>
+
+        </x-ui.table-table>
+
+    </x-ui.main>
+
+</x-app-layout>

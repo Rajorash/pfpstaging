@@ -220,3 +220,4 @@ $('#allocationTable').on('change', function() {
         setCumulativeTotal( $(this) );
     });
 });
+

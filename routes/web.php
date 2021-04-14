@@ -11,11 +11,16 @@
 |
 */
 
+use App\Http\Controllers\AllocationCalculatorController;
+use App\Http\Controllers\AllocationsCalendar;
+use App\Http\Controllers\AllocationsController;
+use App\Http\Controllers\ProjectionController;
+use App\Http\Controllers\UserController;
+use Illuminate\Support\Facades\Route;
+
 Route::get('/', function () {
     return view('welcome');
 });
-
-Auth::routes(['register' => false]);
 
 Route::get('/home', 'HomeController@index')->name('home');
 
@@ -25,8 +30,10 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::get('/user', 'UserController@index')->name('users');
     Route::post('/user', 'UserController@store');
-    Route::get('/user/create', 'UserController@create');
+    Route::get('/user/create', 'UserController@create')->name('users.create');
     Route::get('/user/{user}', 'UserController@show');
+    Route::get('/user/edit/{user}', [UserController::class, 'edit'])->name('users.edit');
+    Route::put('/user/{user}', [UserController::class, 'update'])->name('users.update');
 
     Route::resource('business.accounts', 'BankAccountController');
     Route::get('/accounts/{account}/create-flow', 'BankAccountController@createFlow');
@@ -41,13 +48,35 @@ Route::group(['middleware' => 'auth'], function () {
     // account balance entries.
     Route::get('/business/{business}/account-entry', 'BankAccountEntryController@edit');
     Route::patch('/business/{business}/account-entry', 'BankAccountEntryController@update');
-    // allocation calculator routing.
+
+    // Allocation Calculator
+    Route::get('/calculator', [AllocationCalculatorController::class, 'index'])->name('allocation-calculator');
+
+    // Projection forecast tool
+    //
+    // Projection Forecast data entry routing (formerly labeled as allocation calculator) routing.
     Route::get('/allocations', 'AllocationsController@index')->name('allocations');
     Route::get('/allocations/{business}', 'AllocationsController@allocations');
-    Route::get('/allocations/{business}/percentages', 'AllocationsController@percentages');
+
+    // Rollout Percentages routing
+    Route::get('/allocations/{business}/percentages',
+        [AllocationsController::class, 'percentages'])->name('allocations-percentages');
+    Route::post('/allocations/percentages/ajax/update',
+        [AllocationsController::class, 'updatePercentages'])->name('allocations-percentages-update');
+
     Route::post('/allocations/update', 'AllocationsController@updateAllocation');
     Route::post('/percentages/update', 'AllocationsController@updatePercentage');
-    // Projections
-    Route::get('/projections/{business}', 'ProjectionController@index')->name('projections');
 
+    // Projections
+    Route::get('/projections/{business}', [ProjectionController::class ,'index'])->name('projections');
+
+    //ajax calls
+    Route::post('/business/allocations_calendar/ajax/update',
+        [AllocationsCalendar::class, 'updateData'])->name('allocations-controller-update');
+    Route::get('/business/{business}/allocations_calendar',
+        [AllocationsCalendar::class, 'calendar'])->name('allocations-calendar');
 });
+
+Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
+    return view('dashboard');
+})->name('dashboard');

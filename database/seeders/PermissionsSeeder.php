@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Permission as Permission;
-use App\Role as Role;
+use App\Models\Permission as Permission;
+use App\Models\Role as Role;
 use Illuminate\Database\Seeder;
 
 class PermissionsSeeder extends Seeder
@@ -15,7 +15,7 @@ class PermissionsSeeder extends Seeder
      */
     public function run()
     {
-        
+
         $permissions = [
             ['name' => 'see_clients', 'label' => 'View associated clients'],
             ['name' => 'see_client_list', 'label' => 'See a list of clients'],
@@ -24,7 +24,7 @@ class PermissionsSeeder extends Seeder
             ['name' => 'update_own_allocations', 'label' => 'Update Own Allocations'],
             ['name' => 'view_own_allocations', 'label' => 'View Own Allocations']
         ];
-        
+
         foreach ($permissions as $permission) {
             Permission::firstOrCreate($permission);
         }

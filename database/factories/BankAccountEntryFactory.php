@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\BankAccountEntry;
+use App\Models\BankAccountEntry;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class BankAccountEntryFactory extends Factory

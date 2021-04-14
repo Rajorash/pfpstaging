@@ -1,18 +1,17 @@
-/**
- * First we will load all of this project's JavaScript dependencies which
- * includes React and other helpers. It's a great starting point while
- * building robust, powerful web applications using React + Laravel.
- */
-
 require('./bootstrap');
+require('alpinejs');
+
 require('arrow-table');
-require('./allocations');
-require('./percentages');
+// require('./allocations');
+// require('./percentages');
+require('./allocation_calculator');
+require('./percentages_calculator');
 
-/**
- * Next, we will create a fresh React component instance and attach it to
- * the page. Then, you may begin adding components to this application
- * or customize the JavaScript scaffolding to fit your unique needs.
- */
-
-require('./components/Example');
+$('.global_nice_scroll').niceScroll();
+let resizeTimer;
+$(window).on('resize', function () {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(function () {
+        $(".global_nice_scroll").getNiceScroll().resize();
+    }, 300);
+});

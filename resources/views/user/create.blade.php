@@ -1,87 +1,126 @@
-@extends('layouts.app')
+<x-app-layout>
+    <x-slot name="header">
+        Users
+        <x-icons.chevron-right :class="'h-4 w-auto inline-block px-2'"/>
+        Create New
+    </x-slot>
 
-@section('content')
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header"><strong>Create A New Client User</strong></div>
 
-                <div class="card-body">
-                    <form method="POST" action="/user">
-                        @csrf
+    <x-ui.main>
 
-                        <div class="form-group row">
-                            <label for="name" class="col-md-4 col-form-label text-md-right">{{ __('Name') }}</label>
+        <x-ui.table-table>
+            <x-ui.table-caption class="pt-12 pb-6 px-72 relative">
+                Create a New User
 
-                            <div class="col-md-6">
-                                <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" required autocomplete="name" autofocus>
+                <x-slot name="left">
+                    <div class="absolute left-12 top-12">
+                        <x-ui.button-normal href="{{route('users')}}">
+                            <x-icons.chevron-left :class="'h-3 w-auto'"/>
+                            <span class="ml-2">Go back</span>
+                        </x-ui.button-normal>
+                    </div>
+                </x-slot>
 
-                                @error('name')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
+            </x-ui.table-caption>
+            <x-ui.table-tbody>
+                <tr>
+                    <x-ui.table-td class="text-center bg-gray-100" padding="px-72 py-4">
+                        <form method="POST" action="{{route('users')}}">
+                            @csrf
+
+                            <div class="table w-full mt-10">
+
+                                <div class="table-row">
+                                    <div class="table-cell w-1/4 pb-4 text-left">
+                                        {{ __('Name') }}
+                                    </div>
+                                    <div class="table-cell w-3/4 pb-4">
+                                        <x-jet-input id="name" class=" w-full" type="text" name="name"
+                                                     :value="old('name')" required autofocus/>
+                                        <x-jet-input-error for="name" class="mt-2"/>
+                                    </div>
+                                </div>
+
+                                <div class="table-row">
+                                    <div class="table-cell w-1/4 pb-4 text-left">
+                                        {{ __('E-Mail Address') }}
+                                    </div>
+                                    <div class="table-cell w-3/4 pb-4">
+                                        <x-jet-input id="email" class=" w-full" type="email" name="email"
+                                                     :value="old('email')" required autofocus/>
+                                        <x-jet-input-error for="email" class="mt-2"/>
+                                    </div>
+                                </div>
+                                @if(count($roles) > 1)
+                                <div class="table-row">
+                                    <div class="table-cell w-1/4 pb-4 text-left">
+                                        {{ __('Roles:') }}
+                                    </div>
+                                    <div class="table-cell w-3/4 pb-4">
+                                        <select name="roles[]" id="roles"
+                                                class="w-full form-input border-light_blue
+                                                    focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50
+                                                    rounded-md shadow-sm" multiple size="{{count($roles)}}">
+                                            @foreach ($roles as $role_id => $role_label)
+                                                <option
+                                                    value="{{ $role_id }}"{{ is_array(old('roles')) && in_array($role_id, old('roles')) ? ' selected' : '' }}>{{ $role_label }}</option>
+                                            @endforeach
+                                        </select>
+                                        <x-jet-input-error for="roles" class="mt-2"/>
+                                    </div>
+                                </div>
+                                @else
+                                    <input type="hidden" name="roles[0]" id="roles" value="{{array_key_first($roles)}}">
+                                @endif
+                                <div class="table-row">
+                                    <div class="table-cell w-1/4 pb-4 text-left">
+                                        {{ __('Timezone:') }}
+                                    </div>
+                                    <div class="table-cell w-3/4 pb-4">
+                                        <select name="timezone" id="timezone"
+                                                class="w-full form-input border-light_blue
+                                                        focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50
+                                                        rounded-md shadow-sm">
+                                            <option>Select your timezone</option>
+                                            @foreach (timezone_identifiers_list(64) as $timezone)
+                                                <option
+                                                    value="{{ $timezone }}"{{ $timezone == old('timezone') ? ' selected' : '' }}>{{ $timezone }}</option>
+                                            @endforeach
+                                        </select>
+                                        <x-jet-input-error for="timezone" class="mt-2"/>
+                                    </div>
+                                </div>
+
+                                <div class="table-row">
+                                    <div class="table-cell w-1/4 pb-4 text-left">
+                                        {{ __('Business Name') }}
+                                    </div>
+                                    <div class="table-cell w-3/4 pb-4">
+                                        <x-jet-input id="business_name" class=" w-full" type="text" name="business_name"
+                                                     :value="old('business_name')" required autofocus/>
+                                        <x-jet-input-error for="business_name" class="mt-2"/>
+                                    </div>
+                                </div>
+
+
                             </div>
-                        </div>
 
-                        <div class="form-group row">
-                            <label for="email" class="col-md-4 col-form-label text-md-right">{{ __('E-Mail Address') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email">
-
-                                @error('email')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
+                            <div class="table w-full mt-4">
+                                <div class="table-row">
+                                    <div class="table-cell w-full pb-4 text-right">
+                                        <x-ui.button-normal class="uppercase" type="button">
+                                            Create User
+                                        </x-ui.button-normal>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
 
-                        <div class="form-group row">
-                            <label class="col-md-4 col-form-label text-md-right">Timezone:</label>
-                            <div class="col-md-6">
-                                <select name="timezone" id="timezone" class="form-control ">
-                                    <option>Select your timezone</option>
-                                @foreach (timezone_identifiers_list(64) as $timezone)
-                                    <option value="{{ $timezone }}"{{ $timezone == old('timezone') ? ' selected' : '' }}>{{ $timezone }}</option>
-                                @endforeach
-                                </select>
-                            </div>
-                                
-                            @error('timezone')
-                            <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                            @enderror
-                        </div>
+                        </form>
+                    </x-ui.table-td>
+                </tr>
+            </x-ui.table-tbody>
+        </x-ui.table-table>
 
-                        <div class="form-group row">
-                            <label for="business_name" class="col-md-4 col-form-label text-md-right">{{ __('Business Name') }}</label>
+    </x-ui.main>
 
-                            <div class="col-md-6">
-                                <input id="business_name" type="text" class="form-control @error('business_name') is-invalid @enderror" name="business_name" value="{{ old('business_name') }}" required autocomplete="business_name" autofocus>
-
-                                @error('business_name')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="form-group row mb-0">
-                            <div class="col-md-6 offset-md-4">
-                                <button type="submit" class="btn btn-primary">
-                                    {{ __('Create User') }}
-                                </button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-@endsection
+</x-app-layout>

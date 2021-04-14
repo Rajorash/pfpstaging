@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\BankAccountEntry;
-use App\Business;
+use App\Models\BankAccountEntry;
+use App\Models\Business;
 use Illuminate\Http\Request;
 
 class BankAccountEntryController extends Controller
@@ -42,7 +42,7 @@ class BankAccountEntryController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\BankAccountEntry  $bankAccountEntry
+     * @param  \App\Models\BankAccountEntry  $bankAccountEntry
      * @return \Illuminate\Http\Response
      */
     public function show(BankAccountEntry $bankAccountEntry)
@@ -53,7 +53,7 @@ class BankAccountEntryController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\BankAccountEntry  $bankAccountEntry
+     * @param  \App\Models\BankAccountEntry  $bankAccountEntry
      * @return \Illuminate\Http\Response
      */
     public function edit(Business $business)
@@ -69,7 +69,7 @@ class BankAccountEntryController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\BankAccountEntry  $bankAccountEntry
+     * @param  \App\Models\BankAccountEntry  $bankAccountEntry
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Business $business)
@@ -103,13 +103,12 @@ class BankAccountEntryController extends Controller
         }
 
         return redirect()->back()->with('success', 'Account entries successfully entered.');
-
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\BankAccountEntry  $bankAccountEntry
+     * @param  \App\Models\BankAccountEntry  $bankAccountEntry
      * @return \Illuminate\Http\Response
      */
     public function destroy(BankAccountEntry $bankAccountEntry)

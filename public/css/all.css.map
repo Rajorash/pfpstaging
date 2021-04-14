@@ -1,0 +1,1 @@
+{"version":3,"sources":["webpack:///./all.scss"],"names":[],"mappings":"AAAA;EACI;AACJ,C","file":"css/all.css","sourcesContent":[".table_hover_rows_cols {\n    @apply rounded-xl;\n}\n"],"sourceRoot":""}

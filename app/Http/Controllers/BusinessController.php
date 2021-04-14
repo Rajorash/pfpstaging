@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Traits\GettersTrait;
 use Auth;
-use App\Business;
+use App\Models\Business;
 use Illuminate\Http\Request;
 
 class BusinessController extends Controller
 {
+    use GettersTrait;
+
     /**
      * Display a listing of the resource.
      *
@@ -15,13 +18,16 @@ class BusinessController extends Controller
      */
     public function index()
     {
-        $businesses = Business::all();
+        $businesses = $this->getBusinessAll();
+        if (Auth::user()->isSuperAdmin()) {
+            $filtered = $businesses;
+        } else {
+            $filtered = $businesses->filter( function ($business) {
+                return Auth::user()->can('view', $business);
+            })->values();
+        }
 
-        $filtered = $businesses->filter( function ($business) {
-            return Auth::user()->can('view', $business);
-        })->values();
         return view('business.list', ['businesses' => $filtered]);
-
     }
 
     /**
@@ -48,7 +54,7 @@ class BusinessController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Business  $business
+     * @param  \App\Models\Business  $business
      * @return \Illuminate\Http\Response
      */
     public function show(Business $business)
@@ -61,7 +67,7 @@ class BusinessController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Business  $business
+     * @param  \App\Models\Business  $business
      * @return \Illuminate\Http\Response
      */
     public function edit(Business $business)
@@ -73,7 +79,7 @@ class BusinessController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Business  $business
+     * @param  \App\Models\Business  $business
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Business $business)
@@ -84,7 +90,7 @@ class BusinessController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Business  $business
+     * @param  \App\Models\Business  $business
      * @return \Illuminate\Http\Response
      */
     public function destroy(Business $business)

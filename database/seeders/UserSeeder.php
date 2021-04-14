@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
-use App\Advisor as Advisor;
-use App\Role as Role;
-use App\User as User;
+use App\Models\Advisor as Advisor;
+use App\Models\Role as Role;
+use App\Models\User as User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -29,7 +29,7 @@ class UserSeeder extends Seeder
         $advisor->assignRole($advisor_role);
         $advisor_details = new Advisor($advisor->id);
         $advisor_details->save();
-        
+
         $client = User::firstOrCreate([
             'name' => 'Test Client',
             'email' => 'client@pfp.com',
@@ -41,7 +41,16 @@ class UserSeeder extends Seeder
         $client->assignRole($client_role);
 
 
+        $advisor2 = User::firstOrCreate([
+            'name' => 'Craig Minter',
+            'email' => 'craig@mintscdconsulting.com.au',
+            'email_verified_at' => now(),
+            'password' => Hash::make('CML9Zy!&$H2#e@e9'),
+            'remember_token' => Str::random(10)
+        ]);
+        $advisor2->assignRole($advisor_role);
+        $advisor2_details = new Advisor($advisor2->id);
+        $advisor2_details->save();
 
     }
 }
-        

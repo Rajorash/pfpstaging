@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\TaxRate;
-use App\Business;
-use App\BankAccount;
+use App\Models\TaxRate;
+use App\Models\Business;
+use App\Models\BankAccount;
 use Illuminate\Http\Request;
 
 class TaxRateController extends Controller
@@ -45,13 +45,11 @@ class TaxRateController extends Controller
         ]);
 
         $bank_account = BankAccount::find($data['account_id']);
-        if (!$bank_account)
-        {
+        if (!$bank_account) {
             return response('Account not found', 404);
         }
 
-        if (!$bank_account->taxRate)
-        {
+        if (!$bank_account->taxRate) {
             $taxrate = new TaxRate();
             $taxrate->rate = $data['rate'];
             $taxrate->bank_account_id = $data['account_id'];
@@ -72,7 +70,7 @@ class TaxRateController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\TaxRate  $taxRate
+     * @param  \App\Models\TaxRate  $taxRate
      * @return \Illuminate\Http\Response
      */
     public function show(TaxRate $taxRate)
@@ -83,7 +81,7 @@ class TaxRateController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\TaxRate  $taxRate
+     * @param  \App\Models\TaxRate  $taxRate
      * @return \Illuminate\Http\Response
      */
     public function edit(TaxRate $taxRate)
@@ -95,7 +93,7 @@ class TaxRateController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\TaxRate  $taxRate
+     * @param  \App\Models\TaxRate  $taxRate
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, TaxRate $taxRate)
@@ -106,7 +104,7 @@ class TaxRateController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\TaxRate  $taxRate
+     * @param  \App\Models\TaxRate  $taxRate
      * @return \Illuminate\Http\Response
      */
     public function destroy(TaxRate $taxRate)

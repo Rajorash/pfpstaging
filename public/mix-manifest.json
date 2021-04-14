@@ -1,6 +1,16 @@
 {
-    "/js/app.js": "/js/app.js?id=23923706baea4c941a39",
-    "/css/app.css": "/css/app.css?id=51e9f8d868430628be3c",
-    "/js/manifest.js": "/js/manifest.js?id=3c768977c2574a34506e",
-    "/js/vendor.js": "/js/vendor.js?id=996048e4fdbdc05dbb8d"
+    "/js/app.js": "/js/app.js",
+    "/css/app.css": "/css/app.css",
+    "/images/bg.svg": "/images/bg.svg",
+    "/images/logo.png": "/images/logo.png",
+    "/favicons/android-chrome-144x144.png": "/favicons/android-chrome-144x144.png",
+    "/favicons/apple-touch-icon.png": "/favicons/apple-touch-icon.png",
+    "/favicons/browserconfig.xml": "/favicons/browserconfig.xml",
+    "/favicons/favicon-16x16.png": "/favicons/favicon-16x16.png",
+    "/favicons/favicon-32x32.png": "/favicons/favicon-32x32.png",
+    "/favicons/favicon.ico": "/favicons/favicon.ico",
+    "/favicons/mstile-150x150.png": "/favicons/mstile-150x150.png",
+    "/favicons/safari-pinned-tab.svg": "/favicons/safari-pinned-tab.svg",
+    "/favicons/site.webmanifest": "/favicons/site.webmanifest",
+    "/favicon.ico": "/favicon.ico"
 }

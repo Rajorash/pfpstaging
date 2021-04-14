@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use Auth;
-use App\AccountFlow;
-use App\BankAccount;
-use App\Business;
+use App\Models\AccountFlow;
+use App\Models\BankAccount;
+use App\Models\Business;
 use Illuminate\Http\Request;
 
 class BankAccountController extends Controller
@@ -47,7 +47,7 @@ class BankAccountController extends Controller
     {
         $this->authorize('createBankAccount', $account->business);
 
-        return view('accounts.createflow', ['account' => $account]);
+        return view('accounts.createflow', ['account' => $account, 'business' => $account->business]);
     }
 
     /**
@@ -71,7 +71,6 @@ class BankAccountController extends Controller
         $account->save();
 
         return redirect("business/".$business->id."/accounts");
-
     }
 
     /**
@@ -97,13 +96,12 @@ class BankAccountController extends Controller
         $flow->save();
 
         return redirect("business/".$account->business->id."/accounts");
-
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\BankAccount  $account
+     * @param  \App\Models\BankAccount  $account
      * @return \Illuminate\Http\Response
      */
     public function show(BankAccount $account)
@@ -114,7 +112,7 @@ class BankAccountController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\BankAccount  $account
+     * @param  \App\Models\BankAccount  $account
      * @return \Illuminate\Http\Response
      */
     public function edit(Business $business, BankAccount $account)
@@ -128,7 +126,7 @@ class BankAccountController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\BankAccount  $account
+     * @param  \App\Models\BankAccount  $account
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Business $business, BankAccount $account)
@@ -150,21 +148,21 @@ class BankAccountController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\BankAccount  $account
+     * @param  \App\Models\BankAccount  $account
      * @return \Illuminate\Http\Response
      */
     public function editFlow(BankAccount $account, AccountFlow $flow)
     {
         $this->authorize('update', $account);
 
-        return view('accounts.editflow', ['flow' => $flow, 'account' => $account, 'curr_type' => $account->type ]);
+        return view('accounts.editflow', ['flow' => $flow, 'account' => $account, 'curr_type' => $account->type, 'business' => $account->business ]);
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\BankAccount  $account
+     * @param  \App\Models\BankAccount  $account
      * @return \Illuminate\Http\Response
      */
     public function updateFlow(Request $request, BankAccount $account, AccountFlow $flow)
@@ -186,12 +184,11 @@ class BankAccountController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\BankAccount  $account
+     * @param  \App\Models\BankAccount  $account
      * @return \Illuminate\Http\Response
      */
     public function destroy(Business $business, BankAccount $account)
     {
-
         $this->authorize('view', $business);
 
         $account->delete();
@@ -201,12 +198,11 @@ class BankAccountController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\BankAccount  $account
+     * @param  \App\Models\BankAccount  $account
      * @return \Illuminate\Http\Response
      */
     public function destroyFlow(BankAccount $account, AccountFlow $flow)
     {
-
         $this->authorize('view', $account->business);
 
         $flow->delete();
