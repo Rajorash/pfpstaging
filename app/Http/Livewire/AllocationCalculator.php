@@ -82,19 +82,12 @@ class AllocationCalculator extends Component
 
     private function getAllocationPercentage($current_phase, $account_id)
     {
-        $key = 'getAllocationPercentage_'.$current_phase.'_'.$account_id;
-        $getAllocationPercentage = Cache::get($key);
 
-        if ($getAllocationPercentage === null) {
-            $getAllocationPercentage = AllocationPercentage::where([
-                ['phase_id', $current_phase],
-                ['bank_account_id', $account_id]
-            ])->value('percent');
+        return AllocationPercentage::where([
+            ['phase_id', $current_phase],
+            ['bank_account_id', $account_id]
+        ])->value('percent');
 
-            Cache::put($key, $getAllocationPercentage);
-        }
-
-        return $getAllocationPercentage;
     }
 
     public function mapBusinessAccounts()
