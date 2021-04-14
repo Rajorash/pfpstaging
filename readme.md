@@ -42,36 +42,3 @@ Most of the data will be prefilled for you as long as you seed the db. You can l
   <dt>user</dt><dd>advisor@pfp.com</dd>
   <dt>pw</dt><dd>letmeinnow!</dd>
 </dl>
-
-When checking the values against the reference sheet, make sure that the entry values AND the percentage values are the same.
-
-### Tasks
-* Add Month dropdown on Calculations view
-* Build Projections view
-
-#### View by Month Dropdown
-
-Please add a dropdown that filters the view based on the month selected.
-* Default should be the current month.
-* If there are amounts present previous to the current view that will affect the calculations, please account for this (ie. use them in the first calculation.)
-
-#### Projections View
-
-Refer to the reference sheet for proper functionality of this view
-The Projection view refers to the Cashflow Projection tab. (The calculator view and percentages view refer to the Cashflow Entry and Alocation %'s tabs respectively.)
-
-At a very simple level, you can use the calculator as a guide to how this page should work, however since this view groups calculations by weeks and/or months, please take this into consideration. Refer to the values from the reference sheet to check if this has been correctly built.
-
-Some of this view has been created already. If any of it is not usable, feel free to implement however works most efficiently.
-
-Important places to look for how this all works will be in the following files:
-* app\Http\Controllers\AllocationsController.php
-* resources\js\allocations.js
-
-#### Notes
-If needed you may include more php or js libraries, however this should be a last resort as this should be resonably possible to achieve with the correct data structures, manipulation and existing solutions.
-
-If there is an absolute need to use more libraries please use npm and composer to add them to the dependencies and compile with build scripts. Vendor scripts have intentionally been separated in the build process, please ensure this remains so.
-* [Laravel Mix documentation](https://laravel-mix.com/)
-* Example of how 'arrow-table' was installed and saved to dependencies ```npm i arrow-table --save``` (note: this should be covered already)
-* See "resources\js\app.js" for how to include js liibraries in the build script. 'arrow-table' was included for arrow navigation on the calculator view.
