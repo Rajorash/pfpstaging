@@ -69,7 +69,7 @@
                         @foreach($period as $date)
                             <x-ui.table-td class="text-right" padding="p-0">
                                 <input class="px-2 py-1 w-full text-right bg-transparent border-none"
-                                       type="text" value="{{$data[$date->format('Y-m-d')]}}" disabled/>
+                                       type="text" value="{{number_format($data[$date->format('Y-m-d')], 0, '.', '')}}" disabled/>
                             </x-ui.table-td>
                         @endforeach
                     </tr>
