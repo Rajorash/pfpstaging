@@ -23,12 +23,12 @@ class ProjectionController extends Controller
     {
         $this->authorize('view', $business);
 
-        $today = Carbon::now();
-        $start_date = Carbon::now()->addDays(-6);
-        $end_date = Carbon::now()->addDays(7);
+        $scale = 'addDay';
+        $start_date = $today = Carbon::now();
+        $end_date = Carbon::now()->$scale(14);
 
         $dates = array();
-        for ($date = $start_date; $date <= $end_date; $date->addDay(1)) {
+        for ($date = $start_date; $date <= $end_date; $date->$scale(1)) {
             $dates[] = $date->format('Y-m-d');
         }
 
