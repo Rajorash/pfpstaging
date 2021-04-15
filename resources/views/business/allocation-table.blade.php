@@ -36,7 +36,7 @@
                                 <input
                                     class="px-2 py-1 text-right bg-transparent border-none w-full"
                                     id="account_{{$id}}_{{$date->format('Y-m-d')}}"
-                                    type="text" value="{{$data[$date->format('Y-m-d')]}}" disabled/>
+                                    type="text" value="{{number_format($data[$date->format('Y-m-d')], 0)}}" disabled/>
                             </x-ui.table-td>
                         @endforeach
                     </tr>
@@ -53,7 +53,7 @@
                                             border-transparent outline-none
                                             focus:outline-none focus:ring-1 focus:shadow-none focus:bg-white"
                                             id="flow_{{$key}}_{{$date->format('Y-m-d')}}"
-                                            type="text" value="{{$ext_data[$date->format('Y-m-d')]}}"/>
+                                            type="text" value="{{number_format($ext_data[$date->format('Y-m-d')], 0)}}"/>
                                     </x-ui.table-td>
                                 @endforeach
                             </tr>
@@ -83,19 +83,19 @@
                                     @foreach($period as $date)
                                         <x-ui.table-td padding="p-0" class="text-right">
                                             <input class="px-2 py-1 w-full text-right bg-transparent border-none"
-                                                   type="text" value="{{$ext_data[$date->format('Y-m-d')]}}" disabled/>
+                                                   type="text" value="{{number_format($ext_data[$date->format('Y-m-d')], 0)}}" disabled/>
                                         </x-ui.table-td>
                                     @endforeach
                                 </tr>
                             @elseif($key == 'total')
                                 <tr class="hover:bg-yellow-100 border-light_blue divide-x">
                                     <x-ui.table-td padding="p-1 pr-2 pl-6" class="text-left whitespace-nowrap">
-                                        Transfer In
+                                        Flow Total
                                     </x-ui.table-td>
                                     @foreach($period as $date)
                                         <x-ui.table-td padding="p-0" class="text-right">
                                             <input class="px-2 py-1 w-full text-right bg-transparent border-none"
-                                                   type="text" value="{{$ext_data[$date->format('Y-m-d')]}}" disabled/>
+                                                   type="text" value="{{number_format($ext_data[$date->format('Y-m-d')], 0)}}" disabled/>
                                         </x-ui.table-td>
                                     @endforeach
                                 </tr>
@@ -110,7 +110,7 @@
                                                 border-transparent outline-none
                                                 focus:outline-none focus:ring-1 focus:shadow-none focus:bg-white"
                                                    id="flow_{{$key}}_{{$date->format('Y-m-d')}}"
-                                                   type="text" value="{{$ext_data[$date->format('Y-m-d')]}}"/>
+                                                   type="text" value="{{number_format($ext_data[$date->format('Y-m-d')], 0)}}"/>
                                         </x-ui.table-td>
                                     @endforeach
                                 </tr>

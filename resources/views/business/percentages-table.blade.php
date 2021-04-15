@@ -85,11 +85,11 @@
             <span id="processCounter" class="hidden opacity-50 font-normal text-xs"></span>
         </x-ui.table-td>
         @forelse($rollout as $phase)
-            <x-ui.table-td padding="p-2 pr-2 pl-6 percentage-total" class="text-right" baseClass="text-white">
+            <x-ui.table-td padding="p-2 pr-2 pl-6" class="text-right percentage-total {{ $phase->total != '100' ? 'bg-red-500' : '' }}" baseClass="text-white">
                 {{$phase->total}}%
             </x-ui.table-td>
         @empty
-            <x-ui.table-td padding="p-2 pr-2 pl-6 percentage-total" class="text-center" baseClass="text-white">
+            <x-ui.table-td padding="p-2 pr-2 pl-6" class="text-center percentage-total" baseClass="text-white">
                 No phases exist...
             </x-ui.table-td>
         @endforelse
