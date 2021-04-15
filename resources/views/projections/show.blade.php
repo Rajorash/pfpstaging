@@ -41,7 +41,7 @@
                                        placeholder=0
                                        type="text"
                                        @if ( $allocation['dates']->has($date) )
-                                       value="{{$allocation['dates'][$date]->amount}}"
+                                       value="{{number_format($allocation['dates'][$date]->amount, 0)}}"
                                        @endif
                                        disabled
                                 >
