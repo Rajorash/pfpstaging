@@ -51,7 +51,7 @@
                                         {{ __('Account Type') }}
                                     </div>
                                     <div class="table-cell w-3/4 pb-4">
-                                        <select name="type" id="type" class="form-select rounded p-2 my-0 w-full
+                                        <select name="account_type" id="type" class="form-select rounded p-2 my-0 w-full
                                                 form-input border-light_blue
                                                 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50
                                                 @error('type') bg-red-700 @enderror">
