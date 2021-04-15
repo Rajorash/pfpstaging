@@ -16,20 +16,9 @@
     </a>
 
     @php
-        $active = request()->routeIs('allocations-calendar');
-    @endphp
-    <a href="{{route('allocations-calendar', ['business' => $business])}}" title="Allocations"
-       class="bg-white block rounded box-border p-3 flex text-gray-700 mr-6 h-12
-        @if($active) text-blue @else text-gray-700 @endif
-           ">
-        <x-icons.calculator :class="'h-6 w-auto inline-block'"/>
-        <span class="ml-2 text-lg inline-block @if($active) text-blue @else hidden @endif">Allocations</span>
-    </a>
-
-    @php
         $active = request()->routeIs('allocations-percentages');
     @endphp
-    <a href="{{route('allocations-percentages', ['business' => $business])}}" title="Percentages"
+    <a href="{{route('allocations-percentages', ['business' => $business])}}" title="Rollout Percentages"
        class="bg-white block rounded box-border p-3 flex text-gray-700 mr-6 h-12
         @if($active) text-blue @else text-gray-700 @endif
            ">
@@ -38,14 +27,25 @@
     </a>
 
     @php
+        $active = request()->routeIs('allocations-calendar');
+    @endphp
+    <a href="{{route('allocations-calendar', ['business' => $business])}}" title="Projection Data Entry"
+       class="bg-white block rounded box-border p-3 flex text-gray-700 mr-6 h-12
+        @if($active) text-blue @else text-gray-700 @endif
+           ">
+        <x-icons.calculator :class="'h-6 w-auto inline-block'"/>
+        <span class="ml-2 text-lg inline-block @if($active) text-blue @else hidden @endif">Data Entry</span>
+    </a>
+
+    @php
         $active = request()->routeIs('projections');
     @endphp
-    <a href="{{route('projections', ['business' => $business])}}" title="Projections"
+    <a href="{{route('projections', ['business' => $business])}}" title="Projection Forecast"
        class="bg-white block rounded box-border p-3 flex text-gray-700 h-12
         @if($active) text-blue @else text-gray-700 @endif
            ">
         <x-icons.presentation-chart :class="'h-5 w-auto mt-1 inline-block'"/>
-        <span class="ml-2 text-lg inline-block @if($active) text-blue @else hidden @endif">Projections</span>
+        <span class="ml-2 text-lg inline-block @if($active) text-blue @else hidden @endif">Projection Forecast</span>
     </a>
 
 
