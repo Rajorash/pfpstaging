@@ -16,6 +16,7 @@
                 <x-ui.table-th class="text-center">Accounts</x-ui.table-th>
                 <x-ui.table-th></x-ui.table-th>
                 <x-ui.table-th></x-ui.table-th>
+                <x-ui.table-th></x-ui.table-th>
             </tr>
             </thead>
 
@@ -47,14 +48,13 @@
                             </a>
                         </x-ui.table-td>
                         <x-ui.table-td>
-                            <x-ui.button-small href="{{route('allocations-calendar', ['business' => $business])}}">See
-                                Allocations
-                            </x-ui.button-small>
+                            <x-ui.button-small href="{{url('/allocations/'.$business->id.'/percentages')}}">Percentages</x-ui.button-small>
                         </x-ui.table-td>
                         <x-ui.table-td>
-                            <x-ui.button-small href="{{url('/allocations/'.$business->id.'/percentages')}}">See
-                                Percentages
-                            </x-ui.button-small>
+                            <x-ui.button-small href="{{route('allocations-calendar', ['business' => $business])}}">Data Entry</x-ui.button-small>
+                        </x-ui.table-td>
+                        <x-ui.table-td>
+                            <x-ui.button-small href="{{route('projections', ['business' => $business])}}">Forecast</x-ui.button-small>
                         </x-ui.table-td>
                     </tr>
                 @endforeach

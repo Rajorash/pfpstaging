@@ -464,7 +464,7 @@ class AllocationsCalendar extends Controller
         $nsp = ($income > 0 && is_numeric($salestax)) ? $income / ($salestax / 100 + 1) : 0;
 
         $pretotal = data_get($percents, 'pretotal');
-        $pretotal = count($pretotal) > 0 ? $pretotal[key($pretotal)] : null;
+        $pretotal = isset($pretotal) && count($pretotal) > 0 ? $pretotal[key($pretotal)] : null;
         $pretotal_amt = (is_numeric($pretotal))
             ? round($nsp * ($pretotal / 100), 4)
             : 0;

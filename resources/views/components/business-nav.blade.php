@@ -22,7 +22,7 @@
        class="bg-white block rounded box-border p-3 flex text-gray-700 mr-6 h-12
         @if($active) text-blue @else text-gray-700 @endif
            ">
-        <x-icons.pie :class="'h-5 w-auto mt-1 inline-block'"/>
+        <x-icons.percent :class="'h-5 w-auto mt-1 inline-block'"/>
         <span class="ml-2 text-lg inline-block @if($active) text-blue @else hidden @endif">Percentages</span>
     </a>
 
