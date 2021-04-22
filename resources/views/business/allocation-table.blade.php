@@ -1,7 +1,7 @@
-<x-ui.table-table>
+<x-ui.table-table class="table-sticky-header table-sticky-first-column">
     <thead>
     <tr class="border-light_blue divide-x border-b">
-        <x-ui.table-th class="text-center" baseClass="w-10 text-dark_gray font-normal">
+        <x-ui.table-th class="text-center" baseClass="min-w-24 w-24 text-dark_gray font-normal bg-white">
             <span id="processCounter" class="hidden opacity-50 font-normal text-xs"></span>
         </x-ui.table-th>
 
@@ -9,8 +9,8 @@
             @php
                 $date = Carbon\Carbon::parse($date);
             @endphp
-            <x-ui.table-th class="text-center {{ $date->isToday() ? 'text-blue': '' }}"
-                           baseClass="min-w-24 text-dark_gray font-normal">
+            <x-ui.table-th class="text-center {{ $date->isToday() ? 'text-blue': 'text-dark_gray' }}"
+                           baseClass="min-w-24 font-normal bg-white">
                 <span class="block text-xs font-normal">{{$date->format('M Y')}}</span>
                 <span class="block text-xl">{{$date->format('j')}}</span>
                 <span class="block text-xs font-normal">{{$date->format('D')}}</span>

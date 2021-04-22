@@ -1,6 +1,7 @@
 {
     "/js/app.js": "/js/app.js",
     "/css/app.css": "/css/app.css",
+    "/css/all.css": "/css/all.css",
     "/images/bg.svg": "/images/bg.svg",
     "/images/logo.png": "/images/logo.png",
     "/favicons/android-chrome-144x144.png": "/favicons/android-chrome-144x144.png",
