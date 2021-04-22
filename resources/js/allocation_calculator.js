@@ -1,3 +1,5 @@
+import {pfpFunctions} from "./pfp_functions.js";
+
 $(function () {
     $.ajaxSetup({
         headers: {
@@ -6,7 +8,7 @@ $(function () {
     });
 
     class AllocationCalculator {
-        constructor() {
+        constructor(pfpFunctions) {
             this.debug = false;
 
             this.ajaxUrl = window.allocationsControllerUpdate;
@@ -17,7 +19,10 @@ $(function () {
             this.changesCounterId = 'processCounter';
             this.lastCoordinatesElementId = '';
 
+            this.pfpFunctions = pfpFunctions;
+
             this.timeout;
+
         }
 
         init() {
@@ -145,20 +150,6 @@ $(function () {
             });
         }
 
-        tableStickyHeader() {
-            if ($('.table-sticky-header').length) {
-                $('.table-sticky-header').floatThead({
-                    position: 'absolute'
-                });
-            }
-        }
-
-        tableStickyFirstColumn() {
-            if ($('.table-sticky-first-column').length) {
-                $('.table-sticky-first-column').stickyColumn({columns: 1});
-            }
-        }
-
         renderData(data) {
             let $this = this;
 
@@ -169,14 +160,14 @@ $(function () {
                     $('#' + $this.lastCoordinatesElementId).focus();
                 }
 
-                $this.tableStickyHeader();
-                // $this.tableStickyFirstColumn();
+                $this.pfpFunctions.tableStickyHeader();
+                // $this.pfpFunctions.tableStickyFirstColumn();
             }
         }
     }
 
     if ($('#allocationTablePlace').length) {
-        let AllocationCalculatorClass = new AllocationCalculator();
+        let AllocationCalculatorClass = new AllocationCalculator(new pfpFunctions());
         AllocationCalculatorClass.init();
     }
 });

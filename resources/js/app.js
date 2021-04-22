@@ -19,20 +19,8 @@ $(window).on('resize', function () {
         $(".global_nice_scroll").getNiceScroll().resize();
     }, 300);
 });
+import {pfpFunctions} from "./pfp_functions.js";
 
-function tableStickyHeader() {
-    if ($('.table-sticky-header').length) {
-        $('.table-sticky-header').floatThead({
-            position: 'absolute'
-        });
-    }
-}
-
-function tableStickyFirstColumn() {
-    // if ($('.table-sticky-first-column').length) {
-    //     $('.table-sticky-first-column').stickyColumn({columns: 1});
-    // }
-}
-
-tableStickyHeader();
-tableStickyFirstColumn();
+let pfpFunctionsGlobal = new pfpFunctions();
+pfpFunctionsGlobal.tableStickyHeader();
+// pfpFunctionsGlobal.tableStickyFirstColumn();

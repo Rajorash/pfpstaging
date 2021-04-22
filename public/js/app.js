@@ -4049,13 +4049,17 @@ module.exports = {
 /*!***********************************************!*\
   !*** ./resources/js/allocation_calculator.js ***!
   \***********************************************/
-/***/ (() => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _pfp_functions_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./pfp_functions.js */ "./resources/js/pfp_functions.js");
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
 
 $(function () {
   $.ajaxSetup({
@@ -4065,7 +4069,7 @@ $(function () {
   });
 
   var AllocationCalculator = /*#__PURE__*/function () {
-    function AllocationCalculator() {
+    function AllocationCalculator(pfpFunctions) {
       _classCallCheck(this, AllocationCalculator);
 
       this.debug = false;
@@ -4075,6 +4079,7 @@ $(function () {
       this.changesCounter = 0;
       this.changesCounterId = 'processCounter';
       this.lastCoordinatesElementId = '';
+      this.pfpFunctions = pfpFunctions;
       this.timeout;
     }
 
@@ -4199,24 +4204,6 @@ $(function () {
         });
       }
     }, {
-      key: "tableStickyHeader",
-      value: function tableStickyHeader() {
-        if ($('.table-sticky-header').length) {
-          $('.table-sticky-header').floatThead({
-            position: 'absolute'
-          });
-        }
-      }
-    }, {
-      key: "tableStickyFirstColumn",
-      value: function tableStickyFirstColumn() {
-        if ($('.table-sticky-first-column').length) {
-          $('.table-sticky-first-column').stickyColumn({
-            columns: 1
-          });
-        }
-      }
-    }, {
       key: "renderData",
       value: function renderData(data) {
         var $this = this;
@@ -4228,7 +4215,7 @@ $(function () {
             $('#' + $this.lastCoordinatesElementId).focus();
           }
 
-          $this.tableStickyHeader(); // $this.tableStickyFirstColumn();
+          $this.pfpFunctions.tableStickyHeader(); // $this.pfpFunctions.tableStickyFirstColumn();
         }
       }
     }]);
@@ -4237,7 +4224,7 @@ $(function () {
   }();
 
   if ($('#allocationTablePlace').length) {
-    var AllocationCalculatorClass = new AllocationCalculator();
+    var AllocationCalculatorClass = new AllocationCalculator(new _pfp_functions_js__WEBPACK_IMPORTED_MODULE_0__.pfpFunctions());
     AllocationCalculatorClass.init();
   }
 });
@@ -4248,8 +4235,11 @@ $(function () {
 /*!*****************************!*\
   !*** ./resources/js/app.js ***!
   \*****************************/
-/***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _pfp_functions_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./pfp_functions.js */ "./resources/js/pfp_functions.js");
 __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 
 __webpack_require__(/*! alpinejs */ "./node_modules/alpinejs/dist/alpine.js");
@@ -4279,21 +4269,8 @@ $(window).on('resize', function () {
   }, 300);
 });
 
-function tableStickyHeader() {
-  if ($('.table-sticky-header').length) {
-    $('.table-sticky-header').floatThead({
-      position: 'absolute'
-    });
-  }
-}
-
-function tableStickyFirstColumn() {// if ($('.table-sticky-first-column').length) {
-  //     $('.table-sticky-first-column').stickyColumn({columns: 1});
-  // }
-}
-
-tableStickyHeader();
-tableStickyFirstColumn();
+var pfpFunctionsGlobal = new _pfp_functions_js__WEBPACK_IMPORTED_MODULE_0__.pfpFunctions();
+pfpFunctionsGlobal.tableStickyHeader(); // pfpFunctionsGlobal.tableStickyFirstColumn();
 
 /***/ }),
 
@@ -8246,13 +8223,17 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;function _typeof
 /*!************************************************!*\
   !*** ./resources/js/percentages_calculator.js ***!
   \************************************************/
-/***/ (() => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _pfp_functions_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./pfp_functions.js */ "./resources/js/pfp_functions.js");
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
 
 $(function () {
   $.ajaxSetup({
@@ -8262,7 +8243,7 @@ $(function () {
   });
 
   var PercentagesCalculator = /*#__PURE__*/function () {
-    function PercentagesCalculator() {
+    function PercentagesCalculator(pfpFunctions) {
       _classCallCheck(this, PercentagesCalculator);
 
       this.debug = false;
@@ -8272,6 +8253,7 @@ $(function () {
       this.changesCounter = 0;
       this.changesCounterId = 'processCounter';
       this.lastCoordinatesElementId = '';
+      this.pfpFunctions = pfpFunctions;
       this.timeout;
     }
 
@@ -8393,24 +8375,6 @@ $(function () {
         });
       }
     }, {
-      key: "tableStickyHeader",
-      value: function tableStickyHeader() {
-        if ($('.table-sticky-header').length) {
-          $('.table-sticky-header').floatThead({
-            position: 'absolute'
-          });
-        }
-      }
-    }, {
-      key: "tableStickyFirstColumn",
-      value: function tableStickyFirstColumn() {
-        if ($('.table-sticky-first-column').length) {
-          $('.table-sticky-first-column').stickyColumn({
-            columns: 1
-          });
-        }
-      }
-    }, {
       key: "renderData",
       value: function renderData(data) {
         var $this = this;
@@ -8422,7 +8386,7 @@ $(function () {
             $('#' + $this.lastCoordinatesElementId).focus();
           }
 
-          $this.tableStickyHeader();
+          $this.pfpFunctions.tableStickyHeader();
         }
       }
     }]);
@@ -8431,7 +8395,7 @@ $(function () {
   }();
 
   if ($('#percentagesTablePlace').length) {
-    var PercentagesCalculatorClass = new PercentagesCalculator();
+    var PercentagesCalculatorClass = new PercentagesCalculator(new _pfp_functions_js__WEBPACK_IMPORTED_MODULE_0__.pfpFunctions());
     PercentagesCalculatorClass.init();
   }
 });
@@ -8442,43 +8406,46 @@ $(function () {
 /*!***************************************!*\
   !*** ./resources/js/pfp_functions.js ***!
   \***************************************/
-/***/ (() => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "pfpFunctions": () => (/* binding */ pfpFunctions)
+/* harmony export */ });
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-$(function () {
-  var pfpFunctions = /*#__PURE__*/function () {
-    function pfpFunctions() {
-      _classCallCheck(this, pfpFunctions);
+var pfpFunctions = /*#__PURE__*/function () {
+  function pfpFunctions() {
+    _classCallCheck(this, pfpFunctions);
+  }
+
+  _createClass(pfpFunctions, [{
+    key: "tableStickyHeader",
+    value: function tableStickyHeader() {
+      if ($('.table-sticky-header').length) {
+        $('.table-sticky-header').floatThead({
+          position: 'absolute'
+        });
+      }
     }
-
-    _createClass(pfpFunctions, [{
-      key: "tableStickyHeader",
-      value: function tableStickyHeader() {
-        if ($('.table-sticky-header').length) {
-          $('.table-sticky-header').floatThead({
-            position: 'absolute'
-          });
-        }
+  }, {
+    key: "tableStickyFirstColumn",
+    value: function tableStickyFirstColumn() {
+      if ($('.table-sticky-first-column').length) {
+        $('.table-sticky-first-column').stickyColumn({
+          columns: 1
+        });
       }
-    }, {
-      key: "tableStickyFirstColumn",
-      value: function tableStickyFirstColumn() {
-        if ($('.table-sticky-first-column').length) {
-          $('.table-sticky-first-column').stickyColumn({
-            columns: 1
-          });
-        }
-      }
-    }]);
+    }
+  }]);
 
-    return pfpFunctions;
-  }();
-});
+  return pfpFunctions;
+}();
 
 /***/ }),
 
