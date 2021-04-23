@@ -158,6 +158,7 @@ $(function () {
                 }
 
                 $this.pfpFunctions.tableStickyHeader();
+                $this.pfpFunctions.tableStickyFirstColumn();
             }
         }
     }

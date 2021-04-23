@@ -161,7 +161,7 @@ $(function () {
                 }
 
                 $this.pfpFunctions.tableStickyHeader();
-                // $this.pfpFunctions.tableStickyFirstColumn();
+                $this.pfpFunctions.tableStickyFirstColumn();
             }
         }
     }

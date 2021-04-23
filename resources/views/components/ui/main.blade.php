@@ -4,7 +4,7 @@
 <div
     class="{{$width}} mx-auto py-6 px-4 sm:px-6 lg:px-8">
     <div class="
-        bg-white overflow-hidden border border-light_blue rounded-2xl">
+        bg-white overflow-hidden border border-light_blue rounded-2xl table-sticky-column-place relative">
         {{ $slot }}
     </div>
 </div>

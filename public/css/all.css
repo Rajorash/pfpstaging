@@ -1,1 +1,12 @@
+.cloned_table {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 10;
+}
+.cloned_table th:not(.sticky-column), .cloned_table td:not(.sticky-column) {
+  visibility: hidden;
+}
 
+/*# sourceMappingURL=all.css.map*/

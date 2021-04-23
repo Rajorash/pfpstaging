@@ -1,0 +1,16 @@
+.cloned_table {
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    z-index: 10;
+
+    th, td {
+        &:not(.sticky-column) {
+            visibility: hidden;
+        }
+
+        &.sticky-column {
+        }
+    }
+}

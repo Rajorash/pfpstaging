@@ -1,4 +1,4 @@
-<x-ui.table-table class="table-sticky-header">
+<x-ui.table-table class="table-sticky-header table-sticky-column">
     <thead>
     <tr class="border-light_blue divide-x border-b">
         <x-ui.table-th class="text-center" baseClass="w-24 text-dark_gray font-normal bg-white">
@@ -39,7 +39,7 @@
                 @continue
             @endif
             <tr class="{{$account_class[$acc->type]}} hover:bg-yellow-100 border-light_blue divide-x">
-                <x-ui.table-td padding="p-1 pr-2 pl-4">{{ $acc->name }}</x-ui.table-td>
+                <x-ui.table-td padding="p-1 pr-2 pl-4" class="text-left sticky-column">{{ $acc->name }}</x-ui.table-td>
 
                 @forelse($rollout as $phase)
                     @php
@@ -69,7 +69,7 @@
                 @endforelse
             </tr>
         @empty
-            <tr class="border-light_blue divide-x">
+            <tr class="border-light_blue divide-x bg-white">
                 <x-ui.table-td padding="p-1 pr-2 pl-6" class="text-center">N/A</x-ui.table-td>
                 @forelse($rollout as $phase)
                     <x-ui.table-td padding="p-1 pr-2 pl-6" class="text-center">N/A</x-ui.table-td>

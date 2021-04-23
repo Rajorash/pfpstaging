@@ -12,7 +12,7 @@
 
     <x-ui.main width="w-full">
         <div class="global_nice_scroll">
-            <x-ui.table-table class="table-sticky-header table-sticky-first-column">
+            <x-ui.table-table class="table-sticky-header table-sticky-column">
                 <thead class="">
                 <tr class="border-light_blue divide-x border-b">
                     <x-ui.table-th class="text-center"
@@ -30,8 +30,8 @@
                 </thead>
                 <x-ui.table-tbody>
                     @foreach($allocations as $allocation)
-                        <tr class="hover:bg-yellow-100 border-light_blue divide-x {{$loop->odd ? 'bg-indigo-100' : '' }}">
-                            <x-ui.table-td padding="p-1 pr-2 pl-4">
+                        <tr class="hover:bg-yellow-100 border-light_blue divide-x {{$loop->odd ? 'bg-indigo-100' : 'bg-white' }}">
+                            <x-ui.table-td padding="p-1 pr-2 pl-4" class="text-left sticky-column">
                                 {{ $allocation['account']->name }}
                             </x-ui.table-td>
 
