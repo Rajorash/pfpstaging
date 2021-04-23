@@ -1,4 +1,5 @@
 import {pfpFunctions} from "./pfp_functions.js";
+import {calculatorCore} from "./calculator_core";
 
 $(function () {
     $.ajaxSetup({
@@ -7,32 +8,14 @@ $(function () {
         }
     });
 
-    class AllocationCalculator {
+    class AllocationCalculator extends calculatorCore {
         constructor(pfpFunctions) {
-            this.debug = false;
+            super(pfpFunctions);
 
             this.ajaxUrl = window.allocationsControllerUpdate;
-            this.elementAllocationTablePlace = $('#allocationTablePlace');
-            this.elementLoadingSpinner = $('#loadingSpinner');
-
-            this.changesCounter = 0;
-            this.changesCounterId = 'processCounter';
-            this.lastCoordinatesElementId = '';
-
-            this.pfpFunctions = pfpFunctions;
-
-            this.timeout;
-
+            this.elementTablePlace = $('#allocationTablePlace');
         }
 
-        init() {
-            let $this = this;
-
-            $this.resetData();
-            $this.events();
-
-            $this.firstLoadData();
-        }
 
         events() {
             let $this = this;
@@ -40,18 +23,6 @@ $(function () {
             $(document).on('change', '#startDate, #currentRangeValue, #allocationTablePlace input', function (event) {
                 $this.loadData(event);
             });
-        }
-
-        resetData() {
-            let $this = this;
-
-            if ($this.debug) {
-                console.log('resetData');
-            }
-
-            $this.changesCounter = 0;
-            $this.data = {};
-            $this.data.cells = [];
         }
 
         collectData(event) {
@@ -84,84 +55,6 @@ $(function () {
 
             if ($this.debug) {
                 console.log('collectData', $this.data);
-            }
-        }
-
-        showSpinner() {
-            let $this = this;
-
-            $('html, body').css({
-                overflow: 'hidden',
-                height: '100%'
-            });
-
-            $this.elementLoadingSpinner.show();
-        }
-
-        hideSpinner() {
-            let $this = this;
-
-            $('html, body').css({
-                overflow: 'auto',
-                height: 'auto'
-            });
-
-            $this.elementLoadingSpinner.hide();
-        }
-
-        loadData(event) {
-            let $this = this;
-
-            $this.collectData(event);
-
-            clearTimeout($this.timedOut);
-            $this.timedOut = setTimeout(function () {
-                $this.ajaxLoadWorker();
-            }, 2000);
-        }
-
-        firstLoadData() {
-            let $this = this;
-
-            $this.collectData();
-            $this.ajaxLoadWorker();
-        }
-
-        ajaxLoadWorker() {
-            let $this = this;
-
-            $.ajax({
-                type: 'POST',
-                url: $this.ajaxUrl,
-                data: $this.data,
-                beforeSend: function () {
-                    $this.showSpinner()
-                },
-                success: function (data) {
-                    if ($this.debug) {
-                        console.log('loadData', data);
-                    }
-                    $this.renderData(data);
-                },
-                complete: function () {
-                    $this.hideSpinner();
-                    $this.resetData();
-                }
-            });
-        }
-
-        renderData(data) {
-            let $this = this;
-
-            if (data.error.length === 0) {
-                $this.elementAllocationTablePlace.html(data.html);
-
-                if ($this.lastCoordinatesElementId) {
-                    $('#' + $this.lastCoordinatesElementId).focus();
-                }
-
-                $this.pfpFunctions.tableStickyHeader();
-                $this.pfpFunctions.tableStickyFirstColumn();
             }
         }
     }
