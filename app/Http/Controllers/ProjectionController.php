@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\Auth;
 
 class ProjectionController extends Controller
 {
+    protected $defaultProjectionsRangeValue = 7;
+
     /**
      * Display a listing of the the accounts with projection.
      *
@@ -23,19 +25,34 @@ class ProjectionController extends Controller
     {
         $this->authorize('view', $business);
 
+        $currentProjectionsRange = session()->get('projectionsRange_'.$business->id, $this->defaultProjectionsRangeValue);
+
         $scale = 'addDay';
         $start_date = $today = Carbon::now();
-        $end_date = Carbon::now()->$scale(14);
+        $end_date = Carbon::now()->$scale($currentProjectionsRange-1);
 
         $dates = array();
         for ($date = $start_date; $date <= $end_date; $date->$scale(1)) {
             $dates[] = $date->format('Y-m-d');
         }
-
+        $rangeArray = $this->getRangeArray();
+        $currentProjectionsRange = session()->get('projectionsRange_'.$business->id, $this->defaultProjectionsRangeValue);
         $allocations = self::allocationsByDate($business);
         // dd($allocations);
 
-        return view('projections.show', compact('allocations', 'business', 'dates', 'today', 'start_date', 'end_date'));
+        return view(
+            'projections.show',
+            compact('allocations', 'business', 'dates', 'today', 'start_date', 'end_date', 'rangeArray', 'currentProjectionsRange')
+        );
+    }
+
+    private function getRangeArray()
+    {
+        return [
+            1 => 'Daily',
+            7 => 'Weekly',
+            31 => 'Monthly'
+        ];
     }
 
     public function allocationsByDate(Business $business)

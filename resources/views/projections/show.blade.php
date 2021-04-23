@@ -9,6 +9,18 @@
         <x-business-nav businessId="{{$business->id}}" :business="$business"/>
     </x-slot>
 
+    <x-slot name="subHeader">
+        <div class="flex content-between">
+            <div class="py-2 pr-6">
+                <label for="range">Range</label>
+                <select name="range" id="currentProjectionsRange" class="form-select rounded py-1 mx-3 my-0">
+                    @foreach ($rangeArray as $key => $value)
+                        <option value="{{$key}}" @if($key == $currentProjectionsRange) selected @endif>{{$value}}</option>
+                    @endforeach
+                </select>
+            </div>
+        </div>
+    </x-slot>
 
     <x-ui.main width="w-full">
         <x-ui.table-table>
@@ -54,4 +66,5 @@
 
         </x-ui.table-table>
     </x-ui.main>
+
 </x-app-layout>
