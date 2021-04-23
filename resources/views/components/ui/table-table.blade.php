@@ -1,6 +1,3 @@
-@props([
-'class' => 'w-full'
-])
-<table class="{{$class}}">
+<table {{ $attributes->merge(['class' => "w-full"]) }}>
     {{$slot}}
 </table>

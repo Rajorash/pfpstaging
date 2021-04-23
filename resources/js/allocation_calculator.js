@@ -1,3 +1,5 @@
+import {pfpFunctions} from "./pfp_functions.js";
+
 $(function () {
     $.ajaxSetup({
         headers: {
@@ -6,7 +8,7 @@ $(function () {
     });
 
     class AllocationCalculator {
-        constructor() {
+        constructor(pfpFunctions) {
             this.debug = false;
 
             this.ajaxUrl = window.allocationsControllerUpdate;
@@ -17,7 +19,10 @@ $(function () {
             this.changesCounterId = 'processCounter';
             this.lastCoordinatesElementId = '';
 
+            this.pfpFunctions = pfpFunctions;
+
             this.timeout;
+
         }
 
         init() {
@@ -154,12 +159,15 @@ $(function () {
                 if ($this.lastCoordinatesElementId) {
                     $('#' + $this.lastCoordinatesElementId).focus();
                 }
+
+                $this.pfpFunctions.tableStickyHeader();
+                $this.pfpFunctions.tableStickyFirstColumn();
             }
         }
     }
 
     if ($('#allocationTablePlace').length) {
-        let AllocationCalculatorClass = new AllocationCalculator();
+        let AllocationCalculatorClass = new AllocationCalculator(new pfpFunctions());
         AllocationCalculatorClass.init();
     }
 });

@@ -1,4 +1,7 @@
+import {pfpFunctions} from "./pfp_functions.js";
+
 $(function () {
+
     $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -6,7 +9,7 @@ $(function () {
     });
 
     class PercentagesCalculator {
-        constructor() {
+        constructor(pfpFunctions) {
             this.debug = false;
 
             this.ajaxUrl = window.percentagesControllerUpdate;
@@ -16,6 +19,8 @@ $(function () {
             this.changesCounter = 0;
             this.changesCounterId = 'processCounter';
             this.lastCoordinatesElementId = '';
+
+            this.pfpFunctions = pfpFunctions;
 
             this.timeout;
         }
@@ -151,12 +156,15 @@ $(function () {
                 if ($this.lastCoordinatesElementId) {
                     $('#' + $this.lastCoordinatesElementId).focus();
                 }
+
+                $this.pfpFunctions.tableStickyHeader();
+                $this.pfpFunctions.tableStickyFirstColumn();
             }
         }
     }
 
     if ($('#percentagesTablePlace').length) {
-        let PercentagesCalculatorClass = new PercentagesCalculator();
+        let PercentagesCalculatorClass = new PercentagesCalculator(new pfpFunctions());
         PercentagesCalculatorClass.init();
     }
 });

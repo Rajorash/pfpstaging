@@ -4049,13 +4049,17 @@ module.exports = {
 /*!***********************************************!*\
   !*** ./resources/js/allocation_calculator.js ***!
   \***********************************************/
-/***/ (() => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _pfp_functions_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./pfp_functions.js */ "./resources/js/pfp_functions.js");
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
 
 $(function () {
   $.ajaxSetup({
@@ -4065,7 +4069,7 @@ $(function () {
   });
 
   var AllocationCalculator = /*#__PURE__*/function () {
-    function AllocationCalculator() {
+    function AllocationCalculator(pfpFunctions) {
       _classCallCheck(this, AllocationCalculator);
 
       this.debug = false;
@@ -4075,6 +4079,7 @@ $(function () {
       this.changesCounter = 0;
       this.changesCounterId = 'processCounter';
       this.lastCoordinatesElementId = '';
+      this.pfpFunctions = pfpFunctions;
       this.timeout;
     }
 
@@ -4209,6 +4214,9 @@ $(function () {
           if ($this.lastCoordinatesElementId) {
             $('#' + $this.lastCoordinatesElementId).focus();
           }
+
+          $this.pfpFunctions.tableStickyHeader();
+          $this.pfpFunctions.tableStickyFirstColumn();
         }
       }
     }]);
@@ -4217,7 +4225,7 @@ $(function () {
   }();
 
   if ($('#allocationTablePlace').length) {
-    var AllocationCalculatorClass = new AllocationCalculator();
+    var AllocationCalculatorClass = new AllocationCalculator(new _pfp_functions_js__WEBPACK_IMPORTED_MODULE_0__.pfpFunctions());
     AllocationCalculatorClass.init();
   }
 });
@@ -4228,8 +4236,11 @@ $(function () {
 /*!*****************************!*\
   !*** ./resources/js/app.js ***!
   \*****************************/
-/***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _pfp_functions_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./pfp_functions.js */ "./resources/js/pfp_functions.js");
 __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 
 __webpack_require__(/*! alpinejs */ "./node_modules/alpinejs/dist/alpine.js");
@@ -4238,11 +4249,17 @@ __webpack_require__(/*! arrow-table */ "./node_modules/arrow-table/src/arrow-tab
 // require('./percentages');
 
 
+__webpack_require__(/*! ./pfp_functions */ "./resources/js/pfp_functions.js");
+
 __webpack_require__(/*! ./allocation_calculator */ "./resources/js/allocation_calculator.js");
 
 __webpack_require__(/*! ./percentages_calculator */ "./resources/js/percentages_calculator.js");
 
-$('.global_nice_scroll').niceScroll();
+__webpack_require__(/*! ./jquery.floatThead.min */ "./resources/js/jquery.floatThead.min.js");
+
+$('.global_nice_scroll').niceScroll({
+  cursorwidth: '10px'
+});
 var resizeTimer;
 $(window).on('resize', function () {
   clearTimeout(resizeTimer);
@@ -4250,6 +4267,10 @@ $(window).on('resize', function () {
     $(".global_nice_scroll").getNiceScroll().resize();
   }, 300);
 });
+
+var pfpFunctionsGlobal = new _pfp_functions_js__WEBPACK_IMPORTED_MODULE_0__.pfpFunctions();
+pfpFunctionsGlobal.tableStickyHeader();
+pfpFunctionsGlobal.tableStickyFirstColumn();
 
 /***/ }),
 
@@ -4293,17 +4314,663 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
 /***/ }),
 
+/***/ "./resources/js/jquery.floatThead.min.js":
+/*!***********************************************!*\
+  !*** ./resources/js/jquery.floatThead.min.js ***!
+  \***********************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+/** @preserve jQuery.floatThead 2.1.4 - https://mkoryak.github.io/floatThead/ - Copyright (c) 2012 - 2019 Misha Koryak **/
+!function (ht) {
+  ht.floatThead = ht.floatThead || {}, ht.floatThead.defaults = {
+    headerCellSelector: "tr:visible:first>*:visible",
+    zIndex: 1001,
+    position: "auto",
+    top: 0,
+    bottom: 0,
+    scrollContainer: function scrollContainer(t) {
+      return ht([]);
+    },
+    responsiveContainer: function responsiveContainer(t) {
+      return ht([]);
+    },
+    getSizingRow: function getSizingRow(t, e, o) {
+      return t.find("tbody tr:visible:first>*:visible");
+    },
+    ariaLabel: function ariaLabel(t, e, o) {
+      return e.text();
+    },
+    floatTableClass: "floatThead-table",
+    floatWrapperClass: "floatThead-wrapper",
+    floatContainerClass: "floatThead-container",
+    copyTableClass: !0,
+    autoReflow: !1,
+    debug: !1,
+    support: {
+      bootstrap: !0,
+      datatables: !0,
+      jqueryUI: !0,
+      perfectScrollbar: !0
+    },
+    floatContainerCss: {
+      "overflow-x": "hidden"
+    }
+  };
+
+  var vt = function () {
+    var n = {},
+        o = Object.prototype.hasOwnProperty;
+    n.has = function (t, e) {
+      return o.call(t, e);
+    }, n.keys = Object.keys || function (t) {
+      if (t !== Object(t)) throw new TypeError("Invalid object");
+      var e = [];
+
+      for (var o in t) {
+        n.has(t, o) && e.push(o);
+      }
+
+      return e;
+    };
+    var r = 0;
+    return n.uniqueId = function (t) {
+      var e = ++r + "";
+      return t ? t + e : e;
+    }, ht.each(["Arguments", "Function", "String", "Number", "Date", "RegExp"], function () {
+      var e = this;
+
+      n["is" + e] = function (t) {
+        return Object.prototype.toString.call(t) === "[object " + e + "]";
+      };
+    }), n.debounce = function (o, n, r) {
+      var a, i, l, s, d;
+      return function () {
+        l = this, i = arguments, s = new Date();
+
+        var e = function e() {
+          var t = new Date() - s;
+          t < n ? a = setTimeout(e, n - t) : (a = null, r || (d = o.apply(l, i)));
+        },
+            t = r && !a;
+
+        return a || (a = setTimeout(e, n)), t && (d = o.apply(l, i)), d;
+      };
+    }, n;
+  }(),
+      bt = "undefined" != typeof MutationObserver,
+      wt = function () {
+    for (var t = 3, e = document.createElement("b"), o = e.all || []; t = 1 + t, e.innerHTML = "\x3c!--[if gt IE " + t + "]><i><![endif]--\x3e", o[0];) {
+      ;
+    }
+
+    return 4 < t ? t : document.documentMode;
+  }(),
+      t = /Gecko\//.test(navigator.userAgent),
+      gt = /WebKit\//.test(navigator.userAgent),
+      mt = /rtl/i.test(document.documentElement.dir || "");
+
+  wt || t || gt || (wt = 11);
+
+  var l = function l() {
+    if (gt) {
+      var t = ht("<div>").css("width", 0).append(ht("<table>").css("max-width", "100%").append(ht("<tr>").append(ht("<th>").append(ht("<div>").css("min-width", 100).text("X")))));
+      ht("body").append(t);
+      var e = 0 === t.find("table").width();
+      return t.remove(), e;
+    }
+
+    return !1;
+  },
+      yt = !t && !wt,
+      Tt = ht(window),
+      Ct = t && window.matchMedia;
+
+  if (!window.matchMedia || Ct) {
+    var e = window.onbeforeprint,
+        o = window.onafterprint;
+    window.onbeforeprint = function () {
+      e && e(), Tt.triggerHandler("fth-beforeprint");
+    }, window.onafterprint = function () {
+      o && o(), Tt.triggerHandler("fth-afterprint");
+    };
+  }
+
+  function xt(t) {
+    var e = t[0].parentElement;
+
+    do {
+      if ("visible" !== window.getComputedStyle(e).getPropertyValue("overflow")) break;
+    } while (e = e.parentElement);
+
+    return e === document.body ? ht([]) : ht(e);
+  }
+
+  function Lt(t) {
+    window && window.console && window.console.error && window.console.error("jQuery.floatThead: " + t);
+  }
+
+  function St(t) {
+    var e = t.getBoundingClientRect();
+    return e.width || e.right - e.left;
+  }
+
+  function jt() {
+    var t = document.createElement("scrolltester");
+    t.style.cssText = "width:100px;height:100px;overflow:scroll!important;position:absolute;top:-9999px;display:block", document.body.appendChild(t);
+    var e = t.offsetWidth - t.clientWidth;
+    return document.body.removeChild(t), e;
+  }
+
+  function zt(t, e, o) {
+    var n = o ? "outerWidth" : "width";
+
+    if (l && t.css("max-width")) {
+      var r = 0;
+      o && (r += parseInt(t.css("borderLeft"), 10), r += parseInt(t.css("borderRight"), 10));
+
+      for (var a = 0; a < e.length; a++) {
+        r += St(e.get(a));
+      }
+
+      return r;
+    }
+
+    return t[n]();
+  }
+
+  ht.fn.floatThead = function (t) {
+    if (t = t || {}, wt < 8) return this;
+    var ut = null;
+
+    if (vt.isFunction(l) && (l = l()), vt.isString(t)) {
+      var r = t,
+          a = Array.prototype.slice.call(arguments, 1),
+          i = this;
+      return this.filter("table").each(function () {
+        var t = ht(this),
+            e = t.data("floatThead-lazy");
+        e && t.floatThead(e);
+        var o = t.data("floatThead-attached");
+
+        if (o && vt.isFunction(o[r])) {
+          var n = o[r].apply(this, a);
+          void 0 !== n && (i = n);
+        }
+      }), i;
+    }
+
+    var pt = ht.extend({}, ht.floatThead.defaults || {}, t);
+
+    if (ht.each(t, function (t, e) {
+      t in ht.floatThead.defaults || !pt.debug || Lt("Used [" + t + "] key to init plugin, but that param is not an option for the plugin. Valid options are: " + vt.keys(ht.floatThead.defaults).join(", "));
+    }), pt.debug) {
+      var e = ht.fn.jquery.split(".");
+      1 === parseInt(e[0], 10) && parseInt(e[1], 10) <= 7 && Lt("jQuery version " + ht.fn.jquery + " detected! This plugin supports 1.8 or better, or 1.7.x with jQuery UI 1.8.24 -> http://jqueryui.com/resources/download/jquery-ui-1.8.24.zip");
+    }
+
+    return this.filter(":not(." + pt.floatTableClass + ")").each(function () {
+      var e = vt.uniqueId(),
+          m = ht(this);
+      if (m.data("floatThead-attached")) return !0;
+      if (!m.is("table")) throw new Error('jQuery.floatThead must be run on a table element. ex: $("table").floatThead();');
+      bt = pt.autoReflow && bt;
+      var d = m.children("thead:first"),
+          o = m.children("tbody:first");
+      if (0 === d.length || 0 === o.length) return pt.debug && (0 === d.length ? Lt("The thead element is missing.") : Lt("The tbody element is missing.")), m.data("floatThead-lazy", pt), void m.unbind("reflow").one("reflow", function () {
+        m.floatThead(pt);
+      });
+      m.data("floatThead-lazy") && m.unbind("reflow"), m.data("floatThead-lazy", !1);
+      var y,
+          T,
+          n = !0,
+          C = {
+        vertical: 0,
+        horizontal: 0
+      };
+      vt.isFunction(jt) && (jt = jt());
+      var i = 0;
+      !0 === pt.scrollContainer && (pt.scrollContainer = xt);
+      var x = pt.scrollContainer(m) || ht([]),
+          L = 0 < x.length,
+          S = L ? ht([]) : pt.responsiveContainer(m) || ht([]),
+          j = $(),
+          z = null;
+      "auto" === pt.position ? z = null : "fixed" === pt.position ? z = !1 : "absolute" === pt.position ? z = !0 : pt.debug && Lt('Invalid value given to "position" option, valid is "fixed", "absolute" and "auto". You passed: ', pt.position), null == z && (z = L);
+      var r = m.find("caption"),
+          I = 1 === r.length;
+      if (I) var H = "top" === (r.css("caption-side") || r.attr("align") || "top");
+      var a = ht("<fthfoot>").css({
+        display: "table-footer-group",
+        "border-spacing": 0,
+        height: 0,
+        "border-collapse": "collapse",
+        visibility: "hidden"
+      }),
+          W = !1,
+          l = ht([]),
+          q = wt <= 9 && !L && z,
+          f = ht("<table/>"),
+          c = ht("<colgroup/>"),
+          u = m.children("colgroup:first"),
+          p = !0;
+      0 === u.length && (u = ht("<colgroup/>"), p = !1);
+      var h = ht("<fthtr>").css({
+        display: "table-row",
+        "border-spacing": 0,
+        height: 0,
+        "border-collapse": "collapse"
+      }),
+          R = ht("<div>").css(pt.floatContainerCss).attr("aria-hidden", "true"),
+          E = !1,
+          s = ht("<thead/>"),
+          v = ht('<tr class="size-row"/>'),
+          b = ht([]),
+          w = ht([]),
+          g = ht([]),
+          M = ht([]);
+      s.append(v), m.prepend(u), yt && (a.append(h), m.append(a)), f.append(c), R.append(f), pt.copyTableClass && f.attr("class", m.attr("class")), f.attr({
+        cellpadding: m.attr("cellpadding"),
+        cellspacing: m.attr("cellspacing"),
+        border: m.attr("border")
+      });
+      var t = m.css("display");
+
+      if (f.css({
+        borderCollapse: m.css("borderCollapse"),
+        border: m.css("border"),
+        display: t
+      }), L || f.css("width", "auto"), "none" === t && (E = !0), f.addClass(pt.floatTableClass).css({
+        margin: 0,
+        "border-bottom-width": 0
+      }), z) {
+        var k = function k(t, e) {
+          var o = t.css("position"),
+              n = t;
+
+          if (!("relative" === o || "absolute" === o) || e) {
+            var r = {
+              paddingLeft: t.css("paddingLeft"),
+              paddingRight: t.css("paddingRight")
+            };
+            R.css(r), n = t.data("floatThead-containerWrap") || t.wrap(ht("<div>").addClass(pt.floatWrapperClass).css({
+              position: "relative",
+              clear: "both"
+            })).parent(), t.data("floatThead-containerWrap", n), W = !0;
+          }
+
+          return n;
+        };
+
+        L ? (l = k(x, !0)).prepend(R) : (l = k(m), m.before(R));
+      } else m.before(R);
+
+      R.css({
+        position: z ? "absolute" : "fixed",
+        marginTop: 0,
+        top: z ? 0 : "auto",
+        zIndex: pt.zIndex,
+        willChange: "transform"
+      }), R.addClass(pt.floatContainerClass), U();
+      var D = {
+        "table-layout": "fixed"
+      },
+          F = {
+        "table-layout": m.css("tableLayout") || "auto"
+      },
+          O = m[0].style.width || "",
+          N = m.css("minWidth") || "";
+
+      function A(t) {
+        return t + ".fth-" + e + ".floatTHead";
+      }
+
+      function Q() {
+        var t = 0;
+
+        if (d.children("tr:visible").each(function () {
+          t += ht(this).outerHeight(!0);
+        }), "collapse" === m.css("border-collapse")) {
+          var e = parseInt(m.css("border-top-width"), 10);
+          parseInt(m.find("thead tr:first").find(">*:first").css("border-top-width"), 10) < e && (t -= e / 2);
+        }
+
+        v.outerHeight(t), b.outerHeight(t);
+      }
+
+      function U() {
+        y = (vt.isFunction(pt.top) ? pt.top(m) : pt.top) || 0, T = (vt.isFunction(pt.bottom) ? pt.bottom(m) : pt.bottom) || 0;
+      }
+
+      function G() {
+        if (!n) {
+          if (n = !0, z) {
+            var t = zt(m, M, !0);
+            l.width() < t && m.css("minWidth", t);
+          }
+
+          m.css(D), f.css(D), f.append(d), o.before(s), Q();
+        }
+      }
+
+      function P() {
+        n && (n = !1, z && m.width(O), s.detach(), m.prepend(d), m.css(F), f.css(F), m.css("minWidth", N), m.css("minWidth", zt(m, M)));
+      }
+
+      var V = !1;
+
+      function X(t) {
+        V !== t && (V = t, m.triggerHandler("floatThead", [t, R]));
+      }
+
+      function Y(t) {
+        z !== t && (z = t, R.css({
+          position: z ? "absolute" : "fixed"
+        }));
+      }
+
+      function B() {
+        var l,
+            s = function () {
+          var t,
+              e = d.find(pt.headerCellSelector);
+
+          if (p ? t = u.find("col").length : (t = 0, e.each(function () {
+            t += parseInt(ht(this).attr("colspan") || 1, 10);
+          })), t !== i) {
+            i = t;
+            var o = [],
+                n = [];
+            v.empty();
+
+            for (var r = 0; r < t; r++) {
+              var a = document.createElement("th");
+              a.setAttribute("aria-label", pt.ariaLabel(m, e.eq(r), r)), a.className = "floatThead-col", v[0].appendChild(a), o.push("<col/>"), n.push(ht("<fthtd>").css({
+                display: "table-cell",
+                height: 0,
+                width: "auto"
+              }));
+            }
+
+            o = o.join(""), yt && (h.empty(), h.append(n), M = h.find("fthtd")), b = v.find("th"), p || u.html(o), w = u.find("col"), c.html(o), g = c.find("col");
+          }
+
+          return t;
+        }();
+
+        return function () {
+          var t = R.scrollLeft();
+          w = u.find("col");
+          var e,
+              o,
+              n,
+              r,
+              a = (e = m, o = w, n = M, r = wt, yt ? n : r ? pt.getSizingRow(e, o, n) : o);
+
+          if (a.length === s && 0 < s) {
+            if (!p) for (l = 0; l < s; l++) {
+              w.eq(l).css("width", "");
+            }
+            P();
+            var i = [];
+
+            for (l = 0; l < s; l++) {
+              i[l] = St(a.get(l));
+            }
+
+            for (l = 0; l < s; l++) {
+              g.eq(l).width(i[l]), w.eq(l).width(i[l]);
+            }
+
+            G();
+          } else f.append(d), m.css(F), f.css(F), Q();
+
+          R.scrollLeft(t), m.triggerHandler("reflowed", [R]);
+        };
+      }
+
+      function K(t) {
+        var e = x.css("border-" + t + "-width"),
+            o = 0;
+        return e && ~e.indexOf("px") && (o = parseInt(e, 10)), o;
+      }
+
+      function $() {
+        return "auto" === S.css("overflow-x");
+      }
+
+      function J() {
+        var i,
+            l = x.scrollTop(),
+            s = 0,
+            d = I ? r.outerHeight(!0) : 0,
+            f = H ? d : -d,
+            c = R.height(),
+            u = m.offset(),
+            p = 0,
+            h = 0;
+
+        if (L) {
+          var t = x.offset();
+          s = u.top - t.top + l, I && H && (s += d), p = K("left"), h = K("top"), s -= h;
+        } else i = u.top - y - c + T + C.horizontal;
+
+        var v = Tt.scrollTop(),
+            b = Tt.scrollLeft(),
+            w = function w() {
+          return ($() ? S : x).scrollLeft() || 0;
+        },
+            g = w();
+
+        return function (t) {
+          j = $();
+          var e = m[0].offsetWidth <= 0 && m[0].offsetHeight <= 0;
+          if (!e && E) return E = !1, setTimeout(function () {
+            m.triggerHandler("reflow");
+          }, 1), null;
+          if (e && (E = !0, !z)) return null;
+          if ("windowScroll" === t) v = Tt.scrollTop(), b = Tt.scrollLeft();else if ("containerScroll" === t) {
+            if (S.length) {
+              if (!j) return;
+              g = S.scrollLeft();
+            } else l = x.scrollTop(), g = x.scrollLeft();
+          } else "init" !== t && (v = Tt.scrollTop(), b = Tt.scrollLeft(), l = x.scrollTop(), g = w());
+
+          if (!gt || !(v < 0 || mt && 0 < b || !mt && b < 0)) {
+            if (q) Y("windowScrollDone" === t);else if ("windowScrollDone" === t) return null;
+            var o, n;
+            u = m.offset(), I && H && (u.top += d);
+            var r = m.outerHeight();
+
+            if (L && z) {
+              if (l <= s) {
+                var a = s - l + h;
+                o = 0 < a ? a : 0, X(!1);
+              } else r - c < l - s ? o = r - c - l - s : (o = W ? h : l, X(!0));
+
+              n = p;
+            } else !L && z ? (i + r + f < v ? o = r - c + f + T : u.top >= v + y ? (o = 0, P(), X(!1)) : (o = y + v - u.top + s + (H ? d : 0), G(), X(!0)), n = g) : L && !z ? (l < s || r < l - s ? (o = u.top - v, P(), X(!1)) : (o = u.top + l - v - s, G(), X(!0)), n = u.left + g - b) : L || z || (i + r + f < v ? o = r + y - v + i + f : u.top > v + y ? (o = u.top - v, G(), X(!1)) : (o = y, X(!0)), n = u.left + g - b);
+
+            return {
+              top: Math.round(o),
+              left: Math.round(n)
+            };
+          }
+        };
+      }
+
+      function Z() {
+        var i = null,
+            l = null,
+            s = null;
+        return function (t, e, o) {
+          if (null != t && (i !== t.top || l !== t.left)) {
+            if (8 === wt) R.css({
+              top: t.top,
+              left: t.left
+            });else {
+              var n = "translateX(" + t.left + "px) translateY(" + t.top + "px)",
+                  r = {
+                "-webkit-transform": n,
+                "-moz-transform": n,
+                "-ms-transform": n,
+                "-o-transform": n,
+                transform: n,
+                top: 0,
+                left: 0
+              };
+              R.css(r);
+            }
+            i = t.top, l = t.left;
+          }
+
+          e && function () {
+            var t = zt(m, M, !0),
+                e = j ? S : x,
+                o = e.length ? St(e[0]) : t,
+                n = "hidden" !== e.css("overflow-y") ? o - C.vertical : o;
+
+            if (R.width(n), L) {
+              var r = 100 * t / n;
+              f.css("width", r + "%");
+            } else f.css("width", t + "px");
+          }(), o && Q();
+          var a = (j ? S : x).scrollLeft();
+          z && s === a || (R.scrollLeft(a), s = a);
+        };
+      }
+
+      function _() {
+        if (x.length) if (pt.support && pt.support.perfectScrollbar && x.data().perfectScrollbar) C = {
+          horizontal: 0,
+          vertical: 0
+        };else {
+          if ("scroll" === x.css("overflow-x")) C.horizontal = jt;else {
+            var t = x.width(),
+                e = zt(m, M),
+                o = n < r ? jt : 0;
+            C.horizontal = t - o < e ? jt : 0;
+          }
+          if ("scroll" === x.css("overflow-y")) C.vertical = jt;else {
+            var n = x.height(),
+                r = m.height(),
+                a = t < e ? jt : 0;
+            C.vertical = n - a < r ? jt : 0;
+          }
+        }
+      }
+
+      _();
+
+      var tt = function tt() {
+        B()();
+      };
+
+      tt();
+      var et = J(),
+          ot = Z();
+      ot(et("init"), !0);
+
+      var nt = vt.debounce(function () {
+        ot(et("windowScrollDone"), !1);
+      }, 1),
+          rt = function rt() {
+        ot(et("windowScroll"), !1), q && nt();
+      },
+          at = function at() {
+        ot(et("containerScroll"), !1);
+      },
+          it = vt.debounce(function () {
+        m.is(":hidden") || (_(), U(), tt(), et = J(), ot(et("reflow"), !0, !0));
+      }, 1),
+          lt = function lt() {
+        P();
+      },
+          st = function st() {
+        G();
+      },
+          dt = function dt(t) {
+        t.matches ? lt() : st();
+      },
+          ft = null;
+
+      if (window.matchMedia && window.matchMedia("print").addListener && !Ct ? (ft = window.matchMedia("print")).addListener(dt) : (Tt.on("fth-beforeprint", lt), Tt.on("fth-afterprint", st)), L ? z ? x.on(A("scroll"), at) : (x.on(A("scroll"), at), Tt.on(A("scroll"), rt)) : (S.on(A("scroll"), at), Tt.on(A("scroll"), rt)), Tt.on(A("load"), it), function (t, e) {
+        if (8 === wt) {
+          var o = Tt.width(),
+              n = vt.debounce(function () {
+            var t = Tt.width();
+            o !== t && (o = t, e());
+          }, 1);
+          Tt.on(t, n);
+        } else Tt.on(t, vt.debounce(e, 1));
+      }(A("resize"), function () {
+        m.is(":hidden") || (U(), _(), tt(), et = J(), (ot = Z())(et("resize"), !0, !0));
+      }), m.on("reflow", it), pt.support && pt.support.datatables && function (t) {
+        if (t.dataTableSettings) for (var e = 0; e < t.dataTableSettings.length; e++) {
+          var o = t.dataTableSettings[e].nTable;
+          if (t[0] === o) return !0;
+        }
+        return !1;
+      }(m) && m.on("filter", it).on("sort", it).on("page", it), pt.support && pt.support.bootstrap && Tt.on(A("shown.bs.tab"), it), pt.support && pt.support.jqueryUI && Tt.on(A("tabsactivate"), it), bt) {
+        var ct = null;
+        vt.isFunction(pt.autoReflow) && (ct = pt.autoReflow(m, x)), ct || (ct = x.length ? x[0] : m[0]), (ut = new MutationObserver(function (t) {
+          for (var e = function e(t) {
+            return t && t[0] && ("THEAD" === t[0].nodeName || "TD" === t[0].nodeName || "TH" === t[0].nodeName);
+          }, o = 0; o < t.length; o++) {
+            if (!e(t[o].addedNodes) && !e(t[o].removedNodes)) {
+              it();
+              break;
+            }
+          }
+        })).observe(ct, {
+          childList: !0,
+          subtree: !0
+        });
+      }
+
+      m.data("floatThead-attached", {
+        destroy: function destroy() {
+          var t = ".fth-" + e;
+          return P(), m.css(F), u.remove(), yt && a.remove(), s.parent().length && s.replaceWith(d), X(!1), bt && (ut.disconnect(), ut = null), m.off("reflow reflowed"), x.off(t), S.off(t), W && (x.length ? x.unwrap() : m.unwrap()), L ? x.data("floatThead-containerWrap", !1) : m.data("floatThead-containerWrap", !1), m.css("minWidth", N), R.remove(), m.data("floatThead-attached", !1), Tt.off(t), Tt.off("fth-beforeprint fth-afterprint"), ft && ft.removeListener(dt), lt = st = function st() {}, function () {
+            return m.floatThead(pt);
+          };
+        },
+        reflow: function reflow() {
+          it();
+        },
+        setHeaderHeight: function setHeaderHeight() {
+          Q();
+        },
+        getFloatContainer: function getFloatContainer() {
+          return R;
+        },
+        getRowGroups: function getRowGroups() {
+          return n ? R.find(">table>thead").add(m.children("tbody,tfoot")) : m.children("thead,tbody,tfoot");
+        }
+      });
+    }), this;
+  };
+}(function () {
+  var t = window.jQuery;
+  return  true && module.exports && !t && (t = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js")), t;
+}());
+
+/***/ }),
+
 /***/ "./resources/js/percentages_calculator.js":
 /*!************************************************!*\
   !*** ./resources/js/percentages_calculator.js ***!
   \************************************************/
-/***/ (() => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _pfp_functions_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./pfp_functions.js */ "./resources/js/pfp_functions.js");
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
 
 $(function () {
   $.ajaxSetup({
@@ -4313,7 +4980,7 @@ $(function () {
   });
 
   var PercentagesCalculator = /*#__PURE__*/function () {
-    function PercentagesCalculator() {
+    function PercentagesCalculator(pfpFunctions) {
       _classCallCheck(this, PercentagesCalculator);
 
       this.debug = false;
@@ -4323,6 +4990,7 @@ $(function () {
       this.changesCounter = 0;
       this.changesCounterId = 'processCounter';
       this.lastCoordinatesElementId = '';
+      this.pfpFunctions = pfpFunctions;
       this.timeout;
     }
 
@@ -4454,6 +5122,9 @@ $(function () {
           if ($this.lastCoordinatesElementId) {
             $('#' + $this.lastCoordinatesElementId).focus();
           }
+
+          $this.pfpFunctions.tableStickyHeader();
+          $this.pfpFunctions.tableStickyFirstColumn();
         }
       }
     }]);
@@ -4462,10 +5133,59 @@ $(function () {
   }();
 
   if ($('#percentagesTablePlace').length) {
-    var PercentagesCalculatorClass = new PercentagesCalculator();
+    var PercentagesCalculatorClass = new PercentagesCalculator(new _pfp_functions_js__WEBPACK_IMPORTED_MODULE_0__.pfpFunctions());
     PercentagesCalculatorClass.init();
   }
 });
+
+/***/ }),
+
+/***/ "./resources/js/pfp_functions.js":
+/*!***************************************!*\
+  !*** ./resources/js/pfp_functions.js ***!
+  \***************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "pfpFunctions": () => (/* binding */ pfpFunctions)
+/* harmony export */ });
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+var pfpFunctions = /*#__PURE__*/function () {
+  function pfpFunctions() {
+    _classCallCheck(this, pfpFunctions);
+  }
+
+  _createClass(pfpFunctions, [{
+    key: "tableStickyHeader",
+    value: function tableStickyHeader() {
+      if ($('.table-sticky-header').length) {
+        $('.table-sticky-header').floatThead({
+          position: 'absolute'
+        });
+      }
+    }
+  }, {
+    key: "tableStickyFirstColumn",
+    value: function tableStickyFirstColumn() {
+      if ($('.table-sticky-column').length) {
+        if ($('.table-sticky-column-place').length) {
+          $(".table-sticky-column").not('.floatThead-table').clone(true).appendTo($(".table-sticky-column").closest('.table-sticky-column-place')).addClass('cloned_table');
+        } else {
+          $(".table-sticky-column").not('.floatThead-table').clone(true).appendTo($(".table-sticky-column").parent()).addClass('cloned_table');
+        }
+      }
+    }
+  }]);
+
+  return pfpFunctions;
+}();
 
 /***/ }),
 
