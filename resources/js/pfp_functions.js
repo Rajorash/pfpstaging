@@ -9,6 +9,8 @@ export class pfpFunctions {
 
     tableStickyFirstColumn() {
         if ($('.table-sticky-column').length) {
+            $('.cloned_table').remove(); //remove previous cloned tables
+
             if ($('.table-sticky-column-place').length) {
                 $(".table-sticky-column")
                     .not('.floatThead-table')

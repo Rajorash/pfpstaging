@@ -7,6 +7,7 @@ require('arrow-table');
 require('./pfp_functions');
 require('./allocation_calculator');
 require('./percentages_calculator');
+require('./projections_calculator');
 require('./jquery.floatThead.min');
 
 $('.global_nice_scroll').niceScroll({

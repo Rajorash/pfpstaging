@@ -25,25 +25,59 @@ class ProjectionController extends Controller
     {
         $this->authorize('view', $business);
 
-        $currentProjectionsRange = session()->get('projectionsRange_'.$business->id, $this->defaultProjectionsRangeValue);
+        $rangeArray = $this->getRangeArray();
+        $currentProjectionsRange = session()->get(
+            'projectionRangeValue_'.$business->id,
+            $this->defaultProjectionsRangeValue
+        );
+
+        return view(
+            'projections.projections',
+            compact('business', 'rangeArray', 'currentProjectionsRange')
+        );
+    }
+
+    public function updateData(Request $request)
+    {
+        $response = [
+            'error' => [],
+            'html' => [],
+        ];
+
+        $rangeValue = $request->rangeValue;
+        $businessId = $request->businessId;
+
+        if (!$rangeValue) {
+            $response['error'][] = 'Range value not set';
+        } else {
+            session(['projectionRangeValue_'.$businessId => $rangeValue]);
+        }
+
+        $business = Business::find($businessId);
 
         $scale = 'addDay';
         $start_date = $today = Carbon::now();
-        $end_date = Carbon::now()->$scale($currentProjectionsRange-1);
+        $end_date = Carbon::now()->$scale($rangeValue - 1);
 
         $dates = array();
         for ($date = $start_date; $date <= $end_date; $date->$scale(1)) {
             $dates[] = $date->format('Y-m-d');
         }
         $rangeArray = $this->getRangeArray();
-        $currentProjectionsRange = session()->get('projectionsRange_'.$business->id, $this->defaultProjectionsRangeValue);
         $allocations = self::allocationsByDate($business);
-        // dd($allocations);
 
-        return view(
-            'projections.show',
-            compact('allocations', 'business', 'dates', 'today', 'start_date', 'end_date', 'rangeArray', 'currentProjectionsRange')
-        );
+        $response['html'] = view('projections.projections-table')
+            ->with(
+                compact('allocations',
+                    'business',
+                    'dates',
+                    'today',
+                    'start_date',
+                    'end_date',
+                    'rangeArray')
+            )->render();
+
+        return response()->json($response);
     }
 
     private function getRangeArray()

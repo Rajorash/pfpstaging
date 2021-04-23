@@ -69,12 +69,13 @@ Route::group(['middleware' => 'auth'], function () {
 
     // Projections
     Route::get('/projections/{business}', [ProjectionController::class ,'index'])->name('projections');
+    Route::post('/projections/ajax/update', [ProjectionController::class ,'updateData'])->name('projections-controller-update');
 
     //ajax calls
-    Route::post('/business/allocations_calendar/ajax/update',
-        [AllocationsCalendar::class, 'updateData'])->name('allocations-controller-update');
     Route::get('/business/{business}/allocations_calendar',
         [AllocationsCalendar::class, 'calendar'])->name('allocations-calendar');
+    Route::post('/business/allocations_calendar/ajax/update',
+        [AllocationsCalendar::class, 'updateData'])->name('allocations-controller-update');
 });
 
 Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {

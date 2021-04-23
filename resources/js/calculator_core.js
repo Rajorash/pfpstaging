@@ -7,9 +7,10 @@ export class calculatorCore {
 
         this.elementLoadingSpinner = $('#loadingSpinner');
 
-        this.pfpFunctions = pfpFunctions;
+        this.pfpFunctions = pfpFunctions; //external functions
 
-        this.timeout;
+        this.timeOutSeconds = 2000; //default delay before send data to server
+        this.timeout = undefined; //just timeout object
     }
 
     init() {
@@ -63,7 +64,7 @@ export class calculatorCore {
         clearTimeout($this.timedOut);
         $this.timedOut = setTimeout(function () {
             $this.ajaxLoadWorker();
-        }, 2000);
+        }, $this.timeOutSeconds);
     }
 
     firstLoadData() {
@@ -108,6 +109,8 @@ export class calculatorCore {
 
             $this.pfpFunctions.tableStickyHeader();
             $this.pfpFunctions.tableStickyFirstColumn();
+        } else {
+            $this.elementTablePlace.html('<p class="p-8 text-red-700 text-bold">' + data.error.join('<br/>') + '</p>');
         }
     }
 }
