@@ -8,7 +8,7 @@
 
 @if($type == 'a')
     <a href="{{$href}}" {{$attr}}
-    {!! $attributes->merge(['class' => 'inline-block align-middle text-center select-none border font-normal
+    {!! $attributes->merge(['class' => 'flex items-center justify-center align-middle text-center select-none border font-normal
                 whitespace-no-wrap rounded-lg no-underline text-white flex items-center
                 leading-tight text-xs '.$background.' '.$padding]) !!}
 @elseif($type=='button')
