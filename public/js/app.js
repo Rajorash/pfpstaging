@@ -4179,7 +4179,8 @@ __webpack_require__(/*! ./projections_calculator */ "./resources/js/projections_
 __webpack_require__(/*! ./jquery.floatThead.min */ "./resources/js/jquery.floatThead.min.js");
 
 $('.global_nice_scroll').niceScroll({
-  cursorwidth: '10px'
+  cursorwidth: '10px',
+  zindex: 20
 });
 var resizeTimer;
 $(window).on('resize', function () {

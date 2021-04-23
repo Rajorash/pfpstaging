@@ -11,7 +11,8 @@ require('./projections_calculator');
 require('./jquery.floatThead.min');
 
 $('.global_nice_scroll').niceScroll({
-    cursorwidth: '10px'
+    cursorwidth: '10px',
+    zindex: 20
 });
 
 let resizeTimer;
