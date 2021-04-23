@@ -32,7 +32,7 @@ class ProjectionController extends Controller
         );
 
         return view(
-            'projections.projections',
+            'business.projections',
             compact('business', 'rangeArray', 'currentProjectionsRange')
         );
     }
@@ -66,7 +66,7 @@ class ProjectionController extends Controller
         $rangeArray = $this->getRangeArray();
         $allocations = self::allocationsByDate($business);
 
-        $response['html'] = view('projections.projections-table')
+        $response['html'] = view('business.projections-table')
             ->with(
                 compact('allocations',
                     'business',

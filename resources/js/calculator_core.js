@@ -1,5 +1,7 @@
+import {pfpFunctions} from "./pfp_functions.js";
+
 export class calculatorCore {
-    constructor(pfpFunctions) {
+    constructor() {
         this.debug = false;
         this.changesCounter = 0;
         this.changesCounterId = 'processCounter';
@@ -7,7 +9,7 @@ export class calculatorCore {
 
         this.elementLoadingSpinner = $('#loadingSpinner');
 
-        this.pfpFunctions = pfpFunctions; //external functions
+        this.pfpFunctions = new pfpFunctions(); //external functions
 
         this.timeOutSeconds = 2000; //default delay before send data to server
         this.timeout = undefined; //just timeout object

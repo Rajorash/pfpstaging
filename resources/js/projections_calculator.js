@@ -1,4 +1,3 @@
-import {pfpFunctions} from "./pfp_functions.js";
 import {calculatorCore} from "./calculator_core";
 
 $(function () {
@@ -10,8 +9,8 @@ $(function () {
     });
 
     class ProjectionsCalculator extends calculatorCore {
-        constructor(pfpFunctions) {
-            super(pfpFunctions);
+        constructor() {
+            super();
 
             this.ajaxUrl = window.projectionsControllerUpdate;
             this.elementTablePlace = $('#projectionsTablePlace');
@@ -42,7 +41,7 @@ $(function () {
     }
 
     if ($('#projectionsTablePlace').length) {
-        let ProjectionsCalculatorClass = new ProjectionsCalculator(new pfpFunctions());
+        let ProjectionsCalculatorClass = new ProjectionsCalculator();
         ProjectionsCalculatorClass.init();
     }
 });

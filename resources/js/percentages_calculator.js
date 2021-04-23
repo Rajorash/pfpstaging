@@ -1,4 +1,3 @@
-import {pfpFunctions} from "./pfp_functions.js";
 import {calculatorCore} from "./calculator_core";
 
 $(function () {
@@ -10,8 +9,8 @@ $(function () {
     });
 
     class PercentagesCalculator extends calculatorCore {
-        constructor(pfpFunctions) {
-            super(pfpFunctions);
+        constructor() {
+            super();
 
             this.ajaxUrl = window.percentagesControllerUpdate;
             this.elementTablePlace = $('#percentagesTablePlace');
@@ -57,7 +56,7 @@ $(function () {
     }
 
     if ($('#percentagesTablePlace').length) {
-        let PercentagesCalculatorClass = new PercentagesCalculator(new pfpFunctions());
+        let PercentagesCalculatorClass = new PercentagesCalculator();
         PercentagesCalculatorClass.init();
     }
 });

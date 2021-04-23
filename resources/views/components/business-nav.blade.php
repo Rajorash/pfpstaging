@@ -1,11 +1,7 @@
 <div class="ml-auto secondary-nav flex flex-wrap mt-8">
 
     @php
-        $active = (
-                            request()->is('*business/*')
-                            || request()->is('business')
-                        )
-                        && !request()->routeIs('allocations-calendar');
+        $active = request()->is('*business/*/accounts');
     @endphp
     <a href="{{url('/business/'.$businessId.'/accounts')}}" title="Accounts"
        class="bg-white block rounded box-border p-3 flex mr-6 h-12

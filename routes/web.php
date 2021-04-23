@@ -59,17 +59,17 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/allocations/{business}', 'AllocationsController@allocations');
 
     // Rollout Percentages routing
-    Route::get('/allocations/{business}/percentages',
+    Route::get('/business/{business}/percentages',
         [AllocationsController::class, 'percentages'])->name('allocations-percentages');
-    Route::post('/allocations/percentages/ajax/update',
+    Route::post('/business/percentages/ajax/update',
         [AllocationsController::class, 'updatePercentages'])->name('allocations-percentages-update');
 
     Route::post('/allocations/update', 'AllocationsController@updateAllocation');
     Route::post('/percentages/update', 'AllocationsController@updatePercentage');
 
     // Projections
-    Route::get('/projections/{business}', [ProjectionController::class ,'index'])->name('projections');
-    Route::post('/projections/ajax/update', [ProjectionController::class ,'updateData'])->name('projections-controller-update');
+    Route::get('/business/{business}/projections', [ProjectionController::class ,'index'])->name('projections');
+    Route::post('/business/projections/ajax/update', [ProjectionController::class ,'updateData'])->name('projections-controller-update');
 
     //ajax calls
     Route::get('/business/{business}/allocations_calendar',

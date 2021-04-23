@@ -1,4 +1,3 @@
-import {pfpFunctions} from "./pfp_functions.js";
 import {calculatorCore} from "./calculator_core";
 
 $(function () {
@@ -9,8 +8,8 @@ $(function () {
     });
 
     class AllocationCalculator extends calculatorCore {
-        constructor(pfpFunctions) {
-            super(pfpFunctions);
+        constructor() {
+            super();
 
             this.ajaxUrl = window.allocationsControllerUpdate;
             this.elementTablePlace = $('#allocationTablePlace');
@@ -60,7 +59,7 @@ $(function () {
     }
 
     if ($('#allocationTablePlace').length) {
-        let AllocationCalculatorClass = new AllocationCalculator(new pfpFunctions());
+        let AllocationCalculatorClass = new AllocationCalculator();
         AllocationCalculatorClass.init();
     }
 });

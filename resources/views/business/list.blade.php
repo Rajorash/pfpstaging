@@ -48,7 +48,7 @@
                             </a>
                         </x-ui.table-td>
                         <x-ui.table-td>
-                            <x-ui.button-small href="{{url('/allocations/'.$business->id.'/percentages')}}">Percentages</x-ui.button-small>
+                            <x-ui.button-small href="{{route('allocations-percentages', ['business' => $business])}}">Percentages</x-ui.button-small>
                         </x-ui.table-td>
                         <x-ui.table-td>
                             <x-ui.button-small href="{{route('allocations-calendar', ['business' => $business])}}">Data Entry</x-ui.button-small>

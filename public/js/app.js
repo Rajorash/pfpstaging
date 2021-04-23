@@ -4053,8 +4053,7 @@ module.exports = {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _pfp_functions_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./pfp_functions.js */ "./resources/js/pfp_functions.js");
-/* harmony import */ var _calculator_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./calculator_core */ "./resources/js/calculator_core.js");
+/* harmony import */ var _calculator_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./calculator_core */ "./resources/js/calculator_core.js");
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -4078,7 +4077,6 @@ function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Re
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
 
 
-
 $(function () {
   $.ajaxSetup({
     headers: {
@@ -4091,12 +4089,12 @@ $(function () {
 
     var _super = _createSuper(AllocationCalculator);
 
-    function AllocationCalculator(pfpFunctions) {
+    function AllocationCalculator() {
       var _this;
 
       _classCallCheck(this, AllocationCalculator);
 
-      _this = _super.call(this, pfpFunctions);
+      _this = _super.call(this);
       _this.ajaxUrl = window.allocationsControllerUpdate;
       _this.elementTablePlace = $('#allocationTablePlace');
       return _this;
@@ -4143,10 +4141,10 @@ $(function () {
     }]);
 
     return AllocationCalculator;
-  }(_calculator_core__WEBPACK_IMPORTED_MODULE_1__.calculatorCore);
+  }(_calculator_core__WEBPACK_IMPORTED_MODULE_0__.calculatorCore);
 
   if ($('#allocationTablePlace').length) {
-    var AllocationCalculatorClass = new AllocationCalculator(new _pfp_functions_js__WEBPACK_IMPORTED_MODULE_0__.pfpFunctions());
+    var AllocationCalculatorClass = new AllocationCalculator();
     AllocationCalculatorClass.init();
   }
 });
@@ -4248,14 +4246,16 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "calculatorCore": () => (/* binding */ calculatorCore)
 /* harmony export */ });
+/* harmony import */ var _pfp_functions_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./pfp_functions.js */ "./resources/js/pfp_functions.js");
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
+
 var calculatorCore = /*#__PURE__*/function () {
-  function calculatorCore(pfpFunctions) {
+  function calculatorCore() {
     _classCallCheck(this, calculatorCore);
 
     this.debug = false;
@@ -4263,7 +4263,7 @@ var calculatorCore = /*#__PURE__*/function () {
     this.changesCounterId = 'processCounter';
     this.lastCoordinatesElementId = '';
     this.elementLoadingSpinner = $('#loadingSpinner');
-    this.pfpFunctions = pfpFunctions; //external functions
+    this.pfpFunctions = new _pfp_functions_js__WEBPACK_IMPORTED_MODULE_0__.pfpFunctions(); //external functions
 
     this.timeOutSeconds = 2000; //default delay before send data to server
 
@@ -5027,8 +5027,7 @@ var calculatorCore = /*#__PURE__*/function () {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _pfp_functions_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./pfp_functions.js */ "./resources/js/pfp_functions.js");
-/* harmony import */ var _calculator_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./calculator_core */ "./resources/js/calculator_core.js");
+/* harmony import */ var _calculator_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./calculator_core */ "./resources/js/calculator_core.js");
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -5052,7 +5051,6 @@ function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Re
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
 
 
-
 $(function () {
   $.ajaxSetup({
     headers: {
@@ -5065,12 +5063,12 @@ $(function () {
 
     var _super = _createSuper(PercentagesCalculator);
 
-    function PercentagesCalculator(pfpFunctions) {
+    function PercentagesCalculator() {
       var _this;
 
       _classCallCheck(this, PercentagesCalculator);
 
-      _this = _super.call(this, pfpFunctions);
+      _this = _super.call(this);
       _this.ajaxUrl = window.percentagesControllerUpdate;
       _this.elementTablePlace = $('#percentagesTablePlace');
       return _this;
@@ -5114,10 +5112,10 @@ $(function () {
     }]);
 
     return PercentagesCalculator;
-  }(_calculator_core__WEBPACK_IMPORTED_MODULE_1__.calculatorCore);
+  }(_calculator_core__WEBPACK_IMPORTED_MODULE_0__.calculatorCore);
 
   if ($('#percentagesTablePlace').length) {
-    var PercentagesCalculatorClass = new PercentagesCalculator(new _pfp_functions_js__WEBPACK_IMPORTED_MODULE_0__.pfpFunctions());
+    var PercentagesCalculatorClass = new PercentagesCalculator();
     PercentagesCalculatorClass.init();
   }
 });
@@ -5183,8 +5181,7 @@ var pfpFunctions = /*#__PURE__*/function () {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _pfp_functions_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./pfp_functions.js */ "./resources/js/pfp_functions.js");
-/* harmony import */ var _calculator_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./calculator_core */ "./resources/js/calculator_core.js");
+/* harmony import */ var _calculator_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./calculator_core */ "./resources/js/calculator_core.js");
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -5208,7 +5205,6 @@ function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Re
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
 
 
-
 $(function () {
   $.ajaxSetup({
     headers: {
@@ -5221,12 +5217,12 @@ $(function () {
 
     var _super = _createSuper(ProjectionsCalculator);
 
-    function ProjectionsCalculator(pfpFunctions) {
+    function ProjectionsCalculator() {
       var _this;
 
       _classCallCheck(this, ProjectionsCalculator);
 
-      _this = _super.call(this, pfpFunctions);
+      _this = _super.call(this);
       _this.ajaxUrl = window.projectionsControllerUpdate;
       _this.elementTablePlace = $('#projectionsTablePlace');
       _this.timeOutSeconds = 0; //set delay to 0 miliseconds
@@ -5257,10 +5253,10 @@ $(function () {
     }]);
 
     return ProjectionsCalculator;
-  }(_calculator_core__WEBPACK_IMPORTED_MODULE_1__.calculatorCore);
+  }(_calculator_core__WEBPACK_IMPORTED_MODULE_0__.calculatorCore);
 
   if ($('#projectionsTablePlace').length) {
-    var ProjectionsCalculatorClass = new ProjectionsCalculator(new _pfp_functions_js__WEBPACK_IMPORTED_MODULE_0__.pfpFunctions());
+    var ProjectionsCalculatorClass = new ProjectionsCalculator();
     ProjectionsCalculatorClass.init();
   }
 });
