@@ -62,12 +62,13 @@ class ProjectionController extends Controller
         if($rangeValue == 31) {
             $addDateStep = 'addMonth';
         }
-        $entries_to_show = 12;
+        $entries_to_show = 14;
         $start_date = $today = Carbon::now();
-        $end_date = Carbon::now()->$addDateStep($entries_to_show);
+        // start date is shown, so adjust end_date -1 to compensate
+        $end_date = Carbon::now()->$addDateStep($entries_to_show - 1);
 
         $dates = array();
-        for ($date = $start_date; $date <= $end_date; $date->$addDateStep()) {
+        for ($date = $start_date; $date < $end_date; $date->$addDateStep()) {
             $dates[] = $date->format('Y-m-d');
         }
         $rangeArray = $this->getRangeArray();
