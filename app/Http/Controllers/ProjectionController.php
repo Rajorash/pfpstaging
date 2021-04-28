@@ -55,12 +55,19 @@ class ProjectionController extends Controller
 
         $business = Business::find($businessId);
 
-        $scale = 'addDay';
+        $addDateStep = 'addDay';
+        if($rangeValue == 7) {
+            $addDateStep = 'addWeek';
+        }
+        if($rangeValue == 31) {
+            $addDateStep = 'addMonth';
+        }
+        $entries_to_show = 12;
         $start_date = $today = Carbon::now();
-        $end_date = Carbon::now()->$scale($rangeValue - 1);
+        $end_date = Carbon::now()->$addDateStep($entries_to_show);
 
         $dates = array();
-        for ($date = $start_date; $date <= $end_date; $date->$scale(1)) {
+        for ($date = $start_date; $date <= $end_date; $date->$addDateStep()) {
             $dates[] = $date->format('Y-m-d');
         }
         $rangeArray = $this->getRangeArray();
