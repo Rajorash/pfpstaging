@@ -169,12 +169,15 @@ class AllocationsCalendar extends Controller
                 }
                 $flows = [];
                 foreach ($period as $date) {
-                    $income = $this->getIncomeByDate($businessId, $date->format('Y-m-d'));
+
+                    $date_ymd = $date->format('Y-m-d');
+
+                    $income = $this->getIncomeByDate($businessId, $date_ymd);
                     $phaseId = $this->business->getPhaseIdByDate($date);
                     $percents = $this->getPercentValues($phaseId, $businessId);
 
                     $response[$type][$id]['name'] = $names[$id];
-                    $response[$type][$id][$date->format('Y-m-d')]
+                    $response[$type][$id][$date_ymd]
                         = array_key_exists($date->format('Y-m-d 00:00:00'), $account_item)
                         ? $account_item[$date->format('Y-m-d 00:00:00')]
                         : 0;
@@ -185,45 +188,51 @@ class AllocationsCalendar extends Controller
                             foreach ($account_item as $key => $value) {
                                 if (is_integer($key)) {
                                     $response[BankAccount::ACCOUNT_TYPE_REVENUE][$id][$key]['name'] = $value['name'];
-                                    $response[BankAccount::ACCOUNT_TYPE_REVENUE][$id][$key][$date->format('Y-m-d')]
+                                    $response[BankAccount::ACCOUNT_TYPE_REVENUE][$id][$key][$date_ymd]
                                         = array_key_exists($date->format('Y-m-d 00:00:00'), $value)
                                         ? $value[$date->format('Y-m-d 00:00:00')]
                                         : 0;
-                                    $totalRevenue += $response[BankAccount::ACCOUNT_TYPE_REVENUE][$id][$key][$date->format('Y-m-d')];
+                                    $totalRevenue += $response[BankAccount::ACCOUNT_TYPE_REVENUE][$id][$key][$date_ymd];
                                 }
                             }
-                            if ($response[BankAccount::ACCOUNT_TYPE_REVENUE][$id][$date->format('Y-m-d')] != $totalRevenue) {
-                                $response[BankAccount::ACCOUNT_TYPE_REVENUE][$id][$date->format('Y-m-d')] = $totalRevenue;
-                                $this->storeSingle('account', $id, $totalRevenue, $date->format('Y-m-d'));
-                                $key = 'getIncomeByDate_'.$businessId.'_'.$date->format('Y-m-d');
+                            if ($response[BankAccount::ACCOUNT_TYPE_REVENUE][$id][$date_ymd] != $totalRevenue) {
+                                $response[BankAccount::ACCOUNT_TYPE_REVENUE][$id][$date_ymd] = $totalRevenue;
+                                $this->storeSingle('account', $id, $totalRevenue, $date_ymd);
+                                $key = 'getIncomeByDate_'.$businessId.'_'.$date_ymd;
                                 Cache::forget($key);
                             }
                             break;
                         case BankAccount::ACCOUNT_TYPE_SALESTAX: // Tax amt
-                            $response[BankAccount::ACCOUNT_TYPE_SALESTAX][$id]['transfer'][$date->format('Y-m-d')] = ($income > 0)
+                            $response[BankAccount::ACCOUNT_TYPE_SALESTAX][$id]['transfer'][$date_ymd] = ($income > 0)
                                 ? round($income - $income / ($percents[$type][$id] / 100 + 1), 4)
                                 : 0;
+
                             $flow_total = 0;
+
                             foreach ($account_item as $key => $value) {
                                 if (is_integer($key)) {
                                     $flows[$id][$key]['name'] = $value['name'];
-                                    $flows[$id][$key][$date->format('Y-m-d')]
+                                    $flows[$id][$key][$date_ymd]
                                         = array_key_exists($date->format('Y-m-d 00:00:00'), $value)
                                         ? $value[$date->format('Y-m-d 00:00:00')]
                                         : 0;
                                     $flow_total = $value['negative']
-                                        ? $flow_total - $flows[$id][$key][$date->format('Y-m-d')]
-                                        : $flow_total + $flows[$id][$key][$date->format('Y-m-d')];
+                                        ? $flow_total - $flows[$id][$key][$date_ymd]
+                                        : $flow_total + $flows[$id][$key][$date_ymd];
                                 }
                             }
-                            $response[BankAccount::ACCOUNT_TYPE_SALESTAX][$id]['total'][$date->format('Y-m-d')] = $flow_total;
+
+                            $response[BankAccount::ACCOUNT_TYPE_SALESTAX][$id]['total'][$date_ymd] = $flow_total;
+
                             if (array_key_exists($key, $flows[$id]) && count($flows[$id][$key]) == $complete) {
                                 $response[BankAccount::ACCOUNT_TYPE_SALESTAX][$id] += $flows[$id];
                             }
 
                             $actualValue = $flow_total +
-                                $response[BankAccount::ACCOUNT_TYPE_SALESTAX][$id]['transfer'][$date->format('Y-m-d')];
-                            $previousDate = Carbon::parse($date->format('Y-m-d'))->subDays(1)->format('Y-m-d');
+                                $response[BankAccount::ACCOUNT_TYPE_SALESTAX][$id]['transfer'][$date_ymd];
+
+                            $previousDate = Carbon::parse($date)->subDays(1)->format('Y-m-d');
+
                             if (array_key_exists($previousDate, $response[BankAccount::ACCOUNT_TYPE_SALESTAX][$id])) {
                                 $actualValue += $response[BankAccount::ACCOUNT_TYPE_SALESTAX][$id][$previousDate];
                             } else {
@@ -232,9 +241,10 @@ class AllocationsCalendar extends Controller
                                     $actualValue += $previousNonZero;
                                 }
                             }
-                            if ($response[BankAccount::ACCOUNT_TYPE_SALESTAX][$id][$date->format('Y-m-d')] != $actualValue) {
-                                $response[BankAccount::ACCOUNT_TYPE_SALESTAX][$id][$date->format('Y-m-d')] = $actualValue;
-                                $this->storeSingle('account', $id, $actualValue, $date->format('Y-m-d'));
+
+                            if ($response[BankAccount::ACCOUNT_TYPE_SALESTAX][$id][$date_ymd] != $actualValue) {
+                                $response[BankAccount::ACCOUNT_TYPE_SALESTAX][$id][$date_ymd] = $actualValue;
+                                $this->storeSingle('account', $id, $actualValue, $date_ymd);
                             }
                             break;
 
@@ -242,7 +252,7 @@ class AllocationsCalendar extends Controller
                             $salestax = data_get($percents, 'salestax');
                             $salestax = count($salestax) > 0 ? $salestax[key($salestax)] : null;
                             $nsp = ($income > 0 && is_numeric($salestax)) ? $income / ($salestax / 100 + 1) : 0;
-                            $response[BankAccount::ACCOUNT_TYPE_PRETOTAL][$id]['transfer'][$date->format('Y-m-d')]
+                            $response[BankAccount::ACCOUNT_TYPE_PRETOTAL][$id]['transfer'][$date_ymd]
                                 = (is_numeric($percents[$type][$id]))
                                 ? round($nsp * ($percents[$type][$id] / 100), 4)
                                 : 0;
@@ -250,23 +260,23 @@ class AllocationsCalendar extends Controller
                             foreach ($account_item as $key => $value) {
                                 if (is_integer($key)) {
                                     $flows[$id][$key]['name'] = $value['name'];
-                                    $flows[$id][$key][$date->format('Y-m-d')]
+                                    $flows[$id][$key][$date_ymd]
                                         = array_key_exists($date->format('Y-m-d 00:00:00'), $value)
                                         ? $value[$date->format('Y-m-d 00:00:00')]
                                         : 0;
                                     $flow_total = $value['negative']
-                                        ? $flow_total - $flows[$id][$key][$date->format('Y-m-d')]
-                                        : $flow_total + $flows[$id][$key][$date->format('Y-m-d')];
+                                        ? $flow_total - $flows[$id][$key][$date_ymd]
+                                        : $flow_total + $flows[$id][$key][$date_ymd];
                                 }
                             }
-                            $response[BankAccount::ACCOUNT_TYPE_PRETOTAL][$id]['total'][$date->format('Y-m-d')] = $flow_total;
+                            $response[BankAccount::ACCOUNT_TYPE_PRETOTAL][$id]['total'][$date_ymd] = $flow_total;
                             if (array_key_exists($key, $flows[$id]) && count($flows[$id][$key]) == $complete) {
                                 $response[BankAccount::ACCOUNT_TYPE_PRETOTAL][$id] += $flows[$id];
                             }
 
                             $actualValue = $flow_total +
-                                $response[BankAccount::ACCOUNT_TYPE_PRETOTAL][$id]['transfer'][$date->format('Y-m-d')];
-                            $previousDate = Carbon::parse($date->format('Y-m-d'))->subDays(1)->format('Y-m-d');
+                                $response[BankAccount::ACCOUNT_TYPE_PRETOTAL][$id]['transfer'][$date_ymd];
+                            $previousDate = Carbon::parse($date)->subDays(1)->format('Y-m-d');
                             if (array_key_exists($previousDate, $response[BankAccount::ACCOUNT_TYPE_PRETOTAL][$id])) {
                                 $actualValue += $response[BankAccount::ACCOUNT_TYPE_PRETOTAL][$id][$previousDate];
                             } else {
@@ -275,9 +285,9 @@ class AllocationsCalendar extends Controller
                                     $actualValue += $previousNonZero;
                                 }
                             }
-                            if ($response[BankAccount::ACCOUNT_TYPE_PRETOTAL][$id][$date->format('Y-m-d')] != $actualValue) {
-                                $response[BankAccount::ACCOUNT_TYPE_PRETOTAL][$id][$date->format('Y-m-d')] = $actualValue;
-                                $this->storeSingle('account', $id, $actualValue, $date->format('Y-m-d'));
+                            if ($response[BankAccount::ACCOUNT_TYPE_PRETOTAL][$id][$date_ymd] != $actualValue) {
+                                $response[BankAccount::ACCOUNT_TYPE_PRETOTAL][$id][$date_ymd] = $actualValue;
+                                $this->storeSingle('account', $id, $actualValue, $date_ymd);
                             }
                             break;
 

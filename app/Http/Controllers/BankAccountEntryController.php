@@ -101,7 +101,7 @@ class BankAccountEntryController extends Controller
         foreach( $amounts as $account_id => $amount ) {
             // find or create an entry
             if($account = BankAccount::find($account_id)) {
-                $account->allocate($amount, $today, $phase_id);
+                $account->allocate($amount, $today, $phase_id, true);
             }
         }
 

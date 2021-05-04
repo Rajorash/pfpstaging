@@ -27,7 +27,7 @@ trait Allocatable
      * @param  integer  $phase_id
      * @return Allocation
      */
-    public function allocate($amount, $date = null, $phase_id = 1)
+    public function allocate($amount, $date = null, $phase_id = 1, $manual_entry = false)
     {
         // check input
 
@@ -38,10 +38,11 @@ trait Allocatable
             'allocatable_type' => get_class($this),
             'allocation_date' => $date
         ],
-            [
-                'phase_id' => $phase_id,
-                'amount' => $amount
-            ]);
+        [
+            'phase_id' => $phase_id,
+            'amount' => $amount,
+            'manual_entry' => $manual_entry
+        ]);
 
         return $allocation;
     }
