@@ -76,13 +76,15 @@ class ProjectionController extends Controller
 
         $response['html'] = view('business.projections-table')
             ->with(
-                compact('allocations',
+                compact(
+                    'allocations',
                     'business',
                     'dates',
                     'today',
                     'start_date',
                     'end_date',
-                    'rangeArray')
+                    'rangeArray'
+                )
             )->render();
 
         return response()->json($response);
@@ -108,18 +110,24 @@ class ProjectionController extends Controller
          *      }, ...
          *  }, ...
          */
-        return $business->accounts->mapWithKeys(function ($account) {
-            // return key mapped accounts
-            return [
-                $account->id => collect([
-                    'account' => $account,
-                    'dates' => $account->allocations->mapWithKeys(function ($allocation) {
-                        // return key mapped allocations
-                        return [$allocation->allocation_date->format('Y-m-d') => $allocation];
-                    })
-                ])
-            ];
-        });
+        return $business->accounts->filter(
+            function ($account) {
+                return $account->type != BankAccount::ACCOUNT_TYPE_REVENUE;
+            }
+        )->mapWithKeys(
+            function ($account) {
+                // return key mapped accounts
+                return [
+                    $account->id => collect([
+                        'account' => $account,
+                        'dates' => $account->allocations->mapWithKeys(function ($allocation) {
+                            // return key mapped allocations
+                            return [$allocation->allocation_date->format('Y-m-d') => $allocation];
+                        })
+                    ])
+                ];
+            }
+        );
     }
 
 }
