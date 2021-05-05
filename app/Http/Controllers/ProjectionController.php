@@ -130,4 +130,15 @@ class ProjectionController extends Controller
         );
     }
 
+    /**
+     * Gets the last calculated or entered value for the account,
+     * if no existing values (ie. there have been no allocations),
+     * returns null.
+     */
+    private function getLatestValueByAccount( BankAccount $account )
+    {
+        return $account->allocations->sortBy('allocation_date')->last();
+    }
+
+
 }
