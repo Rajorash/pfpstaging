@@ -31,6 +31,8 @@
                                type="text"
                                @if ( $allocation['dates']->has($date) )
                                value="{{number_format($allocation['dates'][$date]->amount, 0)}}"
+                               @else
+                               value="{{number_format($allocation['last_val'], 0)}}"
                                @endif
                                disabled
                         >

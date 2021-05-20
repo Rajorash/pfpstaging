@@ -123,7 +123,8 @@ class ProjectionController extends Controller
                         'dates' => $account->allocations->mapWithKeys(function ($allocation) {
                             // return key mapped allocations
                             return [$allocation->allocation_date->format('Y-m-d') => $allocation];
-                        })
+                        }),
+                        'last_val' => $account->allocations->last()->amount
                     ])
                 ];
             }
