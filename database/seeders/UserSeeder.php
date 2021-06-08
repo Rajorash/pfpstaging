@@ -12,12 +12,37 @@ use Illuminate\Support\Str;
 class UserSeeder extends Seeder
 {
     /**
-    * Run the database seeds.
-    *
-    * @return void
-    */
+     * Run the database seeds.
+     *
+     * @return void
+     */
     public function run()
     {
+        //Superuser
+        $superadmin = User::firstOrCreate([
+            'name' => 'SuperAdmin',
+            'email' => 'superadmin@pfp.com'
+        ]);
+        $superadmin_role = Role::where('name', 'superuser')->first();
+        $superadmin->assignRole($superadmin_role);
+        $superadmin->email_verified_at = now();
+        $superadmin->remember_token = Str::random(10);
+        $superadmin->password = Hash::make('#j$dZW|bdYO+`CW`~,y|');
+        $superadmin->save();
+
+        //Regional Admin
+        $regionaladmin = User::firstOrCreate([
+            'name' => 'RegionalAdmin',
+            'email' => 'regionaladmin@pfp.com'
+        ]);
+        $regionaladmin_role = Role::where('name', 'admin')->first();
+        $regionaladmin->assignRole($regionaladmin_role);
+        $regionaladmin->email_verified_at = now();
+        $regionaladmin->remember_token = Str::random(10);
+        $regionaladmin->password = Hash::make('#j$dSYUD(W@SbdYO+`CW');
+        $regionaladmin->save();
+
+        //Advisor
         $advisor = User::firstOrCreate([
             'name' => 'Test Advisor',
             'email' => 'advisor@pfp.com'
@@ -31,6 +56,7 @@ class UserSeeder extends Seeder
         $advisor_details = new Advisor($advisor->id);
         $advisor_details->save();
 
+        //Client
         $client = User::firstOrCreate([
             'name' => 'Test Client',
             'email' => 'client@pfp.com'
@@ -41,6 +67,8 @@ class UserSeeder extends Seeder
         $client->remember_token = Str::random(10);
         $client->password = Hash::make('letmeinnow!');
         $client->save();
+
+        //--------------------------
 
         $advisor2 = User::firstOrCreate([
             'name' => 'Craig Minter',
@@ -53,16 +81,5 @@ class UserSeeder extends Seeder
         $advisor2->save();
         $advisor2_details = new Advisor($advisor2->id);
         $advisor2_details->save();
-
-        $superadmin = User::firstOrCreate([
-            'name' => 'SuperAdmin',
-            'email' => 'superadmin@pfp.com'
-        ]);
-        $superadmin_role = Role::where('name', 'superuser')->first();
-        $superadmin->assignRole($superadmin_role);
-        $superadmin->email_verified_at = now();
-        $superadmin->remember_token = Str::random(10);
-        $superadmin->password = Hash::make('#j$dZW|bdYO+`CW`~,y|');
-        $superadmin->save();
     }
 }
