@@ -57,23 +57,31 @@
                                             {{ __('Roles:') }}
                                         </div>
                                         <div class="table-cell w-3/4 pb-4">
-                                            <select name="roles[]" id="roles"
-                                                    class="w-full form-input border-light_blue
-                                                    focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50
-                                                    rounded-md shadow-sm" multiple size="{{count($roles)}}">
-                                                @foreach ($roles as $role_id => $role_label)
-                                                    <option
-                                                        value="{{ $role_id }}"{{ is_array($userRoles) && in_array($role_id, $userRoles) ? ' selected' : '' }}>{{ $role_label }}</option>
-                                                @endforeach
-                                            </select>
+                                            @foreach ($roles as $role_id => $role_label)
+                                                <div class="text-left my-2">
+                                                    <input type="checkbox" name="roles[]" id="roles_{{$role_id}}"
+                                                           value="{{ $role_id }}"{{ is_array($userRoles) && in_array($role_id, $userRoles) ? ' checked' : '' }} />
+                                                    <label for="roles_{{$role_id}}">{{ $role_label }}</label>
+                                                </div>
+                                            @endforeach
+                                            {{--                                            <select name="roles[]" id="roles"--}}
+                                            {{--                                                    class="w-full form-input border-light_blue--}}
+                                            {{--                                                    focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50--}}
+                                            {{--                                                    rounded-md shadow-sm" multiple size="{{count($roles)}}">--}}
+                                            {{--                                                @foreach ($roles as $role_id => $role_label)--}}
+                                            {{--                                                    <option--}}
+                                            {{--                                                        value="{{ $role_id }}"{{ is_array($userRoles) && in_array($role_id, $userRoles) ? ' selected' : '' }}>{{ $role_label }}</option>--}}
+                                            {{--                                                @endforeach--}}
+                                            {{--                                            </select>--}}
                                             <x-jet-input-error for="roles" class="mt-2"/>
                                             @if($errors->has('roles'))
-                                            <p class="text-sm text-red-600 mt-2">{{ $errors->first('roles') }}</p>
+                                                <p class="text-sm text-red-600 mt-2">{{ $errors->first('roles') }}</p>
                                             @endif
                                         </div>
                                     </div>
                                 @else
-                                    <input type="hidden" name="roles[0]" id="roles" value="{{array_key_first($userRoles)}}">
+                                    <input type="hidden" name="roles[0]" id="roles"
+                                           value="{{array_key_first($userRoles)}}">
                                 @endif
                                 @if (count($businesses) > 0)
                                     <div class="table-row">
@@ -81,15 +89,14 @@
                                             {{ __('Available for licensing:') }}
                                         </div>
                                         <div class="table-cell w-3/4 pb-4">
-                                            <select name="licenses[]" id="licenses"
-                                                    class="w-full form-input border-light_blue
-                                                    focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50
-                                                    rounded-md shadow-sm" multiple size="{{min([count($businesses), 5])}}">
-                                                @foreach ($businesses as $business_id => $business_name)
-                                                    <option
-                                                        value="{{ $business_id }}"{{ is_array($licenses) && in_array($business_id, $licenses) ? ' selected' : '' }}>{{ $business_name }}</option>
-                                                @endforeach
-                                            </select>
+                                            @foreach ($businesses as $business_id => $business_name)
+                                                <div class="text-left my-2">
+                                                    <input type="checkbox" name="licenses[]"
+                                                           id="licenses_{{$business_id}}"
+                                                           value="{{ $business_id }}"{{ is_array($licenses) && in_array($business_id, $licenses) ? ' checked' : '' }} />
+                                                    <label for="roles_{{$business_id}}">{{ $business_name }}</label>
+                                                </div>
+                                            @endforeach
                                             <x-jet-input-error for="roles" class="mt-2"/>
                                         </div>
                                     </div>
