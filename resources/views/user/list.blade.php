@@ -67,17 +67,19 @@
                             </x-ui.button-small>
                         </x-ui.table-td>
                         <x-ui.table-td>
+                        @if($user->id != $currUserId)
                             <x-ui.button-small href="{{route('users.edit', ['user'=>$user])}}">
                                 Edit User
                             </x-ui.button-small>
+                        @endif
                         </x-ui.table-td>
                     </tr>
                 @endforeach
 
-            </x-ui.table-tbody>
+</x-ui.table-tbody>
 
-        </x-ui.table-table>
+</x-ui.table-table>
 
-    </x-ui.main>
+</x-ui.main>
 
 </x-app-layout>

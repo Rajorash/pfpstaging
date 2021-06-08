@@ -33,7 +33,8 @@ class UserController extends Controller
             // return $filtered;
         }
 
-        return view('user.list', ['users' => $filtered]);
+        $currUserId = auth()->user()->id;
+        return view('user.list', ['users' => $filtered, 'currUserId' => $currUserId]);
     }
 
     /**
@@ -47,7 +48,7 @@ class UserController extends Controller
         $this->authorize('create', $user);
 
         $ownerRoleId = auth()->user()->roles->min('id');
-        $roles = Role::where('id', '>', $ownerRoleId)->get()->pluck('label', 'id')->toArray();
+        $roles = $this->getRolesAllowedToGrant($user);
 
         return view('user.create', ['roles' => $roles]);
     }
@@ -129,7 +130,7 @@ class UserController extends Controller
 
         $ownerRoleId = auth()->user()->roles->min('id');
         $roles = Role::where('id', '>', $ownerRoleId)->get()->pluck('label', 'id')->toArray();
-        $userRoles = $user->roles->pluck('id')->toArray();
+        $userRoles = $this->getRolesAllowedToGrant($user);
 
         $businesses = $licenses = [];
         if (in_array(User::ROLE_IDS[User::ROLE_ADVISOR], $userRoles)) {
@@ -187,7 +188,7 @@ class UserController extends Controller
         });
 
         if ($validator->fails()) {
-            $userRoles = $user->roles->pluck('id')->toArray();
+            $userRoles = $this->getRolesAllowedToGrant($user);
             $ownerRoleId = auth()->user()->roles->min('id');
             $roles = Role::where('id', '>', $ownerRoleId)->get()->pluck('label', 'id')->toArray();
             $businesses = $licenses = [];
@@ -239,7 +240,7 @@ class UserController extends Controller
         }
 
         $ownerRoleId = auth()->user()->roles->min('id');
-        $userRoles = $user->roles->pluck('id')->toArray();
+        $userRoles = $this->getRolesAllowedToGrant($user);
         $toDetach = [];
         foreach ($userRoles as $role_id) {
             if ($ownerRoleId > $role_id && ($role_id != User::ROLE_ADVISOR || empty($request->licenses))) {
@@ -267,5 +268,19 @@ class UserController extends Controller
     public function destroy(User $user)
     {
         //
+    }
+
+    private function getRolesAllowedToGrant(User $user) {
+        $roles = Role::all()->pluck('label', 'id');
+
+        return $user->roles->map(function($item) use($roles) {
+            if ($item->id < 4) {
+                $item['allowed_id'] = ($item->id + 1);
+                $item['allowed_label'] = $roles[($item->id + 1)];
+            }
+            return $item;
+        })->pluck('allowed_label', 'allowed_id')->filter(function ($value, $key) {
+            return !is_null($value);
+        })->toArray();
     }
 }
