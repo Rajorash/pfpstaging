@@ -32,6 +32,20 @@
 
                                 <div class="table-row">
                                     <div class="table-cell w-1/4 pb-4 text-left">
+                                        {{ __('Active') }}
+                                    </div>
+                                    <div class="table-cell w-3/4 pb-4">
+                                        <div class="text-left my-2">
+                                            <input type="checkbox" name="active" id="active"
+                                                   value="1" {{ old('active') ? ' checked' : '' }} />
+                                            <label for="active" class="pl-2">{{__('Yes, User is Active')}}</label>
+                                        </div>
+                                        <x-jet-input-error for="active" class="mt-2"/>
+                                    </div>
+                                </div>
+
+                                <div class="table-row">
+                                    <div class="table-cell w-1/4 pb-4 text-left">
                                         {{ __('Name') }}
                                     </div>
                                     <div class="table-cell w-3/4 pb-4">
@@ -47,10 +61,11 @@
                                     </div>
                                     <div class="table-cell w-3/4 pb-4">
                                         <x-jet-input id="email" class=" w-full" type="email" name="email"
-                                                     :value="old('email')" required autofocus/>
+                                                     :value="old('email')" required/>
                                         <x-jet-input-error for="email" class="mt-2"/>
                                     </div>
                                 </div>
+
                                 @if(count($roles) > 1)
                                     <div class="table-row">
                                         <div class="table-cell w-1/4 pb-4 text-left">
@@ -70,6 +85,7 @@
                                 @else
                                     <input type="hidden" name="roles[0]" id="roles" value="{{array_key_first($roles)}}">
                                 @endif
+
                                 <div class="table-row">
                                     <div class="table-cell w-1/4 pb-4 text-left">
                                         {{ __('Timezone:') }}
@@ -99,7 +115,6 @@
                                         <x-jet-input-error for="business_name" class="mt-2"/>
                                     </div>
                                 </div>
-
 
                             </div>
 

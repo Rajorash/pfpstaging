@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Business;
 use App\Traits\GettersTrait;
-use Auth;
+
+//use Auth;
 use App\Models\User;
 use App\Models\Role;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 
@@ -34,6 +36,7 @@ class UserController extends Controller
         }
 
         $currUserId = auth()->user()->id;
+
         return view('user.list', ['users' => $filtered, 'currUserId' => $currUserId]);
     }
 
@@ -75,12 +78,12 @@ class UserController extends Controller
         $user->email = $data['email'];
         $user->password = Hash::make(Str::random(10));
         $user->timezone = $data['timezone'];
+        $user->active = boolval($request['active']);
         $user->save();
 
         $ownerRoleId = auth()->user()->roles->min('id');
         // assign client role
-        foreach ($data['roles'] as $role_id)
-        {
+        foreach ($data['roles'] as $role_id) {
             if ($ownerRoleId < $role_id) {
                 $client_role = Role::find($role_id);
                 $user->assignRole($client_role);
@@ -149,6 +152,7 @@ class UserController extends Controller
             'user.edit',
             [
                 'user' => $user,
+                'userHasRoles' => $user->roles->pluck('id')->toArray(),
                 'userRoles' => $userRoles,
                 'roles' => $roles,
                 'businesses' => $businesses,
@@ -177,9 +181,9 @@ class UserController extends Controller
         $advisorId = User::ROLE_IDS[User::ROLE_ADVISOR];
         $validator->after(function ($validator) use ($request, $advisorId) {
             if (
-                is_array($request->licenses) &&
-                is_array($request->roles) &&
-                !in_array($advisorId, $request->roles)
+                is_array($request->licenses)
+                && is_array($request->roles)
+                && !in_array($advisorId, $request->roles)
             ) {
                 $validator->errors()->add(
                     'roles', 'Advisor role can not be revoked if at least one business is selected for licensing.'
@@ -212,7 +216,7 @@ class UserController extends Controller
                     'roles' => $roles,
                     'businesses' => $businesses,
                     'licenses' => $licenses,
-                    "errors"  => $validator->messages()
+                    "errors" => $validator->messages()
                 ]
             );
         }
@@ -220,14 +224,14 @@ class UserController extends Controller
         $user->name = $request->name;
         $user->email = $request->email;
         $user->timezone = $request->timezone;
+        $user->active = $request->active;
         $user->save();
 
         $user->licenses()->detach();
         if (is_array($request->licenses)) {
 
             $time_created = date('Y-m-d h:i:s', time());
-            foreach ($request->licenses as $license)
-            {
+            foreach ($request->licenses as $license) {
                 $business = Business::find($license);
                 $user->assignLicense([
                     $business->id => [
@@ -247,9 +251,9 @@ class UserController extends Controller
                 $toDetach[] = $role_id;
             }
         }
+
         $user->roles()->detach($toDetach);
-        foreach ($request->roles as $role_id)
-        {
+        foreach ($request->roles as $role_id) {
             if ($ownerRoleId < $role_id) {
                 $client_role = Role::find($role_id);
                 $user->assignRole($client_role);
@@ -270,10 +274,11 @@ class UserController extends Controller
         //
     }
 
-    private function getRolesAllowedToGrant(User $user) {
+    private function getRolesAllowedToGrant(User $user)
+    {
         $roles = Role::all()->pluck('label', 'id');
 
-        return $user->roles->map(function($item) use($roles) {
+        return $user->roles->map(function ($item) use ($roles) {
             if ($item->id < 4) {
                 $item['allowed_id'] = ($item->id + 1);
                 $item['allowed_label'] = $roles[($item->id + 1)];

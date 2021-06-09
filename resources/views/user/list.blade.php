@@ -56,7 +56,11 @@
                             <div class="text-sm text-light_gray">Optimization</div>
                         </x-ui.table-td>
                         <x-ui.table-td class="text-center">
-                            <x-ui.badge>Active</x-ui.badge>
+                            @if($user->active)
+                                <x-ui.badge>Active</x-ui.badge>
+                            @else
+                                <x-ui.badge background="bg-light_gray">Inactive</x-ui.badge>
+                            @endif
                         </x-ui.table-td>
                         <x-ui.table-td>
                             {{ ucfirst( $user->roles->implode('name', ', ') ) }}

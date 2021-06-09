@@ -32,6 +32,20 @@
 
                                 <div class="table-row">
                                     <div class="table-cell w-1/4 pb-4 text-left">
+                                        {{ __('Active') }}
+                                    </div>
+                                    <div class="table-cell w-3/4 pb-4">
+                                        <div class="text-left my-2">
+                                            <input type="checkbox" name="active" id="active"
+                                                   value="1" {{ $user->active ? ' checked' : '' }} />
+                                            <label for="active" class="pl-2">{{__('Yes, User is Active')}}</label>
+                                        </div>
+                                        <x-jet-input-error for="active" class="mt-2"/>
+                                    </div>
+                                </div>
+
+                                <div class="table-row">
+                                    <div class="table-cell w-1/4 pb-4 text-left">
                                         {{ __('Name') }}
                                     </div>
                                     <div class="table-cell w-3/4 pb-4">
@@ -51,6 +65,7 @@
                                         <x-jet-input-error for="email" class="mt-2"/>
                                     </div>
                                 </div>
+
                                 @if(count($roles) > 1)
                                     <div class="table-row">
                                         <div class="table-cell w-1/4 pb-4 text-left align-top">
@@ -60,19 +75,10 @@
                                             @foreach ($roles as $role_id => $role_label)
                                                 <div class="text-left my-2">
                                                     <input type="checkbox" name="roles[]" id="roles_{{$role_id}}"
-                                                           value="{{ $role_id }}"{{ is_array($userRoles) && in_array($role_id, $userRoles) ? ' checked' : '' }} />
+                                                           value="{{ $role_id }}"{{ is_array($userHasRoles) && in_array($role_id, $userHasRoles) ? ' checked' : '' }} />
                                                     <label for="roles_{{$role_id}}">{{ $role_label }}</label>
                                                 </div>
                                             @endforeach
-                                            {{--                                            <select name="roles[]" id="roles"--}}
-                                            {{--                                                    class="w-full form-input border-light_blue--}}
-                                            {{--                                                    focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50--}}
-                                            {{--                                                    rounded-md shadow-sm" multiple size="{{count($roles)}}">--}}
-                                            {{--                                                @foreach ($roles as $role_id => $role_label)--}}
-                                            {{--                                                    <option--}}
-                                            {{--                                                        value="{{ $role_id }}"{{ is_array($userRoles) && in_array($role_id, $userRoles) ? ' selected' : '' }}>{{ $role_label }}</option>--}}
-                                            {{--                                                @endforeach--}}
-                                            {{--                                            </select>--}}
                                             <x-jet-input-error for="roles" class="mt-2"/>
                                             @if($errors->has('roles'))
                                                 <p class="text-sm text-red-600 mt-2">{{ $errors->first('roles') }}</p>
@@ -83,6 +89,7 @@
                                     <input type="hidden" name="roles[0]" id="roles"
                                            value="{{array_key_first($userRoles)}}">
                                 @endif
+
                                 @if (count($businesses) > 0)
                                     <div class="table-row">
                                         <div class="table-cell w-1/4 pb-4 text-left align-top">
@@ -101,6 +108,7 @@
                                         </div>
                                     </div>
                                 @endif
+
                                 <div class="table-row">
                                     <div class="table-cell w-1/4 pb-4 text-left">
                                         {{ __('Timezone:') }}
