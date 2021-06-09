@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Business;
 use App\Traits\GettersTrait;
+
 //use Auth;
 use App\Models\User;
 use App\Models\Role;
@@ -147,7 +148,7 @@ class UserController extends Controller
             $businesses = $businesses->pluck('name', 'id')->toArray();
             $licenses = $user->licenses->pluck('id')->toArray();
         }
-dd($roles);
+
         return view(
             'user.edit',
             [
@@ -216,7 +217,7 @@ dd($roles);
                     'roles' => $roles,
                     'businesses' => $businesses,
                     'licenses' => $licenses,
-                    "errors" => $validator->messages()
+                    'errors' => $validator->messages()
                 ]
             );
         }
@@ -274,14 +275,15 @@ dd($roles);
         //
     }
 
-    private function getRolesAllowedToGrant() {
+    private function getRolesAllowedToGrant()
+    {
         $roles = Role::all()->pluck('label', 'id')->toArray();
         if (Auth::user()->isSuperAdmin()) {
             unset($roles[1]);
             return $roles;
         }
         $user = auth()->user();
-        return $user->roles->map(function($item) use($roles) {
+        return $user->roles->map(function ($item) use ($roles) {
             if ($item->id < 4) {
                 $item['allowed_id'] = ($item->id + 1);
                 $item['allowed_label'] = $roles[($item->id + 1)];
