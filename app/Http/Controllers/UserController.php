@@ -147,7 +147,7 @@ class UserController extends Controller
             $businesses = $businesses->pluck('name', 'id')->toArray();
             $licenses = $user->licenses->pluck('id')->toArray();
         }
-
+dd($roles);
         return view(
             'user.edit',
             [
@@ -224,7 +224,7 @@ class UserController extends Controller
         $user->name = $request->name;
         $user->email = $request->email;
         $user->timezone = $request->timezone;
-        $user->active = $request->active;
+        $user->active = boolval($request->active);
         $user->save();
 
         $user->licenses()->detach();

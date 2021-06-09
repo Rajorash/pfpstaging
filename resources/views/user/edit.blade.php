@@ -75,7 +75,7 @@
                                             @foreach ($roles as $role_id => $role_label)
                                                 <div class="text-left my-2">
                                                     <input type="checkbox" name="roles[]" id="roles_{{$role_id}}"
-                                                           value="{{ $role_id }}"{{ is_array($userHasRoles) && in_array($role_id, $userHasRoles) ? ' checked' : '' }} />
+                                                           value="{{ $role_id }}"{{ is_array($userRoles) && in_array($role_id, $userRoles) ? ' checked' : '' }} />
                                                     <label for="roles_{{$role_id}}">{{ $role_label }}</label>
                                                 </div>
                                             @endforeach
