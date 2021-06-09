@@ -88,6 +88,14 @@
                                 @else
                                     <input type="hidden" name="roles[0]" id="roles"
                                            value="{{array_key_first($userRoles)}}">
+                                    <div class="table-row">
+                                        <div class="table-cell w-1/4 pb-4 text-left align-top">
+                                            {{ __('Role:') }}
+                                        </div>
+                                        <div class="table-cell w-3/4 pb-4 text-left">
+                                            {{ array_shift($userRoleLabels) }}
+                                        </div>
+                                    </div>
                                 @endif
 
                                 @if (count($businesses) > 0)

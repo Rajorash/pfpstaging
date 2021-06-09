@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Business;
 use App\Traits\GettersTrait;
-
 //use Auth;
 use App\Models\User;
 use App\Models\Role;
@@ -51,7 +50,7 @@ class UserController extends Controller
         $this->authorize('create', $user);
 
         $ownerRoleId = auth()->user()->roles->min('id');
-        $roles = $this->getRolesAllowedToGrant($user);
+        $roles = $this->getRolesAllowedToGrant();
 
         return view('user.create', ['roles' => $roles]);
     }
@@ -132,8 +131,9 @@ class UserController extends Controller
         $this->authorize('edit', $user);
 
         $ownerRoleId = auth()->user()->roles->min('id');
-        $roles = Role::where('id', '>', $ownerRoleId)->get()->pluck('label', 'id')->toArray();
-        $userRoles = $this->getRolesAllowedToGrant($user);
+        $roles = $this->getRolesAllowedToGrant();
+        $userRoles = $user->roles->pluck('id')->toArray();
+        $userRoleLabels = $user->roles->pluck('label')->toArray();
 
         $businesses = $licenses = [];
         if (in_array(User::ROLE_IDS[User::ROLE_ADVISOR], $userRoles)) {
@@ -152,8 +152,8 @@ class UserController extends Controller
             'user.edit',
             [
                 'user' => $user,
-                'userHasRoles' => $user->roles->pluck('id')->toArray(),
                 'userRoles' => $userRoles,
+                'userRoleLabels' => $userRoleLabels,
                 'roles' => $roles,
                 'businesses' => $businesses,
                 'licenses' => $licenses
@@ -192,9 +192,9 @@ class UserController extends Controller
         });
 
         if ($validator->fails()) {
-            $userRoles = $this->getRolesAllowedToGrant($user);
+            $userRoles = $user->roles->pluck('id')->toArray();
             $ownerRoleId = auth()->user()->roles->min('id');
-            $roles = Role::where('id', '>', $ownerRoleId)->get()->pluck('label', 'id')->toArray();
+            $roles = $this->getRolesAllowedToGrant();
             $businesses = $licenses = [];
             if (in_array(User::ROLE_IDS[User::ROLE_ADVISOR], $userRoles)) {
 
@@ -244,7 +244,7 @@ class UserController extends Controller
         }
 
         $ownerRoleId = auth()->user()->roles->min('id');
-        $userRoles = $this->getRolesAllowedToGrant($user);
+        $userRoles = $user->roles->pluck('id')->toArray();
         $toDetach = [];
         foreach ($userRoles as $role_id) {
             if ($ownerRoleId > $role_id && ($role_id != User::ROLE_ADVISOR || empty($request->licenses))) {
@@ -274,11 +274,13 @@ class UserController extends Controller
         //
     }
 
-    private function getRolesAllowedToGrant(User $user)
-    {
-        $roles = Role::all()->pluck('label', 'id');
-
-        return $user->roles->map(function ($item) use ($roles) {
+    private function getRolesAllowedToGrant() {
+        $roles = Role::all()->pluck('label', 'id')->toArray();
+        if (Auth::user()->isSuperAdmin()) {
+            return array_slice($roles, 1);
+        }
+        $user = auth()->user();
+        return $user->roles->map(function($item) use($roles) {
             if ($item->id < 4) {
                 $item['allowed_id'] = ($item->id + 1);
                 $item['allowed_label'] = $roles[($item->id + 1)];
