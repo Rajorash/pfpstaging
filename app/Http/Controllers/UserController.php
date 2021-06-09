@@ -248,7 +248,7 @@ class UserController extends Controller
         $userRoles = $user->roles->pluck('id')->toArray();
         $toDetach = [];
         foreach ($userRoles as $role_id) {
-            if ($ownerRoleId > $role_id && ($role_id != User::ROLE_ADVISOR || empty($request->licenses))) {
+            if (!in_array($role_id, $request->roles) && ($role_id != User::ROLE_ADVISOR || empty($request->licenses))) {
                 $toDetach[] = $role_id;
             }
         }
