@@ -277,7 +277,8 @@ dd($roles);
     private function getRolesAllowedToGrant() {
         $roles = Role::all()->pluck('label', 'id')->toArray();
         if (Auth::user()->isSuperAdmin()) {
-            return array_slice($roles, 1);
+            unset($roles[1]);
+            return $roles;
         }
         $user = auth()->user();
         return $user->roles->map(function($item) use($roles) {
