@@ -83,7 +83,9 @@
 </x-ui.table-tbody>
 
 </x-ui.table-table>
-
+        <div class="mb-6">
+            {{ $users->links() }}
+        </div>
 </x-ui.main>
 
 </x-app-layout>

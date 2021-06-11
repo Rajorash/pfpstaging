@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\Business;
 use App\Traits\GettersTrait;
+use Livewire\WithPagination;
 
 //use Auth;
 use App\Models\User;
 use App\Models\Role;
 use Illuminate\Http\Request;
+use Illuminate\Database\DatabaseManager;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
@@ -16,6 +18,10 @@ use Illuminate\Support\Facades\Hash;
 class UserController extends Controller
 {
     use GettersTrait;
+    use WithPagination;
+
+    protected $perPage = 10;
+    protected $paginationTheme = 'tailwind';
 
     /**
      * Display a listing of the resource.
@@ -24,18 +30,14 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::all();
+        $currUserId = auth()->user()->id;
 
         if (Auth::user()->isSuperAdmin()) {
-            $filtered = $users;
+            $filtered = User::where('id', '!=', '0')->orderBy('name')->paginate($this->perPage);
         } else {
-            $filtered = $users->filter(function ($user) {
-                return Auth::user()->can('view', $user);
-            })->values();
-            // return $filtered;
+            $owners = User::find($currUserId)->licenses->pluck('owner_id')->toArray();
+            $filtered =  User::whereIn('id', $owners)->orderBy('name')->paginate($this->perPage);
         }
-
-        $currUserId = auth()->user()->id;
 
         return view('user.list', ['users' => $filtered, 'currUserId' => $currUserId]);
     }
@@ -275,6 +277,10 @@ class UserController extends Controller
         //
     }
 
+    /**
+     * Get array of Roles current user is allowed to grant to others
+     * @return array
+     */
     private function getRolesAllowedToGrant()
     {
         $roles = Role::all()->pluck('label', 'id')->toArray();
@@ -292,5 +298,23 @@ class UserController extends Controller
         })->pluck('allowed_label', 'allowed_id')->filter(function ($value, $key) {
             return !is_null($value);
         })->toArray();
+    }
+
+    /**
+     * Check if current user has at least one license to create/activate Client
+     * @return bool
+     */
+    private function hasActiveLicense()
+    {
+        $user = auth()->user();
+        $userRoles = $user->roles->pluck('id')->toArray();
+        if (
+            Auth::user()->isSuperAdmin() ||
+            in_array(User::ROLE_IDS[User::ROLE_ADVISOR], $userRoles)
+        ) {
+;
+        }
+
+        return false;
     }
 }
