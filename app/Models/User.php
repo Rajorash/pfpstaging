@@ -120,4 +120,8 @@ class User extends Authenticatable
 
         return true;
     }
+    public function isActive()
+    {
+        return $this->active;
+    }
 }
