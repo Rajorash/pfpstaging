@@ -1,5 +1,5 @@
 <div class="p-6 sm:px-20">
-    <div class="grid gap-4 grid-cols-2">
+    <div class="grid gap-4 grid-cols-1 md:grid-cols-2">
         <div id="left_column">
             <div class="text-lg text-dark_gray2 leading-7 mb-4">Select and run a command</div>
             <ul class="list-style-cli text-3xl">
