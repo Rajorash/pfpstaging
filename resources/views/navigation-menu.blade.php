@@ -12,14 +12,16 @@
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ml-20 sm:flex">
-                    <x-jet-nav-link href="{{ route('dashboard') }}" :active="request()->is('*dashboard.*') || request()->is('*dashboard*')">
+                    <x-jet-nav-link href="{{ route('dashboard') }}"
+                                    :active="request()->is('*dashboard.*') || request()->is('*dashboard*')">
                         {{ __('Dashboard') }}
                     </x-jet-nav-link>
                     <x-jet-nav-link href="{{ route('allocation-calculator') }}"
                                     :active="request()->routeIs('allocation-calculator')">
                         {{ __('Calculator') }}
                     </x-jet-nav-link>
-                    <x-jet-nav-link href="{{ route('businesses') }}" :active="request()->is('*business/*') || request()->is('business')">
+                    <x-jet-nav-link href="{{ route('businesses') }}"
+                                    :active="request()->is('*business/*') || request()->is('business')">
                         {{ __('Businesses') }}
                     </x-jet-nav-link>
                     <x-jet-nav-link href="{{ route('users') }}" :active="request()->routeIs('users')">
@@ -140,6 +142,14 @@
                                         :class="'w-4 h-auto'"/></span>
                                 {{ __('Settings') }}
                             </x-jet-dropdown-link>
+
+                            @if (Auth::user()->isSuperAdmin())
+                                <x-jet-dropdown-link href="{{route('maintenance')}}">
+                                <span class="inline-block mr-4 pt-0.5 w-4 text-center"><x-icons.maintenance
+                                        :class="'w-4 h-auto'"/></span>
+                                    {{ __('Maintenance') }}
+                                </x-jet-dropdown-link>
+                            @endif
 
                             @if (Laravel\Jetstream\Jetstream::hasApiFeatures())
                                 <x-jet-dropdown-link href="{{ route('api-tokens.index') }}">

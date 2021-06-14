@@ -5,8 +5,10 @@ use App\Http\Controllers\AllocationsCalendar;
 use App\Http\Controllers\AllocationsController;
 use App\Http\Controllers\BankAccountController;
 use App\Http\Controllers\BankAccountEntryController;
+use App\Http\Controllers\BusinessController;
 use App\Http\Controllers\ProjectionController;
 use App\Http\Controllers\UserController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -22,7 +24,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get(
     '/', function () {
-        return view('welcome');
+    return view('welcome');
 });
 
 Route::get('/home', 'HomeController@index')->name('home');
@@ -123,8 +125,10 @@ Route::group(['middleware' => 'auth'], function () {
     // Rollout Percentages routing
     Route::get(
         '/business/{business}/percentages',
-        [AllocationsController::class,
-        'percentages']
+        [
+            AllocationsController::class,
+            'percentages'
+        ]
     )->name('allocations-percentages');
     Route::post('/business/percentages/ajax/update',
         [AllocationsController::class, 'updatePercentages']
@@ -140,11 +144,11 @@ Route::group(['middleware' => 'auth'], function () {
     // Projections
     Route::get(
         '/business/{business}/projections',
-        [ProjectionController::class ,'index']
+        [ProjectionController::class, 'index']
     )->name('projections');
     Route::post(
         '/business/projections/ajax/update',
-        [ProjectionController::class ,'updateData']
+        [ProjectionController::class, 'updateData']
     )->name('projections-controller-update');
 
     //ajax calls
@@ -156,6 +160,20 @@ Route::group(['middleware' => 'auth'], function () {
         '/business/allocations_calendar/ajax/update',
         [AllocationsCalendar::class, 'updateData']
     )->name('allocations-controller-update');
+
+    //maintenance
+    Route::get('/maintenance',
+        function () {
+            if (Auth::user()->isSuperAdmin()) {
+                return view('maintenance/maintenance');
+            } else {
+                abort(403, 'Unauthorized action.');
+            }
+        })->name('maintenance');
+//    Route::get(
+//        '/maintenance',
+//        [\App\Http\Livewire\Maintenance::class, 'render']
+//    )->name('maintenance');
 });
 
 Route::middleware(
