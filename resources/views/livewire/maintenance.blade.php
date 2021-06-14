@@ -4,7 +4,11 @@
             <div class="text-lg text-dark_gray2 leading-7 mb-4">Select and run a command</div>
             <ul class="list-style-cli text-3xl">
                 @foreach ($artisanCommands as $id => $row)
-                    <li><a class="text-base hover:text-green hover:underline" href="javascript:;"
+                    <li><a class="text-base hover:text-green hover:underline active:text-blue
+                            @if($previousCommandId == $id)
+                            text-blue
+                            @endif
+                            " href="javascript:;"
                            wire:click="run('{{$id}}')">{{$row['title']}}</a></li>
                 @endforeach
             </ul>

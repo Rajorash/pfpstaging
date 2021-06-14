@@ -8,6 +8,7 @@ class Maintenance extends Component
 {
     public $artisanResult = ['title' => '', 'type' => 'notice'];
     public $artisanCommands;
+    public $previousCommandId;
 
     public function __construct($id = null)
     {
@@ -50,6 +51,7 @@ class Maintenance extends Component
                 'type' => 'error'
             ];
         } else {
+            $this->previousCommandId = $id;
             \Artisan::call($this->artisanCommands[$id]['command']);
             $this->artisanResult = [
                 'title' =>
@@ -65,6 +67,7 @@ class Maintenance extends Component
         return view('livewire.maintenance', [
             'artisanResult' => $this->artisanResult,
             'artisanCommands' => $this->artisanCommands,
+            'previousCommandId' => $this->previousCommandId,
         ]);
     }
 }
