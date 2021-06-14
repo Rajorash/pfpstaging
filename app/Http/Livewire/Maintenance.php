@@ -2,7 +2,6 @@
 
 namespace App\Http\Livewire;
 
-use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 
 class Maintenance extends Component
@@ -14,6 +13,7 @@ class Maintenance extends Component
     {
         parent::__construct($id);
 
+        //add you command here
         $this->artisanCommands = [
             'config:cache' => [
                 'title' => 'Create a cache file for faster configuration loading',
@@ -62,10 +62,6 @@ class Maintenance extends Component
 
     public function render()
     {
-//        if (!Auth::user()->isSuperAdmin()) {
-//            abort(403, 'Unauthorized action.');
-//        }
-
         return view('livewire.maintenance', [
             'artisanResult' => $this->artisanResult,
             'artisanCommands' => $this->artisanCommands,
