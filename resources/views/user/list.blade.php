@@ -83,7 +83,7 @@
 </x-ui.table-tbody>
 
 </x-ui.table-table>
-        <div class="mb-6">
+        <div class="m-6">
             {{ $users->links() }}
         </div>
 </x-ui.main>
