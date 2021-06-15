@@ -4,7 +4,7 @@
     </x-slot>
 
     <x-ui.main>
-        <livewire:maintenance />
+        <livewire:maintenance :code="$code" />
     </x-ui.main>
 
 </x-app-layout>

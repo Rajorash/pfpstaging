@@ -9,11 +9,15 @@ class Maintenance extends Component
     public $artisanResult = ['title' => '', 'type' => 'notice'];
     public $artisanCommands;
     public $previousCommandId;
+    public $code;
 
     public function __construct($id = null)
     {
         parent::__construct($id);
+    }
 
+    public function mount()
+    {
         //add you command here
         $this->artisanCommands = [
             'config:cache' => [
@@ -41,6 +45,10 @@ class Maintenance extends Component
                 'command' => 'migrate'
             ],
         ];
+
+        if ($this->code) {
+            $this->run($this->code);
+        }
     }
 
     public function run($id)

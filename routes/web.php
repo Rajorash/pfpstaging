@@ -11,6 +11,7 @@ use App\Http\Controllers\ProjectionController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\MaintenanceController;
 
 /*
 |--------------------------------------------------------------------------
@@ -164,13 +165,24 @@ Route::group(['middleware' => 'auth'], function () {
 
     //maintenance
     Route::get('/maintenance',
-        function () {
-            if (Auth::user()->isSuperAdmin()) {
-                return view('maintenance/maintenance');
-            } else {
-                abort(403, 'Unauthorized action.');
-            }
-        })->name('maintenance');
+        [MaintenanceController::class, 'maintenance']
+//        function () {
+//            if (Auth::user()->isSuperAdmin()) {
+//                return view('maintenance/maintenance');
+//            } else {
+//                abort(403, 'Unauthorized action.');
+//            }
+//        }
+        )->name('maintenance');
+
+//    Route::get('/maintenance/{code}',
+//        function () {
+//            if (Auth::user()->isSuperAdmin()) {
+//                return view('maintenance/maintenance');
+//            } else {
+//                abort(403, 'Unauthorized action.');
+//            }
+//        })->name('maintenance.get');
 
     Route::get(
         '/licenses/{user}',
