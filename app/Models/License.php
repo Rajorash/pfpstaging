@@ -6,7 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class License extends Model
 {
-    protected $fillable = ['account_number', 'business_id', 'advisor_id', 'active'];
+    protected $fillable = [
+        'account_number',
+        'business_id',
+        'advisor_id',
+        'active',
+        'available_count'
+    ];
 
     public function advisor()
     {

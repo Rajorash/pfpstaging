@@ -29,6 +29,9 @@
                 <x-ui.table-th>Roles</x-ui.table-th>
                 <x-ui.table-th></x-ui.table-th>
                 <x-ui.table-th></x-ui.table-th>
+                @if(Auth::user()->isSuperAdmin() || Auth::user()->isAdvisor())
+                    <x-ui.table-th></x-ui.table-th>
+                @endif
             </tr>
             </thead>
 
@@ -71,21 +74,28 @@
                             </x-ui.button-small>
                         </x-ui.table-td>
                         <x-ui.table-td>
-                        @if($user->id != $currUserId)
-                            <x-ui.button-small href="{{route('users.edit', ['user'=>$user])}}">
-                                Edit User
-                            </x-ui.button-small>
-                        @endif
+                            @if($user->id != $currUserId)
+                                <x-ui.button-small href="{{route('users.edit', ['user'=>$user])}}">
+                                    Edit User
+                                </x-ui.button-small>
+                            @endif
                         </x-ui.table-td>
+                        @if(Auth::user()->isSuperAdmin() || Auth::user()->isAdvisor())
+                            <x-ui.table-td>
+                                <x-ui.button-small href="{{route('licenses.list', ['user'=>$user])}}">
+                                    Licenses
+                                </x-ui.button-small>
+                            </x-ui.table-td>
+                        @endif
                     </tr>
                 @endforeach
 
-</x-ui.table-tbody>
+            </x-ui.table-tbody>
 
-</x-ui.table-table>
+        </x-ui.table-table>
         <div class="m-6">
             {{ $users->links() }}
         </div>
-</x-ui.main>
+    </x-ui.main>
 
 </x-app-layout>

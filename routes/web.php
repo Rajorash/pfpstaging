@@ -6,6 +6,7 @@ use App\Http\Controllers\AllocationsController;
 use App\Http\Controllers\BankAccountController;
 use App\Http\Controllers\BankAccountEntryController;
 use App\Http\Controllers\BusinessController;
+use App\Http\Controllers\LicenseController;
 use App\Http\Controllers\ProjectionController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
@@ -170,10 +171,11 @@ Route::group(['middleware' => 'auth'], function () {
                 abort(403, 'Unauthorized action.');
             }
         })->name('maintenance');
-//    Route::get(
-//        '/maintenance',
-//        [\App\Http\Livewire\Maintenance::class, 'render']
-//    )->name('maintenance');
+
+    Route::get(
+        '/licenses/{user}',
+        [LicenseController::class, 'list']
+    )->name('licenses.list');
 });
 
 Route::middleware(

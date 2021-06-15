@@ -120,6 +120,34 @@ class User extends Authenticatable
 
         return true;
     }
+
+    public function isAdmin()
+    {
+        if (is_null($this->roles->firstWhere('name', self::ROLE_ADMIN))) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public function isAdvisor()
+    {
+        if (is_null($this->roles->firstWhere('name', self::ROLE_ADVISOR))) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public function isClient()
+    {
+        if (is_null($this->roles->firstWhere('name', self::ROLE_CLIENT))) {
+            return false;
+        }
+
+        return true;
+    }
+
     public function isActive()
     {
         return $this->active;
