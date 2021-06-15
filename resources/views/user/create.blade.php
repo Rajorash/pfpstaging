@@ -66,6 +66,27 @@
                                     </div>
                                 </div>
 
+                                <div class="table-row">
+                                    <div class="table-cell w-1/4 pb-4 text-left">
+                                        {{ __('Title') }}
+                                    </div>
+                                    <div class="table-cell w-3/4 pb-4">
+                                        <x-jet-input id="title" class=" w-full" type="text" name="title"
+                                                     :value="old('title')" required autofocus/>
+                                        <x-jet-input-error for="title" class="mt-2"/>
+                                    </div>
+                                </div>
+                                <div class="table-row">
+                                    <div class="table-cell w-1/4 pb-4 text-left">
+                                        {{ __('Responsibility') }}
+                                    </div>
+                                    <div class="table-cell w-3/4 pb-4">
+                                        <x-jet-input id="responsibility" class=" w-full" type="text" name="responsibility"
+                                                     :value="old('responsibility')" required autofocus/>
+                                        <x-jet-input-error for="responsibility" class="mt-2"/>
+                                    </div>
+                                </div>
+
                                 @if(count($roles) > 1)
                                     <div class="table-row">
                                         <div class="table-cell w-1/4 pb-4 text-left">

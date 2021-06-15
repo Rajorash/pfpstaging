@@ -55,8 +55,8 @@
                             </div>
                         </x-ui.table-td>
                         <x-ui.table-td>
-                            <div class="text-sm text-dark_gray2">Regional Paradigm Technician</div>
-                            <div class="text-sm text-light_gray">Optimization</div>
+                            <div class="text-sm text-dark_gray2">{{ $user->title }}</div>
+                            <div class="text-sm text-light_gray">{{ $user->responsibility }}</div>
                         </x-ui.table-td>
                         <x-ui.table-td class="text-center">
                             @if($user->active)
