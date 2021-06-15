@@ -81,6 +81,8 @@ class UserController extends Controller
         $user->password = Hash::make(Str::random(10));
         $user->timezone = $data['timezone'];
         $user->active = boolval($request['active']);
+        $user->title = $request['title'];
+        $user->responsibility = $request['responsibility'];
         $user->save();
 
         $ownerRoleId = auth()->user()->roles->min('id');
@@ -228,6 +230,8 @@ class UserController extends Controller
         $user->email = $request->email;
         $user->timezone = $request->timezone;
         $user->active = boolval($request->active);
+        $user->title = $request['title'];
+        $user->responsibility = $request['responsibility'];
         $user->save();
 
         $user->licenses()->detach();

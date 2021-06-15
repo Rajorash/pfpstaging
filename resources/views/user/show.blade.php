@@ -44,6 +44,14 @@
                                             <div class="table-cell pb-2">{{ $user->email }}</div>
                                         </div>
                                         <div class="table-row">
+                                            <div class="table-cell pb-2">{{__('Title')}}</div>
+                                            <div class="table-cell pb-2">{{ $user->title }}</div>
+                                        </div>
+                                        <div class="table-row">
+                                            <div class="table-cell pb-2">{{__('Responsibility')}}</div>
+                                            <div class="table-cell pb-2">{{ $user->responsibility }}</div>
+                                        </div>
+                                        <div class="table-row">
                                             <div class="table-cell pb-2">{{__('Last Login')}}</div>
                                             <div class="table-cell pb-2">{{ $user->last_login_at ?: 'Unknown' }}</div>
                                         </div>
