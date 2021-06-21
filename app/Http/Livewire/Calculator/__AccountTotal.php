@@ -8,7 +8,7 @@ use App\Traits\GettersTrait;
 use Livewire\Component;
 use Carbon\Carbon;
 
-class AccountTotal extends Component
+class __AccountTotal extends Component
 {
     use GettersTrait;
 

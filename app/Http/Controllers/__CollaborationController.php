@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Collaboration;
 use Illuminate\Http\Request;
 
-class CollaborationController extends Controller
+class __CollaborationController extends Controller
 {
     /**
      * Display a listing of the resource.

@@ -8,7 +8,7 @@ use App\Models\Business;
 use Livewire\Component;
 use Livewire\WithPagination;
 
-class AllocationsSheet extends Component
+class __AllocationsSheet extends Component
 {
     use WithPagination;
 

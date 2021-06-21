@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-class AdvisorController extends Controller
+class __AdvisorController extends Controller
 {
     //
 }

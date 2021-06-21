@@ -5,7 +5,7 @@ namespace App\Http\Livewire\Calculator;
 use App\Models\BankAccount;
 use Livewire\Component;
 
-class AccountRow extends Component
+class __AccountRow extends Component
 {
     public BankAccount $acc;
     public $dates;

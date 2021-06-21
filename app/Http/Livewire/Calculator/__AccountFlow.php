@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Cache;
 use Livewire\Component;
 use Carbon\Carbon;
 
-class AccountFlow extends Component
+class __AccountFlow extends Component
 {
     public $flowId;
     public Flow $flow;

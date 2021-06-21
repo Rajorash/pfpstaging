@@ -9,7 +9,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Livewire\Component;
 
-class AccountTransfer extends Component
+class __AccountTransfer extends Component
 {
     use GettersTrait;
 
