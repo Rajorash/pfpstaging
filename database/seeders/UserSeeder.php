@@ -28,6 +28,10 @@ class UserSeeder extends Seeder
         $superadmin->email_verified_at = now();
         $superadmin->remember_token = Str::random(10);
         $superadmin->password = Hash::make('#j$dZW|bdYO+`CW`~,y|');
+        $superadmin->title = "Test SuperAdmin";
+        $superadmin->responsibility = "Testing superuser";
+        $superadmin->active = true;
+        $superadmin->timezone = 'Australia/Sydney';
         $superadmin->save();
 
         //Regional Admin
@@ -40,6 +44,10 @@ class UserSeeder extends Seeder
         $regionaladmin->email_verified_at = now();
         $regionaladmin->remember_token = Str::random(10);
         $regionaladmin->password = Hash::make('#j$dSYUD(W@SbdYO+`CW');
+        $regionaladmin->title = "Test Admin";
+        $regionaladmin->responsibility = "Testing admin";
+        $regionaladmin->active = true;
+        $regionaladmin->timezone = 'Australia/Sydney';
         $regionaladmin->save();
 
         //Advisor
@@ -52,6 +60,10 @@ class UserSeeder extends Seeder
         $advisor->email_verified_at = now();
         $advisor->remember_token = Str::random(10);
         $advisor->password = Hash::make('letmeinnow!');
+        $advisor->title = "Test Advisor";
+        $advisor->responsibility = "Testing advisor";
+        $advisor->active = true;
+        $advisor->timezone = 'Australia/Sydney';
         $advisor->save();
         $advisor_details = new Advisor($advisor->id);
         $advisor_details->save();
@@ -66,6 +78,10 @@ class UserSeeder extends Seeder
         $client->email_verified_at = now();
         $client->remember_token = Str::random(10);
         $client->password = Hash::make('letmeinnow!');
+        $client->title = "Test Client";
+        $client->responsibility = "Testing Client A";
+        $client->active = true;
+        $client->timezone = 'Australia/Sydney';
         $client->save();
 
         //--------------------------
@@ -78,6 +94,10 @@ class UserSeeder extends Seeder
         $advisor2->email_verified_at = now();
         $advisor2->remember_token = Str::random(10);
         $advisor2->password = Hash::make('CML9Zy!&$H2#e@e9');
+        $advisor2->title = "PFP Professional";
+        $advisor2->responsibility = "Client Fulfillment";
+        $advisor2->active = true;
+        $advisor2->timezone = 'Australia/Sydney';
         $advisor2->save();
         $advisor2_details = new Advisor($advisor2->id);
         $advisor2_details->save();
