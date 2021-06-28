@@ -82,9 +82,7 @@
                         </x-ui.table-td>
                         @if(Auth::user()->isSuperAdmin() || Auth::user()->isAdvisor())
                             <x-ui.table-td>
-                                <x-ui.button-small href="{{route('licenses.list', ['user'=>$user])}}">
-                                    Licenses
-                                </x-ui.button-small>
+                                <livewire:licenses-counter :user="$user" :key="$user->id"/>
                             </x-ui.table-td>
                         @endif
                     </tr>
