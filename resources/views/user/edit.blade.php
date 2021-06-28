@@ -71,7 +71,7 @@
                                     </div>
                                     <div class="table-cell w-3/4 pb-4">
                                         <x-jet-input id="title" class=" w-full" type="text" name="title"
-                                                     value="{{$user->title}}" required autofocus/>
+                                                     value="{{$user->title}}"  autofocus/>
                                         <x-jet-input-error for="title" class="mt-2"/>
                                     </div>
                                 </div>
@@ -81,7 +81,7 @@
                                     </div>
                                     <div class="table-cell w-3/4 pb-4">
                                         <x-jet-input id="responsibility" class=" w-full" type="text" name="responsibility"
-                                                     value="{{$user->responsibility}}" required autofocus/>
+                                                     value="{{$user->responsibility}}"  autofocus/>
                                         <x-jet-input-error for="responsibility" class="mt-2"/>
                                     </div>
                                 </div>
