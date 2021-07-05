@@ -32,13 +32,15 @@
 
                                 <div class="table-row">
                                     <div class="table-cell w-1/4 pb-4 text-left">
-                                        {{ __('Active') }}
+                                        {{ __('Allow interaction?') }}
                                     </div>
                                     <div class="table-cell w-3/4 pb-4">
                                         <div class="text-left my-2">
                                             <input type="checkbox" name="active" id="active"
                                                    value="1" {{ old('active') ? ' checked' : '' }} />
-                                            <label for="active" class="pl-2">{{__('Yes, User is Active')}}</label>
+                                            <label for="active" class="pl-2">{{__('Yes, User can interaction with the site')}}</label>
+                                            <div class="text-sm pt-2 text-gray-500">{{__('This item + licenses for advisor and client will determine whether the user will be active')}}</div>
+
                                         </div>
                                         <x-jet-input-error for="active" class="mt-2"/>
                                     </div>
