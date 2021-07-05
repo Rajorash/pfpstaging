@@ -131,17 +131,23 @@
                                 {{ __('Create A Business') }}
                             </x-jet-dropdown-link>
 
-                            <x-jet-dropdown-link href="#">
+                            @if(
+                                Auth::user()->isSuperAdmin()
+                                || Auth::user()->isAdmin()
+                                || Auth::user()->isAdvisor()
+                                )
+                            <x-jet-dropdown-link href="{{route('users.create')}}">
                                 <span class="inline-block mr-4 pt-0.5 w-4 text-center"><x-icons.user-add
                                         :class="'w-4 h-auto'"/></span>
-                                {{ __('Add An User') }}
+                                {{ __('Add A User') }}
                             </x-jet-dropdown-link>
+                            @endif
 
-                            <x-jet-dropdown-link href="#">
-                                <span class="inline-block mr-4 pt-0.5 w-4 text-center"><x-icons.gear
-                                        :class="'w-4 h-auto'"/></span>
-                                {{ __('Settings') }}
-                            </x-jet-dropdown-link>
+{{--                            <x-jet-dropdown-link href="#">--}}
+{{--                                <span class="inline-block mr-4 pt-0.5 w-4 text-center"><x-icons.gear--}}
+{{--                                        :class="'w-4 h-auto'"/></span>--}}
+{{--                                {{ __('Settings') }}--}}
+{{--                            </x-jet-dropdown-link>--}}
 
                             @if (Auth::user()->isSuperAdmin())
                                 <x-jet-dropdown-link href="{{route('maintenance')}}">
