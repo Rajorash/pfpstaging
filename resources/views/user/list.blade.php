@@ -59,7 +59,7 @@
                             <div class="text-sm text-light_gray">{{ $user->responsibility }}</div>
                         </x-ui.table-td>
                         <x-ui.table-td class="text-center">
-                            @if($user->active)
+                            @if($user->isActive())
                                 <x-ui.badge>Active</x-ui.badge>
                             @else
                                 <x-ui.badge background="bg-light_gray">Inactive</x-ui.badge>

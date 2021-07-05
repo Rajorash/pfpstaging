@@ -89,7 +89,8 @@ class User extends Authenticatable
         return $this->hasMany(Business::class, 'owner_id');
     }
 
-    public function roles() {
+    public function roles()
+    {
         return $this->belongsToMany(Role::class)->withTimestamps();
     }
 
@@ -100,7 +101,7 @@ class User extends Authenticatable
 
     public function licenses()
     {
-        return $this->belongsToMany(Business::class, 'licenses','advisor_id', 'business_id');
+        return $this->belongsToMany(Business::class, 'licenses', 'advisor_id', 'business_id');
     }
 
     public function assignLicense($business)
@@ -152,6 +153,12 @@ class User extends Authenticatable
 
     public function isActive()
     {
+        if ($this->isSuperAdmin() || $this->isAdmin()) {
+            return $this->active;
+        } else {
+            //TODO - active based on licenses
+        }
+
         return $this->active;
     }
 }
