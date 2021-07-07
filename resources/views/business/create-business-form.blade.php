@@ -16,36 +16,48 @@
                 {{ __('To create a business you will need to expend a license. This license will be assigned against your total.') }}
             </div>
 
-            <div class="mt-4" x-data="{}" {{-- x-on:confirming-delete-user.window="setTimeout(() => $refs.businessname.focus(), 250)" --}}>
+            @if ($failure)
+            <div class="mt-4 text-left text-red-700" x-data="{}">
+                {{$failureMessage}}
+            </div>
+            @else
+            <div class="mt-4" x-data="{}" x-on:creating-business.window="setTimeout(() => $refs.businessname.focus(), 250)">
                 <x-jet-input type="text" class="mt-1 block w-3/4"
                             placeholder="{{ __('Business Name') }}"
                             x-ref="businessname"
-                            wire:model.defer="businessname"
-                            {{-- wire:keydown.enter="deleteUser"  --}}
+                            wire:model="businessname"
+                            wire:keydown.enter="submitForm"
                             />
 
-                <x-jet-input-error for="email" class="mt-2" />
+                <x-jet-input-error for="businessname" class="mt-2 text-left" />
                 <x-jet-input type="text" class="mt-1 block w-3/4"
                             placeholder="{{ __('Owner Email') }}"
                             x-ref="email"
-                            wire:model.defer="email"
-                            {{-- wire:keydown.enter="deleteUser"  --}}
+                            wire:model="email"
+                            wire:keydown.enter="submitForm"
                             />
 
-                <x-jet-input-error for="email" class="mt-2" />
+                <x-jet-input-error for="email" class="mt-2 text-left" />
             </div>
+            @endif
         </x-slot>
 
         <x-slot name="footer">
-            <x-jet-secondary-button wire:click="$toggle('isOpen')" wire:loading.attr="disabled">
-                {{ __('Nevermind') }}
-            </x-jet-secondary-button>
-
-            <x-ui.button-normal type="button"
+            <x-ui.button-secondary
             class="ml-2"
-            wire:click="createBusiness" wire:loading.attr="disabled">
+            wire:click="$toggle('isOpen')"
+            wire:loading.attr="disabled">
+                {{ __('Nevermind') }}
+            </x-ui.button-secondary>
+
+            @if (!$failure)
+            <x-ui.button-primary
+                class="ml-2"
+                wire:click="submitForm"
+                wire:loading.attr="disabled">
                 {{ __('Create Business') }}
-            </x-ui.button-normal>
+            </x-ui.button-primary>
+            @endif
         </x-slot>
     </x-jet-dialog-modal>
 
