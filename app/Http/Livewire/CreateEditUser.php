@@ -129,8 +129,8 @@ class CreateEditUser extends Component
 
         $validator->after(function ($validator) {
             if (
-                is_array($this->licenses)
-                && is_array($this->roles)
+                !empty($this->licenses)
+                && !empty($this->roles)
                 && !$this->UserController->checkAdvisor($this->roles)
             ) {
                 $validator->errors()->add(
@@ -144,10 +144,16 @@ class CreateEditUser extends Component
             $user = $this->user ? $this->user : new User;
             $user->name = $this->name;
             $user->email = $this->email;
-            $user->password = Hash::make(Str::random(10));
             $user->timezone = $this->timezone;
             $user->title = $this->title;
             $user->responsibility = $this->responsibility;
+
+            $user->active = 1; //only for old Login code
+            if (!$this->user) {
+                //password only for new user
+                $user->password = Hash::make(Str::random(10));
+            }
+
             $user->save();
 
             //reattach licenses

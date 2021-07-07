@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Models\Business;
 use App\Models\License;
+use Illuminate\Support\Facades\Cache;
 use Livewire\Component;
 
 class CreateBusinessForm extends Component
@@ -157,6 +158,10 @@ class CreateBusinessForm extends Component
 
         $this->isOpen = false;
 
+        $key = 'Business_all';
+        Cache::forget($key);
+
+        return redirect("/business");
     }
 
     public function render()
