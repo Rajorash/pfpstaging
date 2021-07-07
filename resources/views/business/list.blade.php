@@ -7,7 +7,15 @@
     <x-ui.main>
 
         <x-ui.table-table>
-            <x-ui.table-caption>Businesses Visible To You</x-ui.table-caption>
+            <x-ui.table-caption>
+                Businesses Visible To You
+                <x-slot name="right">
+                    @livewire('business.create-business-form')
+                    {{-- <x-ui.button-normal type="button" @click="businessFormOpen = true">
+                        <span class="ml-2">Create Business</span>
+                    </x-ui.button-normal> --}}
+                </x-slot>
+            </x-ui.table-caption>
             <thead>
             <tr class="border-light_blue border-t border-b">
                 <x-ui.table-th padding="pl-12 pr-2 py-4">Business Name</x-ui.table-th>
@@ -64,5 +72,6 @@
         </x-ui.table-table>
 
     </x-ui.main>
+
 
 </x-app-layout>
