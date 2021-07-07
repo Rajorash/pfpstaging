@@ -14,6 +14,7 @@ use Illuminate\Support\Str;
 
 class CreateEditUser extends Component
 {
+    // User fields
     public $name;
     public $email;
     public $title;
@@ -22,14 +23,23 @@ class CreateEditUser extends Component
     public $rolesArray = [];
     public $timezone;
 
+    //User obj for Edit page
     public $user;
+    //array for Businesses
     public $businesses = [];
+    //array for Licenses
     public $licenses = [];
 
+    //Int ID for Advisor Role. Uses for check during edit role and current existing licenses
     public $roleAdvisorId;
 
+    //App\Http\Controllers\UserController obj
     private $UserController;
 
+    /**
+     * CreateEditUser constructor.
+     * @param  null  $id
+     */
     public function __construct($id = null)
     {
         parent::__construct($id);
@@ -38,6 +48,12 @@ class CreateEditUser extends Component
         $this->roleAdvisorId = User::ROLE_IDS[User::ROLE_ADVISOR];
     }
 
+    /**
+     * Function fires on initial load and check
+     * prerequisites for creating or editing a User
+     *
+     * @return void
+     */
     public function mount()
     {
         $this->rolesArray = $this->UserController->getRolesAllowedToGrant();
@@ -58,6 +74,9 @@ class CreateEditUser extends Component
         }
     }
 
+    /**
+     * check if User is Advisor, and check current licenses
+     */
     private function getBusinessAndLicensesForAdvisor()
     {
         $this->businesses = $this->UserController->getBusinessAll();
@@ -100,17 +119,29 @@ class CreateEditUser extends Component
         $this->responsibility = null;
     }
 
+    /**
+     * hook where Roles updated on front
+     */
     public function updatedRoles()
     {
         $this->roles = array_filter($this->roles);
         $this->getBusinessAndLicensesForAdvisor();
     }
 
+    /**
+     * hook where Licenses updated on front
+     */
     public function updatedLicenses()
     {
         $this->licenses = array_filter($this->licenses);
     }
 
+    /**
+     * Save new or update existing User with licensing and roles
+     *
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     * @throws \Illuminate\Validation\ValidationException
+     */
     public function store()
     {
         $validator = Validator::make([
