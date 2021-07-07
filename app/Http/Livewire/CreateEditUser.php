@@ -33,7 +33,9 @@ class CreateEditUser extends Component
     //Int ID for Advisor Role. Uses for check during edit role and current existing licenses
     public $roleAdvisorId;
 
-    //App\Http\Controllers\UserController obj
+    /**
+     * @var App\Http\Controllers\UserController
+     */
     private $UserController;
 
     /**

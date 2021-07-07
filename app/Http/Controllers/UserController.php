@@ -324,8 +324,23 @@ class UserController extends Controller
         return false;
     }
 
-    public function checkAdvisor($userRoles)
+    /**
+     * Check if $userRoles contains Advisor role
+     * @param  array  $userRoles
+     * @return bool
+     */
+    public function checkAdvisor(array $userRoles)
     {
         return key_exists(User::ROLE_IDS[User::ROLE_ADVISOR], $userRoles);
+    }
+
+    /**
+     * Check if $userRoles contains Client role
+     * @param array  $userRoles
+     * @return bool
+     */
+    public function checkClient(array $userRoles)
+    {
+        return key_exists(User::ROLE_IDS[User::ROLE_CLIENT], $userRoles);
     }
 }

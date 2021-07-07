@@ -122,7 +122,7 @@
         <div class="table w-full mt-4">
             <div class="table-row">
                 <div class="table-cell w-full pb-4 text-right">
-                    <x-ui.button-normal class="uppercase" type="button">
+                    <x-ui.button-normal class="uppercase" type="button" wire:loading.attr="disabled">
                         @if($user)
                             Save User
                         @else
@@ -132,8 +132,5 @@
                 </div>
             </div>
         </div>
-
-
-</div>
-</form>
+    </form>
 </div>
