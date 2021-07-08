@@ -187,9 +187,6 @@ class CreateBusinessForm extends Component
 
             $this->isOpen = false;
 
-            $key = 'Business_all';
-            Cache::forget($key);
-
             return redirect("/business");
         }
     }
