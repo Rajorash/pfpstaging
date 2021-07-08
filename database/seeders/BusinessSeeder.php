@@ -17,61 +17,45 @@ class BusinessSeeder extends Seeder
      */
     public function run()
     {
-        // factory(Business::class, 5)->create()->each( function ($business) {
-        //     // generate random accounts
-        //     $accounts = factory(BankAccount::class, 5)->create(['business_id' => $business->id]);
-        //     $business->accounts()->saveMany($accounts);
-
-        //     // generate license, assign business to advisor with id of 1
-        //     $license = factory(License::class)->make([
-        //         'business_id' => $business->id,
-        //         'advisor_id' => 1,
-        //     ]);
-        //     $business->license()->save($license);
-        // });
 
         $test_client = User::whereEmail('client@pfp.com')->first('id');
         $test_advisor = User::whereEmail('advisor@pfp.com')->first('id');
         $craig_account = User::whereEmail('craig@mintscdconsulting.com.au')->first('id');
 
-
         factory(Business::class)->create([
             'name' => 'Clients Company',
             'owner_id' => $test_client->id
         ])->each( function ( $new_business ) use ( $test_advisor ) {
-            // generate license, assign business to advisor with id of 1
-            $license = factory(License::class)->make([
-                'business_id' => $new_business->id,
-                'advisor_id' => $test_advisor->id,
-            ]);
-            $new_business->license()->save($license);
+            $this->setLicense( $new_business, $test_advisor);
         });
-
 
         factory(Business::class)->create([
             'name' => 'Craig\'s Client Company',
             'owner_id' => $test_client->id
-            ])->each( function ( $new_business ) use ( $craig_account ) {
-            // $craig_id = User::where('name', '=', 'Craig Minter')->id;
-            // generate license, assign business to advisor with id of 1
-            $license = factory(License::class)->make([
-                'business_id' => $new_business->id,
-                'advisor_id' => $craig_account->id,
-            ]);
-            $new_business->license()->save($license);
+        ])->each( function ( $new_business ) use ( $craig_account ) {
+            $this->setLicense( $new_business, $craig_account);
         });
 
-        factory(Business::class, 5)->create()->each( function ($business) use ( $test_advisor )  {
-            // generate license, assign business to advisor with id of 1
-            $license = factory(License::class)->make([
-                'business_id' => $business->id,
-                'advisor_id' => $test_advisor->id,
-            ]);
-            $business->license()->save($license);
+        factory(Business::class, 2)->create()->each(
+            function ($business) use ( $test_advisor )  {
+                $this->setLicense($business, $test_advisor);
+                // assign client role to generated business owners
+                $client_role = Role::where('name', User::ROLE_CLIENT)->first();
+                $business->owner->assignRole($client_role);
+            }
+        );
 
-            $client_role = Role::where('name', 'client')->first();
-            $business->owner->assignRole($client_role);
-        });
+    }
+
+    private function setLicense($business, $test_advisor)
+    {
+        // generate license, assign business to advisor with id of 1
+        $license = factory(License::class)->make([
+            'business_id' => $business->id,
+            'advisor_id' => $test_advisor->id,
+        ]);
+        $business->license()->save($license);
 
     }
 }
+
