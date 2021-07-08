@@ -104,9 +104,18 @@ class User extends Authenticatable
         return $this->belongsToMany(Business::class, 'licenses', 'advisor_id', 'business_id');
     }
 
-    public function assignLicense(Business $business)
+    public function assignLicense($business)
     {
         $this->licenses()->sync($business, false);
+    }
+
+    public function advisors()
+    {
+        return $this->belongsToMany(User::class, 'advisor_admin', 'admin_id', 'advisor_id');
+    }
+    public function regionalAdmin()
+    {
+        return $this->belongsToMany(User::class, 'advisor_admin', 'advisor_id', 'admin_id');
     }
 
     public function permissions()
@@ -161,4 +170,21 @@ class User extends Authenticatable
 
         return $this->active;
     }
+
+
+//    public function relatedToAdmin()
+//    {
+//        if ($this->isAdvisor()) {
+//            return $this->hasOneThrough(
+//                User::class,
+//                Advisor::class,
+//                'regional_admin_id',
+//                'id',
+//                'id',
+//                'id'
+//            );
+//        } else {
+//            return null;
+//        }
+//    }
 }

@@ -10,7 +10,6 @@ use Livewire\WithPagination;
 use App\Models\User;
 use App\Models\Role;
 use Illuminate\Http\Request;
-use Illuminate\Database\DatabaseManager;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
@@ -36,7 +35,7 @@ class UserController extends Controller
             $filtered = User::where('id', '!=', '0')->orderBy('name')->paginate($this->perPage);
         } else {
             $owners = User::find($currUserId)->licenses->pluck('owner_id')->toArray();
-            $filtered =  User::whereIn('id', $owners)->orderBy('name')->paginate($this->perPage);
+            $filtered = User::whereIn('id', $owners)->orderBy('name')->paginate($this->perPage);
         }
 
         return view('user.list', ['users' => $filtered, 'currUserId' => $currUserId]);
@@ -318,7 +317,7 @@ class UserController extends Controller
             Auth::user()->isSuperAdmin() ||
             in_array(User::ROLE_IDS[User::ROLE_ADVISOR], $userRoles)
         ) {
-;
+            ;
         }
 
         return false;
@@ -336,11 +335,56 @@ class UserController extends Controller
 
     /**
      * Check if $userRoles contains Client role
-     * @param array  $userRoles
+     * @param  array  $userRoles
      * @return bool
      */
     public function checkClient(array $userRoles)
     {
         return key_exists(User::ROLE_IDS[User::ROLE_CLIENT], $userRoles);
+    }
+
+    protected function getUsersByType($type)
+    {
+        $users = User::where('id', '!=', '0')
+            ->with('roles')
+            ->orderBy('name')
+            ->get();
+
+        switch ($type) {
+            case User::ROLE_SUPERADMIN:
+                $users = $users->filter->isSuperAdmin();
+                break;
+            case User::ROLE_ADMIN:
+                $users = $users->filter->isAdmin();
+                break;
+            case User::ROLE_ADVISOR:
+                $users = $users->filter->isAdvisor();
+                break;
+            case User::ROLE_CLIENT:
+                $users = $users->filter->isClient();
+                break;
+        }
+
+        return $users;
+    }
+
+    public function getSuperAdmins()
+    {
+        return $this->getUsersByType(User::ROLE_SUPERADMIN);
+    }
+
+    public function getAdmins()
+    {
+        return $this->getUsersByType(User::ROLE_ADMIN);
+    }
+
+    public function getAdvisor()
+    {
+        return $this->getUsersByType(User::ROLE_ADVISOR);
+    }
+
+    public function getClient()
+    {
+        return $this->getUsersByType(User::ROLE_CLIENT);
     }
 }
