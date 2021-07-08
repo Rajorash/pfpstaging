@@ -230,6 +230,9 @@ class CreateEditUser extends Component
 
             if ($this->user) {
                 return redirect("user");
+            } else if( $user->isClient() && auth()->user()->isAdvisor() ) {
+                // if an advisor creates a client user, redirect to the business listing page to create a business.
+                return redirect("business");
             } else {
                 return redirect("user/{$user->id}");
             }

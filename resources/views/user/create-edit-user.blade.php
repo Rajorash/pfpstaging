@@ -1,4 +1,11 @@
 <div class="livewire-wrapper">
+
+    @if(!$user && Auth::user()->isAdvisor())
+    <div class="px-4 py-2 border border-gray-300 rounded-lg bg-white text-left text-red-700">
+        Please note: You will not be able to see a newly created client until they have a business licensed to you created. You will be redirected to the business view to create a business once you have finished creating a client user.
+    </div>
+    @endif
+
     <form wire:submit.prevent="store">
         <div class="table w-full mt-10">
 
