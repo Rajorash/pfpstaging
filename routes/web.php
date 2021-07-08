@@ -33,7 +33,9 @@ Route::get('/home', 'HomeController@index')->name('home');
 
 Route::group(['middleware' => 'auth'], function () {
     // Business routes
-    Route::get('/business', 'BusinessController@index')->name('businesses');
+    Route::get('/business',
+        [BusinessController::class, 'index']
+    )->name('businesses');
     Route::get(
         '/business/{business}',
         [BusinessController::class, 'show']
@@ -173,7 +175,7 @@ Route::group(['middleware' => 'auth'], function () {
 //                abort(403, 'Unauthorized action.');
 //            }
 //        }
-        )->name('maintenance');
+    )->name('maintenance');
 
 //    Route::get('/maintenance/{code}',
 //        function () {

@@ -2,10 +2,12 @@
 
 namespace App\Http\Livewire\Business;
 
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Models\Business;
 use App\Models\License;
+use Illuminate\Support\Facades\Cache;
 use Livewire\Component;
 
 class CreateBusinessForm extends Component
@@ -74,16 +76,33 @@ class CreateBusinessForm extends Component
     ];
 
     /**
+     * @var App\Http\Controllers\UserController
+     */
+    private $UserController;
+
+    /**
+     * CreateEditUser constructor.
+     * @param  null  $id
+     */
+    public function __construct($id = null)
+    {
+        parent::__construct($id);
+
+        $this->UserController = new UserController();
+    }
+
+    /**
      * Function fires on initial load and check
      * prerequisites for creating a business
      *
      * @return void
      */
-    public function mount() {
+    public function mount()
+    {
         $user = Auth::user();
 
         // validate that the user is an advisor and so can create businesses
-        if( !$user->isAdvisor() ) {
+        if (!$user->isAdvisor()) {
             $this->failure = true;
             $this->failureMessage = 'Only advisors can create new businesses and assign them to users.';
 
@@ -98,6 +117,7 @@ class CreateBusinessForm extends Component
         //     return;
         // }
     }
+
     /**
      * Magic function fires when a property updates on
      * the form. Used mostly for instant validation
@@ -106,7 +126,8 @@ class CreateBusinessForm extends Component
      * @param [type] $propertyName
      * @return void
      */
-    public function updated($propertyName) {
+    public function updated($propertyName)
+    {
         $this->validateOnly($propertyName);
     }
 
@@ -115,7 +136,8 @@ class CreateBusinessForm extends Component
      *
      * @return void
      */
-    public function openBusinessForm() {
+    public function openBusinessForm()
+    {
 
         $this->isOpen = true;
 
@@ -129,34 +151,47 @@ class CreateBusinessForm extends Component
      *
      * @return void
      */
-    public function submitForm() {
-
+    public function submitForm()
+    {
         // validate the form fields, using rules set under $rules
         $data = $this->validate();
 
         $this->dispatchBrowserEvent('processing-business');
 
         $owner = User::where('email', $data['email'])->first();
-        $advisor = Auth::user();
 
-        // create the business and assign to the user
-        $new_business = new Business;
-        $new_business->name = $data['businessname'];
-        $new_business->owner()->associate($owner);
-        $new_business->save();
+        $ownersRoles = $owner->roles->pluck('id', 'id')->toArray();
 
-        // assign the license to the advisor and the business
-        $license = License::create([
-            'active' => true,
-            'account_number' => uniqid(),
-            'business_id' => $new_business->id,
-            'advisor_id' => $advisor->id,
-        ]);
+        if (!$this->UserController->checkClient($ownersRoles)) {
+            $this->failure = true;
+            $this->failureMessage = 'Only clients can be added to Business.';
+        } else {
 
-        $new_business->license()->save($license);
+            $advisor = Auth::user();
 
-        $this->isOpen = false;
+            // create the business and assign to the user
+            $new_business = new Business;
+            $new_business->name = $data['businessname'];
+            $new_business->owner()->associate($owner);
+            $new_business->save();
 
+            // assign the license to the advisor and the business
+            $license = License::create([
+                'active' => true,
+                'account_number' => uniqid(),
+                'business_id' => $new_business->id,
+                'advisor_id' => $advisor->id,
+            ]);
+
+            $new_business->license()->save($license);
+
+            $this->isOpen = false;
+
+            $key = 'Business_all';
+            Cache::forget($key);
+
+            return redirect("/business");
+        }
     }
 
     public function render()

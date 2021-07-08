@@ -38,7 +38,7 @@ trait GettersTrait
         return $flowAccount;
     }
 
-    private function getBusinessAll()
+    public function getBusinessAll()
     {
         $key = 'Business_all';
         $businesses = Cache::get($key);
