@@ -94,7 +94,7 @@ class User extends Authenticatable
         return $this->belongsToMany(Role::class)->withTimestamps();
     }
 
-    public function assignRole($role)
+    public function assignRole(Role $role)
     {
         $this->roles()->sync($role, false);
     }
@@ -104,7 +104,7 @@ class User extends Authenticatable
         return $this->belongsToMany(Business::class, 'licenses', 'advisor_id', 'business_id');
     }
 
-    public function assignLicense($business)
+    public function assignLicense(Business $business)
     {
         $this->licenses()->sync($business, false);
     }
