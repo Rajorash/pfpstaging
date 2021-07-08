@@ -2,12 +2,10 @@
 
 namespace App\Http\Livewire\Business;
 
-use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Models\Business;
 use App\Models\License;
-use Illuminate\Support\Facades\Cache;
 use Livewire\Component;
 
 class CreateBusinessForm extends Component
@@ -76,22 +74,6 @@ class CreateBusinessForm extends Component
     ];
 
     /**
-     * @var App\Http\Controllers\UserController
-     */
-    private $UserController;
-
-    /**
-     * CreateEditUser constructor.
-     * @param  null  $id
-     */
-    public function __construct($id = null)
-    {
-        parent::__construct($id);
-
-        $this->UserController = new UserController();
-    }
-
-    /**
      * Function fires on initial load and check
      * prerequisites for creating a business
      *
@@ -99,23 +81,10 @@ class CreateBusinessForm extends Component
      */
     public function mount()
     {
-        $user = Auth::user();
 
-        // validate that the user is an advisor and so can create businesses
-        if (!$user->isAdvisor()) {
-            $this->failure = true;
-            $this->failureMessage = 'Only advisors can create new businesses and assign them to users.';
+        $this->validateAdvisorRole( Auth::user() );
+        // $this->checkLicenses(); // TO-DO - implement once licensing sorted
 
-            return;
-        }
-
-        // check that the advisor has sufficent free licenses to create a new business
-        // if ($user->licenses->available() < 1) {
-        //     $this->failure = true;
-        //     $this->failureMessage = 'You have insufficient free licenses available to create a new business.';
-
-        //     return;
-        // }
     }
 
     /**
@@ -158,15 +127,9 @@ class CreateBusinessForm extends Component
 
         $this->dispatchBrowserEvent('processing-business');
 
-        $owner = User::where('email', $data['email'])->first();
+        $owner = User::firstWhere('email', $data['email']);
 
-        $ownersRoles = $owner->roles->pluck('id', 'id')->toArray();
-
-        if (!$this->UserController->checkClient($ownersRoles)) {
-            $this->failure = true;
-            $this->failureMessage = 'Only clients can be added to Business.';
-        } else {
-
+        if ( $this->validateClientRole($owner) ) {
             $advisor = Auth::user();
 
             // create the business and assign to the user
@@ -194,5 +157,55 @@ class CreateBusinessForm extends Component
     public function render()
     {
         return view('business.create-business-form');
+    }
+
+    /**
+     * Check whether the passed user has the User::ROLE_ADVISOR role
+     *
+     * @param User $user
+     * @return void
+     */
+    private function validateAdvisorRole(User $user) {
+        // validate that the user is an advisor and so can create businesses
+        if ($user->isAdvisor()) {
+            return true;
+        }
+
+        $this->failure = true;
+        $this->failureMessage = 'Only advisors can create new businesses and assign them to users.';
+
+        return false;
+
+    }
+
+    /**
+     * Check whether the passed user has the User::ROLE_CLIENT role
+     *
+     * @param User $user
+     * @return void
+     */
+    private function validateClientRole(User $user) {
+        // validate that the user is an advisor and so can create businesses
+        if ($user->isClient()) {
+            return true;
+        }
+
+        $this->failure = true;
+        $this->failureMessage = 'Only clients can be added to Business.';
+
+        return false;
+
+    }
+
+    private function checkLicenses(User $user) {
+        // check that the advisor has sufficent free licenses to create a new business
+        if ($user->licenses->available() < 1) {
+            return true;
+        }
+
+        $this->failure = true;
+        $this->failureMessage = 'You have insufficient free licenses available to create a new business.';
+
+        return false;
     }
 }
