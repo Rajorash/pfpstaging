@@ -111,13 +111,20 @@ class User extends Authenticatable
 
     public function advisors()
     {
-        return $this->belongsToMany(User::class, 'advisor_admin', 'admin_id', 'advisor_id');
+        return $this->belongsToMany(User::class, 'advisor_admins', 'admin_id', 'advisor_id');
     }
 
     public function regionalAdmin()
     {
-        return $this->belongsToMany(User::class, 'advisor_admin', 'advisor_id', 'admin_id');
+        return $this->belongsToMany(User::class, 'advisor_admins', 'advisor_id', 'admin_id');
     }
+
+//    public function myAdvisors()
+//    {
+//        return $this->hasManyThrough(User::class, AdvisorAdmin::class
+//            ,'admin_id','id'
+//            ,'id','advisor_id');
+//    }
 
     public function permissions()
     {
@@ -134,7 +141,7 @@ class User extends Authenticatable
         return true;
     }
 
-    public function isAdmin()
+    public function isRegionalAdmin()
     {
         if (is_null($this->roles->firstWhere('name', self::ROLE_ADMIN))) {
             return false;
@@ -163,7 +170,7 @@ class User extends Authenticatable
 
     public function isActive()
     {
-        if ($this->isSuperAdmin() || $this->isAdmin()) {
+        if ($this->isSuperAdmin() || $this->isRegionalAdmin()) {
             return $this->active;
         } else {
             //TODO - active based on licenses

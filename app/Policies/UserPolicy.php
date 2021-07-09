@@ -33,21 +33,23 @@ class UserPolicy
             return true;
         }
 
+        //a Regional Admin can view only own Advisor
+        if ($user->isRegionalAdmin() && $user->id == $model->regionalAdmin->pluck('id')->first()) {
+            return true;
+        }
+
         // a user can view themselves
-        if ($user->id === $model->id)
-        {
+        if ($user->id === $model->id) {
             return true;
         }
 
         // an advisor can view any clients they have
-        if ( $model->businesses->map->license->pluck('advisor_id')->contains($user->id) )
-        {
+        if ($model->businesses->map->license->pluck('advisor_id')->contains($user->id)) {
             return true;
         }
 
         // an advisor can view any clients they are collaborating on
-        if ( $model->businesses->map->collaboration->pluck('advisor_id')->contains($user->id) )
-        {
+        if ($model->businesses->map->collaboration->pluck('advisor_id')->contains($user->id)) {
             return true;
         }
 
@@ -87,21 +89,23 @@ class UserPolicy
             return true;
         }
 
+        //a Regional Admin can update only own Advisor
+        if ($user->isRegionalAdmin() && $user->id == $model->regionalAdmin->pluck('id')->first()) {
+            return true;
+        }
+
         // users can update themselves
-        if ($user->id === $model->id)
-        {
+        if ($user->id === $model->id) {
             return true;
         }
 
         // advisors can update any clients they have
-        if ( $model->businesses->map->license->pluck('advisor_id')->contains($user->id) )
-        {
+        if ($model->businesses->map->license->pluck('advisor_id')->contains($user->id)) {
             return true;
         }
 
         // advisors can update any clients they are collaborating on
-        if ( $model->businesses->map->collaboration->pluck('advisor_id')->contains($user->id) )
-        {
+        if ($model->businesses->map->collaboration->pluck('advisor_id')->contains($user->id)) {
             return true;
         }
 
@@ -122,20 +126,17 @@ class UserPolicy
         }
 
         // users can update themselves
-        if ($user->id === $model->id)
-        {
+        if ($user->id === $model->id) {
             return true;
         }
 
         // advisors can update any clients they have
-        if ( $model->businesses->map->license->pluck('advisor_id')->contains($user->id) )
-        {
+        if ($model->businesses->map->license->pluck('advisor_id')->contains($user->id)) {
             return true;
         }
 
         // advisors can update any clients they are collaborating on
-        if ( $model->businesses->map->collaboration->pluck('advisor_id')->contains($user->id) )
-        {
+        if ($model->businesses->map->collaboration->pluck('advisor_id')->contains($user->id)) {
             return true;
         }
 
@@ -175,6 +176,37 @@ class UserPolicy
      */
     public function forceDelete(User $user, User $model)
     {
+        return false;
+    }
+
+    /**
+     * Determine whether the user can see a users list
+     *
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\User  $model
+     * @return mixed
+     */
+    public function indexUsers(User $user, User $model)
+    {
+        if ($user->isSuperAdmin() || $user->isRegionalAdmin() || $user->isAdvisor()) {
+            return true;
+        }
+
+        return false;
+    }
+    /**
+     * Determine whether the user can see a businesses list
+     *
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\User  $model
+     * @return mixed
+     */
+    public function indexBusinesses(User $user, User $model)
+    {
+        if ($user->isSuperAdmin() || $user->isAdvisor()) {
+            return true;
+        }
+
         return false;
     }
 }

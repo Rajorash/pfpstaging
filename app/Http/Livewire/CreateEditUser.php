@@ -32,6 +32,7 @@ class CreateEditUser extends Component
 
     public $adminsUsersArray = [];
     public $selectedAdminId;
+    public $selectedAdminIdAllowEdit = false;
 
     //Int ID for Advisor Role. Uses for check during edit role and current existing licenses
     public $roleAdvisorId;
@@ -81,8 +82,9 @@ class CreateEditUser extends Component
                 $this->getBusinessAndLicensesForAdvisor();
             }
 
-            if ($this->user->isAdvisor()) {
+            if ($this->user->isAdvisor() && Auth::user()->isSuperAdmin()) {
                 $this->selectedAdminId = isset($this->user->regionalAdmin[0]) ? $this->user->regionalAdmin[0]->id : null;
+                $this->selectedAdminIdAllowEdit = false;
             }
         }
     }
@@ -243,10 +245,9 @@ class CreateEditUser extends Component
                     $user->assignRole($client_role);
 
                     if ($role_id == User::ROLE_IDS[User::ROLE_ADVISOR]) {
-
-                        if (auth()->user()->isSuperAdmin()) {
+                        if (auth()->user()->isSuperAdmin() && $this->selectedAdminIdAllowEdit) {
                             $user->regionalAdmin()->sync(User::find($this->selectedAdminId));
-                        } elseif (auth()->user()->isAdmin()) {
+                        } elseif (auth()->user()->isRegionalAdmin()) {
                             $user->regionalAdmin()->sync(auth()->user());
                         }
                     }

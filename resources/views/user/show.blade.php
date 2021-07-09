@@ -37,8 +37,63 @@
                                         </div>
                                         <div class="table-row">
                                             <div class="table-cell pb-2">{{__('Role/s')}}</div>
-                                            <div class="table-cell pb-2">{{ implode(', ',$user->roles->pluck('label')->toArray()) }}</div>
+                                            <div
+                                                class="table-cell pb-2">{{ implode(', ',$user->roles->pluck('label')->toArray()) }}</div>
                                         </div>
+                                        @if(Auth::user()->isSuperAdmin() && $user->isAdvisor())
+                                            <div class="table-row">
+                                                <div class="table-cell pb-2">{{__('Regional Admin')}}</div>
+                                                <div class="table-cell pb-2">
+                                                    @if($user->regionalAdmin->pluck('name')->first())
+                                                        <span><a
+                                                                href="/user/{{$user->regionalAdmin->pluck('id')->first()}}">{{$user->regionalAdmin->pluck('name')->first()}}</a></span>
+                                                    @else
+                                                        <span class="text-red-700">Error!</span>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        @endif
+                                        @if(Auth::user()->isSuperAdmin() || Auth::user()->isRegionalAdmin() && $user->isAdvisor())
+
+                                            @if ($user->isClient())
+                                                <div class="table-row">
+                                                    <div class="table-cell pb-2">{{__('Business')}}</div>
+                                                    <div class="table-cell pb-2">
+                                                        @if(count($user->businesses))
+                                                            @foreach ($user->businesses as $business)
+                                                                <div>
+                                                                    <a href="/business/{{$business->id}}">{{$business->name}}</a>
+                                                                </div>
+                                                            @endforeach
+                                                        @else
+                                                            <span class="text-red-700">No businesses</span>
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                            @endif
+                                            @if ($user->isAdvisor())
+                                                <div class="table-row">
+                                                    <div class="table-cell pb-2">{{__('Licenses')}}</div>
+                                                    <div class="table-cell pb-2">
+                                                        @if(count($user->licenses))
+                                                            @if(Auth::user()->isRegionalAdmin())
+                                                                {{count($user->licenses)}}
+                                                            @else
+                                                                <ol class="list-disc">
+                                                                    @foreach ($user->licenses as $business)
+                                                                        <li>
+                                                                            <a href="/business/{{$business->id}}">{{$business->name}}</a>
+                                                                        </li>
+                                                                    @endforeach
+                                                                </ol>
+                                                            @endif
+                                                        @else
+                                                            <span class="text-red-700">No Licenses</span>
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                            @endif
+                                        @endif
                                         <div class="table-row">
                                             <div class="table-cell pb-2">{{__('Email Adress')}}</div>
                                             <div class="table-cell pb-2">{{ $user->email }}</div>

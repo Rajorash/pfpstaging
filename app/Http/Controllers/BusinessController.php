@@ -3,9 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Traits\GettersTrait;
-use Auth;
+//use Auth;
 use App\Models\Business;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class BusinessController extends Controller
 {
@@ -18,6 +19,8 @@ class BusinessController extends Controller
      */
     public function index()
     {
+        $this->authorize('indexBusinesses', Auth::user());
+
         $businesses = $this->getBusinessAll();
         if (Auth::user()->isSuperAdmin()) {
             $filtered = $businesses;

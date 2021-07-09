@@ -51,8 +51,38 @@
                                     <div class="text-sm text-gray-500">
                                         {{ $user->email }}
                                     </div>
+                                    @if(Auth::user()->isSuperAdmin())
+                                        <div class="ml-4">
+                                            @if($user->isAdvisor())
+                                                <div class="text-sm text-gray-500 font-medium">
+                                                    Regional Admin:
+                                                    @if($user->regionalAdmin->pluck('name')->first())
+                                                        <span><a
+                                                                href="/user/{{$user->regionalAdmin->pluck('id')->first()}}">{{$user->regionalAdmin->pluck('name')->first()}}</a></span>
+                                                    @else
+                                                        <span class="text-red-700">Error!</span>
+                                                    @endif
+                                                </div>
+                                            @endif
+                                        </div>
+                                    @endif
+                                    @if(Auth::user()->isSuperAdmin() || Auth::user()->isRegionalAdmin())
+                                        <div class="ml-4">
+                                            @if($user->isAdvisor())
+                                                <div class="text-sm text-gray-500 font-medium">
+                                                    Businesses as Advisor: {{count($user->licenses)}}
+                                                </div>
+                                            @endif
+                                            @if($user->isClient())
+                                                <div class="text-sm text-gray-500 font-medium">
+                                                    Businesses as Client: {{count($user->businesses)}}
+                                                </div>
+                                            @endif
+                                        </div>
+                                    @endif
                                 </div>
                             </div>
+
                         </x-ui.table-td>
                         <x-ui.table-td>
                             <div class="text-sm text-dark_gray2">{{ $user->title }}</div>
@@ -66,7 +96,11 @@
                             @endif
                         </x-ui.table-td>
                         <x-ui.table-td>
-                            {{ ucfirst( $user->roles->implode('name', ', ') ) }}
+                            @if (!empty($user->roles->pluck('label')->toArray()))
+                                {{ implode(', ',$user->roles->pluck('label')->toArray()) }}
+                            @else
+                                <span class="text-red-700">Error! User hasn't any role</span>
+                            @endif
                         </x-ui.table-td>
                         <x-ui.table-td>
                             <x-ui.button-small href="{{url('/user/'.$user->id)}}">
@@ -74,7 +108,7 @@
                             </x-ui.button-small>
                         </x-ui.table-td>
                         <x-ui.table-td>
-                            @if($user->id != $currUserId)
+                            @if(Auth::user()->isSuperAdmin())
                                 <x-ui.button-small href="{{route('users.edit', ['user'=>$user])}}">
                                     Edit User
                                 </x-ui.button-small>

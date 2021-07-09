@@ -84,8 +84,17 @@
                         <div class="table-cell w-1/4 pb-4 text-left">
                             {{ __('Regional Admin:') }}
                         </div>
-                        <div class="table-cell w-3/4 pb-4">
+                        <div class="table-cell w-3/4 pb-4 text-left">
+                            <div class="pb-2">
+                            <input type="checkbox" wire:model="selectedAdminIdAllowEdit"
+                                   id="allowEditRegionalAdminRelation"/>
+                            <label for="allowEditRegionalAdminRelation">Check it to allow edit Regional Admin for
+                                Advisor</label>
+                            </div>
                             <select name="" id="" wire:model="selectedAdminId"
+                                    @if (!$selectedAdminIdAllowEdit)
+                                    disabled
+                                    @endif
                                     class="w-full form-input border-light_blue
                                                         focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50
                                                         rounded-md shadow-sm">

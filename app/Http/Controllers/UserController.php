@@ -29,16 +29,31 @@ class UserController extends Controller
      */
     public function index()
     {
+        $this->authorize('indexUsers', Auth::user());
+
         $currUserId = auth()->user()->id;
+        $filtered = null;
 
         if (Auth::user()->isSuperAdmin()) {
-            $filtered = User::where('id', '!=', '0')->orderBy('name')->paginate($this->perPage);
+            $filtered = User::orderBy('name')->paginate($this->perPage);
+        } elseif (Auth::user()->isRegionalAdmin()) {
+            $filtered = User::whereIn('id', Auth::user()->myAdvisors->pluck('id'))
+                ->with('businesses')
+                ->orderBy('name')
+                ->paginate($this->perPage);
+        } elseif (Auth::user()->isAdvisor()) {
+            //TODO - refactored to Advisors can see clients they manage and businesses they have licensed (past or present)
+            $filtered = User::orderBy('name')->paginate($this->perPage);
         } else {
-            $owners = User::find($currUserId)->licenses->pluck('owner_id')->toArray();
-            $filtered = User::whereIn('id', $owners)->orderBy('name')->paginate($this->perPage);
+            abort(403, 'Access denied');
         }
 
-        return view('user.list', ['users' => $filtered, 'currUserId' => $currUserId]);
+        return view('user.list',
+            [
+                'users' => $filtered,
+                'currUserId' => $currUserId
+            ]
+        );
     }
 
     /**
@@ -355,7 +370,7 @@ class UserController extends Controller
                 $users = $users->filter->isSuperAdmin();
                 break;
             case User::ROLE_ADMIN:
-                $users = $users->filter->isAdmin();
+                $users = $users->filter->isRegionalAdmin();
                 break;
             case User::ROLE_ADVISOR:
                 $users = $users->filter->isAdvisor();

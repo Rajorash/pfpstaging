@@ -20,13 +20,17 @@
                                     :active="request()->routeIs('allocation-calculator')">
                         {{ __('Calculator') }}
                     </x-jet-nav-link>
-                    <x-jet-nav-link href="{{ route('businesses') }}"
-                                    :active="request()->is('*business/*') || request()->is('business')">
-                        {{ __('Businesses') }}
-                    </x-jet-nav-link>
-                    <x-jet-nav-link href="{{ route('users') }}" :active="request()->routeIs('users')">
-                        {{ __('Users') }}
-                    </x-jet-nav-link>
+                    @if(!Auth::user()->isRegionalAdmin())
+                        <x-jet-nav-link href="{{ route('businesses') }}"
+                                        :active="request()->is('*business/*') || request()->is('business')">
+                            {{ __('Businesses') }}
+                        </x-jet-nav-link>
+                    @endif
+                    @if(Auth::user()->isSuperAdmin() || Auth::user()->isRegionalAdmin() || Auth::user()->isAdvisor())
+                        <x-jet-nav-link href="{{ route('users') }}" :active="request()->routeIs('users')">
+                            {{ __('Users') }}
+                        </x-jet-nav-link>
+                    @endif
                 </div>
             </div>
 
@@ -133,21 +137,21 @@
 
                             @if(
                                 Auth::user()->isSuperAdmin()
-                                || Auth::user()->isAdmin()
+                                || Auth::user()->isRegionalAdmin()
                                 || Auth::user()->isAdvisor()
                                 )
-                            <x-jet-dropdown-link href="{{route('users.create')}}">
+                                <x-jet-dropdown-link href="{{route('users.create')}}">
                                 <span class="inline-block mr-4 pt-0.5 w-4 text-center"><x-icons.user-add
                                         :class="'w-4 h-auto'"/></span>
-                                {{ __('Add A User') }}
-                            </x-jet-dropdown-link>
+                                    {{ __('Add A User') }}
+                                </x-jet-dropdown-link>
                             @endif
 
-{{--                            <x-jet-dropdown-link href="#">--}}
-{{--                                <span class="inline-block mr-4 pt-0.5 w-4 text-center"><x-icons.gear--}}
-{{--                                        :class="'w-4 h-auto'"/></span>--}}
-{{--                                {{ __('Settings') }}--}}
-{{--                            </x-jet-dropdown-link>--}}
+                            {{--                            <x-jet-dropdown-link href="#">--}}
+                            {{--                                <span class="inline-block mr-4 pt-0.5 w-4 text-center"><x-icons.gear--}}
+                            {{--                                        :class="'w-4 h-auto'"/></span>--}}
+                            {{--                                {{ __('Settings') }}--}}
+                            {{--                            </x-jet-dropdown-link>--}}
 
                             @if (Auth::user()->isSuperAdmin())
                                 <x-jet-dropdown-link href="{{route('maintenance')}}">
