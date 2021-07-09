@@ -42,6 +42,7 @@
                     <x-jet-input-error for="title" class="mt-2"/>
                 </div>
             </div>
+
             <div class="table-row">
                 <div class="table-cell w-1/4 pb-4 text-left">
                     {{ __('Responsibility') }}
@@ -53,8 +54,8 @@
                 </div>
             </div>
 
-
             @if(count($rolesArray))
+
                 <div class="table-row">
                     <div class="table-cell w-1/4 pb-4 text-left">
                         {{ __('Roles:') }}
@@ -84,6 +85,29 @@
                         <x-jet-input-error for="roles" class="mt-2"/>
                     </div>
                 </div>
+
+                @if(Auth::user()->isSuperAdmin() && in_array($roleAdvisorId, $roles))
+                    <div class="table-row">
+                        <div class="table-cell w-1/4 pb-4 text-left">
+                            {{ __('Regional Admin:') }}
+                        </div>
+                        <div class="table-cell w-3/4 pb-4">
+                            <select name="" id="" wire:model="selectedAdminId"
+                                    class="w-full form-input border-light_blue
+                                                        focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50
+                                                        rounded-md shadow-sm">
+                                <option>Select Regional Admin for Advisor</option>
+                                @foreach ($adminsUsersArray as $admin_row)
+                                    <option value="{{$admin_row->id}}">{{$admin_row->name}} ({{$admin_row->email}})
+                                    </option>
+                                @endforeach
+                            </select>
+
+                            <x-jet-input-error for="selectedAdminId" class="mt-2"/>
+                        </div>
+                    </div>
+                @endif
+
             @endif
 
             @if(count($businesses))

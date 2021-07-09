@@ -6,8 +6,22 @@
     z-index: 10;
 
     th, td {
+
         &:not(.sticky-column) {
             visibility: hidden;
+            border-color: transparent !important;
+        }
+
+        &.sticky-column {
+            border-right-width: 1px;
+        }
+    }
+
+    .bg-blue {
+        th, td {
+            &.sticky-column {
+                border-right-width: 0px;
+            }
         }
     }
 }

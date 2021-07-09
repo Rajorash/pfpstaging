@@ -7,6 +7,13 @@
 }
 .cloned_table th:not(.sticky-column), .cloned_table td:not(.sticky-column) {
   visibility: hidden;
+  border-color: transparent !important;
+}
+.cloned_table th.sticky-column, .cloned_table td.sticky-column {
+  border-right-width: 1px;
+}
+.cloned_table .bg-blue th.sticky-column, .cloned_table .bg-blue td.sticky-column {
+  border-right-width: 0px;
 }
 
 .list-style-cli {

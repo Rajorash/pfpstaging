@@ -30,6 +30,9 @@ class CreateEditUser extends Component
     //array for Licenses
     public $licenses = [];
 
+    public $adminsUsersArray = [];
+    public $selectedAdminId;
+
     //Int ID for Advisor Role. Uses for check during edit role and current existing licenses
     public $roleAdvisorId;
 
@@ -48,6 +51,10 @@ class CreateEditUser extends Component
 
         $this->UserController = new UserController();
         $this->roleAdvisorId = User::ROLE_IDS[User::ROLE_ADVISOR];
+
+        if (Auth::user()->isSuperAdmin()) {
+            $this->adminsUsersArray = $this->UserController->getAdmins();
+        }
     }
 
     /**
@@ -61,6 +68,7 @@ class CreateEditUser extends Component
         $this->rolesArray = $this->UserController->getRolesAllowedToGrant();
 
         if ($this->user) {
+//            dd($this->user, $this->user->relatedToAdmin()->get());
             $this->name = $this->user->name;
             $this->email = $this->user->email;
             $this->timezone = $this->user->timezone;
@@ -150,12 +158,17 @@ class CreateEditUser extends Component
             'name' => $this->name,
             'email' => $this->email,
             'timezone' => $this->timezone,
-            'roles' => $this->roles
+            'roles' => $this->roles,
+            'selectedAdminId' => $this->selectedAdminId
         ], [
             'name' => 'required|min:6',
             'email' => 'required|email|unique:users,email'.($this->user ? ','.$this->user->id : ''),
             'timezone' => 'present|timezone',
-            'roles' => 'required'
+            'roles' => 'required',
+            'selectedAdminId' => (auth()->user()->isSuperAdmin()
+                && in_array($this->roleAdvisorId, $this->roles))
+                ? 'required'
+                : ''
         ]);
 
         $validator->validate();
@@ -225,6 +238,15 @@ class CreateEditUser extends Component
                 if ($ownerRoleId < $role_id) {
                     $client_role = Role::find($role_id);
                     $user->assignRole($client_role);
+
+                    if ($role_id == User::ROLE_IDS[User::ROLE_ADVISOR]) {
+
+                        if (auth()->user()->isSuperAdmin()) {
+                            $user->regionalAdmin()->sync(User::find($this->selectedAdminId));
+                        } elseif (auth()->user()->isAdmin()) {
+                            $user->regionalAdmin()->sync(auth()->user());
+                        }
+                    }
                 }
             }
 
