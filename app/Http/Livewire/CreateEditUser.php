@@ -82,7 +82,7 @@ class CreateEditUser extends Component
             }
 
             if ($this->user->isAdvisor()) {
-                $this->selectedAdminId = $this->user->regionalAdmin ? $this->user->regionalAdmin[0]->id : null;
+                $this->selectedAdminId = isset($this->user->regionalAdmin[0]) ? $this->user->regionalAdmin[0]->id : null;
             }
         }
     }
