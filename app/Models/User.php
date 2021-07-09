@@ -113,6 +113,7 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(User::class, 'advisor_admin', 'admin_id', 'advisor_id');
     }
+
     public function regionalAdmin()
     {
         return $this->belongsToMany(User::class, 'advisor_admin', 'advisor_id', 'admin_id');

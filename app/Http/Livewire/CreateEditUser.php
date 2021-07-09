@@ -68,7 +68,6 @@ class CreateEditUser extends Component
         $this->rolesArray = $this->UserController->getRolesAllowedToGrant();
 
         if ($this->user) {
-//            dd($this->user, $this->user->relatedToAdmin()->get());
             $this->name = $this->user->name;
             $this->email = $this->user->email;
             $this->timezone = $this->user->timezone;
@@ -80,6 +79,10 @@ class CreateEditUser extends Component
 
             if ($this->UserController->checkAdvisor($this->roles)) {
                 $this->getBusinessAndLicensesForAdvisor();
+            }
+
+            if ($this->user->isAdvisor()) {
+                $this->selectedAdminId = $this->user->regionalAdmin ? $this->user->regionalAdmin[0]->id : null;
             }
         }
     }
