@@ -26,7 +26,7 @@
                 <tr>
                     <x-ui.table-td class="text-center bg-gray-100" padding="px-72 py-4">
 
-                        <livewire:create-edit-user :user="$user"/>
+                        <livewire:user.edit-user-form :user="$user"/>
 
                     </x-ui.table-td>
                 </tr>
