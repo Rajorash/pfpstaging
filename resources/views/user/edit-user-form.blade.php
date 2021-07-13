@@ -1,4 +1,9 @@
 <div class="livewire-wrapper">
+    @if ($saved)
+    <div class="mt-4 px-4 py-2 bg-white rounded-lg border border-green  text-left" x-data="{}">
+        User {{$this->user->name}} saved successfully.
+    </div>
+    @endif
     <form wire:submit.prevent="save">
         <div class="table w-full mt-10">
 

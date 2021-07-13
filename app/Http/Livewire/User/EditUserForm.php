@@ -8,13 +8,14 @@ use Livewire\Component;
 class EditUserForm extends Component
 {
     public User $user;
+    public $saved = false;
 
     protected $rules = [
         'user.name' => 'required|min:6',
         'user.email' => [
             'required',
             'email',
-            // 'unique:users,email,' . $this->user->id
+            'unique:users,email'
         ],
         'user.title' => 'nullable|string|min:3',
         'user.responsibility' => 'nullable|string|min:4',
@@ -49,10 +50,11 @@ class EditUserForm extends Component
 
         $this->user->save();
 
+        $this->saved = true;
         // used for responsiveness eg closing modals etc. Not implemented yet
         $this->dispatchBrowserEvent('user-saved');
 
-        return redirect("user");
+        // return redirect("user");
 
     }
 
