@@ -11,20 +11,17 @@
                 Businesses Visible To You
                 <x-slot name="right">
                     @livewire('business.create-business-form')
-                    {{-- <x-ui.button-normal type="button" @click="businessFormOpen = true">
-                        <span class="ml-2">Create Business</span>
-                    </x-ui.button-normal> --}}
                 </x-slot>
             </x-ui.table-caption>
             <thead>
             <tr class="border-light_blue border-t border-b">
                 <x-ui.table-th padding="pl-12 pr-2 py-4">Business Name</x-ui.table-th>
                 <x-ui.table-th>Owner</x-ui.table-th>
-                <x-ui.table-th>Advisor</x-ui.table-th>
+                <x-ui.table-th>License</x-ui.table-th>
                 <x-ui.table-th class="text-center">Accounts</x-ui.table-th>
                 <x-ui.table-th></x-ui.table-th>
                 <x-ui.table-th></x-ui.table-th>
-                <x-ui.table-th></x-ui.table-th>
+                <x-ui.table-th padding="pl-2 pr-12 py-4"></x-ui.table-th>
             </tr>
             </thead>
 
@@ -49,7 +46,14 @@
                                 </div>
                             </div>
                         </x-ui.table-td>
-                        <x-ui.table-td>{{is_object($business->license) ? $business->license->advisor->name : __('Not licensed')}}</x-ui.table-td>
+                        <x-ui.table-td>
+                            @if ( is_object($business->license) )
+                            {{$business->license->advisor->name}} <br>
+                            Exp: 01/01/1970
+                            @else
+                            {{__('Not licensed')}}
+                            @endif
+                        </x-ui.table-td>
                         <x-ui.table-td class="text-center">
                             <a href="{{url('/business/'.$business->id.'/accounts')}}">
                                 <x-ui.badge> {{$business->accounts()->count()}}</x-ui.badge>
@@ -61,7 +65,7 @@
                         <x-ui.table-td>
                             <x-ui.button-small href="{{route('allocations-calendar', ['business' => $business])}}">Data Entry</x-ui.button-small>
                         </x-ui.table-td>
-                        <x-ui.table-td>
+                        <x-ui.table-td padding="pl-2 pr-12 py-4">
                             <x-ui.button-small href="{{route('projections', ['business' => $business])}}">Forecast</x-ui.button-small>
                         </x-ui.table-td>
                     </tr>

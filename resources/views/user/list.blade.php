@@ -82,7 +82,6 @@
                                     @endif
                                 </div>
                             </div>
-
                         </x-ui.table-td>
                         <x-ui.table-td>
                             <div class="text-sm text-dark_gray2">{{ $user->title }}</div>
