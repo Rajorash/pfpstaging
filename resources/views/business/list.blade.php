@@ -11,9 +11,6 @@
                 Businesses Visible To You
                 <x-slot name="right">
                     @livewire('business.create-business-form')
-                    {{-- <x-ui.button-normal type="button" @click="businessFormOpen = true">
-                        <span class="ml-2">Create Business</span>
-                    </x-ui.button-normal> --}}
                 </x-slot>
             </x-ui.table-caption>
             <thead>
