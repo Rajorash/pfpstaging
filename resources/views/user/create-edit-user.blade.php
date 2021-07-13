@@ -166,8 +166,8 @@
                 <div class="table-cell w-3/4 pb-4">
                     <select name="timezone" id="timezone" wire:model.lazy="timezone"
                             class="w-full form-input border-light_blue
-                                                        focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50
-                                                        rounded-md shadow-sm">
+                                    focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50
+                                    rounded-md shadow-sm">
                         <option>Select your timezone</option>
                         @foreach (timezone_identifiers_list(64) as $timezone)
                             <option value="{{ $timezone }}">{{ $timezone }}</option>

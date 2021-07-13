@@ -164,12 +164,16 @@ class CreateEditUser extends Component
             'email' => $this->email,
             'timezone' => $this->timezone,
             'roles' => $this->roles,
+            'title' => $this->title,
+            'responsibility' => $this->responsibility,
             'selectedAdminId' => $this->selectedAdminId
         ], [
             'name' => 'required|min:6',
             'email' => 'required|email|unique:users,email'.($this->user ? ','.$this->user->id : ''),
             'timezone' => 'present|timezone',
             'roles' => 'required',
+            'title' => 'nullable|string|min:3',
+            'responsibility' => 'nullable|string|min:4',
             'selectedAdminId' => (auth()->user()->isSuperAdmin()
                 && in_array($this->roleAdvisorId, $this->roles))
                 ? 'required'
@@ -256,11 +260,13 @@ class CreateEditUser extends Component
 
             if ($this->user) {
                 return redirect("user");
-            } else if( $user->isClient() && auth()->user()->isAdvisor() ) {
-                // if an advisor creates a client user, redirect to the business listing page to create a business.
-                return redirect("business");
             } else {
-                return redirect("user/{$user->id}");
+                if ($user->isClient() && auth()->user()->isAdvisor()) {
+                    // if an advisor creates a client user, redirect to the business listing page to create a business.
+                    return redirect("business");
+                } else {
+                    return redirect("user/{$user->id}");
+                }
             }
         }
     }
