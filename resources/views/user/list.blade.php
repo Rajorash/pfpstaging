@@ -28,10 +28,10 @@
                 <x-ui.table-th class="text-center">Status</x-ui.table-th>
                 <x-ui.table-th>Roles</x-ui.table-th>
                 <x-ui.table-th></x-ui.table-th>
-                <x-ui.table-th></x-ui.table-th>
-                @if(Auth::user()->isSuperAdmin() || Auth::user()->isAdvisor())
+                <x-ui.table-th padding="pl-2 pr-12 py-4"></x-ui.table-th>
+                {{-- @if(Auth::user()->isSuperAdmin() || Auth::user()->isAdvisor())
                     <x-ui.table-th></x-ui.table-th>
-                @endif
+                @endif --}}
             </tr>
             </thead>
 
@@ -73,18 +73,18 @@
                                 See User
                             </x-ui.button-small>
                         </x-ui.table-td>
-                        <x-ui.table-td>
+                        <x-ui.table-td padding="pl-2 pr-12 py-4">
                             @if($user->id != $currUserId)
                                 <x-ui.button-small href="{{route('users.edit', ['user'=>$user])}}">
                                     Edit User
                                 </x-ui.button-small>
                             @endif
                         </x-ui.table-td>
-                        @if(Auth::user()->isSuperAdmin() || Auth::user()->isAdvisor())
+                        {{-- @if(Auth::user()->isSuperAdmin() || Auth::user()->isAdvisor())
                             <x-ui.table-td>
                                 <livewire:licenses-counter :user="$user" :key="$user->id"/>
                             </x-ui.table-td>
-                        @endif
+                        @endif --}}
                     </tr>
                 @endforeach
 
