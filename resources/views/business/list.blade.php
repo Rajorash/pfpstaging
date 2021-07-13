@@ -20,7 +20,7 @@
             <tr class="border-light_blue border-t border-b">
                 <x-ui.table-th padding="pl-12 pr-2 py-4">Business Name</x-ui.table-th>
                 <x-ui.table-th>Owner</x-ui.table-th>
-                <x-ui.table-th>Advisor</x-ui.table-th>
+                <x-ui.table-th>License</x-ui.table-th>
                 <x-ui.table-th class="text-center">Accounts</x-ui.table-th>
                 <x-ui.table-th></x-ui.table-th>
                 <x-ui.table-th></x-ui.table-th>
@@ -49,7 +49,14 @@
                                 </div>
                             </div>
                         </x-ui.table-td>
-                        <x-ui.table-td>{{is_object($business->license) ? $business->license->advisor->name : __('Not licensed')}}</x-ui.table-td>
+                        <x-ui.table-td>
+                            @if ( is_object($business->license) )
+                            {{$business->license->advisor->name}} <br>
+                            Exp: 01/01/1970
+                            @else
+                            {{__('Not licensed')}}
+                            @endif
+                        </x-ui.table-td>
                         <x-ui.table-td class="text-center">
                             <a href="{{url('/business/'.$business->id.'/accounts')}}">
                                 <x-ui.badge> {{$business->accounts()->count()}}</x-ui.badge>
