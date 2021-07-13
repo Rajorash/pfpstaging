@@ -24,7 +24,7 @@
                 <x-ui.table-th class="text-center">Accounts</x-ui.table-th>
                 <x-ui.table-th></x-ui.table-th>
                 <x-ui.table-th></x-ui.table-th>
-                <x-ui.table-th></x-ui.table-th>
+                <x-ui.table-th padding="pl-2 pr-12 py-4"></x-ui.table-th>
             </tr>
             </thead>
 
@@ -61,7 +61,7 @@
                         <x-ui.table-td>
                             <x-ui.button-small href="{{route('allocations-calendar', ['business' => $business])}}">Data Entry</x-ui.button-small>
                         </x-ui.table-td>
-                        <x-ui.table-td>
+                        <x-ui.table-td padding="pl-2 pr-12 py-4">
                             <x-ui.button-small href="{{route('projections', ['business' => $business])}}">Forecast</x-ui.button-small>
                         </x-ui.table-td>
                     </tr>
