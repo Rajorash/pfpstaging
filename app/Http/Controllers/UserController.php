@@ -37,10 +37,12 @@ class UserController extends Controller
         if (Auth::user()->isSuperAdmin()) {
             $filtered = User::orderBy('name')->paginate($this->perPage);
         } elseif (Auth::user()->isRegionalAdmin()) {
-            $filtered = User::whereIn('id', Auth::user()->myAdvisors->pluck('id'))
-                ->with('businesses')
-                ->orderBy('name')
-                ->paginate($this->perPage);
+            if (Auth::user()->advisors) {
+                $filtered = User::whereIn('id', Auth::user()->advisors->pluck('id'))
+                    ->with('businesses')
+                    ->orderBy('name')
+                    ->paginate($this->perPage);
+            }
         } elseif (Auth::user()->isAdvisor()) {
             //TODO - refactored to Advisors can see clients they manage and businesses they have licensed (past or present)
             $filtered = User::orderBy('name')->paginate($this->perPage);
