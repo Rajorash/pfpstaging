@@ -9,14 +9,20 @@
     <form wire:submit.prevent="store">
         <div class="table w-full mt-10">
 
-
             <div class="table-row">
                 <div class="table-cell w-1/4 pb-4 text-left">
                     {{ __('Name') }}
                 </div>
                 <div class="table-cell w-3/4 pb-4">
-                    <x-jet-input id="name" class=" w-full" type="text" name="name"
-                                 required autofocus wire:model.lazy="name"/>
+                    <x-jet-input
+                        id="name"
+                        class="w-full"
+                        type="text"
+                        name="name"
+                        required
+                        autofocus
+                        wire:model.lazy="name"
+                    />
                     <x-jet-input-error for="name" class="mt-2 text-left"/>
                 </div>
             </div>
@@ -26,9 +32,9 @@
                     {{ __('E-Mail Address') }}
                 </div>
                 <div class="table-cell w-3/4 pb-4">
-                    <x-jet-input id="email" class=" w-full" type="email" name="email"
+                    <x-jet-input id="email" class="w-full" type="email" name="email"
                                  required wire:model.lazy="email"/>
-                    <x-jet-input-error for="email" class="mt-2"/>
+                    <x-jet-input-error for="email" class="text-left mt-2"/>
                 </div>
             </div>
 
@@ -37,9 +43,15 @@
                     {{ __('Title') }}
                 </div>
                 <div class="table-cell w-3/4 pb-4">
-                    <x-jet-input id="title" class=" w-full" type="text" name="title"
-                                 required autofocus wire:model.lazy="title"/>
-                    <x-jet-input-error for="title" class="mt-2"/>
+                    <x-jet-input
+                        id="title"
+                        class="w-full"
+                        type="text"
+                        name="title"
+                        autofocus
+                        wire:model.lazy="title"
+                    />
+                    <x-jet-input-error for="title" class="text-left mt-2"/>
                 </div>
             </div>
 
@@ -48,9 +60,15 @@
                     {{ __('Responsibility') }}
                 </div>
                 <div class="table-cell w-3/4 pb-4">
-                    <x-jet-input id="responsibility" class=" w-full" type="text" name="responsibility"
-                                 required autofocus wire:model.lazy="responsibility"/>
-                    <x-jet-input-error for="responsibility" class="mt-2"/>
+                    <x-jet-input
+                        id="responsibility"
+                        class="w-full"
+                        type="text"
+                        name="responsibility"
+                        autofocus
+                        wire:model.lazy="responsibility"
+                    />
+                    <x-jet-input-error for="responsibility" class="text-left mt-2"/>
                 </div>
             </div>
 
@@ -64,25 +82,26 @@
                         @foreach ($rolesArray as $role_id => $role_label)
                             <div class="text-left my-2">
                                 <input type="checkbox" name="roles[]" id="roles_{{$role_id}}"
-                                       class="disabled:opacity-40"
-                                       wire:model="roles.{{$role_id}}"
+                                    class="disabled:opacity-40"
+                                    wire:model="roles.{{$role_id}}"
 
-                                       @if(count($rolesArray) == 1)
-                                       readonly
-                                       @endif
+                                    @if(count($rolesArray) == 1)
+                                    readonly
+                                    @endif
 
-                                       @if ($roleAdvisorId == $role_id && count($licenses))
-                                       disabled
-                                       @endif
+                                    @if ($roleAdvisorId == $role_id && count($licenses))
+                                    disabled
+                                    @endif
 
-                                       value="{{ $role_id }}"/>
+                                    value="{{ $role_id }}"
+                                />
                                 <label for="roles_{{$role_id}}">{{ $role_label }}</label>
                                 @if ($roleAdvisorId == $role_id && count($licenses))
                                     <p class="text-sm pl-5 italic">{{__('Advisor role can not be revoked if at least one business is selected for licensing.')}}</p>
                                 @endif
                             </div>
                         @endforeach
-                        <x-jet-input-error for="roles" class="mt-2"/>
+                        <x-jet-input-error for="roles" class="text-left mt-2"/>
                     </div>
                 </div>
 
@@ -94,7 +113,7 @@
                         <div class="table-cell w-3/4 pb-4">
                             <select name="" id="" wire:model="selectedAdminId"
                                     class="w-full form-input border-light_blue
-                                                        focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50
+                                    focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50
                                                         rounded-md shadow-sm">
                                 <option>Select Regional Admin for Advisor</option>
                                 @foreach ($adminsUsersArray as $admin_row)
@@ -103,7 +122,7 @@
                                 @endforeach
                             </select>
 
-                            <x-jet-input-error for="selectedAdminId" class="mt-2"/>
+                            <x-jet-input-error for="selectedAdminId" class="text-left mt-2"/>
                         </div>
                     </div>
                 @endif
@@ -125,7 +144,7 @@
                                 <label for="licenses_{{$business_id}}">{{ $business_name }}</label>
                             </div>
                         @endforeach
-                        <x-jet-input-error for="licenses" class="mt-2"/>
+                        <x-jet-input-error for="licenses" class="text-left mt-2"/>
                     </div>
                 </div>
             @endif
@@ -145,7 +164,7 @@
                             <option value="{{ $timezone }}">{{ $timezone }}</option>
                         @endforeach
                     </select>
-                    <x-jet-input-error for="timezone" class="mt-2"/>
+                    <x-jet-input-error for="timezone" class="text-left mt-2"/>
                 </div>
             </div>
         </div>
