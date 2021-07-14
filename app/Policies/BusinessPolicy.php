@@ -129,12 +129,12 @@ class BusinessPolicy
         }
 
         // advisors can access the businesses that they advise
-        if ($business->license && $user->id === $business->license->advisor_id) {
+        if ($business->license && $user->id === $business->license->id) {
             return true;
         }
 
         // advisors can access the businesses that they collaborate on
-        if ($business->collaboration && $user->id === $business->collaboration->advisor_id) {
+        if ($business->collaboration && $user->id === $business->collaboration->id) {
             // need to add expiry check
             return true;
         }
