@@ -44,8 +44,11 @@ class UserController extends Controller
                     ->paginate($this->perPage);
             }
         } elseif (Auth::user()->isAdvisor()) {
-            //TODO - refactored to Advisors can see clients they manage and businesses they have licensed (past or present)
-            $filtered = User::orderBy('name')->paginate($this->perPage);
+            $filtered = User::whereIn('id', Auth::user()->licenses->pluck('owner_id'))
+                ->with('businesses')
+                ->orderBy('name')
+                ->paginate($this->perPage);
+            //$filtered = User::whereIn('id', Auth::user()->advisors->pluck('id'));
         } else {
             abort(403, 'Access denied');
         }
