@@ -114,7 +114,7 @@
                             <div class="pb-2">
                             <input type="checkbox" wire:model="selectedAdminIdAllowEdit"
                                    id="allowEditRegionalAdminRelation"/>
-                            <label for="allowEditRegionalAdminRelation">Check it to allow edit Regional Admin for
+                            <label for="allowEditRegionalAdminRelation" class="pl-2">Check it to allow edit Regional Admin for
                                 Advisor</label>
                             </div>
                             <select name="" id="" wire:model="selectedAdminId"

@@ -26,17 +26,20 @@
                 <x-ui.table-th padding="pl-12 pr-2 py-4">Name</x-ui.table-th>
                 <x-ui.table-th>Title</x-ui.table-th>
                 <x-ui.table-th class="text-center">Status</x-ui.table-th>
+                @if(Auth::user()->isSuperAdmin() || Auth::user()->isRegionalAdmin())
+                    <x-ui.table-th>Licenses</x-ui.table-th>
+                @endif
                 <x-ui.table-th>Roles</x-ui.table-th>
                 <x-ui.table-th></x-ui.table-th>
                 <x-ui.table-th></x-ui.table-th>
-                @if(Auth::user()->isSuperAdmin() || Auth::user()->isAdvisor())
+                @if(Auth::user()->isRegionalAdmin())
                     <x-ui.table-th></x-ui.table-th>
                 @endif
             </tr>
             </thead>
 
             <x-ui.table-tbody>
-                @if ($users)
+                @if (count($users))
                     @foreach ($users as $user)
                         <tr>
                             <x-ui.table-td class="whitespace-nowrap"
@@ -95,6 +98,22 @@
                                     <x-ui.badge background="bg-light_gray">Inactive</x-ui.badge>
                                 @endif
                             </x-ui.table-td>
+
+                            @if(Auth::user()->isSuperAdmin() || Auth::user()->isRegionalAdmin())
+                                <x-ui.table-td class="text-center">
+                                    @if ($user->isAdvisor() && $user->advisorsLicenses->last())
+                                        @if($user->advisorsLicenses->last()->licenses - count($user->licenses) < 0)
+                                            <x-ui.badge background="bg-red-700">
+                                                {{$user->advisorsLicenses->last()->licenses - count($user->licenses)}}</x-ui.badge>
+                                        @else
+                                            <x-ui.badge>{{$user->advisorsLicenses->last()->licenses - count($user->licenses)}}</x-ui.badge>
+                                        @endif
+                                    @else
+                                        <x-ui.badge background="bg-red-700">{{__('Not set')}}</x-ui.badge>
+                                    @endif
+                                </x-ui.table-td>
+                            @endif
+
                             <x-ui.table-td>
                                 @if (!empty($user->roles->pluck('label')->toArray()))
                                     {{ implode(', ',$user->roles->pluck('label')->toArray()) }}
@@ -114,9 +133,12 @@
                                     </x-ui.button-small>
                                 @endif
                             </x-ui.table-td>
-                            @if(Auth::user()->isSuperAdmin() || Auth::user()->isAdvisor())
+                            @if(Auth::user()->isRegionalAdmin() && $user->isAdvisor())
                                 <x-ui.table-td>
-                                    <livewire:licenses-counter :user="$user" :key="$user->id"/>
+                                    <x-ui.button-small href="{{route('licenses.list', ['user'=>$user])}}">
+                                        Licenses
+                                    </x-ui.button-small>
+                                    {{--                                    <livewire:licenses-counter :user="$user" :key="$user->id"/>--}}
                                 </x-ui.table-td>
                             @endif
                         </tr>

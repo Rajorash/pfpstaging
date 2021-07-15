@@ -179,6 +179,14 @@ class User extends Authenticatable
         return $this->active;
     }
 
+    public function advisorsLicenses()
+    {
+        return $this->hasMany(
+            LicensesForAdvisors::class,
+            'advisor_id',
+            'id');
+    }
+
 
 //    public function relatedToAdmin()
 //    {

@@ -188,7 +188,7 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::get(
         '/licenses/{user}',
-        [LicenseController::class, 'list']
+        [LicenseController::class, 'details']
     )->name('licenses.list');
 });
 
