@@ -32,26 +32,29 @@
                                        padding="pl-12 pr-2 py-4">{{ $business->name }}</x-ui.table-td>
                         <x-ui.table-td>
                             <div class="flex items-center">
-                                <div class="flex-shrink-0 h-10 w-10">
-                                    <img class="h-10 w-10 rounded-full" src="{{ $business->owner->profile_photo_url }}"
-                                         alt="">
-                                </div>
-                                <div class="ml-4">
-                                    <div class="">
-                                        {{ $business->owner->name }}
+                                @if($business->owner)
+                                    <div class="flex-shrink-0 h-10 w-10">
+                                        <img class="h-10 w-10 rounded-full"
+                                             src="{{ $business->owner->profile_photo_url }}"
+                                             alt="">
                                     </div>
-                                    <div class="text-sm text-light_gray">
-                                        {{ $business->owner->email }}
+                                    <div class="ml-4">
+                                        <div class="">
+                                            {{ $business->owner->name }}
+                                        </div>
+                                        <div class="text-sm text-light_gray">
+                                            {{ $business->owner->email }}
+                                        </div>
                                     </div>
-                                </div>
+                                @endif
                             </div>
                         </x-ui.table-td>
                         <x-ui.table-td>
                             @if ( is_object($business->license) )
-                            {{$business->license->advisor->name}} <br>
-                            Exp: 01/01/1970
+                                {{$business->license->advisor->name}} <br>
+                                Exp: 01/01/1970
                             @else
-                            {{__('Not licensed')}}
+                                {{__('Not licensed')}}
                             @endif
                         </x-ui.table-td>
                         <x-ui.table-td class="text-center">
@@ -60,13 +63,18 @@
                             </a>
                         </x-ui.table-td>
                         <x-ui.table-td>
-                            <x-ui.button-small href="{{route('allocations-percentages', ['business' => $business])}}">Percentages</x-ui.button-small>
+                            <x-ui.button-small href="{{route('allocations-percentages', ['business' => $business])}}">
+                                Percentages
+                            </x-ui.button-small>
                         </x-ui.table-td>
                         <x-ui.table-td>
-                            <x-ui.button-small href="{{route('allocations-calendar', ['business' => $business])}}">Data Entry</x-ui.button-small>
+                            <x-ui.button-small href="{{route('allocations-calendar', ['business' => $business])}}">Data
+                                Entry
+                            </x-ui.button-small>
                         </x-ui.table-td>
                         <x-ui.table-td padding="pl-2 pr-12 py-4">
-                            <x-ui.button-small href="{{route('projections', ['business' => $business])}}">Forecast</x-ui.button-small>
+                            <x-ui.button-small href="{{route('projections', ['business' => $business])}}">Forecast
+                            </x-ui.button-small>
                         </x-ui.table-td>
                     </tr>
                 @endforeach

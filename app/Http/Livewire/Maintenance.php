@@ -44,6 +44,10 @@ class Maintenance extends Component
                 'title' => 'Run the database migrations',
                 'command' => 'migrate'
             ],
+            'redis:clearall' => [
+                'title' => 'Clear Redis Cache',
+                'php_command' => '\Illuminate\Support\Facades\Cache::flush();'
+            ],
         ];
 
         if ($this->code) {
@@ -60,13 +64,25 @@ class Maintenance extends Component
             ];
         } else {
             $this->previousCommandId = $id;
-            \Artisan::call($this->artisanCommands[$id]['command']);
-            $this->artisanResult = [
-                'title' =>
-                '<p><strong>> php artisan '.$this->artisanCommands[$id]['command'].'</strong></p><br />'
-                .'<p>'.implode('</p><p>', explode(PHP_EOL, \Artisan::output())).'</p>',
-                'type' => 'notice'
-            ];
+            if (isset($this->artisanCommands[$id]['command'])) {
+                \Artisan::call($this->artisanCommands[$id]['command']);
+                $this->artisanResult = [
+                    'title' =>
+                        '<p><strong>> php artisan '.$this->artisanCommands[$id]['command'].'</strong></p><br />'
+                        .'<p>'.implode('</p><p>', explode(PHP_EOL, \Artisan::output())).'</p>',
+                    'type' => 'notice'
+                ];
+            } elseif ($this->artisanCommands[$id]['php_command']) {
+
+                eval($this->artisanCommands[$id]['php_command']);
+
+                $this->artisanResult = [
+                    'title' =>
+                        '<p><strong>'.$this->artisanCommands[$id]['php_command'].'</strong></p><br />'
+                        .'<p>Successful</p>',
+                    'type' => 'notice'
+                ];
+            }
         }
     }
 
