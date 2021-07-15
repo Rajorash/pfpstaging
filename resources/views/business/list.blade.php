@@ -19,6 +19,9 @@
                 <x-ui.table-th>Owner</x-ui.table-th>
                 <x-ui.table-th>License</x-ui.table-th>
                 <x-ui.table-th class="text-center">Accounts</x-ui.table-th>
+                @if(Auth::user()->isAdvisor())
+                    <x-ui.table-th></x-ui.table-th>
+                @endif
                 <x-ui.table-th></x-ui.table-th>
                 <x-ui.table-th></x-ui.table-th>
                 <x-ui.table-th padding="pl-2 pr-12 py-4"></x-ui.table-th>
@@ -62,6 +65,13 @@
                                 <x-ui.badge> {{$business->accounts()->count()}}</x-ui.badge>
                             </a>
                         </x-ui.table-td>
+                        @if(Auth::user()->isAdvisor())
+                            <x-ui.table-td>
+                                <x-ui.button-small href="{{route('licenses.business', ['business' => $business])}}">
+                                    Licenses
+                                </x-ui.button-small>
+                            </x-ui.table-td>
+                        @endif
                         <x-ui.table-td>
                             <x-ui.button-small href="{{route('allocations-percentages', ['business' => $business])}}">
                                 Percentages
