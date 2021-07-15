@@ -7,6 +7,7 @@ use App\Models\Business;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\LicensesForAdvisors;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -251,15 +252,28 @@ class CreateEditUser extends Component
 
                     if ($role_id == User::ROLE_IDS[User::ROLE_ADVISOR]) {
 
-                        $LicensesForAdvisors = new LicensesForAdvisors();
-                        $LicensesForAdvisors->licenses = LicensesForAdvisors::DEFAULT_LICENSES_COUNT;
-                        if (auth()->user()->isSuperAdmin() && $this->selectedAdminIdAllowEdit) {
+                        if ($this->user) {
+                            //edit user
+                            if ($this->user->advisorsLicenses && $this->user->advisorsLicenses->last()) {
+                                $LicensesForAdvisors = LicensesForAdvisors::find($this->user->advisorsLicenses->last()->id);
+                            } else {
+                                $LicensesForAdvisors = new LicensesForAdvisors();
+                                $LicensesForAdvisors->licenses = LicensesForAdvisors::DEFAULT_LICENSES_COUNT;
+                            }
+                        } else {
+                            //create
+                            $LicensesForAdvisors = new LicensesForAdvisors();
+                            $LicensesForAdvisors->licenses = LicensesForAdvisors::DEFAULT_LICENSES_COUNT;
+                        }
+
+                        if (auth()->user()->isSuperAdmin()) {
                             $user->regionalAdmin()->sync(User::find($this->selectedAdminId));
                             $LicensesForAdvisors->regionalAdmin()->associate(User::find($this->selectedAdminId));
                         } elseif (auth()->user()->isRegionalAdmin()) {
                             $user->regionalAdmin()->sync(auth()->user());
                             $LicensesForAdvisors->regionalAdmin()->associate(auth()->user());
                         }
+
                         $LicensesForAdvisors->advisor()->associate($user);
                         $LicensesForAdvisors->save();
                     }
