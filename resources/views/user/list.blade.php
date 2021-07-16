@@ -128,12 +128,19 @@
                                 <x-ui.table-td class="text-center">
                                     @if ($user->isAdvisor())
                                         @if ($user->advisorsLicenses->last())
-                                            @if($user->advisorsLicenses->last()->licenses - count($user->licenses) < 0)
+                                            @if($user->advisorsLicenses->last()->licenses - count($user->activeLicenses) < 0)
                                                 <x-ui.badge background="bg-red-700">
-                                                    {{count($user->licenses) .' '. __('from').' '. $user->advisorsLicenses->last()->licenses}}</x-ui.badge>
+                                                    {{count($user->activeLicenses) .' '. __('from').' '. $user->advisorsLicenses->last()->licenses}}</x-ui.badge>
                                             @else
-                                                <x-ui.badge>{{count($user->licenses) .' '. __('from').' '. $user->advisorsLicenses->last()->licenses}}</x-ui.badge>
+                                                <x-ui.badge>{{count($user->activeLicenses) .' '. __('from').' '. $user->advisorsLicenses->last()->licenses}}</x-ui.badge>
                                             @endif
+
+                                            @if (count($user->notActiveLicenses))
+                                                   <br /><x-ui.badge background="bg-gray-500">
+                                            Disabled: {{count($user->notActiveLicenses)}}
+                                                    </x-ui.badge>
+                                            @endif
+
                                         @else
                                             <x-ui.badge background="bg-red-700">{{__('Not set')}}</x-ui.badge>
                                         @endif

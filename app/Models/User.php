@@ -104,6 +104,18 @@ class User extends Authenticatable
         return $this->belongsToMany(Business::class, 'licenses', 'advisor_id', 'business_id');
     }
 
+    public function activeLicenses()
+    {
+        return $this->belongsToMany(Business::class, 'licenses', 'advisor_id', 'business_id')
+            ->where('active', true);
+    }
+
+    public function notActiveLicenses()
+    {
+        return $this->belongsToMany(Business::class, 'licenses', 'advisor_id', 'business_id')
+            ->where('active', false);
+    }
+
     public function collaborations()
     {
         return $this->belongsToMany(Business::class, 'collaborations', 'advisor_id', 'business_id')

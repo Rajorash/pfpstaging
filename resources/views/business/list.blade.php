@@ -9,6 +9,17 @@
         <x-ui.table-table>
             <x-ui.table-caption>
                 Businesses Visible To You
+
+                @if(Auth::user()->isAdvisor())
+                    <div class="text-xl pl-2">
+                    @if (Auth::user()->advisorsLicenses->last())
+                        Available licenses: {{Auth::user()->advisorsLicenses->last()->licenses - count(Auth::user()->licenses)}}
+                    @else
+                        You haven`t any available licenses
+                    @endif
+                    </div>
+                @endif
+
                 <x-slot name="right">
                     @livewire('business.create-business-form')
                 </x-slot>
@@ -58,16 +69,16 @@
                             @else
                                 {{__('Not licensed')}}
                             @endif
-                                @if ( is_object($business->collaboration)
-                                    )
-                                    <div class="text-sm text-light_gray">
-                                        In collaboration with
-                                        {{$business->collaboration->advisor->name}}
-                                        @if (($expire = new \DateTime($business->collaboration->expires_at))->getTimestamp() > time())
-                                            till {{$expire->format('Y-m-d')}}
-                                        @endif
-                                    </div>
-                                @endif
+                            @if ( is_object($business->collaboration)
+                                )
+                                <div class="text-sm text-light_gray">
+                                    In collaboration with
+                                    {{$business->collaboration->advisor->name}}
+                                    @if (($expire = new \DateTime($business->collaboration->expires_at))->getTimestamp() > time())
+                                        till {{$expire->format('Y-m-d')}}
+                                    @endif
+                                </div>
+                            @endif
                         </x-ui.table-td>
                         <x-ui.table-td class="text-center">
                             <a href="{{url('/business/'.$business->id.'/accounts')}}">

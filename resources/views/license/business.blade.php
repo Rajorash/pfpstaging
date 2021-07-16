@@ -20,13 +20,11 @@
 
             </x-ui.table-caption>
             <x-ui.table-tbody>
-
                 <tr>
                     <x-ui.table-td class="text-center bg-gray-100" padding="px-72 py-4">
-
                         <livewire:licenses-for-business :business="$business"/>
-
                     </x-ui.table-td>
+                </tr>
             </x-ui.table-tbody>
         </x-ui.table-table>
     </x-ui.main>
