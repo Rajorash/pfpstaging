@@ -92,6 +92,24 @@
                                                         @endif
                                                     </div>
                                                 </div>
+                                                @if(count($user->collaborations))
+                                                <div class="table-row">
+                                                    <div class="table-cell pb-2">{{__('Collaborations')}}</div>
+                                                    <div class="table-cell pb-2">
+                                                        @if(Auth::user()->isRegionalAdmin())
+                                                            {{count($user->collaborations)}}
+                                                        @else
+                                                            <ol class="list-disc">
+                                                                @foreach ($user->collaborations as $business)
+                                                                    <li>
+                                                                        <a href="/business/{{$business->id}}">{{$business->name}}</a>
+                                                                    </li>
+                                                                @endforeach
+                                                            </ol>
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                                @endif
                                             @endif
                                         @endif
                                         <div class="table-row">

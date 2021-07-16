@@ -48,7 +48,6 @@ class UserController extends Controller
                 ->with('businesses')
                 ->orderBy('name')
                 ->paginate($this->perPage);
-            //$filtered = User::whereIn('id', Auth::user()->advisors->pluck('id'));
         } else {
             abort(403, 'Access denied');
         }

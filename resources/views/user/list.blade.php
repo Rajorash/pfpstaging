@@ -74,7 +74,8 @@
                                             <div class="ml-4">
                                                 @if($user->isAdvisor())
                                                     <div class="text-sm text-gray-500 font-medium">
-                                                        Businesses as Advisor: {{count($user->licenses)}}
+                                                        Businesses as Advisor: {{count($user->licenses)}} <br>
+                                                        Businesses as Collaborator: {{count($user->collaborations)}}
                                                     </div>
                                                 @endif
                                                 @if($user->isClient())

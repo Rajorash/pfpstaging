@@ -104,6 +104,15 @@ class User extends Authenticatable
         return $this->belongsToMany(Business::class, 'licenses', 'advisor_id', 'business_id');
     }
 
+    public function collaborations()
+    {
+        return $this->belongsToMany(Business::class, 'collaborations', 'advisor_id', 'business_id')
+            ->where(function ($query) {
+                $query->where('collaborations.expires_at', '>', date('Y-m-d H:i:s'))
+                    ->orWhere('collaborations.expires_at', '=', null);
+            });
+    }
+
     public function assignLicense($business)
     {
         $this->licenses()->sync($business, false);
