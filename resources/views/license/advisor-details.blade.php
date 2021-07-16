@@ -94,8 +94,11 @@
             <x-ui.table-tbody>
                 @foreach ($licensesCounterHistory as $row)
                     <tr>
+                        {{$row->regionalAdminByAdvisor}}
                         <x-ui.table-td>
-                            {{$row->regionalAdmin->name}}
+                            @if($row->regionalAdmin)
+                                {{$row->regionalAdmin->name}}
+                            @endif
                         </x-ui.table-td>
                         <x-ui.table-td class="text-right">
                             {{$row->licenses}}

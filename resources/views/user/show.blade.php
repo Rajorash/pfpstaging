@@ -26,7 +26,7 @@
                     <x-ui.table-td class="text-center bg-gray-100" padding="px-72 py-4">
                         <div class="table w-full">
                             <div class="table-row">
-                                <div class="table-cell w-1/3 text-left">
+                                <div class="table-cell w-1/3 text-left align-top">
                                     <img class="h-36 w-36 rounded-full" src="{{ $user->profile_photo_url }}" alt="">
                                 </div>
                                 <div class="table-cell w-2/3 text-left">
@@ -40,19 +40,71 @@
                                             <div
                                                 class="table-cell pb-2">{{ implode(', ',$user->roles->pluck('label')->toArray()) }}</div>
                                         </div>
+
+                                        @if(Auth::user()->isSuperAdmin() && $user->isRegionalAdmin())
+                                            <div class="table-row">
+                                                <div class="table-cell pb-2">{{__('Advisors:')}}</div>
+                                                <div class="table-cell pb-2">
+                                                    @if($user->advisorsByRegionalAdmin)
+                                                        <ol class="list-disc">
+                                                            @foreach ($user->advisorsByRegionalAdmin as $advisor_row)
+                                                                <li><a href="/user/{{$advisor_row->id}}">
+                                                                        {{$advisor_row->name}}</a></li>
+                                                            @endforeach
+                                                        </ol>
+                                                    @else
+                                                        <span class="text-yellow-500">Not set yet</span>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        @endif
+
                                         @if(Auth::user()->isSuperAdmin() && $user->isAdvisor())
                                             <div class="table-row">
                                                 <div class="table-cell pb-2">{{__('Regional Admin')}}</div>
                                                 <div class="table-cell pb-2">
-                                                    @if($user->regionalAdmin->pluck('name')->first())
+                                                    @if($user->regionalAdminByAdvisor)
                                                         <span><a
-                                                                href="/user/{{$user->regionalAdmin->pluck('id')->first()}}">{{$user->regionalAdmin->pluck('name')->first()}}</a></span>
+                                                                href="/user/{{$user->regionalAdminByAdvisor->pluck('id')->first()}}">
+                                                                {{$user->regionalAdminByAdvisor->pluck('name')->first()}}</a></span>
+                                                    @else
+                                                        <span class="text-red-700">Error!</span>
+                                                    @endif
+                                                </div>
+                                            </div>
+
+                                            <div class="table-row">
+                                                <div class="table-cell pb-2">{{__('Clients:')}}</div>
+                                                <div class="table-cell pb-2">
+                                                    @if($user->clientsByAdvisor)
+                                                        <ol class="list-disc">
+                                                            @foreach ($user->clientsByAdvisor as $client_row)
+                                                                <li><a href="/user/{{$client_row->id}}">
+                                                                        {{$client_row->name}}</a></li>
+                                                            @endforeach
+                                                        </ol>
+                                                    @else
+                                                        <span class="text-yellow-500">Not set yet</span>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        @endif
+
+                                        @if(Auth::user()->isSuperAdmin() && $user->isClient())
+                                            <div class="table-row">
+                                                <div class="table-cell pb-2">{{__('Advisor')}}</div>
+                                                <div class="table-cell pb-2">
+                                                    @if($user->advisorByClient)
+                                                        <span><a
+                                                                href="/user/{{$user->advisorByClient->pluck('id')->first()}}">
+                                                                {{$user->advisorByClient->pluck('name')->first()}}</a></span>
                                                     @else
                                                         <span class="text-red-700">Error!</span>
                                                     @endif
                                                 </div>
                                             </div>
                                         @endif
+
                                         @if(Auth::user()->isSuperAdmin() || Auth::user()->isRegionalAdmin() && $user->isAdvisor())
 
                                             @if ($user->isClient())
@@ -75,6 +127,13 @@
                                                 <div class="table-row">
                                                     <div class="table-cell pb-2">{{__('Licenses')}}</div>
                                                     <div class="table-cell pb-2">
+                                                        @if($user->advisorsLicenses->last()->licenses - count($user->licenses) < 0)
+                                                            <x-ui.badge background="bg-red-700">
+                                                                {{count($user->licenses) .' '. __('from').' '. $user->advisorsLicenses->last()->licenses}}</x-ui.badge>
+                                                        @else
+                                                            <x-ui.badge>{{count($user->licenses) .' '. __('from').' '. $user->advisorsLicenses->last()->licenses}}</x-ui.badge>
+                                                        @endif
+
                                                         @if(count($user->licenses))
                                                             @if(Auth::user()->isRegionalAdmin())
                                                                 {{count($user->licenses)}}
@@ -87,8 +146,6 @@
                                                                     @endforeach
                                                                 </ol>
                                                             @endif
-                                                        @else
-                                                            <span class="text-red-700">No Licenses</span>
                                                         @endif
                                                     </div>
                                                 </div>

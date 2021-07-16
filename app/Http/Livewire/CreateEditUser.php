@@ -33,11 +33,16 @@ class CreateEditUser extends Component
     public $licenses = [];
 
     public $adminsUsersArray = [];
-    public $selectedAdminId;
-    public $selectedAdminIdAllowEdit = false;
+    public $selectedRegionalAdminId;
+    public $selectedRegionalAdminIdAllowEdit = false;
+
+    public $advisorsUsersArray = [];
+    public $selectedAdvisorId;
+    public $selectedAdvisorIdAllowEdit = false;
 
     //Int ID for Advisor Role. Uses for check during edit role and current existing licenses
     public $roleAdvisorId;
+    public $roleClientId;
 
     /**
      * @var App\Http\Controllers\UserController
@@ -54,9 +59,11 @@ class CreateEditUser extends Component
 
         $this->UserController = new UserController();
         $this->roleAdvisorId = User::ROLE_IDS[User::ROLE_ADVISOR];
+        $this->roleClientId = User::ROLE_IDS[User::ROLE_CLIENT];
 
         if (Auth::user()->isSuperAdmin()) {
             $this->adminsUsersArray = $this->UserController->getAdmins();
+            $this->advisorsUsersArray = $this->UserController->getAdvisor();
         }
     }
 
@@ -80,13 +87,22 @@ class CreateEditUser extends Component
 
             $this->businesses = $this->licenses = [];
 
+            //remove current User from Collections
+            $this->adminsUsersArray = $this->adminsUsersArray->whereNotIn('id', $this->user->id);
+            $this->advisorsUsersArray = $this->advisorsUsersArray->whereNotIn('id', $this->user->id);
+
             if ($this->UserController->checkAdvisor($this->roles)) {
                 $this->getBusinessAndLicensesForAdvisor();
             }
 
             if ($this->user->isAdvisor() && Auth::user()->isSuperAdmin()) {
-                $this->selectedAdminId = isset($this->user->regionalAdmin[0]) ? $this->user->regionalAdmin[0]->id : null;
-                $this->selectedAdminIdAllowEdit = false;
+                $this->selectedRegionalAdminId = isset($this->user->regionalAdminByAdvisor[0]) ? $this->user->regionalAdminByAdvisor[0]->id : null;
+                $this->selectedRegionalAdminIdAllowEdit = false;
+            }
+
+            if ($this->user->isClient() && Auth::user()->isSuperAdmin()) {
+                $this->selectedAdvisorId = isset($this->user->advisorByClient[0]) ? $this->user->advisorByClient[0]->id : null;
+                $this->selectedAdvisorIdAllowEdit = false;
             }
         }
     }
@@ -168,7 +184,8 @@ class CreateEditUser extends Component
             'roles' => $this->roles,
             'title' => $this->title,
             'responsibility' => $this->responsibility,
-            'selectedAdminId' => $this->selectedAdminId
+            'selectedAdminId' => $this->selectedRegionalAdminId,
+            'selectedAdvisorId' => $this->selectedAdvisorId
         ], [
             'name' => 'required|min:6',
             'email' => 'required|email|unique:users,email'.($this->user ? ','.$this->user->id : ''),
@@ -178,6 +195,10 @@ class CreateEditUser extends Component
             'responsibility' => 'nullable|string|min:4',
             'selectedAdminId' => (auth()->user()->isSuperAdmin()
                 && in_array($this->roleAdvisorId, $this->roles))
+                ? 'required'
+                : '',
+            'selectedAdvisorId' => (auth()->user()->isSuperAdmin()
+                && in_array($this->roleClientId, $this->roles))
                 ? 'required'
                 : ''
         ]);
@@ -235,9 +256,23 @@ class CreateEditUser extends Component
                 $userRoles = $this->user->roles->pluck('id')->toArray();
                 $toDetach = [];
                 foreach ($userRoles as $role_id) {
-                    if (!in_array($role_id,
-                            $this->roles) && ($role_id != User::ROLE_ADVISOR || empty($this->licenses))) {
-                        $toDetach[] = $role_id;
+                    if (!in_array($role_id, $this->roles)) {
+
+                        if ($role_id == User::ROLE_IDS[User::ROLE_ADVISOR] && !empty($this->licenses)) {
+                            $validator->errors()->add(
+                                'roles', 'Before removing Advisor role user must have 0 active licenses'
+                            );
+                        } else {
+                            //remove advisor relations
+                            $toDetach[] = $role_id;
+                            $user->regionalAdminByAdvisor()->detach();
+                        }
+
+                        //remove clients relations
+                        if ($role_id == User::ROLE_IDS[User::ROLE_CLIENT] && $user->advisorByClient) {
+                            $user->advisorByClient()->detach();
+                            $toDetach[] = $role_id;
+                        }
                     }
                 }
                 $user->roles()->detach($toDetach);
@@ -250,8 +285,8 @@ class CreateEditUser extends Component
                     $client_role = Role::find($role_id);
                     $user->assignRole($client_role);
 
+                    //Advisor
                     if ($role_id == User::ROLE_IDS[User::ROLE_ADVISOR]) {
-
                         if ($this->user) {
                             //edit user
                             if ($this->user->advisorsLicenses && $this->user->advisorsLicenses->last()) {
@@ -267,15 +302,22 @@ class CreateEditUser extends Component
                         }
 
                         if (auth()->user()->isSuperAdmin()) {
-                            $user->regionalAdmin()->sync(User::find($this->selectedAdminId));
-                            $LicensesForAdvisors->regionalAdmin()->associate(User::find($this->selectedAdminId));
+                            $user->regionalAdminByAdvisor()->sync(User::find($this->selectedRegionalAdminId));
+                            $LicensesForAdvisors->regionalAdmin()->associate(User::find($this->selectedRegionalAdminId));
                         } elseif (auth()->user()->isRegionalAdmin()) {
-                            $user->regionalAdmin()->sync(auth()->user());
+                            $user->regionalAdminByAdvisor()->sync(auth()->user());
                             $LicensesForAdvisors->regionalAdmin()->associate(auth()->user());
                         }
 
                         $LicensesForAdvisors->advisor()->associate($user);
                         $LicensesForAdvisors->save();
+                    }
+
+                    //Client
+                    if ($role_id == User::ROLE_IDS[User::ROLE_CLIENT]) {
+                        if (auth()->user()->isSuperAdmin()) {
+                            $user->advisorByClient()->sync(User::find($this->selectedAdvisorId));
+                        }
                     }
                 }
             }
