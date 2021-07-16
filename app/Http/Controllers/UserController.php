@@ -32,26 +32,10 @@ class UserController extends Controller
         $this->authorize('indexUsers', Auth::user());
 
         $currUserId = auth()->user()->id;
-        $filtered = null;
+        $filtered = $this->getUserList();
 
-        if (Auth::user()->isSuperAdmin()) {
-            $filtered = User::orderBy('name')->paginate($this->perPage);
-        } elseif (Auth::user()->isRegionalAdmin()) {
-            if (Auth::user()->advisors) {
-                $filtered = User::whereIn('id', Auth::user()->advisors->pluck('id'))
-                    ->with('businesses')
-                    ->orderBy('name')
-                    ->paginate($this->perPage);
-            }
-        } elseif (Auth::user()->isAdvisor()) {
-            $filtered = User::whereIn('id', Auth::user()->licenses->pluck('owner_id'))
-                ->with('businesses')
-                ->orderBy('name')
-                ->paginate($this->perPage);
-            //$filtered = User::whereIn('id', Auth::user()->advisors->pluck('id'));
-        } else {
-            abort(403, 'Access denied');
-        }
+        abort_if($filtered == null, 403, 'Access denied');
+
 
         return view('user.list',
             [
@@ -59,6 +43,33 @@ class UserController extends Controller
                 'currUserId' => $currUserId
             ]
         );
+    }
+
+    private function getUserList()
+    {
+
+        if (Auth::user()->isSuperAdmin()) {
+            return User::orderBy('name')->paginate($this->perPage);
+        }
+
+        if (Auth::user()->isRegionalAdmin()) {
+            if (Auth::user()->advisors) {
+                return User::whereIn('id', Auth::user()->advisors->pluck('id'))
+                ->with('businesses')
+                ->orderBy('name')
+                ->paginate($this->perPage);
+            }
+        }
+
+        if (Auth::user()->isAdvisor()) {
+            return User::whereIn('id', Auth::user()->licenses->pluck('owner_id'))
+                ->with('businesses')
+                ->orderBy('name')
+                ->paginate($this->perPage);
+            //$filtered = User::whereIn('id', Auth::user()->advisors->pluck('id'));
+        }
+
+        return null;
     }
 
     /**
