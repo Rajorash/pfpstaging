@@ -37,15 +37,18 @@ class UserController extends Controller
         if (Auth::user()->isSuperAdmin()) {
             $filtered = User::orderBy('name')->paginate($this->perPage);
         } elseif (Auth::user()->isRegionalAdmin()) {
-            if (Auth::user()->advisors) {
-                $filtered = User::whereIn('id', Auth::user()->advisors->pluck('id'))
+            if (Auth::user()->advisorsByRegionalAdmin) {
+                $filtered = User::whereIn('id', Auth::user()->advisorsByRegionalAdmin->pluck('id'))
                     ->with('businesses')
                     ->orderBy('name')
                     ->paginate($this->perPage);
             }
         } elseif (Auth::user()->isAdvisor()) {
-            $filtered = User::whereIn('id', Auth::user()->licenses->pluck('owner_id'))
-                ->with('businesses')
+            $filtered = User::where(
+                function ($subQuery) {
+                    $subQuery->whereIn('id', Auth::user()->licenses->pluck('owner_id'));
+                    $subQuery->OrwhereIn('id', Auth::user()->clientsByAdvisor->pluck('id'));
+                })->with('businesses')
                 ->orderBy('name')
                 ->paginate($this->perPage);
         } else {
@@ -155,140 +158,13 @@ class UserController extends Controller
     {
         $this->authorize('edit', $user);
 
-//        $ownerRoleId = auth()->user()->roles->min('id');
-//        $roles = $this->getRolesAllowedToGrant();
-//        $userRoles = $user->roles->pluck('id')->toArray();
-//        $userRoleLabels = $user->roles->pluck('label')->toArray();
-//
-//        $businesses = $licenses = [];
-//        if (in_array(User::ROLE_IDS[User::ROLE_ADVISOR], $userRoles)) {
-//
-//            $businesses = $this->getBusinessAll();
-//            if (!Auth::user()->isSuperAdmin()) {
-//                $businesses = $businesses->filter(function ($business) {
-//                    return Auth::user()->can('view', $business);
-//                })->values();
-//            }
-//            $businesses = $businesses->pluck('name', 'id')->toArray();
-//            $licenses = $user->licenses->pluck('id')->toArray();
-//        }
-
         return view(
             'user.edit',
             [
                 'user' => $user,
-//                'userRoles' => $userRoles,
-//                'userRoleLabels' => $userRoleLabels,
-//                'roles' => $roles,
-//                'businesses' => $businesses,
-//                'licenses' => $licenses
             ]
         );
     }
-//
-//    /**
-//     * Update the specified resource in storage.
-//     *
-//     * @param  \Illuminate\Http\Request  $request
-//     * @param  \App\Models\User  $user
-//     * @return \Illuminate\Http\Response
-//     */
-//    public function update(Request $request, User $user)
-//    {
-//        $validator = \Validator::make($request->all(), [
-//            'name' => 'required',
-//            'email' => 'required|email|unique:users,email,'.$user->id,
-//            'timezone' => 'present|timezone',
-//            'roles' => 'required',
-//        ]);
-//        $validator->validate();
-//
-//        $advisorId = User::ROLE_IDS[User::ROLE_ADVISOR];
-//        $validator->after(function ($validator) use ($request, $advisorId) {
-//            if (
-//                is_array($request->licenses)
-//                && is_array($request->roles)
-//                && !in_array($advisorId, $request->roles)
-//            ) {
-//                $validator->errors()->add(
-//                    'roles', 'Advisor role can not be revoked if at least one business is selected for licensing.'
-//                );
-//            }
-//        });
-//
-//        if ($validator->fails()) {
-//            $userRoles = $user->roles->pluck('id')->toArray();
-//            $ownerRoleId = auth()->user()->roles->min('id');
-//            $roles = $this->getRolesAllowedToGrant();
-//            $businesses = $licenses = [];
-//            if (in_array(User::ROLE_IDS[User::ROLE_ADVISOR], $userRoles)) {
-//
-//                $businesses = $this->getBusinessAll();
-//                if (!Auth::user()->isSuperAdmin()) {
-//                    $businesses = $businesses->filter(function ($business) {
-//                        return Auth::user()->can('view', $business);
-//                    })->values();
-//                }
-//                $businesses = $businesses->pluck('name', 'id')->toArray();
-//                $licenses = $user->licenses->pluck('id')->toArray();
-//            }
-//
-//            return view(
-//                'user.edit',
-//                [
-//                    'user' => $user,
-//                    'userRoles' => $userRoles,
-//                    'roles' => $roles,
-//                    'businesses' => $businesses,
-//                    'licenses' => $licenses,
-//                    'errors' => $validator->messages()
-//                ]
-//            );
-//        }
-//
-//        $user->name = $request->name;
-//        $user->email = $request->email;
-//        $user->timezone = $request->timezone;
-//        $user->active = boolval($request->active);
-//        $user->title = $request['title'];
-//        $user->responsibility = $request['responsibility'];
-//        $user->save();
-//
-//        $user->licenses()->detach();
-//        if (is_array($request->licenses)) {
-//
-//            $time_created = date('Y-m-d h:i:s', time());
-//            foreach ($request->licenses as $license) {
-//                $business = Business::find($license);
-//                $user->assignLicense([
-//                    $business->id => [
-//                        'account_number' => uniqid(),
-//                        'created_at' => $time_created,
-//                        'updated_at' => $time_created
-//                    ]
-//                ]);
-//            }
-//        }
-//
-//        $ownerRoleId = auth()->user()->roles->min('id');
-//        $userRoles = $user->roles->pluck('id')->toArray();
-//        $toDetach = [];
-//        foreach ($userRoles as $role_id) {
-//            if (!in_array($role_id, $request->roles) && ($role_id != User::ROLE_ADVISOR || empty($request->licenses))) {
-//                $toDetach[] = $role_id;
-//            }
-//        }
-//
-//        $user->roles()->detach($toDetach);
-//        foreach ($request->roles as $role_id) {
-//            if ($ownerRoleId < $role_id) {
-//                $client_role = Role::find($role_id);
-//                $user->assignRole($client_role);
-//            }
-//        }
-//
-//        return redirect("user");
-//    }
 
     /**
      * Remove the specified resource from storage.

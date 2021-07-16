@@ -34,7 +34,7 @@ class UserPolicy
         }
 
         //a Regional Admin can view only own Advisor
-        if ($user->isRegionalAdmin() && $user->id == $model->regionalAdmin->pluck('id')->first()) {
+        if ($user->isRegionalAdmin() && $user->id == $model->regionalAdminByAdvisor->pluck('id')->first()) {
             return true;
         }
 
@@ -90,7 +90,7 @@ class UserPolicy
         }
 
         //a Regional Admin can update only own Advisor
-        if ($user->isRegionalAdmin() && $user->id == $model->regionalAdmin->pluck('id')->first()) {
+        if ($user->isRegionalAdmin() && $user->id == $model->regionalAdminByAdvisor->pluck('id')->first()) {
             return true;
         }
 
