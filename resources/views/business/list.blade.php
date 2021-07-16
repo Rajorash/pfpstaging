@@ -52,10 +52,19 @@
                         <x-ui.table-td>
                             @if ( is_object($business->license) )
                                 {{$business->license->advisor->name}} <br>
-                                Exp: 01/01/1970
                             @else
                                 {{__('Not licensed')}}
                             @endif
+                                @if ( is_object($business->collaboration)
+                                    )
+                                    <div class="text-sm text-light_gray">
+                                        In collaboration with
+                                        {{$business->collaboration->advisor->name}}
+                                        @if (($expire = new \DateTime($business->collaboration->expires_at))->getTimestamp() > time())
+                                            till {{$expire->format('Y-m-d')}}
+                                        @endif
+                                    </div>
+                                @endif
                         </x-ui.table-td>
                         <x-ui.table-td class="text-center">
                             <a href="{{url('/business/'.$business->id.'/accounts')}}">
