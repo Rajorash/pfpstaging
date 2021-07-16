@@ -101,15 +101,18 @@
 
                             @if(Auth::user()->isSuperAdmin() || Auth::user()->isRegionalAdmin())
                                 <x-ui.table-td class="text-center">
-                                    @if ($user->isAdvisor() && $user->advisorsLicenses->last())
-                                        @if($user->advisorsLicenses->last()->licenses - count($user->licenses) < 0)
-                                            <x-ui.badge background="bg-red-700">
-                                                {{$user->advisorsLicenses->last()->licenses - count($user->licenses)}}</x-ui.badge>
+                                    @if ($user->isAdvisor())
+                                        @if ($user->advisorsLicenses->last())
+                                            @if($user->advisorsLicenses->last()->licenses - count($user->licenses) < 0)
+                                                <x-ui.badge background="bg-red-700">
+                                                    {{$user->advisorsLicenses->last()->licenses - count($user->licenses)}}</x-ui.badge>
+                                            @else
+                                                <x-ui.badge>{{$user->advisorsLicenses->last()->licenses - count($user->licenses)}}</x-ui.badge>
+                                            @endif
                                         @else
-                                            <x-ui.badge>{{$user->advisorsLicenses->last()->licenses - count($user->licenses)}}</x-ui.badge>
+                                            <x-ui.badge background="bg-red-700">{{__('Not set')}}</x-ui.badge>
                                         @endif
-                                    @else
-                                        <x-ui.badge background="bg-red-700">{{__('Not set')}}</x-ui.badge>
+
                                     @endif
                                 </x-ui.table-td>
                             @endif
