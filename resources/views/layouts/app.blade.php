@@ -37,7 +37,7 @@
 <div class="min-h-screen bg-light_purple2 bg-right-bottom bg-no-repeat"
      style="background-image: url({{asset('images/bg.svg')}})">
     <div class="bg-white shadow-shadow4">
-        @livewire('navigation-menu')
+        <livewire:navigation-menu/>
     </div>
 
     <!-- Page Heading -->

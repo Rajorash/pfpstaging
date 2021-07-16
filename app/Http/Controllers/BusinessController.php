@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Traits\GettersTrait;
+
 //use Auth;
 use App\Models\Business;
 use Illuminate\Http\Request;
@@ -25,9 +26,12 @@ class BusinessController extends Controller
         if (Auth::user()->isSuperAdmin()) {
             $filtered = $businesses;
         } else {
-            $filtered = $businesses->filter( function ($business) {
+            $filtered = $businesses->filter(function ($business) {
                 return Auth::user()->can('view', $business);
             })->values();
+
+            //TODO: only for test
+            $filtered = $businesses;
         }
 
         return view('business.list', ['businesses' => $filtered]);

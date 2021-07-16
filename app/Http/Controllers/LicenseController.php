@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Business;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -20,4 +21,13 @@ class LicenseController extends Controller
                 'user' => $user
             ]);
     }
+
+    public function business(Business $business)
+    {
+        return view('license.business',
+            [
+                'business' => $business
+            ]);
+    }
+
 }
