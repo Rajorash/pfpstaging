@@ -2,16 +2,16 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 class License extends Model
 {
     protected $fillable = [
         'account_number',
-        'business_id',
         'advisor_id',
+        'business_id',
         'active',
-        'available_count'
     ];
 
     public function advisor()
@@ -28,4 +28,61 @@ class License extends Model
     {
         $this->attributes['account_number'] = uniqid();
     }
+
+    /**
+     * Issues the license to an advisor.
+     *
+     * Should be issueed by a regional admin user.
+     *
+     * @param User $advisor
+     * @return void
+     */
+    public function issue(User $advisor)
+    {
+        $this->advisor_id($advisor->id)->save();
+    }
+
+    /**
+     * Assigns an empty license to a business.
+     *
+     * Should be assigned by an advisor user. Will affect
+     * available license count
+     *
+     * @param Business $business
+     * @return void
+     */
+    public function assign(Business $business)
+    {
+        $this->business_id($business->id)->save();
+    }
+
+    /**
+     * Used to forcibly remove active status of a license.
+     *
+     * Contextually different from expiry, and will overrule
+     * it.
+     *
+     * @return void
+     */
+    public function revoke()
+    {
+
+        $this->active = false;
+        $this->revoked_ts = Carbon::now();
+
+    }
+
+    /**
+     * Extend the expiry date of the license by n months,
+     * default value is 3
+     *
+     * @param integer $monthsToAdd
+     * @return void
+     */
+    public function extend($monthsToAdd = 3)
+    {
+        $this->expires_ts = Carbon::createFromTimestamp($this->expires_ts)->addMonths($monthsToAdd);
+    }
+
+
 }
