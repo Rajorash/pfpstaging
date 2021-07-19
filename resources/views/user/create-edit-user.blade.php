@@ -1,9 +1,11 @@
 <div class="livewire-wrapper">
 
     @if(!$user && Auth::user()->isAdvisor())
-    <div class="px-4 py-2 border border-gray-300 rounded-lg bg-white text-left text-red-700">
-        Please note: You will not be able to see a newly created client until they have a business licensed to you created. You will be redirected to the business view to create a business once you have finished creating a client user.
-    </div>
+        <div class="px-4 py-2 border border-gray-300 rounded-lg bg-white text-left text-red-700">
+            Please note: You will not be able to see a newly created client until they have a business licensed to you
+            created. You will be redirected to the business view to create a business once you have finished creating a
+            client user.
+        </div>
     @endif
 
     <form wire:submit.prevent="store">
@@ -82,18 +84,18 @@
                         @foreach ($rolesArray as $role_id => $role_label)
                             <div class="text-left my-2">
                                 <input type="checkbox" name="roles[]" id="roles_{{$role_id}}"
-                                    class="disabled:opacity-40"
-                                    wire:model="roles.{{$role_id}}"
+                                       class="disabled:opacity-40"
+                                       wire:model="roles.{{$role_id}}"
 
-                                    @if(count($rolesArray) == 1)
-                                    readonly
-                                    @endif
+                                       @if(count($rolesArray) == 1)
+                                       readonly
+                                       @endif
 
-                                    @if ($roleAdvisorId == $role_id && count($licenses))
-                                    disabled
-                                    @endif
+                                       @if ($roleAdvisorId == $role_id && count($licenses))
+                                       disabled
+                                       @endif
 
-                                    value="{{ $role_id }}"
+                                       value="{{ $role_id }}"
                                 />
                                 <label for="roles_{{$role_id}}">{{ $role_label }}</label>
                                 @if ($roleAdvisorId == $role_id && count($licenses))
@@ -112,13 +114,14 @@
                         </div>
                         <div class="table-cell w-3/4 pb-4 text-left">
                             <div class="pb-2">
-                            <input type="checkbox" wire:model="selectedAdminIdAllowEdit"
-                                   id="allowEditRegionalAdminRelation"/>
-                            <label for="allowEditRegionalAdminRelation" class="pl-2">Check it to allow edit Regional Admin for
-                                Advisor</label>
+                                <input type="checkbox" wire:model="selectedRegionalAdminIdAllowEdit"
+                                       id="allowEditRegionalAdminRelation"/>
+                                <label for="allowEditRegionalAdminRelation" class="pl-2">
+                                    Check it to allow edit Regional Admin for Advisor
+                                </label>
                             </div>
-                            <select name="" id="" wire:model="selectedAdminId"
-                                    @if (!$selectedAdminIdAllowEdit)
+                            <select name="" id="" wire:model="selectedRegionalAdminId"
+                                    @if (!$selectedRegionalAdminIdAllowEdit)
                                     disabled
                                     @endif
                                     class="w-full form-input border-light_blue
@@ -131,7 +134,39 @@
                                 @endforeach
                             </select>
 
-                            <x-jet-input-error for="selectedAdminId" class="text-left mt-2"/>
+                            <x-jet-input-error for="selectedRegionalAdminId" class="text-left mt-2"/>
+                        </div>
+                    </div>
+                @endif
+
+                @if(Auth::user()->isSuperAdmin() && in_array($roleClientId, $roles))
+                    <div class="table-row">
+                        <div class="table-cell w-1/4 pb-4 text-left">
+                            {{ __('Advisor:') }}
+                        </div>
+                        <div class="table-cell w-3/4 pb-4 text-left">
+                            <div class="pb-2">
+                                <input type="checkbox" wire:model="selectedAdvisorIdAllowEdit"
+                                       id="allowEditAdvisorRelation"/>
+                                <label for="allowEditAdvisorRelation" class="pl-2">
+                                    Check it to allow edit Advisor for Client
+                                </label>
+                            </div>
+                            <select name="" id="" wire:model="selectedAdvisorId"
+                                    @if (!$selectedAdvisorIdAllowEdit)
+                                    disabled
+                                    @endif
+                                    class="w-full form-input border-light_blue
+                                    focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50
+                                                        rounded-md shadow-sm">
+                                <option>Select Advisor for Client</option>
+                                @foreach ($advisorsUsersArray as $advisor_row)
+                                    <option value="{{$advisor_row->id}}">{{$advisor_row->name}} ({{$advisor_row->email}})
+                                    </option>
+                                @endforeach
+                            </select>
+
+                            <x-jet-input-error for="selectedAdvisorId" class="text-left mt-2"/>
                         </div>
                     </div>
                 @endif

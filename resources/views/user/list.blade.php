@@ -57,12 +57,35 @@
                                         </div>
                                         @if(Auth::user()->isSuperAdmin())
                                             <div class="ml-4">
+                                                @if($user->isRegionalAdmin())
+                                                    <div class="text-sm text-gray-500 font-medium">
+                                                        Advisors: {{count($user->advisorsByRegionalAdmin)}}
+                                                    </div>
+                                                @endif
+
                                                 @if($user->isAdvisor())
                                                     <div class="text-sm text-gray-500 font-medium">
                                                         Regional Admin:
-                                                        @if($user->regionalAdmin->pluck('name')->first())
+                                                        @if($user->regionalAdminByAdvisor)
                                                             <span><a
-                                                                    href="/user/{{$user->regionalAdmin->pluck('id')->first()}}">{{$user->regionalAdmin->pluck('name')->first()}}</a></span>
+                                                                    href="/user/{{$user->regionalAdminByAdvisor->pluck('id')->first()}}">
+                                                                    {{$user->regionalAdminByAdvisor->pluck('name')->first()}}</a></span>
+                                                        @else
+                                                            <span class="text-red-700">Error!</span>
+                                                        @endif
+                                                    </div>
+                                                    <div class="text-sm text-gray-500 font-medium">
+                                                        Clients: {{count($user->clientsByAdvisor)}}
+                                                    </div>
+                                                @endif
+
+                                                @if($user->isClient())
+                                                    <div class="text-sm text-gray-500 font-medium">
+                                                        Advisor:
+                                                        @if($user->advisorByClient)
+                                                            <span><a
+                                                                    href="/user/{{$user->advisorByClient->pluck('id')->first()}}">
+                                                                    {{$user->advisorByClient->pluck('name')->first()}}</a></span>
                                                         @else
                                                             <span class="text-red-700">Error!</span>
                                                         @endif
@@ -70,11 +93,13 @@
                                                 @endif
                                             </div>
                                         @endif
+
                                         @if(Auth::user()->isSuperAdmin() || Auth::user()->isRegionalAdmin())
                                             <div class="ml-4">
                                                 @if($user->isAdvisor())
                                                     <div class="text-sm text-gray-500 font-medium">
-                                                        Businesses as Advisor: {{count($user->licenses)}}
+                                                        Licensed businesses: {{count($user->licenses)}} <br>
+                                                        Collaborated businesses: {{count($user->collaborations)}}
                                                     </div>
                                                 @endif
                                                 @if($user->isClient())
@@ -101,15 +126,25 @@
 
                             @if(Auth::user()->isSuperAdmin() || Auth::user()->isRegionalAdmin())
                                 <x-ui.table-td class="text-center">
-                                    @if ($user->isAdvisor() && $user->advisorsLicenses->last())
-                                        @if($user->advisorsLicenses->last()->licenses - count($user->licenses) < 0)
-                                            <x-ui.badge background="bg-red-700">
-                                                {{$user->advisorsLicenses->last()->licenses - count($user->licenses)}}</x-ui.badge>
+                                    @if ($user->isAdvisor())
+                                        @if ($user->advisorsLicenses->last())
+                                            @if($user->advisorsLicenses->last()->licenses - count($user->activeLicenses) < 0)
+                                                <x-ui.badge background="bg-red-700">
+                                                    {{count($user->activeLicenses) .' '. __('from').' '. $user->advisorsLicenses->last()->licenses}}</x-ui.badge>
+                                            @else
+                                                <x-ui.badge>{{count($user->activeLicenses) .' '. __('from').' '. $user->advisorsLicenses->last()->licenses}}</x-ui.badge>
+                                            @endif
+
+                                            @if (count($user->notActiveLicenses))
+                                                   <br /><x-ui.badge background="bg-gray-500">
+                                            Disabled: {{count($user->notActiveLicenses)}}
+                                                    </x-ui.badge>
+                                            @endif
+
                                         @else
-                                            <x-ui.badge>{{$user->advisorsLicenses->last()->licenses - count($user->licenses)}}</x-ui.badge>
+                                            <x-ui.badge background="bg-red-700">{{__('Not set')}}</x-ui.badge>
                                         @endif
-                                    @else
-                                        <x-ui.badge background="bg-red-700">{{__('Not set')}}</x-ui.badge>
+
                                     @endif
                                 </x-ui.table-td>
                             @endif

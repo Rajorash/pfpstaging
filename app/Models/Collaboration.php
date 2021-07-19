@@ -8,7 +8,8 @@ class Collaboration extends Model
 {
     public function advisor()
     {
-        return $this->belongsTo(Advisor::class);
+        //return $this->belongsTo(Advisor::class);
+        return $this->hasOne(User::class, 'id', 'advisor_id');
     }
 
     public function business()
@@ -16,4 +17,12 @@ class Collaboration extends Model
         return $this->belongsTo(Business::class);
     }
 
+    public function expiresAt()
+    {
+        if (is_null($this->expires_at)) {
+            return false;
+        }
+
+        return $this->expires_at;
+    }
 }

@@ -104,19 +104,70 @@ class User extends Authenticatable
         return $this->belongsToMany(Business::class, 'licenses', 'advisor_id', 'business_id');
     }
 
+    public function activeLicenses()
+    {
+        return $this->belongsToMany(Business::class, 'licenses', 'advisor_id', 'business_id')
+            ->where('active', true);
+    }
+
+    public function notActiveLicenses()
+    {
+        return $this->belongsToMany(Business::class, 'licenses', 'advisor_id', 'business_id')
+            ->where('active', false);
+    }
+
+    public function collaborations()
+    {
+        return $this->belongsToMany(Business::class, 'collaborations', 'advisor_id', 'business_id')
+            ->where(function ($query) {
+                $query->where('collaborations.expires_at', '>', date('Y-m-d H:i:s'))
+                    ->orWhere('collaborations.expires_at', '=', null);
+            });
+    }
+
     public function assignLicense($business)
     {
         $this->licenses()->sync($business, false);
     }
 
-    public function advisors()
+    public function advisorsByRegionalAdmin()
     {
-        return $this->belongsToMany(User::class, 'advisor_admins', 'admin_id', 'advisor_id');
+        return $this->belongsToMany(
+            User::class,
+            'advisor_admins',
+            'admin_id',
+            'advisor_id'
+        );
     }
 
-    public function regionalAdmin()
+    public function regionalAdminByAdvisor()
     {
-        return $this->belongsToMany(User::class, 'advisor_admins', 'advisor_id', 'admin_id');
+        return $this->belongsToMany(
+            User::class,
+            'advisor_admins',
+            'advisor_id',
+            'admin_id'
+        );
+    }
+
+    public function advisorByClient()
+    {
+        return $this->belongsToMany(
+            User::class,
+            'client_advisors',
+            'client_id',
+            'advisor_id'
+        );
+    }
+
+    public function clientsByAdvisor()
+    {
+        return $this->belongsToMany(
+            User::class,
+            'client_advisors',
+            'advisor_id',
+            'client_id'
+        );
     }
 
 //    public function myAdvisors()
