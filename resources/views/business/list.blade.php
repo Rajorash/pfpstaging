@@ -13,7 +13,7 @@
                 @if(Auth::user()->isAdvisor())
                     <div class="text-xl pl-2">
                     @if (Auth::user()->advisorsLicenses->last())
-                        Available licenses: {{Auth::user()->advisorsLicenses->last()->licenses - count(Auth::user()->licenses)}}
+                        Available licenses: {{Auth::user()->advisorsLicenses->last()->licenses - count(Auth::user()->activeLicenses)}}
                     @else
                         You haven`t any available licenses
                     @endif
