@@ -23,16 +23,12 @@ class BusinessController extends Controller
         $this->authorize('indexBusinesses', Auth::user());
 
         $businesses = $this->getBusinessAll();
-        if (Auth::user()->isSuperAdmin()) {
-            $filtered = $businesses;
-        } else {
-            $filtered = $businesses->filter(function ($business) {
-                return Auth::user()->can('view', $business);
-            })->values();
+        $filtered = $businesses->filter(function ($business) {
+            return Auth::user()->can('view', $business);
+        })->values();
 
-            //TODO: only for test
-            $filtered = $businesses;
-        }
+        //TODO: only for test
+        // $filtered = $businesses;
 
         return view('business.list', ['businesses' => $filtered]);
     }

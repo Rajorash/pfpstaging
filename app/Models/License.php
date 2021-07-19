@@ -21,7 +21,7 @@ class License extends Model
 
     public function business()
     {
-        return $this->hasOne(Business::class);
+        return $this->hasOne(Business::class, 'id', 'business_id');
     }
 
     public function setAccountNumberAttribute()

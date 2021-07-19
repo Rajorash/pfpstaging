@@ -34,6 +34,19 @@ class Business extends Model
         return $this->hasMany(Phase::class);
     }
 
+    /**
+     * Helper function to retrieve advisor for a business.
+     * Returns the User model of the advisor if a license is set on
+     * the business.
+     *
+     * If the license is not set, then returns null.
+     *
+     * @return User::class || null;
+     */
+    public function getAdvisorAttribute() {
+        return optional($this->license)->advisor;
+    }
+
     public function allocations()
     {
         $phaseIds = $this->rollout()->pluck('id');
