@@ -2,6 +2,9 @@
 
 namespace App\Traits;
 
+use App\Models\Advisor;
+use App\Models\Role;
+use App\Models\User;
 trait HasUserRoles
 {
 
@@ -13,6 +16,10 @@ trait HasUserRoles
     public function assignRole(Role $role)
     {
         $this->roles()->sync($role, false);
+
+        if($role->name == 'advisor' && !Advisor::find($this->id) ) {
+            Advisor::create(['user_id' => $this->id]);
+        }
     }
 
     public function advisorsByRegionalAdmin()
@@ -62,12 +69,22 @@ trait HasUserRoles
 //            ,'id','advisor_id');
 //    }
 
+    /**
+     * returns the permissions a user has based on
+     * roles, by name.
+     *
+     * @return void
+     */
     public function permissions()
     {
-        // return the permissions associated with any assigned roles, by name.
         return $this->roles->map->permissions->flatten()->pluck('name')->unique();
     }
 
+    /**
+     * Returns true is a user has the SuperAdmin role
+     *
+     * @return boolean
+     */
     public function isSuperAdmin()
     {
         if (is_null($this->roles->firstWhere('name', self::ROLE_SUPERADMIN))) {
@@ -77,6 +94,11 @@ trait HasUserRoles
         return true;
     }
 
+    /**
+     * Returns true is a user has the Regional Admin role
+     *
+     * @return boolean
+     */
     public function isRegionalAdmin()
     {
         if (is_null($this->roles->firstWhere('name', self::ROLE_ADMIN))) {
@@ -86,6 +108,11 @@ trait HasUserRoles
         return true;
     }
 
+    /**
+     * Returns true is a user has the Advisor role
+     *
+     * @return boolean
+     */
     public function isAdvisor()
     {
         if (is_null($this->roles->firstWhere('name', self::ROLE_ADVISOR))) {
@@ -95,6 +122,11 @@ trait HasUserRoles
         return true;
     }
 
+    /**
+     * Returns true is a user has the Client role
+     *
+     * @return boolean
+     */
     public function isClient()
     {
         if (is_null($this->roles->firstWhere('name', self::ROLE_CLIENT))) {

@@ -50,8 +50,6 @@ class UserSeeder extends Seeder
             'responsibility' => "Testing advisor",
         ]);
         $advisor->assignRole($advisor_role);
-        $advisor_details = new Advisor($advisor->id);
-        $advisor_details->save();
 
         // Create Craig account for testing
         $craig = factory(User::class)->create([
@@ -62,9 +60,6 @@ class UserSeeder extends Seeder
             'responsibility' => "Client Fulfillment",
         ]);
         $craig->assignRole($advisor_role);
-        $craig_details = new Advisor($craig->id);
-        $craig_details->save();
-
 
         // Create Test Client account for testing
         $client = factory(User::class)->create([

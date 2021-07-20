@@ -74,6 +74,9 @@ class User extends Authenticatable implements RoleInterface
      */
     protected $appends = [
         'profile_photo_url',
+        'seats',
+        'tier',
+        'niche',
     ];
 
     /**
