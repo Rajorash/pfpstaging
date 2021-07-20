@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Events\LicenseForAdvisorChanged;
 use App\Events\UserRegistered;
+use App\Listeners\SendEmailLicenseForAdvisorChanged;
 use App\Listeners\SendEmailVerification;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
@@ -17,8 +19,14 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
-        Registered::class => [
-            SendEmailVerificationNotification::class,
+//        Registered::class => [
+//            SendEmailVerificationNotification::class,
+//        ],
+        UserRegistered::class => [
+            SendEmailVerification::class,
+        ],
+        LicenseForAdvisorChanged::class => [
+            SendEmailLicenseForAdvisorChanged::class
         ],
     ];
 
@@ -31,9 +39,5 @@ class EventServiceProvider extends ServiceProvider
     {
         parent::boot();
 
-        Event::listen(
-            UserRegistered::class,
-            [SendEmailVerification::class, 'handle']
-        );
     }
 }

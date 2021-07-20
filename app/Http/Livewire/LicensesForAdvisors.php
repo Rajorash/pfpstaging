@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire;
 
+use App\Events\LicenseForAdvisorChanged;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -40,6 +41,8 @@ class LicensesForAdvisors extends Component
             $LicensesForAdvisors->advisor()->associate($this->user);
             $LicensesForAdvisors->regionalAdmin()->associate(Auth::user());
             $LicensesForAdvisors->save();
+
+            event(new LicenseForAdvisorChanged($this->user, Auth::user(), $this->licensesCounter));
 
             $this->licensesCounterMessage = 'Count of licenses updated successfully';
             $this->allowEdit = false;
