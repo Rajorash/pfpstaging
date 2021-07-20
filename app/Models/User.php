@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+use App\Interfaces\RoleInterface;
+use App\Traits\HasUserRoles;
+use App\Traits\UserLicenseFunctions;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -11,26 +14,18 @@ use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Jetstream\HasTeams;
 use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable
+class User extends Authenticatable implements RoleInterface
 {
     use HasApiTokens;
     use HasFactory;
     use HasProfilePhoto;
     use HasTeams;
+    use HasUserRoles;
+    use UserLicenseFunctions;
     use Notifiable;
     use TwoFactorAuthenticatable;
 
-    public const ROLE_SUPERADMIN = 'superuser';
-    public const ROLE_ADMIN = 'admin';
-    public const ROLE_ADVISOR = 'advisor';
-    public const ROLE_CLIENT = 'client';
 
-    public const ROLE_IDS = [
-        self::ROLE_SUPERADMIN => 1,
-        self::ROLE_ADMIN => 2,
-        self::ROLE_ADVISOR => 3,
-        self::ROLE_CLIENT => 4
-    ];
 
     /**
      * The attributes that are mass assignable.
@@ -89,33 +84,6 @@ class User extends Authenticatable
         return $this->hasMany(Business::class, 'owner_id');
     }
 
-    public function roles()
-    {
-        return $this->belongsToMany(Role::class)->withTimestamps();
-    }
-
-    public function assignRole(Role $role)
-    {
-        $this->roles()->sync($role, false);
-    }
-
-    public function licenses()
-    {
-        return $this->belongsToMany(Business::class, 'licenses', 'advisor_id', 'business_id');
-    }
-
-    public function activeLicenses()
-    {
-        return $this->belongsToMany(Business::class, 'licenses', 'advisor_id', 'business_id')
-            ->where('active', true);
-    }
-
-    public function notActiveLicenses()
-    {
-        return $this->belongsToMany(Business::class, 'licenses', 'advisor_id', 'business_id')
-            ->where('active', false);
-    }
-
     public function collaborations()
     {
         return $this->belongsToMany(Business::class, 'collaborations', 'advisor_id', 'business_id')
@@ -125,99 +93,7 @@ class User extends Authenticatable
             });
     }
 
-    public function assignLicense($business)
-    {
-        $this->licenses()->sync($business, false);
-    }
 
-    public function advisorsByRegionalAdmin()
-    {
-        return $this->belongsToMany(
-            User::class,
-            'advisor_admins',
-            'admin_id',
-            'advisor_id'
-        );
-    }
-
-    public function regionalAdminByAdvisor()
-    {
-        return $this->belongsToMany(
-            User::class,
-            'advisor_admins',
-            'advisor_id',
-            'admin_id'
-        );
-    }
-
-    public function advisorByClient()
-    {
-        return $this->belongsToMany(
-            User::class,
-            'client_advisors',
-            'client_id',
-            'advisor_id'
-        );
-    }
-
-    public function clientsByAdvisor()
-    {
-        return $this->belongsToMany(
-            User::class,
-            'client_advisors',
-            'advisor_id',
-            'client_id'
-        );
-    }
-
-//    public function myAdvisors()
-//    {
-//        return $this->hasManyThrough(User::class, AdvisorAdmin::class
-//            ,'admin_id','id'
-//            ,'id','advisor_id');
-//    }
-
-    public function permissions()
-    {
-        // return the permissions associated with any assigned roles, by name.
-        return $this->roles->map->permissions->flatten()->pluck('name')->unique();
-    }
-
-    public function isSuperAdmin()
-    {
-        if (is_null($this->roles->firstWhere('name', self::ROLE_SUPERADMIN))) {
-            return false;
-        }
-
-        return true;
-    }
-
-    public function isRegionalAdmin()
-    {
-        if (is_null($this->roles->firstWhere('name', self::ROLE_ADMIN))) {
-            return false;
-        }
-
-        return true;
-    }
-
-    public function isAdvisor()
-    {
-        if (is_null($this->roles->firstWhere('name', self::ROLE_ADVISOR))) {
-            return false;
-        }
-
-        return true;
-    }
-
-    public function isClient()
-    {
-        if (is_null($this->roles->firstWhere('name', self::ROLE_CLIENT))) {
-            return false;
-        }
-
-        return true;
-    }
 
     public function isActive()
     {
@@ -230,13 +106,6 @@ class User extends Authenticatable
         return $this->active;
     }
 
-    public function advisorsLicenses()
-    {
-        return $this->hasMany(
-            LicensesForAdvisors::class,
-            'advisor_id',
-            'id');
-    }
 
 
 //    public function relatedToAdmin()
