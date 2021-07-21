@@ -22,20 +22,18 @@
                 @endif
             </x-ui.table-caption>
             <thead>
-            <tr class="border-light_blue border-t border-b">
-                <x-ui.table-th padding="pl-12 pr-2 py-4">Name</x-ui.table-th>
-                <x-ui.table-th>Title</x-ui.table-th>
-                <x-ui.table-th class="text-center">Status</x-ui.table-th>
-                @if(Auth::user()->isSuperAdmin() || Auth::user()->isRegionalAdmin())
+                <tr class="border-light_blue border-t border-b">
+                    <x-ui.table-th padding="pl-12 pr-2 py-4">Name</x-ui.table-th>
+                    <x-ui.table-th>Title</x-ui.table-th>
+                    <x-ui.table-th class="text-center">Status</x-ui.table-th>
+                    @if(Auth::user()->isSuperAdmin() || Auth::user()->isRegionalAdmin())
                     <x-ui.table-th>Licenses</x-ui.table-th>
-                @endif
-                <x-ui.table-th>Roles</x-ui.table-th>
-                <x-ui.table-th></x-ui.table-th>
-                <x-ui.table-th></x-ui.table-th>
-                @if(Auth::user()->isRegionalAdmin())
+                    @endif
+                    <x-ui.table-th>Roles</x-ui.table-th>
                     <x-ui.table-th></x-ui.table-th>
-                @endif
-            </tr>
+                    <x-ui.table-th></x-ui.table-th>
+                    <x-ui.table-th class="mr-12"></x-ui.table-th>
+                </tr>
             </thead>
 
             <x-ui.table-tbody>
@@ -162,20 +160,20 @@
                                 </x-ui.button-small>
                             </x-ui.table-td>
                             <x-ui.table-td>
-                                @if(Auth::user()->isSuperAdmin())
-                                    <x-ui.button-small href="{{route('users.edit', ['user'=>$user])}}">
-                                        Edit User
-                                    </x-ui.button-small>
+                            @if(Auth::user()->isSuperAdmin() || Auth::user()->isAdvisor())
+                                <x-ui.button-small href="{{route('users.edit', ['user'=>$user])}}">
+                                    Edit User
+                                </x-ui.button-small>
                                 @endif
                             </x-ui.table-td>
-                            @if(Auth::user()->isRegionalAdmin() && $user->isAdvisor())
-                                <x-ui.table-td>
-                                    <x-ui.button-small href="{{route('licenses.list', ['user'=>$user])}}">
-                                        Licenses
-                                    </x-ui.button-small>
-                                    {{--                                    <livewire:licenses-counter :user="$user" :key="$user->id"/>--}}
-                                </x-ui.table-td>
-                            @endif
+                            <x-ui.table-td>
+                                @if(Auth::user()->isRegionalAdmin() && $user->isAdvisor())
+                                <x-ui.button-small href="{{route('licenses.list', ['user'=>$user])}}">
+                                    Licenses
+                                </x-ui.button-small>
+                                {{--                                    <livewire:licenses-counter :user="$user" :key="$user->id"/>--}}
+                                    @endif
+                            </x-ui.table-td>
                         </tr>
                     @endforeach
                 @endif
