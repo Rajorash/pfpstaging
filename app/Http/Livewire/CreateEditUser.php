@@ -90,8 +90,10 @@ class CreateEditUser extends Component
             $this->businesses = $this->licenses = [];
 
             //remove current User from Collections
-            $this->adminsUsersArray = $this->adminsUsersArray->whereNotIn('id', $this->user->id);
-            $this->advisorsUsersArray = $this->advisorsUsersArray->whereNotIn('id', $this->user->id);
+            if (Auth::user()->isSuperAdmin()) {
+                $this->adminsUsersArray = $this->adminsUsersArray->whereNotIn('id', $this->user->id);
+                $this->advisorsUsersArray = $this->advisorsUsersArray->whereNotIn('id', $this->user->id);
+            }
 
             if ($this->UserController->checkAdvisor($this->roles)) {
                 $this->getBusinessAndLicensesForAdvisor();
