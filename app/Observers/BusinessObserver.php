@@ -30,6 +30,12 @@ class BusinessObserver
         Cache::forget('Business_all');
     }
 
+    public function deleted(Business $business)
+    {
+        // clear the cached all businesses object
+        Cache::forget('Business_all');
+    }
+
     /**
      * On business creation, initialise default phase setup.
      *

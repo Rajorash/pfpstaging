@@ -3,6 +3,7 @@
 namespace App\Events;
 
 use App\Models\Business;
+use App\Models\User;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
@@ -15,18 +16,20 @@ class BusinessProcessed
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $business;
     public $type;
+    public $business;
+    public $user;
 
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct(string $type, Business $business)
+    public function __construct(string $type, Business $business, User $user)
     {
         $this->type = $type;
         $this->business = $business;
+        $this->user = $user;
     }
 
     /**

@@ -328,6 +328,9 @@ class CreateEditUser extends Component
                         if (auth()->user()->isSuperAdmin()) {
                             $user->advisorByClient()->sync(User::find($this->selectedAdvisorId));
                         }
+                        if (auth()->user()->isAdvisor()) {
+                            $user->advisorByClient()->sync(auth()->user());
+                        }
                     }
                 }
             }

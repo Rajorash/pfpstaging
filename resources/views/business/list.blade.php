@@ -28,6 +28,7 @@
                 <x-ui.table-th class="text-center">Accounts</x-ui.table-th>
                 @if($currentUser->isAdvisor())
                     <x-ui.table-th></x-ui.table-th>
+                    <x-ui.table-th></x-ui.table-th>
                 @endif
                 <x-ui.table-th></x-ui.table-th>
                 <x-ui.table-th></x-ui.table-th>
@@ -84,6 +85,11 @@
                             </a>
                         </x-ui.table-td>
                         @if(Auth::user()->isAdvisor())
+                            <x-ui.table-td>
+                                <x-ui.button-small href="{{route('maintenance.business', ['business' => $business])}}">
+                                    Maintenance
+                                </x-ui.button-small>
+                            </x-ui.table-td>
                             <x-ui.table-td>
                                 <x-ui.button-small href="{{route('licenses.business', ['business' => $business])}}">
                                     Licenses

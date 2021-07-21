@@ -52,6 +52,11 @@ Route::group(['middleware' => 'auth'], function () {
     );
 
     Route::get(
+        '/business/{business}/maintenance',
+        [BusinessController::class, 'maintenance']
+    )->name('maintenance.business');
+
+    Route::get(
         '/business/{business}/tax', 'TaxRateController@index'
     );
 
