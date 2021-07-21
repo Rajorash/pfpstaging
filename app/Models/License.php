@@ -11,6 +11,7 @@ class License extends Model
         'account_number',
         'advisor_id',
         'business_id',
+        'regionaladmin_id',
         'active',
     ];
 

@@ -55,7 +55,7 @@ class CreateBusinessForm extends Component
     protected $rules = [
         'businessname' => 'required|string|min:4|unique:businesses,name',
         'email' => [
-            'required',
+            'nullable',
             'email',
             'exists:users,email'
         ],
@@ -81,10 +81,8 @@ class CreateBusinessForm extends Component
      */
     public function mount()
     {
-
-        $this->validateAdvisorRole( Auth::user() );
+        $this->validateAdvisorRole(Auth::user());
         // $this->checkLicenses(); // TO-DO - implement once licensing sorted
-
     }
 
     /**
@@ -107,7 +105,6 @@ class CreateBusinessForm extends Component
      */
     public function openBusinessForm()
     {
-
         $this->isOpen = true;
 
         $this->dispatchBrowserEvent('creating-business');
@@ -127,31 +124,37 @@ class CreateBusinessForm extends Component
 
         $this->dispatchBrowserEvent('processing-business');
 
-        $owner = User::firstWhere('email', $data['email']);
-
-        if ( $this->validateClientRole($owner) ) {
-            $advisor = Auth::user();
-
-            // create the business and assign to the user
-            $new_business = new Business;
-            $new_business->name = $data['businessname'];
-            $new_business->owner()->associate($owner);
-            $new_business->save();
-
-            // assign the license to the advisor and the business
-            $license = License::create([
-                'active' => true,
-                'account_number' => uniqid(),
-                'business_id' => $new_business->id,
-                'advisor_id' => $advisor->id,
-            ]);
-
-            $new_business->license()->save($license);
-
-            $this->isOpen = false;
-
-            return redirect("/business");
+        if ($data['email']) {
+            $owner = User::firstWhere('email', $data['email']);
         }
+
+        $advisor = Auth::user();
+
+        dd($advisor);
+
+        // create the business and assign to the user
+        $new_business = new Business;
+        $new_business->name = $data['businessname'];
+        if ($data['email'] && $owner && $this->validateClientRole($owner)) {
+            $new_business->owner()->associate($owner);
+        }
+        $new_business->save();
+
+        // assign the license to the advisor and the business
+        $license = License::create([
+            'active' => true,
+            'account_number' => uniqid(),
+            'business_id' => $new_business->id,
+            'advisor_id' => $advisor->id,
+            'regionaladmin_id' => 0
+        ]);
+
+        $new_business->license()->save($license);
+
+        $this->isOpen = false;
+
+        return redirect("/business");
+
     }
 
     public function render()
@@ -162,10 +165,11 @@ class CreateBusinessForm extends Component
     /**
      * Check whether the passed user has the User::ROLE_ADVISOR role
      *
-     * @param User $user
+     * @param  User  $user
      * @return void
      */
-    private function validateAdvisorRole(User $user) {
+    private function validateAdvisorRole(User $user)
+    {
         // validate that the user is an advisor and so can create businesses
         if ($user->isAdvisor()) {
             return true;
@@ -181,10 +185,11 @@ class CreateBusinessForm extends Component
     /**
      * Check whether the passed user has the User::ROLE_CLIENT role
      *
-     * @param User $user
+     * @param  User  $user
      * @return void
      */
-    private function validateClientRole(User $user) {
+    private function validateClientRole(User $user)
+    {
         // validate that the user is an advisor and so can create businesses
         if ($user->isClient()) {
             return true;
@@ -197,7 +202,8 @@ class CreateBusinessForm extends Component
 
     }
 
-    private function checkLicenses(User $user) {
+    private function checkLicenses(User $user)
+    {
         // check that the advisor has sufficent free licenses to create a new business
         if ($user->licenses->available() < 1) {
             return true;
