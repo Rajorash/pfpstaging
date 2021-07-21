@@ -62,7 +62,7 @@
                         <x-ui.table-td>
                             @if ( is_object($business->license) )
                                 {{$business->license->advisor->name}} @if($business->license->advisor->id == $currentUser->id)<span class="text-light_gray">(You)</span>@endif <br>                                <span class="text-sm text-light_gray">
-                                    Acc Number:{{$business->license->account_number }}
+                                    Acc Number: {{$business->license->account_number }}
                                 </span>
                             @else
                                 {{__('Not licensed')}}

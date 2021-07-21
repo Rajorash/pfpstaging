@@ -2,11 +2,13 @@
 
 namespace App\Http\Livewire;
 
+use App\Events\UserRegistered;
 use App\Http\Controllers\UserController;
 use App\Models\Business;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\LicensesForAdvisors;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -229,10 +231,16 @@ class CreateEditUser extends Component
             $user->active = 1; //only for old Login code
             if (!$this->user) {
                 //password only for new user
-                $user->password = Hash::make(Str::random(10));
+                $generatedPassword = Str::random(12);
+                $user->password = Hash::make($generatedPassword);
             }
 
             $user->save();
+
+            if (!$this->user) {
+                //email only for New user
+                event(new UserRegistered($user, auth()->user(), $generatedPassword));
+            }
 
             //reattach licenses
             $user->licenses()->detach();

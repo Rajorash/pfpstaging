@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\UserRegistered;
 use App\Models\Business;
 use App\Traits\GettersTrait;
 use Livewire\WithPagination;
@@ -47,14 +48,13 @@ class UserController extends Controller
 
     private function getUserList()
     {
-
         if (Auth::user()->isSuperAdmin()) {
             return User::orderBy('name')->paginate($this->perPage);
         }
 
         if (Auth::user()->isRegionalAdmin()) {
-            if (Auth::user()->advisors) {
-                return User::whereIn('id', Auth::user()->advisors->pluck('id'))
+            if (Auth::user()->advisorsByRegionalAdmin) {
+                return User::whereIn('id', Auth::user()->advisorsByRegionalAdmin->pluck('id'))
                 ->with('businesses')
                 ->orderBy('name')
                 ->paginate($this->perPage);
@@ -62,8 +62,11 @@ class UserController extends Controller
         }
 
         if (Auth::user()->isAdvisor()) {
-            return User::whereIn('id', Auth::user()->licenses->pluck('owner_id'))
-                ->with('businesses')
+            return User::where(
+                function ($subQuery) {
+                    $subQuery->whereIn('id', Auth::user()->licenses->pluck('owner_id'));
+                    $subQuery->OrwhereIn('id', Auth::user()->clientsByAdvisor->pluck('id'));
+                })->with('businesses')
                 ->orderBy('name')
                 ->paginate($this->perPage);
             //$filtered = User::whereIn('id', Auth::user()->advisors->pluck('id'));
