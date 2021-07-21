@@ -33,6 +33,8 @@ class CreateEditUser extends Component
     public $businesses = [];
     //array for Licenses
     public $licenses = [];
+    //array for Collaborations
+    public $collaborations = [];
 
     public $adminsUsersArray = [];
     public $selectedRegionalAdminId;
@@ -87,7 +89,7 @@ class CreateEditUser extends Component
             $this->title = $this->user->title;
             $this->responsibility = $this->user->responsibility;
 
-            $this->businesses = $this->licenses = [];
+            $this->businesses = $this->licenses = $this->collaborations = [];
 
             //remove current User from Collections
             $this->adminsUsersArray = $this->adminsUsersArray->whereNotIn('id', $this->user->id);
@@ -135,7 +137,11 @@ class CreateEditUser extends Component
             $this->licenses = empty($this->licenses)
                 ? $this->user->licenses->pluck('id', 'id')->toArray()
                 : $this->licenses;
+            $this->collaborations = empty($this->collaborations)
+                ? $this->user->collaborations->pluck('id', 'id')->toArray()
+                : $this->collaborations;
             if (!$this->UserController->checkAdvisor($this->roles)) {
+                $this->collaborations = [];
                 $this->licenses = [];
                 $this->businesses = [];
             }
