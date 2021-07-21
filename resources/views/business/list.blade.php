@@ -10,13 +10,9 @@
             <x-ui.table-caption>
                 Businesses Visible To You
 
-                @if(Auth::user()->isAdvisor())
+                @if($currentUser->isAdvisor())
                     <div class="text-xl pl-2">
-                    @if (Auth::user()->advisorsLicenses->last())
-                        Available licenses: {{Auth::user()->advisorsLicenses->last()->licenses - count(Auth::user()->licenses)}}
-                    @else
-                        You haven`t any available licenses
-                    @endif
+                        Available seats: {{$currentUser->seats - count($currentUser->licenses)}} / {{$currentUser->seats}}
                     </div>
                 @endif
 
@@ -30,7 +26,7 @@
                 <x-ui.table-th>Owner</x-ui.table-th>
                 <x-ui.table-th>License</x-ui.table-th>
                 <x-ui.table-th class="text-center">Accounts</x-ui.table-th>
-                @if(Auth::user()->isAdvisor())
+                @if($currentUser->isAdvisor())
                     <x-ui.table-th></x-ui.table-th>
                 @endif
                 <x-ui.table-th></x-ui.table-th>
@@ -65,7 +61,9 @@
                         </x-ui.table-td>
                         <x-ui.table-td>
                             @if ( is_object($business->license) )
-                                {{$business->license->advisor->name}} <br>
+                                {{$business->license->advisor->name}} @if($business->license->advisor->id == $currentUser->id)<span class="text-light_gray">(You)</span>@endif <br>                                <span class="text-sm text-light_gray">
+                                    Acc Number:{{$business->license->account_number }}
+                                </span>
                             @else
                                 {{__('Not licensed')}}
                             @endif

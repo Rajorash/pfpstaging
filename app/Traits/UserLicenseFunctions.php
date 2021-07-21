@@ -4,6 +4,8 @@ namespace App\Traits;
 
 use App\Models\Advisor;
 use App\Models\Business;
+use App\Models\LicensesForAdvisors;
+
 trait UserLicenseFunctions
 {
 
