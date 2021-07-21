@@ -130,8 +130,6 @@ class CreateBusinessForm extends Component
 
         $advisor = Auth::user();
 
-        dd($advisor);
-
         // create the business and assign to the user
         $new_business = new Business;
         $new_business->name = $data['businessname'];
@@ -146,7 +144,7 @@ class CreateBusinessForm extends Component
             'account_number' => uniqid(),
             'business_id' => $new_business->id,
             'advisor_id' => $advisor->id,
-            'regionaladmin_id' => 0
+            'regionaladmin_id' => $advisor->regionalAdminByAdvisor->first()->id
         ]);
 
         $new_business->license()->save($license);
