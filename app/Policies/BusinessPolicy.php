@@ -130,7 +130,7 @@ class BusinessPolicy
 
         // advisors can access the businesses that they advise
         // NOTE: do not use strict comparison === as it will return false.
-        if ( $user->id == $business->advisor->id ) {
+        if ( $user->id == optional($business->advisor)->id ) {
             return true;
         }
 
