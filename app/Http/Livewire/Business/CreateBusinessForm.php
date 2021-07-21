@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Business;
 
+use App\Events\BusinessProcessed;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Models\Business;
@@ -136,7 +137,13 @@ class CreateBusinessForm extends Component
         if ($data['email'] && $owner && $this->validateClientRole($owner)) {
             $new_business->owner()->associate($owner);
         }
+
         $new_business->save();
+
+        //event after save business
+        if ($data['email'] && $owner && $this->validateClientRole($owner)) {
+            event(new BusinessProcessed('newOwner', $new_business));
+        }
 
         // assign the license to the advisor and the business
         $license = License::create([

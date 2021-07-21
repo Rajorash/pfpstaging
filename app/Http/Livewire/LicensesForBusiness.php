@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire;
 
+use App\Events\BusinessProcessed;
 use App\Http\Controllers\UserController;
 use App\Models\License;
 use App\Models\User;
@@ -93,6 +94,7 @@ class LicensesForBusiness extends Component
         if ($newOwner && !$this->business->owner_id) {
             $this->business->owner()->associate($newOwner);
             $this->business->save();
+            event(new BusinessProcessed('newOwner', $this->business));
         }
 
         //business without licenses - create it and enable
@@ -121,6 +123,8 @@ class LicensesForBusiness extends Component
             $this->business->license()->update(['active' => true]);
             $this->freshData();
         }
+
+        return redirect("business");
     }
 
     public function render()
