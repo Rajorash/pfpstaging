@@ -60,6 +60,7 @@
                                 autofocus
                                 wire:model.debounce.1s="licensesCounter"
                             />
+                            <span class="text-sm">{{__('Change value and wait 2 seconds. Value will be save automatically')}}</span>
                             <x-jet-input-error for="licensesCounter" class="text-left mt-2"/>
                         </div>
                     </div>
