@@ -2,6 +2,7 @@
 
 namespace App\Observers;
 
+use App\Models\Advisor;
 use App\Models\LicensesForAdvisors;
 
 class LicensesForAdvisorsObserver
@@ -16,7 +17,12 @@ class LicensesForAdvisorsObserver
      */
     public function created(LicensesForAdvisors $licensesForAdvisors)
     {
-//        dd($licensesForAdvisors);
+        $advisor = Advisor::where('user_id', $licensesForAdvisors->advisor_id)->firstOrFail();
+        if (!$advisor) {
+            $advisor = Advisor::create(['user_id' => $licensesForAdvisors->advisor_id]);
+        }
+        $advisor->seats = $licensesForAdvisors->licenses;
+        $advisor->save();
     }
 
     /**

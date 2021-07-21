@@ -3,8 +3,7 @@
     @if(Auth::user()->isAdvisor())
         <form wire:submit.prevent="store">
             <div class="table w-full mt-10">
-
-                <div class="table-row">
+                <div class="table-row @if ($business->owner_id) hidden @endif">
                     <div class="table-cell w-1/4 pb-4 text-left">
                         {{ __('Client (owner)') }}
                     </div>
@@ -30,11 +29,20 @@
                     </div>
                 </div>
 
-                <div class="table-row
-@if($userId) hidden @endif
                 @if ($business->owner_id)
-                    hidden
-@endif
+                    <div class="table-row">
+                        <div class="table-cell w-1/4 pb-4 text-left">
+                            {{ __('Client (owner)') }}
+                        </div>
+                        <div class="table-cell w-3/4 pb-4 text-left">
+                            {{$business->owner->name}}
+                        </div>
+                    </div>
+                @endif
+
+                <div class="table-row
+                @if($userId) hidden @endif
+                @if ($business->owner_id) hidden @endif
                     ">
                     <div class="table-cell w-1/4 pb-4 text-left">
                         {{ __('Type Email of Existing Client') }}
