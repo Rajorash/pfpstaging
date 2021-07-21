@@ -9,6 +9,7 @@ use App\Http\Controllers\BusinessController;
 use App\Http\Controllers\LicenseController;
 use App\Http\Controllers\ProjectionController;
 use App\Http\Controllers\UserController;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MaintenanceController;
@@ -23,6 +24,14 @@ use App\Http\Controllers\MaintenanceController;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+Auth::routes(['register' => false, 'verify' => true]);
+
+Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+    $request->fulfill();
+
+    return redirect('/dashboard');
+})->middleware(['auth', 'signed'])->name('verification.verify');
 
 Route::get(
     '/', function () {

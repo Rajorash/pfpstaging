@@ -56,8 +56,7 @@ class LicensesForBusiness extends Component
 
     protected function freshData()
     {
-        $this->availableLicenses = Auth::user()->advisorsLicenses->last()->licenses
-            - count(Auth::user()->activeLicenses);
+        $this->availableLicenses = Auth::user()->seats - count(Auth::user()->activeLicenses);
 
         $this->business = $this->business->fresh();
     }

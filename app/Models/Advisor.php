@@ -6,15 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Advisor extends Model
 {
-    protected $fillable = ['niche', 'tier'];
-
-    public function __construct($user_id, $seats = 5, $niche = null, $tier = null)
-    {
-        $this->id = $user_id;
-        $this->seat_limit = $seats;
-        $this->niche = $niche;
-        $this->tier = $tier;
-    }
+    protected $fillable = ['seats', 'niche', 'tier'];
 
     public function user()
     {

@@ -30,7 +30,13 @@ class BusinessController extends Controller
         //TODO: only for test
         // $filtered = $businesses;
 
-        return view('business.list', ['businesses' => $filtered]);
+        return view(
+            'business.list',
+            [
+                'businesses' => $filtered,
+                'currentUser' => Auth::user(),
+            ]
+        );
     }
 
     /**

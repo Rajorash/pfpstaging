@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\UserRegistered;
 use App\Models\Business;
 use App\Traits\GettersTrait;
 use Livewire\WithPagination;

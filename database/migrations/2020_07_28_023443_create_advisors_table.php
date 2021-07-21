@@ -14,11 +14,12 @@ class CreateAdvisorsTable extends Migration
     public function up()
     {
         Schema::create('advisors', function (Blueprint $table) {
-            $table->bigInteger('id')->unsigned();
-            $table->smallInteger('seat_limit');
+            $table->bigIncrements('id')->unsigned();
+            $table->bigInteger('user_id')->unsigned();
+            $table->smallInteger('seats')->default(5);
             $table->string('niche')->nullable();
             $table->string('tier')->nullable();
-            $table->foreign('id')
+            $table->foreign('user_id')
                 ->references('id')
                 ->on('users')
                 ->onDelete('cascade'); // If a user is deleted, cascade to delete their advisor details
