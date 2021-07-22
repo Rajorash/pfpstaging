@@ -78,6 +78,7 @@ Route::group(['middleware' => 'auth'], function () {
             'percentages'
         ]
     )->name('allocations-percentages');
+
     Route::post('/business/percentages/ajax/update',
         [AllocationsController::class, 'updatePercentages']
     )->name('allocations-percentages-update');
