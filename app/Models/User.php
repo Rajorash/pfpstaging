@@ -89,14 +89,22 @@ class User extends Authenticatable implements RoleInterface, MustVerifyEmail
 
     public function collaborations()
     {
-        return $this->belongsToMany(Business::class, 'collaborations', 'advisor_id', 'business_id')
-            ->where(function ($query) {
+        return $this->hasManyThrough(Collaboration::class, Advisor::class, 'user_id', 'advisor_id');
+    }
+
+    public function activeCollaborations()
+    {
+        return $this->collaborations()
+            ->where(function($query) {
                 $query->where('collaborations.expires_at', '>', date('Y-m-d H:i:s'))
                     ->orWhere('collaborations.expires_at', '=', null);
             });
     }
 
-
+//    public function advisor()
+//    {
+//        return $this->hasOne(Advisor::class, 'id');
+//    }
 
     public function isActive()
     {

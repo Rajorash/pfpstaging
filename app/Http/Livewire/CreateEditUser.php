@@ -4,6 +4,7 @@ namespace App\Http\Livewire;
 
 use App\Events\UserRegistered;
 use App\Http\Controllers\UserController;
+use App\Models\Advisor;
 use App\Models\Business;
 use App\Models\Role;
 use App\Models\User;
@@ -140,7 +141,7 @@ class CreateEditUser extends Component
                 ? $this->user->licenses->pluck('id', 'id')->toArray()
                 : $this->licenses;
             $this->collaborations = empty($this->collaborations)
-                ? $this->user->collaborations->pluck('id', 'id')->toArray()
+                ? $this->user->activeCollaborations->pluck('business_id', 'business_id')->toArray()
                 : $this->collaborations;
             if (!$this->UserController->checkAdvisor($this->roles)) {
                 $this->collaborations = [];
@@ -177,6 +178,16 @@ class CreateEditUser extends Component
     public function updatedLicenses()
     {
         $this->licenses = array_filter($this->licenses);
+        $this->store();
+    }
+
+    /**
+     * hook where Collaborations updated on front
+     */
+    public function updatedCollaborations()
+    {
+        $this->collaborations = array_filter($this->collaborations);
+        $this->store();
     }
 
     /**
@@ -250,11 +261,12 @@ class CreateEditUser extends Component
                 event(new UserRegistered($user, auth()->user(), $generatedPassword));
             }
 
+            $time_created = date('Y-m-d h:i:s', time());
+
             //reattach licenses
             $user->licenses()->detach();
             if (is_array($this->licenses)) {
 
-                $time_created = date('Y-m-d h:i:s', time());
                 foreach ($this->licenses as $license) {
                     $business = Business::find($license);
                     $user->assignLicense([
@@ -264,6 +276,24 @@ class CreateEditUser extends Component
                             'updated_at' => $time_created
                         ]
                     ]);
+                }
+            }
+
+            //reattach collaborations
+            $user->collaborations()->detach();
+            if (is_array($this->collaborations)) {
+                $advisor = Advisor::where('user_id', '=', $user->id)->first();
+                foreach ($this->collaborations as $collaboration_id) {
+                    $business = Business::find($collaboration_id);
+
+                    $user->collaborations()
+                        ->sync([
+                            $business->id => [
+                                'advisor_id' => $advisor->id,
+                                'created_at' => $time_created,
+                                'updated_at' => $time_created
+                            ]
+                        ], false);
                 }
             }
 
