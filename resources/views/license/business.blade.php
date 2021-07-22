@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        {{ __('Licenses by').' '.$business->name }}
+        {!! __('Licenses by').' &quot;'.$business->name.'&quot;' !!}
     </x-slot>
 
     <x-ui.main>

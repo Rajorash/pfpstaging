@@ -13,6 +13,8 @@ class License extends Model
         'business_id',
         'regionaladmin_id',
         'active',
+        'assigned_ts',
+        'expires_ts'
     ];
 
     public function advisor()
@@ -85,7 +87,6 @@ class License extends Model
 
     public function getCheckLicenseAttribute()
     {
-//        dd(Carbon::parse($this->expires_ts)->timestamp, Carbon::now()->timestamp, $this->active);
         if (Carbon::parse($this->expires_ts)->timestamp - Carbon::now()->timestamp > 0 && $this->active) {
             return true;
         }

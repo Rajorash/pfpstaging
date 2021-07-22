@@ -6,6 +6,7 @@ use App\Events\BusinessProcessed;
 use App\Http\Controllers\UserController;
 use App\Models\License;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 
@@ -42,9 +43,11 @@ class LicensesForBusiness extends Component
         $this->freshData();
 
         if ($this->business->license) {
+            $this->expired = Carbon::parse($this->business->license->expires_ts ?? Carbon::now()->addMonths(3))->format('Y-m-d\TH:i');;
             $this->activeLicense = $this->business->license->active;
             $this->allowToSetLicense = true;
         } else {
+            $this->expired = Carbon::now()->addMonths(3)->format('Y-m-d\TH:i');;
             if ($this->availableLicenses > 0) {
                 $this->allowToSetLicense = true;
             }
@@ -97,6 +100,7 @@ class LicensesForBusiness extends Component
             event(new BusinessProcessed('newOwner', $this->business, Auth::user()));
         }
 
+//        dd($this->business->license, $this->activeLicense, $this->availableLicenses);
         //business without licenses - create it and enable
         if (!$this->business->license) {
             if ($this->activeLicense && $this->availableLicenses) {
@@ -105,18 +109,27 @@ class LicensesForBusiness extends Component
                     'account_number' => uniqid(),
                     'business_id' => $this->business->id,
                     'advisor_id' => Auth::user()->id,
+                    'assigned_ts' => Carbon::now()->format('Y-m-d H:i:s'),
+                    'expires_ts' => Carbon::parse($this->expired)->format('Y-m-d H:i:s')
                 ]);
                 $this->business->license()->save($license);
                 $this->freshData();
             }
+        } else {
+            $this->business->license()->update([
+                'expires_ts' => Carbon::parse($this->expired)->format('Y-m-d H:i:s')
+            ]);
         }
 
         //disable current license
         if ($this->business->license && !$this->activeLicense) {
-            $this->business->license()->update(['active' => false]);
+            $this->business->license()->update([
+                'active' => false
+            ]);
             $this->freshData();
             event(new BusinessProcessed('inactiveLicense', $this->business, Auth::user()));
         }
+
         //enable old license
         if ($this->business->license
             && !$this->business->license->active
