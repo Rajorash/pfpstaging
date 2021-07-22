@@ -52,6 +52,11 @@ Route::group(['middleware' => 'auth'], function () {
     );
 
     Route::get(
+        '/business/{business}/maintenance',
+        [BusinessController::class, 'maintenance']
+    )->name('maintenance.business');
+
+    Route::get(
         '/business/{business}/tax', 'TaxRateController@index'
     );
 
@@ -73,6 +78,7 @@ Route::group(['middleware' => 'auth'], function () {
             'percentages'
         ]
     )->name('allocations-percentages');
+
     Route::post('/business/percentages/ajax/update',
         [AllocationsController::class, 'updatePercentages']
     )->name('allocations-percentages-update');

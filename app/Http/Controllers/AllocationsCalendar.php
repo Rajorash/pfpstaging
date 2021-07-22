@@ -43,8 +43,8 @@ class AllocationsCalendar extends Controller
 
     public function store($cells)
     {
-        if(is_array($cells) && count($cells) > 0) {
-            foreach ($cells as $singleCell){
+        if (is_array($cells) && count($cells) > 0) {
+            foreach ($cells as $singleCell) {
                 preg_match('/\w+_(\d+)_(\d{4}-\d{2}-\d{2})/', $singleCell['cellId'], $matches);
                 $allocation_id = (integer) $matches[1];
                 $date = $matches[2];
@@ -56,6 +56,7 @@ class AllocationsCalendar extends Controller
 
         return null;
     }
+
     /**
      * Validate and store the Allocation
      *
@@ -63,14 +64,14 @@ class AllocationsCalendar extends Controller
      */
     public function storeSingle($type, $allocation_id, $amount, $date)
     {
-/*        $this->validate([
-            'amount' => 'numeric|nullable'
-        ]);
+        /*        $this->validate([
+                    'amount' => 'numeric|nullable'
+                ]);
 
-        $data = array(
-            'amount' => $amount
-        );
-*/
+                $data = array(
+                    'amount' => $amount
+                );
+        */
         $phaseId = $this->business->getPhaseIdByDate($date);
         $values = [
             $amount,
@@ -96,6 +97,7 @@ class AllocationsCalendar extends Controller
         $startDate = $request->startDate;
         $rangeValue = $request->rangeValue;
         $businessId = $request->businessId;
+        $business = Business::find($businessId);
         $cells = $request->cells;
         $this->business = Business::where('id', $businessId)->first();
 
@@ -123,7 +125,8 @@ class AllocationsCalendar extends Controller
                 'tableData' => $tableData,
                 'period' => $period,
                 'startDate' => Carbon::parse($startDate),
-                'range' => $rangeValue
+                'range' => $rangeValue,
+                'business' => $business
             ])->render();
 
         return response()->json($response);
@@ -159,7 +162,7 @@ class AllocationsCalendar extends Controller
         $complete = $rangeValue + 1;
 
         $phaseId = $this->business->getPhaseIdByDate($dateFrom);
-        $types = $this->getPercentValues ($phaseId, $businessId);
+        $types = $this->getPercentValues($phaseId, $businessId);
 
         foreach ($types as $type => $acc_id) {
             foreach ($flat as $id => $account_item) {
@@ -453,8 +456,8 @@ class AllocationsCalendar extends Controller
                     ->orderBy('allocation_date', 'desc');
             })
             ->get()//;
-            ->map(function($item){
-                return $item->allocations->slice(0,1)->pluck(['amount']);
+            ->map(function ($item) {
+                return $item->allocations->slice(0, 1)->pluck(['amount']);
             })->pop()->toArray();
 
         return (count($result) > 0) ? $result[0] : null;

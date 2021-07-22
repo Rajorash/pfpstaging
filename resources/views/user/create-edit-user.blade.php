@@ -193,6 +193,25 @@
                 </div>
             @endif
 
+            @if(count($businesses))
+                <div class="table-row">
+                    <div class="table-cell w-1/4 pb-4 text-left align-top">
+                        {{ __('Available for collaboration:') }}
+                    </div>
+                    <div class="table-cell w-3/4 pb-4">
+                        @foreach ($businesses as $business_id => $business_name)
+                            <div class="text-left my-2">
+                                <input type="checkbox" name="collaborations[]"
+                                       id="collaborations_{{$business_id}}"
+                                       wire:model="collaborations.{{$business_id}}"
+                                       value="{{ $business_id }}"/>
+                                <label for="collaborations_{{$business_id}}">{{ $business_name }}</label>
+                            </div>
+                        @endforeach
+                        <x-jet-input-error for="collaborations" class="text-left mt-2"/>
+                    </div>
+                </div>
+            @endif
 
             <div class="table-row">
                 <div class="table-cell w-1/4 pb-4 text-left">

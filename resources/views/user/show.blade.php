@@ -125,13 +125,24 @@
                                             @endif
                                             @if ($user->isAdvisor())
                                                 <div class="table-row">
-                                                    <div class="table-cell pb-2">{{__('Licenses')}}</div>
+                                                    <div class="table-cell pb-2">{{__('Available Seats')}}</div>
                                                     <div class="table-cell pb-2">
+<<<<<<< HEAD
                                                         @if($user->seats - count($user->licenses) < 0)
                                                             <x-ui.badge background="bg-red-700">
                                                                 {{count($user->licenses) .' '. __('from').' '. $user->seats}}</x-ui.badge>
                                                         @else
                                                             <x-ui.badge>{{count($user->licenses) .' '. __('from').' '. $user->seats}}</x-ui.badge>
+=======
+                                                        @php
+                                                            $availableSeats = $user->seats - count($user->licenses);
+                                                        @endphp
+                                                        @if($availableSeats < 0)
+                                                            <x-ui.badge background="bg-red-700">
+                                                                {{$availableSeats .' / '. $user->seats}}</x-ui.badge>
+                                                        @else
+                                                            <x-ui.badge>{{$availableSeats .' / '. $user->seats}}</x-ui.badge>
+>>>>>>> mykhailo
                                                         @endif
 
                                                         @if(count($user->licenses))

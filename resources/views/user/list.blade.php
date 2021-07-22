@@ -22,18 +22,18 @@
                 @endif
             </x-ui.table-caption>
             <thead>
-                <tr class="border-light_blue border-t border-b">
-                    <x-ui.table-th padding="pl-12 pr-2 py-4">Name</x-ui.table-th>
-                    <x-ui.table-th>Title</x-ui.table-th>
-                    <x-ui.table-th class="text-center">Status</x-ui.table-th>
-                    @if(Auth::user()->isSuperAdmin() || Auth::user()->isRegionalAdmin())
-                    <x-ui.table-th>Licenses</x-ui.table-th>
-                    @endif
-                    <x-ui.table-th>Roles</x-ui.table-th>
-                    <x-ui.table-th></x-ui.table-th>
-                    <x-ui.table-th></x-ui.table-th>
-                    <x-ui.table-th class="mr-12"></x-ui.table-th>
-                </tr>
+            <tr class="border-light_blue border-t border-b">
+                <x-ui.table-th padding="pl-12 pr-2 py-4">Name</x-ui.table-th>
+                <x-ui.table-th>Title</x-ui.table-th>
+                <x-ui.table-th class="text-center">Status</x-ui.table-th>
+                @if(Auth::user()->isSuperAdmin() || Auth::user()->isRegionalAdmin())
+                    <x-ui.table-th>Available seats</x-ui.table-th>
+                @endif
+                <x-ui.table-th>Roles</x-ui.table-th>
+                <x-ui.table-th></x-ui.table-th>
+                <x-ui.table-th></x-ui.table-th>
+                <x-ui.table-th class="mr-12"></x-ui.table-th>
+            </tr>
             </thead>
 
             <x-ui.table-tbody>
@@ -125,18 +125,32 @@
                             @if(Auth::user()->isSuperAdmin() || Auth::user()->isRegionalAdmin())
                                 <x-ui.table-td class="text-center">
                                     @if ($user->isAdvisor())
+<<<<<<< HEAD
                                         @if ($user->seats)
                                             @if($user->seats - count($user->activeLicenses) < 0)
+=======
+                                        @if ($user->advisorsLicenses->last())
+                                            @php
+                                                $availableSeats = $user->seats - count($user->licenses);
+                                            @endphp
+
+                                            @if($availableSeats < 0)
+>>>>>>> mykhailo
                                                 <x-ui.badge background="bg-red-700">
-                                                    {{count($user->activeLicenses) .' '. __('from').' '. $user->advisorsLicenses->last()->licenses}}</x-ui.badge>
+                                                    {{$availableSeats .' / '. $user->seats}}</x-ui.badge>
                                             @else
+<<<<<<< HEAD
                                                 <x-ui.badge>{{count($user->activeLicenses) .' '. __('from').' '. $user->seats}}</x-ui.badge>
+=======
+                                                <x-ui.badge>{{$availableSeats .' / '. $user->seats}}</x-ui.badge>
+>>>>>>> mykhailo
                                             @endif
 
                                             @if (count($user->notActiveLicenses))
-                                                   <br /><x-ui.badge background="bg-gray-500">
-                                            Disabled: {{count($user->notActiveLicenses)}}
-                                                    </x-ui.badge>
+                                                <br/>
+                                                <x-ui.badge background="bg-gray-500">
+                                                    Disabled: {{count($user->notActiveLicenses)}}
+                                                </x-ui.badge>
                                             @endif
 
                                         @else
@@ -160,19 +174,19 @@
                                 </x-ui.button-small>
                             </x-ui.table-td>
                             <x-ui.table-td>
-                            @if(Auth::user()->isSuperAdmin() || Auth::user()->isAdvisor())
-                                <x-ui.button-small href="{{route('users.edit', ['user'=>$user])}}">
-                                    Edit User
-                                </x-ui.button-small>
+                                @if(Auth::user()->isSuperAdmin() || Auth::user()->isAdvisor())
+                                    <x-ui.button-small href="{{route('users.edit', ['user'=>$user])}}">
+                                        Edit User
+                                    </x-ui.button-small>
                                 @endif
                             </x-ui.table-td>
                             <x-ui.table-td>
                                 @if(Auth::user()->isRegionalAdmin() && $user->isAdvisor())
-                                <x-ui.button-small href="{{route('licenses.list', ['user'=>$user])}}">
-                                    Licenses
-                                </x-ui.button-small>
-                                {{--                                    <livewire:licenses-counter :user="$user" :key="$user->id"/>--}}
-                                    @endif
+                                    <x-ui.button-small href="{{route('licenses.list', ['user'=>$user])}}">
+                                        Licenses
+                                    </x-ui.button-small>
+                                    {{--                                    <livewire:licenses-counter :user="$user" :key="$user->id"/>--}}
+                                @endif
                             </x-ui.table-td>
                         </tr>
                     @endforeach

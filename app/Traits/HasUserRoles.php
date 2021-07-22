@@ -17,7 +17,7 @@ trait HasUserRoles
     {
         $this->roles()->sync($role, false);
 
-        if($role->name == 'advisor' && !Advisor::find($this->id) ) {
+        if($role->name == 'advisor' && !Advisor::where('user_id', '=', $this->id)->first() ) {
             Advisor::create(['user_id' => $this->id]);
         }
     }

@@ -11,7 +11,7 @@ class LicensesCounter extends Component
 
     public function mount()
     {
-        $this->initial = 5;
+        $this->initial = LicensesForAdvisors::DEFAULT_LICENSES_COUNT;
     }
     public function render()
     {

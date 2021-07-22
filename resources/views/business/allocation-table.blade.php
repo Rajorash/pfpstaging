@@ -58,7 +58,8 @@
                                             focus:outline-none focus:ring-1 focus:shadow-none focus:bg-white"
                                             id="flow_{{$key}}_{{$date->format('Y-m-d')}}"
                                             type="text"
-                                            value="{{number_format($ext_data[$date->format('Y-m-d')], 0, '.', '')}}"/>
+                                            value="{{number_format($ext_data[$date->format('Y-m-d')], 0, '.', '')}}"
+                                            @if(!$business->license->checkLicense) disabled @endif/>
                                     </x-ui.table-td>
                                 @endforeach
                             </tr>
@@ -124,7 +125,8 @@
                                                 focus:outline-none focus:ring-1 focus:shadow-none focus:bg-white"
                                                    id="flow_{{$key}}_{{$date->format('Y-m-d')}}"
                                                    type="text"
-                                                   value="{{number_format($ext_data[$date->format('Y-m-d')], 0, '.', '')}}"/>
+                                                   value="{{number_format($ext_data[$date->format('Y-m-d')], 0, '.', '')}}"
+                                                   @if(!$business->license->checkLicense) disabled @endif/>
                                         </x-ui.table-td>
                                     @endforeach
                                 </tr>

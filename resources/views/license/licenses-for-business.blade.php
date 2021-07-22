@@ -3,8 +3,7 @@
     @if(Auth::user()->isAdvisor())
         <form wire:submit.prevent="store">
             <div class="table w-full mt-10">
-
-                <div class="table-row">
+                <div class="table-row @if ($business->owner_id) hidden @endif">
                     <div class="table-cell w-1/4 pb-4 text-left">
                         {{ __('Client (owner)') }}
                     </div>
@@ -30,11 +29,20 @@
                     </div>
                 </div>
 
-                <div class="table-row
-@if($userId) hidden @endif
                 @if ($business->owner_id)
-                    hidden
-@endif
+                    <div class="table-row">
+                        <div class="table-cell w-1/4 pb-4 text-left">
+                            {{ __('Client (owner)') }}
+                        </div>
+                        <div class="table-cell w-3/4 pb-4 text-left">
+                            {{$business->owner->name}}
+                        </div>
+                    </div>
+                @endif
+
+                <div class="table-row
+                @if($userId) hidden @endif
+                @if ($business->owner_id) hidden @endif
                     ">
                     <div class="table-cell w-1/4 pb-4 text-left">
                         {{ __('Type Email of Existing Client') }}
@@ -66,9 +74,6 @@
                     </div>
                 </div>
 
-                {{--                dd($this->business->license->account_number);--}}
-                {{--                dd($this->business->license->active);--}}
-
                 @if($this->business->license && $this->business->license->account_number)
                     <div class="table-row">
                         <div class="table-cell w-1/4 pb-4 text-left">
@@ -97,6 +102,22 @@
                     </div>
                 </div>
 
+                <div class="table-row @if(!$activeLicense) hidden @endif">
+                    <div class="table-cell w-1/4 pb-4 text-left">
+                        {{ __('Expiration date') }}
+                    </div>
+                    <div class="table-cell w-3/4 pb-4">
+                        <x-jet-input
+                            id="expired"
+                            class="w-full"
+                            type="datetime-local"
+                            name="expired"
+                            value="{{$expired}}"
+                            wire:model.lazy="expired"
+                        />
+                        <x-jet-input-error for="expired" class="mt-2 text-left"/>
+                    </div>
+                </div>
 
                 @if ($failure)
                     <div class="table-row">
@@ -106,23 +127,6 @@
                         </div>
                     </div>
                 @endif
-
-                {{--                <div class="table-row ">--}}
-                {{--                    <div class="table-cell w-1/4 pb-4 text-left">--}}
-                {{--                        {{ __('Expiration date') }}--}}
-                {{--                    </div>--}}
-                {{--                    <div class="table-cell w-3/4 pb-4">--}}
-                {{--                        <x-jet-input--}}
-                {{--                            id="expired"--}}
-                {{--                            class="w-full"--}}
-                {{--                            type="text"--}}
-                {{--                            name="expired"--}}
-                {{--                            wire:model.lazy="expired"--}}
-                {{--                        />--}}
-                {{--                        <x-jet-input-error for="expired" class="mt-2 text-left"/>--}}
-                {{--                    </div>--}}
-                {{--                </div>--}}
-
             </div>
 
             <div class="table w-full mt-4">

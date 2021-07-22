@@ -18,12 +18,22 @@ class BusinessObserver
      */
     public function created(Business $business)
     {
-
         $this->initialisePhases($business);
         $this->initialiseAccounts($business);
         // clear the cached all businesses object
         Cache::forget('Business_all');
+    }
 
+    public function updated(Business $business)
+    {
+        // clear the cached all businesses object
+        Cache::forget('Business_all');
+    }
+
+    public function deleted(Business $business)
+    {
+        // clear the cached all businesses object
+        Cache::forget('Business_all');
     }
 
     /**

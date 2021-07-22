@@ -62,6 +62,7 @@
                                type="text"
                                id="{{$acc->type}}_{{$phase->id}}_{{$acc->id}}"
                                value="{{$percentage}}"
+                               @if(!$business->license->checkLicense) disabled @endif
                         >
                     </x-ui.table-td>
                 @empty

@@ -27,9 +27,6 @@ class BusinessController extends Controller
             return Auth::user()->can('view', $business);
         })->values();
 
-        //TODO: only for test
-        // $filtered = $businesses;
-
         return view(
             'business.list',
             [
@@ -105,5 +102,13 @@ class BusinessController extends Controller
     public function destroy(Business $business)
     {
         $this->authorize('delete', $business);
+    }
+
+
+    public function maintenance(Business $business)
+    {
+        $this->authorize('update', $business);
+
+        return view('business.maintenance', ['business' => $business]);
     }
 }

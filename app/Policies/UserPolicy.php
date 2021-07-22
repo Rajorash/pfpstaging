@@ -145,6 +145,11 @@ class UserPolicy
             return true;
         }
 
+        //a Regional Admin can update only own Advisor
+        if ($user->isAdvisor() && $user->id == $model->advisorByClient->pluck('id')->first()) {
+            return true;
+        }
+
         // advisors can update any clients they have
         if ($model->businesses->map->license->pluck('advisor_id')->contains($user->id)) {
             return true;

@@ -21,26 +21,24 @@ class UpdateLicenseFields2 extends Migration
              * Adding new columns for more comprehensive license
              * information
              */
-            $table->unsignedBigInteger('regionaladmin_id');
+            $table->unsignedBigInteger('regionaladmin_id')->default(null)->nullable();
             $table->foreign('regionaladmin_id')
-                  ->after('active')
-                  ->nullable()
-                  ->default(null)
-                  ->references('id')
-                  ->on('users')
-                  // If an admin is deleted, cascade to delete their licenses
-                  ->onDelete('cascade');
+                ->after('active')
+                ->references('id')
+                ->on('users')
+                // If an admin is deleted, cascade to delete their licenses
+                ->onDelete('cascade');
             $table->timestamp('issued_ts')
-                  ->useCurrent();
+                ->useCurrent();
             $table->timestamp('assigned_ts')
-                  ->default(null)
-                  ->nullable();
+                ->default(null)
+                ->nullable();
             $table->timestamp('expires_ts')
-                  ->default(null)
-                  ->nullable();
+                ->default(null)
+                ->nullable();
             $table->timestamp('revoked_ts')
-                  ->default(null)
-                  ->nullable();
+                ->default(null)
+                ->nullable();
 
             $table->dropColumn('available_count');
         });
