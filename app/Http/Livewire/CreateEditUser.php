@@ -6,6 +6,7 @@ use App\Events\UserRegistered;
 use App\Http\Controllers\UserController;
 use App\Models\Advisor;
 use App\Models\Business;
+use App\Models\Collaboration;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\LicensesForAdvisors;
@@ -278,20 +279,18 @@ class CreateEditUser extends Component
             }
 
             //reattach collaborations
-            $user->collaborations()->detach();
+            $user->activeCollaborations()->delete();
             if (is_array($this->collaborations)) {
                 $advisor = Advisor::where('user_id', '=', $user->id)->first();
                 foreach ($this->collaborations as $collaboration_id) {
                     $business = Business::find($collaboration_id);
 
-                    $user->collaborations()
-                        ->sync([
-                            $business->id => [
-                                'advisor_id' => $advisor->id,
-                                'created_at' => $time_created,
-                                'updated_at' => $time_created
-                            ]
-                        ], false);
+                    Collaboration::create([
+                        'advisor_id' => $advisor->id,
+                        'business_id' => $business->id,
+                        'created_at' => $time_created,
+                        'updated_at' => $time_created
+                    ]);
                 }
             }
 
