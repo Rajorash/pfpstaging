@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Collaboration extends Model
 {
+    protected $fillable = ['advisor_id', 'business_id'];
+
     public function advisor()
     {
         //return $this->belongsTo(Advisor::class);
