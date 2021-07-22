@@ -124,22 +124,6 @@
                 </div>
     @endif
 
-    {{--                <div class="table-row ">--}}
-    {{--                    <div class="table-cell w-1/4 pb-4 text-left">--}}
-    {{--                        {{ __('Expiration date') }}--}}
-    {{--                    </div>--}}
-    {{--                    <div class="table-cell w-3/4 pb-4">--}}
-    {{--                        <x-jet-input--}}
-    {{--                            id="expired"--}}
-    {{--                            class="w-full"--}}
-    {{--                            type="text"--}}
-    {{--                            name="expired"--}}
-    {{--                            wire:model.lazy="expired"--}}
-    {{--                        />--}}
-    {{--                        <x-jet-input-error for="expired" class="mt-2 text-left"/>--}}
-    {{--                    </div>--}}
-    {{--                </div>--}}
-
 </div>
 
 <div class="table w-full mt-4">

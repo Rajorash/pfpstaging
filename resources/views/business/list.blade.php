@@ -12,7 +12,8 @@
 
                 @if($currentUser->isAdvisor())
                     <div class="text-xl pl-2">
-                        Available seats: {{$currentUser->seats - count($currentUser->activeLicenses)}} / {{$currentUser->seats}}
+                        Available seats: {{$currentUser->seats - count($currentUser->activeLicenses)}}
+                        / {{$currentUser->seats}}
                     </div>
                 @endif
 
@@ -62,8 +63,19 @@
                         </x-ui.table-td>
                         <x-ui.table-td>
                             @if ( is_object($business->license) )
-                                {{$business->license->advisor->name}} @if($business->license->advisor->id == $currentUser->id)<span class="text-light_gray">(You)</span>@endif <br>                                <span class="text-sm text-light_gray">
-                                    Acc Number: {{$business->license->account_number }}
+                                {{$business->license->advisor->name}}
+                                @if($business->license->advisor->id == $currentUser->id)
+                                    <span class="text-light_gray">(You)</span>
+                                @endif <br>
+                                <span class="text-sm text-light_gray">
+                                    <span class="whitespace-nowrap flex">
+                                    @if ($business->license->active)
+                                            <x-icons.active :class="'h-4 w-auto text-green mr-1 align-middle'"/>
+                                        @else
+                                            <x-icons.inactive :class="'h-4 w-auto text-gray-500 mr-1 align-middle'"/>
+                                        @endif
+                                        <span>{{$business->license->account_number }}</span>
+                                    </span>
                                 </span>
                             @else
                                 {{__('Not licensed')}}
