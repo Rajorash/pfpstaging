@@ -59,7 +59,7 @@
                                             id="flow_{{$key}}_{{$date->format('Y-m-d')}}"
                                             type="text"
                                             value="{{number_format($ext_data[$date->format('Y-m-d')], 0, '.', '')}}"
-                                            @if(!$business->license->active) disabled @endif/>
+                                            @if(!$business->license->checkLicense) disabled @endif/>
                                     </x-ui.table-td>
                                 @endforeach
                             </tr>
@@ -126,7 +126,7 @@
                                                    id="flow_{{$key}}_{{$date->format('Y-m-d')}}"
                                                    type="text"
                                                    value="{{number_format($ext_data[$date->format('Y-m-d')], 0, '.', '')}}"
-                                                   @if(!$business->license->active) disabled @endif/>
+                                                   @if(!$business->license->checkLicense) disabled @endif/>
                                         </x-ui.table-td>
                                     @endforeach
                                 </tr>

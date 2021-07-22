@@ -35,7 +35,7 @@ class License extends Model
      *
      * Should be issueed by a regional admin user.
      *
-     * @param User $advisor
+     * @param  User  $advisor
      * @return void
      */
     public function issue(User $advisor)
@@ -49,7 +49,7 @@ class License extends Model
      * Should be assigned by an advisor user. Will affect
      * available license count
      *
-     * @param Business $business
+     * @param  Business  $business
      * @return void
      */
     public function assign(Business $business)
@@ -67,17 +67,15 @@ class License extends Model
      */
     public function revoke()
     {
-
         $this->active = false;
         $this->revoked_ts = Carbon::now();
-
     }
 
     /**
      * Extend the expiry date of the license by n months,
      * default value is 3
      *
-     * @param integer $monthsToAdd
+     * @param  integer  $monthsToAdd
      * @return void
      */
     public function extend($monthsToAdd = 3)
@@ -85,5 +83,13 @@ class License extends Model
         $this->expires_ts = Carbon::createFromTimestamp($this->expires_ts)->addMonths($monthsToAdd);
     }
 
+    public function getCheckLicenseAttribute()
+    {
+//        dd(Carbon::parse($this->expires_ts)->timestamp, Carbon::now()->timestamp, $this->active);
+        if (Carbon::parse($this->expires_ts)->timestamp - Carbon::now()->timestamp > 0 && $this->active) {
+            return true;
+        }
 
+        return false;
+    }
 }
