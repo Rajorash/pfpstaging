@@ -125,12 +125,12 @@
                             @if(Auth::user()->isSuperAdmin() || Auth::user()->isRegionalAdmin())
                                 <x-ui.table-td class="text-center">
                                     @if ($user->isAdvisor())
-                                        @if ($user->advisorsLicenses->last())
-                                            @if($user->advisorsLicenses->last()->licenses - count($user->activeLicenses) < 0)
+                                        @if ($user->seats)
+                                            @if($user->seats - count($user->activeLicenses) < 0)
                                                 <x-ui.badge background="bg-red-700">
                                                     {{count($user->activeLicenses) .' '. __('from').' '. $user->advisorsLicenses->last()->licenses}}</x-ui.badge>
                                             @else
-                                                <x-ui.badge>{{count($user->activeLicenses) .' '. __('from').' '. $user->advisorsLicenses->last()->licenses}}</x-ui.badge>
+                                                <x-ui.badge>{{count($user->activeLicenses) .' '. __('from').' '. $user->seats}}</x-ui.badge>
                                             @endif
 
                                             @if (count($user->notActiveLicenses))
