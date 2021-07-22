@@ -74,9 +74,6 @@
                     </div>
                 </div>
 
-                {{--                dd($this->business->license->account_number);--}}
-                {{--                dd($this->business->license->active);--}}
-
                 @if($this->business->license && $this->business->license->account_number)
                     <div class="table-row">
                         <div class="table-cell w-1/4 pb-4 text-left">

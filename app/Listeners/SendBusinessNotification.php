@@ -4,6 +4,7 @@ namespace App\Listeners;
 
 use App\Events\BusinessProcessed;
 use App\Mail\SendBusinessDeleteNotification;
+use App\Mail\SendBusinessLicenseState;
 use App\Mail\SendBusinessNewOwnerNotification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
@@ -50,6 +51,50 @@ class SendBusinessNotification
                 $event->business->name,
                 $event->user->name,
                 'You delete a business <b>&quot;'.$event->business->name.'&quot;</b>'
+            ));
+        }
+        if ($event->type == 'activeLicense') {
+            //todo: check all relations and refactored it for all related users
+
+            Mail::to($event->business->owner)->send(new SendBusinessLicenseState(
+                $event->business,
+                $event->user,
+                'License number '
+                .$event->business->license->account_number
+                .' was active for business <b>&quot;'.$event->business->name.'&quot;</b> by you',
+                'License was active for business <b>&quot;'.$event->business->name.'&quot;</b>'
+            ));
+
+            Mail::to($event->user)->send(new SendBusinessLicenseState(
+                $event->business,
+                $event->user,
+                'License number '
+                .$event->business->license->account_number
+                .' was active for business <b>&quot;'.$event->business->name.'&quot;</b> by Advisor '
+                .'<b>'.$event->user->name.'</b>',
+                'License was active for business <b>&quot;'.$event->business->name.'&quot;</b>'
+            ));
+        }
+        if ($event->type == 'inactiveLicense') {
+            //todo: check all relations and refactored it for all related users
+
+            Mail::to($event->business->owner)->send(new SendBusinessLicenseState(
+                $event->business,
+                $event->user,
+                'License number '
+                .$event->business->license->account_number
+                .' was inactive for business <b>&quot;'.$event->business->name.'&quot;</b> by you',
+                'License was inactive for business <b>&quot;'.$event->business->name.'&quot;</b>'
+            ));
+
+            Mail::to($event->user)->send(new SendBusinessLicenseState(
+                $event->business,
+                $event->user,
+                'License number '
+                .$event->business->license->account_number
+                .' was inactive for business <b>&quot;'.$event->business->name.'&quot;</b> by Advisor '
+                .'<b>'.$event->user->name.'</b>',
+                'License was inactive for business <b>&quot;'.$event->business->name.'&quot;</b>'
             ));
         }
     }

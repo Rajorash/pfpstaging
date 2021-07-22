@@ -34,6 +34,7 @@ class SendBusinessNewOwnerNotification extends Mailable
      */
     public function build()
     {
-        return $this->markdown('emails.businesses.new-owner');
+        return $this->markdown('emails.businesses.new-owner')
+            ->subject('New Business for you');
     }
 }

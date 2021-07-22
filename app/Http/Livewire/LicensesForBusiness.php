@@ -94,7 +94,7 @@ class LicensesForBusiness extends Component
         if ($newOwner && !$this->business->owner_id) {
             $this->business->owner()->associate($newOwner);
             $this->business->save();
-            event(new BusinessProcessed('newOwner', $this->business));
+            event(new BusinessProcessed('newOwner', $this->business, Auth::user()));
         }
 
         //business without licenses - create it and enable
@@ -115,6 +115,7 @@ class LicensesForBusiness extends Component
         if ($this->business->license && !$this->activeLicense) {
             $this->business->license()->update(['active' => false]);
             $this->freshData();
+            event(new BusinessProcessed('inactiveLicense', $this->business, Auth::user()));
         }
         //enable old license
         if ($this->business->license
@@ -122,6 +123,7 @@ class LicensesForBusiness extends Component
             && $this->activeLicense) {
             $this->business->license()->update(['active' => true]);
             $this->freshData();
+            event(new BusinessProcessed('activeLicense', $this->business, Auth::user()));
         }
 
         return redirect("business");

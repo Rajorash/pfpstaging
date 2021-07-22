@@ -47,6 +47,7 @@ class AdvisorChangedCountOfLicenses extends Mailable
      */
     public function build()
     {
-        return $this->markdown('emails.licenses.change-count-for-advisor');
+        return $this->markdown('emails.licenses.change-count-for-advisor')
+            ->subject('Count of licenses was change');
     }
 }

@@ -7,14 +7,14 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class SendBusinessDeleteNotification extends Mailable
+class SendBusinessLicenseState extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $ownerName;
-    public $businessName;
-    public $author;
+    public $business;
+    public $user;
     public $string;
+    public $title;
 
     /**
      * Create a new message instance.
@@ -22,17 +22,16 @@ class SendBusinessDeleteNotification extends Mailable
      * @return void
      */
     public function __construct(
-        string $ownerName,
-        string $businessName,
-        string $author,
-        string $string
+        string $business,
+        string $user,
+        string $string,
+        string $title
     ) {
-        $this->ownerName = $ownerName;
-        $this->businessName = $businessName;
-        $this->author = $author;
+        $this->business = $business;
+        $this->user = $user;
         $this->string = $string;
+        $this->title = $title;
     }
-
 
     /**
      * Build the message.
@@ -41,7 +40,7 @@ class SendBusinessDeleteNotification extends Mailable
      */
     public function build()
     {
-        return $this->markdown('emails.businesses.delete')
-            ->subject('Business was deleted');
+        return $this->markdown('emails.businesses.license-state')
+            ->subject(str_replace('&quot;', '"', strip_tags($this->title)));
     }
 }
