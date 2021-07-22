@@ -69,7 +69,7 @@
                                 @endif <br>
                                 <span class="text-sm text-light_gray">
                                     <span class="whitespace-nowrap flex">
-                                    @if ($business->license->active)
+                                    @if ($business->license->checkLicense)
                                             <x-icons.active :class="'h-4 w-auto text-green mr-1 align-middle'"/>
                                         @else
                                             <x-icons.inactive :class="'h-4 w-auto text-gray-500 mr-1 align-middle'"/>

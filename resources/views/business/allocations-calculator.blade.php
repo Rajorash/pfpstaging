@@ -28,7 +28,7 @@
         </div>
     </x-slot>
 
-    @if(!$business->license->active)
+    @if(!$business->license->checkLicense)
         <div class="text-center text-red-500 font-bold">{{__('License is inactive. Edit data forbidden.')}}</div>
     @endif
 
