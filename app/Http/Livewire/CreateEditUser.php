@@ -178,7 +178,6 @@ class CreateEditUser extends Component
     public function updatedLicenses()
     {
         $this->licenses = array_filter($this->licenses);
-        $this->store();
     }
 
     /**
@@ -187,7 +186,6 @@ class CreateEditUser extends Component
     public function updatedCollaborations()
     {
         $this->collaborations = array_filter($this->collaborations);
-        $this->store();
     }
 
     /**
