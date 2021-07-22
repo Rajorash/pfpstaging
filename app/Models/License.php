@@ -14,6 +14,17 @@ class License extends Model
         'active',
     ];
 
+    /**
+     * Return the Regional Admin relationship. The Regional Admin is the user who created and provisioned the
+     * license to the advisor (if assigned)
+     *
+     * @return void
+     */
+    public function admin()
+    {
+        return $this->hasOne(User::class, 'id', 'regionaladmin_id');
+    }
+
     public function advisor()
     {
         return $this->hasOne(User::class, 'id', 'advisor_id');
