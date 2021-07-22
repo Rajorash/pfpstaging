@@ -127,17 +127,15 @@
                                                 <div class="table-row">
                                                     <div class="table-cell pb-2">{{__('Licenses')}}</div>
                                                     <div class="table-cell pb-2">
-                                                        @if($user->advisorsLicenses->last()->licenses - count($user->licenses) < 0)
+                                                        @if($user->seats - count($user->licenses) < 0)
                                                             <x-ui.badge background="bg-red-700">
-                                                                {{count($user->licenses) .' '. __('from').' '. $user->advisorsLicenses->last()->licenses}}</x-ui.badge>
+                                                                {{count($user->licenses) .' '. __('from').' '. $user->seats}}</x-ui.badge>
                                                         @else
-                                                            <x-ui.badge>{{count($user->licenses) .' '. __('from').' '. $user->advisorsLicenses->last()->licenses}}</x-ui.badge>
+                                                            <x-ui.badge>{{count($user->licenses) .' '. __('from').' '. $user->seats}}</x-ui.badge>
                                                         @endif
 
                                                         @if(count($user->licenses))
-                                                            @if(Auth::user()->isRegionalAdmin())
-                                                                {{count($user->licenses)}}
-                                                            @else
+                                                            @if(!Auth::user()->isRegionalAdmin())
                                                                 <ol class="list-disc">
                                                                     @foreach ($user->licenses as $business)
                                                                         <li>

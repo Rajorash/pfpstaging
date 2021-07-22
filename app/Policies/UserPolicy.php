@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Models\License;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
@@ -34,9 +35,23 @@ class UserPolicy
         }
 
         //a Regional Admin can view only own Advisor
-        if ($user->isRegionalAdmin() && $user->id == $model->regionalAdminByAdvisor->pluck('id')->first()) {
-            return true;
+        if ($user->isRegionalAdmin()) {
+            if($user->id == $model->regionalAdminByAdvisor->pluck('id')->first()) {
+                return true;
+            }
+            // if regional admin and advisor share a license
+            $shared_licenses = License::whereAdvisorId($model->id)
+                                        ->whereRegionaladminId($user->id)
+                                        ->get();
+
+            if ($shared_licenses->isNotEmpty()) {
+                return true;
+            }
+
         }
+
+
+
 
         // a user can view themselves
         if ($user->id === $model->id) {
