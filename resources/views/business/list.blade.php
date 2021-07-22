@@ -12,7 +12,7 @@
 
                 @if($currentUser->isAdvisor())
                     <div class="text-xl pl-2">
-                        Available seats: {{$currentUser->seats - count($currentUser->licenses)}} / {{$currentUser->seats}}
+                        Available seats: {{$currentUser->seats - count($currentUser->activeLicenses)}} / {{$currentUser->seats}}
                     </div>
                 @endif
 
