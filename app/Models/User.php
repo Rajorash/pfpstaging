@@ -101,10 +101,10 @@ class User extends Authenticatable implements RoleInterface, MustVerifyEmail
             });
     }
 
-//    public function advisor()
-//    {
-//        return $this->hasOne(Advisor::class, 'id');
-//    }
+    public function advisor()
+    {
+        return $this->hasOne(Advisor::class, 'user_id');
+    }
 
     public function isActive()
     {

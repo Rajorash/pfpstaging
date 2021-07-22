@@ -4,6 +4,7 @@ namespace App\Http\Livewire;
 
 use App\Events\BusinessProcessed;
 use App\Http\Controllers\UserController;
+use App\Models\Advisor;
 use App\Models\License;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
@@ -12,6 +13,7 @@ use Livewire\Component;
 class BusinessMaintenance extends Component
 {
     public $email;
+    public $email_collaborate;
     public $userId;
     public $advisorsClients = null;
     public $availableLicenses = 0;
@@ -76,6 +78,14 @@ class BusinessMaintenance extends Component
             $newOwner = User::firstWhere('id', $this->userId);
         }
 
+        $collaborator = null;
+        if ($this->email_collaborate) {
+            $user = User::firstWhere('email', $this->email_collaborate);
+            if ($user) {
+                $collaborator = Advisor::firstWhere('user_id', $user->id);
+            }
+        }
+
         if (!$newOwner) {
             $this->failure = true;
             $this->failureMessage = 'Client not found';
@@ -97,6 +107,12 @@ class BusinessMaintenance extends Component
             $this->business->owner()->associate($newOwner);
             $this->business->save();
             event(new BusinessProcessed('newOwner', $this->business, Auth::user()));
+        }
+
+        if ($collaborator) {
+            $this->business->collaboration()->associate($collaborator);
+            $this->business->save();
+            event(new BusinessProcessed('collaboration', $this->business, Auth::user()));
         }
 
         if ($this->iWouldLikeToDelete) {

@@ -75,7 +75,6 @@
                     </div>
                 </div>
 
-
                 @if($this->business->license && $this->business->license->account_number)
                     <div class="table-row">
                         <div class="table-cell w-1/4 pb-4 text-left">
@@ -98,6 +97,22 @@
                         @else
                             {{ __('License is Inactive') }}
                         @endif
+                    </div>
+                </div>
+
+                <div class="table-row">
+                    <div class="table-cell w-1/4 pb-4 text-left">
+                        {{ __('Invite an Advisor to collaborate (email)') }}
+                    </div>
+                    <div class="table-cell w-3/4 pb-4">
+                        <x-jet-input
+                            id="email_collaborate"
+                            class="w-full"
+                            type="email"
+                            name="email_collaborate"
+                            wire:model.lazy="email_collaborate"
+                        />
+                        <x-jet-input-error for="email_collaborate" class="mt-2 text-left"/>
                     </div>
                 </div>
 

@@ -36,6 +36,13 @@ class SendBusinessNotification
                 $event->business->name
             ));
         }
+        if ($event->type == 'collaboration') {
+            Mail::to($event->business->collaboration)->send(new SendBusinessCollaborateNotification(
+                $event->business->collaboration->advisor->name,
+                $event->business->name
+            ));
+        }
+
         if ($event->type == 'delete') {
             //todo: check all relations and refactored it for all related users
 
