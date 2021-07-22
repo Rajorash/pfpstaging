@@ -21,7 +21,7 @@
                             @if(count($user->licenses))
                                 {{count($user->licenses)}}
                             @else
-                                <span class="text-red-700">No Licenses</span>
+                                <span class="text-red-700">No Licenses assigned</span>
                             @endif
                         </div>
                     </div>
@@ -29,11 +29,11 @@
                     <div class="table-row">
                         <div class="table-cell pb-2 bg-red">{{__('Available licenses')}}</div>
                         <div class="table-cell pb-2">
-                            @if($licensesCounter - count($user->licenses) < 0)
+                            @if($user->seats < 0)
                                 <x-ui.badge
-                                    background="bg-red-700">{{$licensesCounter - count($user->licenses)}}</x-ui.badge>
+                                    background="bg-red-700">{{$user->seats}}</x-ui.badge>
                             @else
-                                <x-ui.badge>{{$licensesCounter - count($user->licenses)}}</x-ui.badge>
+                                <x-ui.badge>{{$user->seats - count($user->licenses)}}</x-ui.badge>
                             @endif
                         </div>
                     </div>
@@ -84,8 +84,9 @@
             <thead>
             <tr class="border-light_blue border-t border-b">
                 <x-ui.table-th>Regional Admin</x-ui.table-th>
-                <x-ui.table-th>Count of licenses</x-ui.table-th>
-                <x-ui.table-th>Date</x-ui.table-th>
+                <x-ui.table-th>License Number</x-ui.table-th>
+                <x-ui.table-th>Business Name</x-ui.table-th>
+                <x-ui.table-th>Date Created</x-ui.table-th>
                 @if(Auth::user()->isRegionalAdmin())
                     <x-ui.table-th></x-ui.table-th>
                 @endif
@@ -94,18 +95,11 @@
             <x-ui.table-tbody>
                 @foreach ($licensesCounterHistory as $row)
                     <tr>
-                        {{$row->regionalAdminByAdvisor}}
-                        <x-ui.table-td>
-                            @if($row->regionalAdmin)
-                                {{$row->regionalAdmin->name}}
-                            @endif
-                        </x-ui.table-td>
-                        <x-ui.table-td class="text-right">
-                            {{$row->licenses}}
-                        </x-ui.table-td>
-                        <x-ui.table-td>
-                            {{Carbon\Carbon::parse($row->created_at)->diffForHumans()}}
-                        </x-ui.table-td>
+                        {{-- {{$row->regionalAdminByAdvisor}} --}}
+                        <x-ui.table-td>{{$row->admin->name}}</x-ui.table-td>
+                        <x-ui.table-td>{{$row->account_number}}</x-ui.table-td>
+                        <x-ui.table-td>{{$row->business->name}}</x-ui.table-td>
+                        <x-ui.table-td>{{$row->created_at->diffForHumans()}}</x-ui.table-td>
                     </tr>
                 @endforeach
             </x-ui.table-tbody>

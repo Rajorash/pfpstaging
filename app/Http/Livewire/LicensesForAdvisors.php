@@ -3,6 +3,8 @@
 namespace App\Http\Livewire;
 
 use App\Events\LicenseForAdvisorChanged;
+use App\Models\License;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -11,7 +13,7 @@ class LicensesForAdvisors extends Component
 {
     use WithPagination;
 
-    public $user;
+    public User $user;
     public $licensesCounter;
     public $licensesCounterMessage;
     public $allowEdit = false;
@@ -49,10 +51,19 @@ class LicensesForAdvisors extends Component
         }
     }
 
+    public function getAdvisorsLicensesAttribute()
+    {
+        return License::whereAdvisorId($user->id)->get();
+    }
+
     public function render()
     {
-        $licensesCounterHistory = \App\Models\LicensesForAdvisors::where('advisor_id', '=', $this->user->id)
-            ->with('regionalAdmin')
+        // $licensesCounterHistory = \App\Models\LicensesForAdvisors::where('advisor_id', '=', $this->user->id)
+        //     ->with('regionalAdmin')
+        //     ->orderByDesc('created_at')
+        //     ->paginate($this->perPage);
+        $licensesCounterHistory = License::whereAdvisorId($this->user->id)
+            // ->with('regionalAdmin')
             ->orderByDesc('created_at')
             ->paginate($this->perPage);
 
