@@ -83,8 +83,12 @@
                             @if ( is_object($business->collaboration)
                                 )
                                 <div class="text-sm text-light_gray">
-                                    In collaboration with
-                                    {{$business->collaboration->advisor->user->name}}
+                                    @if($business->collaboration->advisor->user_id != auth()->user()->id)
+                                        In collaboration with <b>{{$business->collaboration->advisor->user->name}}</b>
+                                    @else
+                                        As collaborationist with <b>{{$business->license->advisor->name}}</b>
+                                    @endif
+
                                     @if (($expire = new \DateTime($business->collaboration->expires_at))->getTimestamp() > time())
                                         till {{$expire->format('Y-m-d')}}
                                     @endif
