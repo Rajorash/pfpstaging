@@ -40,3 +40,56 @@ Most of the data will be prefilled for you as long as you seed the db. You can l
   <dt>user</dt><dd>advisor@pfp.com</dd>
   <dt>pw</dt><dd>letmeinnow!</dd>
 </dl>
+
+
+---
+### Classes
+## App/Models/License
+#### Properties 
+* account_number
+* advisor_id
+* business_id
+* regionaladmin_id
+* active
+* issued_ts
+* assigned_ts
+* expires_ts
+* revoked_ts
+* created_ts
+* updaetd_ts
+
+#### Functions
+**issue(User $advisor)**
+```php
+// static
+License::issue($advisor);
+
+// dynamic call
+$license = new License;
+$license->issue($advisor);
+
+// call can also be chained since it returns the License object
+// dynamic call
+$license = new License;
+$license->issue($advisor)->assign($business);
+
+```
+
+**assign(Business $business)**
+```php
+// static
+License::assign($business);
+
+// dynamic call
+$license = new License;
+$license->assign($business);
+
+// call can also be chained since it returns the License object
+// dynamic call
+$license = new License;
+$license->issue($advisor)->assign($business);
+
+```
+
+
+
