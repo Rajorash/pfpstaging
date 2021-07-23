@@ -80,13 +80,14 @@
                             @else
                                 {{__('Not licensed')}}
                             @endif
-                            @if ( is_object($business->collaboration)
-                                )
+                            @if ( is_object($business->collaboration) && is_object($business->collaboration->advisor))
                                 <div class="text-sm text-light_gray">
                                     @if($business->collaboration->advisor->user_id != auth()->user()->id)
                                         In collaboration with <b>{{$business->collaboration->advisor->user->name}}</b>
                                     @else
+                                        @if(is_object($business->license))
                                         As collaborationist with <b>{{$business->license->advisor->name}}</b>
+                                        @endif
                                     @endif
 
                                     @if (($expire = new \DateTime($business->collaboration->expires_at))->getTimestamp() > time())
@@ -103,8 +104,10 @@
                         @if(Auth::user()->isAdvisor())
                             <x-ui.table-td>
                                 @if(
-    (is_object($business->collaboration)  && $business->collaboration->advisor->user_id  != auth()->user()->id)
-    || !is_object($business->collaboration))
+                                (is_object($business->collaboration)
+                                && is_object($business->collaboration->advisor)
+                                && $business->collaboration->advisor->user_id  != auth()->user()->id)
+                                || !is_object($business->collaboration))
                                     <x-ui.button-small
                                         href="{{route('maintenance.business', ['business' => $business])}}">
                                         Maintenance
