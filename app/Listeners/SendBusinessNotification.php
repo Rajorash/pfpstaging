@@ -7,6 +7,7 @@ use App\Mail\SendBusinessDeleteNotification;
 use App\Mail\SendBusinessLicenseState;
 use App\Mail\SendBusinessNewOwnerNotification;
 use App\Mail\SendBusinessCollaborateNotification;
+use App\Mail\SendBusinessCollaborateRevokeNotification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Mail;
@@ -44,6 +45,12 @@ class SendBusinessNotification
             ));
         }
 
+        if ($event->type == 'collaborationRevoke') {
+            Mail::to($event->business->collaboration->advisor)->send(new SendBusinessCollaborateRevokeNotification(
+                $event->business->collaboration->advisor->name,
+                $event->business->name
+            ));
+        }
         if ($event->type == 'delete') {
             //todo: check all relations and refactored it for all related users
 

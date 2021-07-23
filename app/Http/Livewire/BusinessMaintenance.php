@@ -172,6 +172,7 @@ class BusinessMaintenance extends Component
                 event(new BusinessProcessed('collaboration', $this->business, Auth::user()));
             } elseif (empty($this->emailCollaborate)) {
                 Collaboration::where('business_id', '=', $this->business->id)->delete();
+                event(new BusinessProcessed('collaborationRevoke', $this->business, Auth::user()));
             }
 
             if ($this->iWouldLikeToDelete) {
