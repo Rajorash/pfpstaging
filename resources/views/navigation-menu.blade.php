@@ -16,11 +16,11 @@
                                     :active="request()->is('*dashboard.*') || request()->is('*dashboard*')">
                         {{ __('Dashboard') }}
                     </x-jet-nav-link>
+                    @if(!Auth::user()->isRegionalAdmin())
                     <x-jet-nav-link href="{{ route('allocation-calculator') }}"
                                     :active="request()->routeIs('allocation-calculator')">
                         {{ __('Calculator') }}
                     </x-jet-nav-link>
-                    @if(!Auth::user()->isRegionalAdmin())
                         <x-jet-nav-link href="{{ route('businesses') }}"
                                         :active="request()->is('*business/*') || request()->is('business')">
                             {{ __('Businesses') }}
@@ -130,7 +130,7 @@
                                 {{ __('Profile') }}
                             </x-jet-dropdown-link>
 
-                            @if(Auth::user()->isRegionalAdmin())
+                            @if(!Auth::user()->isRegionalAdmin())
                                 <x-jet-dropdown-link href="{{ route('businesses') }}">
                                 <span class="inline-block mr-4 pt-0.5 w-4 text-center"><x-icons.case
                                         :class="'w-4 h-auto'"/></span>
