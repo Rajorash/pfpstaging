@@ -55,6 +55,10 @@ class BusinessMaintenance extends Component
             $this->userId = $this->business->owner_id;
         }
 
+        if ($this->business->collaboration) {
+            $this->emailCollaborate = $this->business->collaboration->advisor->user->email;
+        }
+
     }
 
     protected function freshData()
@@ -148,7 +152,8 @@ class BusinessMaintenance extends Component
                 event(new BusinessProcessed('newOwner', $this->business, Auth::user()));
             }
 
-            if ($collaborator) {
+            if ($collaborator && ($this->emailCollaborate != $this->business->collaboration->advisor->user->email)) {
+                Collaboration::where('business_id', '=', $this->business->id)->delete();
                 $time_created = date('Y-m-d h:i:s', time());
                 Collaboration::create([
                     'advisor_id' => $collaborator->id,
@@ -157,6 +162,8 @@ class BusinessMaintenance extends Component
                     'updated_at' => $time_created
                 ]);
                 event(new BusinessProcessed('collaboration', $this->business, Auth::user()));
+            } elseif (empty($this->emailCollaborate)) {
+                Collaboration::where('business_id', '=', $this->business->id)->delete();
             }
 
             if ($this->iWouldLikeToDelete) {

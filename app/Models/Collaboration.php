@@ -11,7 +11,7 @@ class Collaboration extends Model
     public function advisor()
     {
         //return $this->belongsTo(Advisor::class);
-        return $this->hasOne(User::class, 'id', 'advisor_id');
+        return $this->hasOne(Advisor::class, 'id', 'advisor_id');
     }
 
     public function business()

@@ -84,7 +84,7 @@
                                 )
                                 <div class="text-sm text-light_gray">
                                     In collaboration with
-                                    {{$business->collaboration->advisor->name}}
+                                    {{$business->collaboration->advisor->user->name}}
                                     @if (($expire = new \DateTime($business->collaboration->expires_at))->getTimestamp() > time())
                                         till {{$expire->format('Y-m-d')}}
                                     @endif
