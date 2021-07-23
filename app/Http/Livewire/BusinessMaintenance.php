@@ -5,6 +5,7 @@ namespace App\Http\Livewire;
 use App\Events\BusinessProcessed;
 use App\Http\Controllers\UserController;
 use App\Models\Advisor;
+use App\Models\Collaboration;
 use App\Models\License;
 use App\Models\User;
 use Illuminate\Support\Facades\Validator;
@@ -148,8 +149,13 @@ class BusinessMaintenance extends Component
             }
 
             if ($collaborator) {
-                $this->business->collaboration()->associate($collaborator);
-                $this->business->save();
+                $time_created = date('Y-m-d h:i:s', time());
+                Collaboration::create([
+                    'advisor_id' => $collaborator->id,
+                    'business_id' => $this->business->id,
+                    'created_at' => $time_created,
+                    'updated_at' => $time_created
+                ]);
                 event(new BusinessProcessed('collaboration', $this->business, Auth::user()));
             }
 

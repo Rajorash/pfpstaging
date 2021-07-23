@@ -6,6 +6,7 @@ use App\Events\BusinessProcessed;
 use App\Mail\SendBusinessDeleteNotification;
 use App\Mail\SendBusinessLicenseState;
 use App\Mail\SendBusinessNewOwnerNotification;
+use App\Mail\SendBusinessCollaborateNotification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Mail;
@@ -37,7 +38,7 @@ class SendBusinessNotification
             ));
         }
         if ($event->type == 'collaboration') {
-            Mail::to($event->business->collaboration)->send(new SendBusinessCollaborateNotification(
+            Mail::to($event->business->collaboration->advisor)->send(new SendBusinessCollaborateNotification(
                 $event->business->collaboration->advisor->name,
                 $event->business->name
             ));

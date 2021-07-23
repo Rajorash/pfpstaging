@@ -11,7 +11,7 @@ class SendBusinessCollaborateNotification extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $ownerName;
+    public $collaboratorName;
     public $businessName;
 
     /**
