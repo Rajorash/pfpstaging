@@ -38,9 +38,20 @@ class SendBusinessNotification
             ));
         }
         if ($event->type == 'collaboration') {
-            Mail::to($event->business->collaboration->advisor)->send(new SendBusinessCollaborateNotification(
-                $event->business->collaboration->advisor->name,
-                $event->business->name
+            Mail::to($event->business->collaboration->advisor->user)->send(new SendBusinessCollaborateNotification(
+                $event->business->collaboration->advisor->user->name,
+                $event->business->name,
+                'Collaboration for you',
+                "Business <b>&quot;".$event->business->name."&quot;</b> linked to you by ".$event->business->collaboration->advisor->user->name
+            ));
+        }
+
+        if ($event->type == 'collaborationDelete') {
+            Mail::to($event->business->collaboration->advisor->user)->send(new SendBusinessCollaborateNotification(
+                $event->business->collaboration->advisor->user->name,
+                $event->business->name,
+                'Collaboration was rejected',
+                "Business <b>&quot;".$event->business->name."&quot;</b> was unlinked to you by ".$event->business->collaboration->advisor->user->name
             ));
         }
 

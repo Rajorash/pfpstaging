@@ -13,6 +13,8 @@ class SendBusinessCollaborateNotification extends Mailable
 
     public $collaboratorName;
     public $businessName;
+    public $title;
+    public $text;
 
     /**
      * Create a new message instance.
@@ -21,10 +23,14 @@ class SendBusinessCollaborateNotification extends Mailable
      */
     public function __construct(
         string $collaboratorName,
-        string $businessName
+        string $businessName,
+        string $title,
+        string $text
     ) {
         $this->collaboratorName = $collaboratorName;
         $this->businessName = $businessName;
+        $this->title = $title;
+        $this->text = $text;
     }
 
     /**
@@ -35,6 +41,6 @@ class SendBusinessCollaborateNotification extends Mailable
     public function build()
     {
         return $this->markdown('emails.businesses.collaborator')
-            ->subject('Collaboration for you');
+            ->subject($this->title);
     }
 }

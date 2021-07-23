@@ -1,7 +1,7 @@
 @component('mail::message')
-# Collaboration for you
+# {{$title}}
 
-Business <b>&quot;{{$businessName}}&quot;</b> linked to you, {{$collaboratorName}}
+{!! $text !!}
 
 @component('mail::button', ['url' => route('businesses')])
 Goto Business
