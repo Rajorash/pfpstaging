@@ -13,8 +13,20 @@ class License extends Model
         'business_id',
         'regionaladmin_id',
         'active',
+        'issued_ts',
         'assigned_ts',
         'expires_ts'
+    ];
+
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'issued_ts' => 'datetime',
+        'assigned_ts' => 'datetime',
+        'expires_ts' => 'datetime',
     ];
 
     /**
@@ -49,11 +61,15 @@ class License extends Model
      * Should be issueed by a regional admin user.
      *
      * @param  User  $advisor
-     * @return void
+     * @return License
      */
     public function issue(User $advisor)
     {
-        $this->advisor_id($advisor->id)->save();
+        $this->advisor_id = $advisor->id;
+        $this->issued_ts = now();
+        $this->save();
+
+        return $this;
     }
 
     /**
@@ -63,7 +79,7 @@ class License extends Model
      * available license count
      *
      * @param  Business  $business
-     * @return void
+     * @return License
      */
     public function assign(Business $business, $monthsToAdd = 3)
     {
@@ -73,6 +89,8 @@ class License extends Model
             "expires_ts" => now()->addMonths($monthsToAdd),
             "active" => true
         ])->save();
+
+        return $this;
     }
 
     /**
