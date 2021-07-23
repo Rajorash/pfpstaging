@@ -61,32 +61,28 @@ Most of the data will be prefilled for you as long as you seed the db. You can l
 #### Functions
 **issue(User $advisor)**
 ```php
-// static
-License::issue($advisor);
 
-// dynamic call
 $license = new License;
+//setup initial license values...
 $license->issue($advisor);
 
 // call can also be chained since it returns the License object
-// dynamic call
 $license = new License;
+//setup initial license values...
 $license->issue($advisor)->assign($business);
 
 ```
 
 **assign(Business $business)**
 ```php
-// static
-License::assign($business);
 
-// dynamic call
 $license = new License;
+//setup initial license values...
 $license->assign($business);
 
 // call can also be chained since it returns the License object
-// dynamic call
 $license = new License;
+//setup initial license values...
 $license->issue($advisor)->assign($business);
 
 ```
