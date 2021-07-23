@@ -65,9 +65,14 @@ class License extends Model
      * @param  Business  $business
      * @return void
      */
-    public function assign(Business $business)
+    public function assign(Business $business, $monthsToAdd = 3)
     {
-        $this->business_id($business->id)->save();
+        $this->fill([
+            "business_id" => $business->id,
+            "assigned_ts" => now(),
+            "expires_ts" => now()->addMonths($monthsToAdd),
+            "active" => true
+        ])->save();
     }
 
     /**
