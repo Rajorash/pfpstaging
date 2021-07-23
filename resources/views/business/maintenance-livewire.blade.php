@@ -106,13 +106,13 @@
                     </div>
                     <div class="table-cell w-3/4 pb-4 pt-8">
                         <x-jet-input
-                            id="email_collaborate"
+                            id="emailCollaborate"
                             class="w-full"
                             type="email"
-                            name="email_collaborate"
-                            wire:model.lazy="email_collaborate"
+                            name="emailCollaborate"
+                            wire:model.lazy="emailCollaborate"
                         />
-                        <x-jet-input-error for="email_collaborate" class="mt-2 text-left"/>
+                        <x-jet-input-error for="emailCollaborate" class="mt-2 text-left"/>
                     </div>
                 </div>
 
