@@ -7,13 +7,14 @@ use App\Http\Controllers\UserController;
 use App\Models\Advisor;
 use App\Models\License;
 use App\Models\User;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 
 class BusinessMaintenance extends Component
 {
     public $email;
-    public $email_collaborate;
+    public $emailCollaborate;
     public $userId;
     public $advisorsClients = null;
     public $availableLicenses = 0;
@@ -52,6 +53,7 @@ class BusinessMaintenance extends Component
         if ($this->business->owner_id) {
             $this->userId = $this->business->owner_id;
         }
+
     }
 
     protected function freshData()
@@ -61,66 +63,103 @@ class BusinessMaintenance extends Component
         $this->business = $this->business->fresh();
     }
 
+    public function updatedEmailCollaborate()
+    {
+        $this->store();
+    }
+
     public function store()
     {
+
         $this->failure = false;
         $this->failureMessage = '';
 
-        if (!$this->userId && !$this->email) {
-            $this->failure = true;
-            $this->failureMessage = 'Client must be set';
-        }
+        $validator = Validator::make([
+            'businessName' => $this->businessName,
+            'emailCollaborate' => $this->emailCollaborate
+        ], [
+            'businessName' => 'required',
+            'emailCollaborate' => 'nullable|email'
+        ]);
 
-        $newOwner = null;
-        if (!$this->userId && $this->email) {
-            $newOwner = User::firstWhere('email', $this->email);
-        } elseif ($this->userId && !$this->email) {
-            $newOwner = User::firstWhere('id', $this->userId);
-        }
+        $validator->validate();
 
-        $collaborator = null;
-        if ($this->email_collaborate) {
-            $user = User::firstWhere('email', $this->email_collaborate);
-            if ($user) {
-                $collaborator = Advisor::firstWhere('user_id', $user->id);
+        $validator->after(function ($validator) {
+            if ($this->emailCollaborate) {
+                $user = User::firstWhere('email', $this->emailCollaborate);
+                if (!$user) {
+                    $validator->errors()->add(
+                        'emailCollaborate', 'Advisor not found, set correct Advisor\'s email'
+                    );
+                    $this->failure = true;
+                    $this->failureMessage = 'Advisor not found, set correct Advisor\'s email';
+                } elseif ($user && !$user->isAdvisor()) {
+                    $validator->errors()->add(
+                        'emailCollaborate', 'This User is not Advisor'
+                    );
+                    $this->failure = true;
+                    $this->failureMessage = 'This User is not Advisor';
+                }
             }
-        }
+        });
 
-        if (!$newOwner) {
-            $this->failure = true;
-            $this->failureMessage = 'Client not found';
-        } else {
-            if (!$newOwner->isClient()) {
+        if (!$validator->fails()) {
+            if (!$this->userId && !$this->email) {
                 $this->failure = true;
-                $this->failureMessage = 'Only clients can be added to Business.';
-            } else {
-                $this->userId = $newOwner->id;
+                $this->failureMessage = 'Client must be set';
             }
-        }
 
-        if ($this->businessName != $this->business->name) {
-            $this->business->name = $this->businessName;
-            $this->business->save();
-        }
+            $newOwner = null;
+            if (!$this->userId && $this->email) {
+                $newOwner = User::firstWhere('email', $this->email);
+            } elseif ($this->userId && !$this->email) {
+                $newOwner = User::firstWhere('id', $this->userId);
+            }
 
-        if ($newOwner && (!$this->business->owner_id || $newOwner->id != $this->business->owner_id)) {
-            $this->business->owner()->associate($newOwner);
-            $this->business->save();
-            event(new BusinessProcessed('newOwner', $this->business, Auth::user()));
-        }
+            $collaborator = null;
+            if ($this->emailCollaborate) {
+                $user = User::firstWhere('email', $this->emailCollaborate);
+                if ($user) {
+                    $collaborator = Advisor::firstWhere('user_id', $user->id);
+                }
+            }
 
-        if ($collaborator) {
-            $this->business->collaboration()->associate($collaborator);
-            $this->business->save();
-            event(new BusinessProcessed('collaboration', $this->business, Auth::user()));
-        }
+            if (!$newOwner) {
+                $this->failure = true;
+                $this->failureMessage = 'Client not found';
+            } else {
+                if (!$newOwner->isClient()) {
+                    $this->failure = true;
+                    $this->failureMessage = 'Only clients can be added to Business.';
+                } else {
+                    $this->userId = $newOwner->id;
+                }
+            }
 
-        if ($this->iWouldLikeToDelete) {
-            event(new BusinessProcessed('delete', $this->business, Auth::user()));
-            $this->business->delete();
-        }
+            if ($this->businessName != $this->business->name) {
+                $this->business->name = $this->businessName;
+                $this->business->save();
+            }
 
-        return redirect("business");
+            if ($newOwner && (!$this->business->owner_id || $newOwner->id != $this->business->owner_id)) {
+                $this->business->owner()->associate($newOwner);
+                $this->business->save();
+                event(new BusinessProcessed('newOwner', $this->business, Auth::user()));
+            }
+
+            if ($collaborator) {
+                $this->business->collaboration()->associate($collaborator);
+                $this->business->save();
+                event(new BusinessProcessed('collaboration', $this->business, Auth::user()));
+            }
+
+            if ($this->iWouldLikeToDelete) {
+                event(new BusinessProcessed('delete', $this->business, Auth::user()));
+                $this->business->delete();
+            }
+
+            return redirect("business");
+        }
     }
 
     public function render()
