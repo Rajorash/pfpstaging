@@ -59,6 +59,14 @@ class BusinessMaintenance extends Component
             $this->emailCollaborate = $this->business->collaboration->advisor->user->email;
         }
 
+        if ((is_object($this->business->collaboration)
+                && $this->business->collaboration->advisor->user_id != auth()->user()->id)
+            || !is_object($this->business->collaboration)) {
+            //allowed
+        } else {
+            abort_if(true, 403, 'Access denied');
+        }
+
     }
 
     protected function freshData()

@@ -98,9 +98,14 @@
                         </x-ui.table-td>
                         @if(Auth::user()->isAdvisor())
                             <x-ui.table-td>
-                                <x-ui.button-small href="{{route('maintenance.business', ['business' => $business])}}">
-                                    Maintenance
-                                </x-ui.button-small>
+                                @if(
+    (is_object($business->collaboration)  && $business->collaboration->advisor->user_id  != auth()->user()->id)
+    || !is_object($business->collaboration))
+                                    <x-ui.button-small
+                                        href="{{route('maintenance.business', ['business' => $business])}}">
+                                        Maintenance
+                                    </x-ui.button-small>
+                                @endif
                             </x-ui.table-td>
                             <x-ui.table-td>
                                 <x-ui.button-small href="{{route('licenses.business', ['business' => $business])}}">
