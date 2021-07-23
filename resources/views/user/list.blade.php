@@ -125,25 +125,16 @@
                             @if(Auth::user()->isSuperAdmin() || Auth::user()->isRegionalAdmin())
                                 <x-ui.table-td class="text-center">
                                     @if ($user->isAdvisor())
-<<<<<<< HEAD
-                                        @if ($user->seats)
-                                            @if($user->seats - count($user->activeLicenses) < 0)
-=======
                                         @if ($user->advisorsLicenses->last())
                                             @php
                                                 $availableSeats = $user->seats - count($user->licenses);
                                             @endphp
 
                                             @if($availableSeats < 0)
->>>>>>> mykhailo
                                                 <x-ui.badge background="bg-red-700">
                                                     {{$availableSeats .' / '. $user->seats}}</x-ui.badge>
                                             @else
-<<<<<<< HEAD
-                                                <x-ui.badge>{{count($user->activeLicenses) .' '. __('from').' '. $user->seats}}</x-ui.badge>
-=======
                                                 <x-ui.badge>{{$availableSeats .' / '. $user->seats}}</x-ui.badge>
->>>>>>> mykhailo
                                             @endif
 
                                             @if (count($user->notActiveLicenses))

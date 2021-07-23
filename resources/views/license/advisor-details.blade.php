@@ -99,7 +99,7 @@
                         {{-- {{$row->regionalAdminByAdvisor}} --}}
                         <x-ui.table-td>{{$row->admin->name}}</x-ui.table-td>
                         <x-ui.table-td>{{$row->account_number}}</x-ui.table-td>
-                        <x-ui.table-td>{{$row->business->name}}</x-ui.table-td>
+                        <x-ui.table-td>{{optional($row->business)->name ?? 'N/A'}}</x-ui.table-td>
                         <x-ui.table-td>{{$row->created_at->diffForHumans()}}</x-ui.table-td>
                     </tr>
                 @endforeach
