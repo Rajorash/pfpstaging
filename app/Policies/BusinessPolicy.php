@@ -136,7 +136,7 @@ class BusinessPolicy
 
         // advisors can access the businesses that they collaborate on
         // NOTE: do not use strict comparison === as it will return false.
-        if ( $user->id == optional($business->collaboration)->advisor_id ) {
+        if ( $user->id == optional(optional($business->collaboration)->advisor)->user_id ) {
             // need to add expiry check
             return true;
         }
