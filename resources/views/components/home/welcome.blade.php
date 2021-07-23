@@ -13,6 +13,7 @@
 </div>
 
 <div class="bg-dashboard grid grid-cols-1 md:grid-cols-2">
+    @if(!Auth::user()->isRegionalAdmin())
     <div class="p-6">
         <div class="mx-12 my-4">
             <x-ui.dashboard-card
@@ -44,6 +45,7 @@
             </x-ui.dashboard-card>
         </div>
     </div>
+    @endif
 
     <div class="p-6 border-t border-light_blue">
         <div class="mx-12 my-4">
