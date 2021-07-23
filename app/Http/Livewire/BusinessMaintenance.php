@@ -76,11 +76,6 @@ class BusinessMaintenance extends Component
         $this->business = $this->business->fresh();
     }
 
-    public function updatedEmailCollaborate()
-    {
-        $this->store();
-    }
-
     public function store()
     {
 
@@ -160,7 +155,9 @@ class BusinessMaintenance extends Component
                 event(new BusinessProcessed('newOwner', $this->business, Auth::user()));
             }
 
-            if ($collaborator && ($this->emailCollaborate != $this->business->collaboration->advisor->user->email)) {
+            if ($collaborator
+                && $this->emailCollaborate != optional(optional(optional($this->business->collaboration)->advisor)->user)->email) {
+
                 Collaboration::where('business_id', '=', $this->business->id)->delete();
                 $time_created = date('Y-m-d h:i:s', time());
                 Collaboration::create([
@@ -169,8 +166,11 @@ class BusinessMaintenance extends Component
                     'created_at' => $time_created,
                     'updated_at' => $time_created
                 ]);
+                $this->freshData();
                 event(new BusinessProcessed('collaboration', $this->business, Auth::user()));
             } elseif (empty($this->emailCollaborate)) {
+
+                event(new BusinessProcessed('collaborationDelete', $this->business, Auth::user()));
                 Collaboration::where('business_id', '=', $this->business->id)->delete();
                 event(new BusinessProcessed('collaborationRevoke', $this->business, Auth::user()));
             }
