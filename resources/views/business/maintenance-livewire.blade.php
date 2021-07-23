@@ -23,10 +23,10 @@
                 </div>
 
                 <div class="table-row">
-                    <div class="table-cell w-1/4 pb-4 text-left">
+                    <div class="table-cell w-1/4 pb-4 text-left pt-8">
                         {{ __('Current Client (owner)') }}
                     </div>
-                    <div class="table-cell w-3/4 pb-4 text-left">
+                    <div class="table-cell w-3/4 pb-4 text-left pt-8">
                         {{$business->owner->name}}
                     </div>
                 </div>
@@ -77,10 +77,10 @@
 
                 @if($this->business->license && $this->business->license->account_number)
                     <div class="table-row">
-                        <div class="table-cell w-1/4 pb-4 text-left">
+                        <div class="table-cell w-1/4 pb-4 text-left pt-8">
                             {{ __('License number') }}
                         </div>
-                        <div class="table-cell w-3/4 pb-4 text-left">
+                        <div class="table-cell w-3/4 pb-4 text-left pt-8">
                             {{$this->business->license->account_number}}
                         </div>
                     </div>
@@ -101,10 +101,10 @@
                 </div>
 
                 <div class="table-row">
-                    <div class="table-cell w-1/4 pb-4 text-left">
+                    <div class="table-cell w-1/4 pb-4 text-left pt-8">
                         {{ __('Invite an Advisor to collaborate (email)') }}
                     </div>
-                    <div class="table-cell w-3/4 pb-4">
+                    <div class="table-cell w-3/4 pb-4 pt-8">
                         <x-jet-input
                             id="email_collaborate"
                             class="w-full"
@@ -117,10 +117,10 @@
                 </div>
 
                 <div class="table-row">
-                    <div class="table-cell w-1/4 pb-4 text-left">
+                    <div class="table-cell w-1/4 pb-4 text-left pt-8">
                         {{ __('Delete business') }}
                     </div>
-                    <div class="table-cell w-3/4 pb-4 text-left">
+                    <div class="table-cell w-3/4 pb-4 text-left pt-8">
                         <input type="checkbox"
                                wire:model="iWouldLikeToDelete"
                                id="iWouldLikeToDelete"/>
