@@ -142,7 +142,7 @@ class CreateBusinessForm extends Component
 
         //event after save business
         if ($data['email'] && $owner && $this->validateClientRole($owner)) {
-            event(new BusinessProcessed('newOwner', $new_business));
+            event(new BusinessProcessed('newOwner', $new_business, $owner));
         }
 
         // assign the license to the advisor and the business
