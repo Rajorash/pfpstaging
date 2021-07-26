@@ -20,7 +20,7 @@ class BusinessController extends Controller
      */
     public function index()
     {
-        $this->authorize('indexBusinesses', Auth::user());
+        // $this->authorize('indexBusinesses', Auth::user());
 
         $businesses = $this->getBusinessAll();
         $filtered = $businesses->filter(function ($business) {
