@@ -29,5 +29,5 @@ if (mix.inProduction()) {
     mix.version();
 }
 if (process.env.APP_ENV !== 'production') {
-    mix.browserSync(process.env.APP_URL);
+    mix.browserSync(process.env.APP_URL + (process.env.APP_PORT ? ':' + process.env.APP_PORT : ''));
 }
