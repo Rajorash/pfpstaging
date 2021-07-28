@@ -1,0 +1,2 @@
+#!/usr/bin/env sh
+sail artisan config:cache && sail artisan cache:clear && sail artisan view:clear && sail artisan config:cache && sail artisan event:clear
