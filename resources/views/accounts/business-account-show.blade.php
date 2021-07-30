@@ -1,5 +1,4 @@
 <div class="livewire-wrapper">
-    {{count($this->accounts);}}
     <x-ui.table-table>
         <x-ui.table-caption>
             <span>{{$business->name}} Bank Accounts</span>
