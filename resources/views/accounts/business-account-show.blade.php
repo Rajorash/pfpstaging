@@ -24,8 +24,8 @@
             @forelse($accounts as $acc)
                 <tr>
                     <x-ui.table-td class="whitespace-nowrap align-top" padding="pl-12 pr-2 py-4">
-                        <div class="text-blue text-2xl">{{ $acc->name }}</div>
-                        <div class="text-light_gray">{{ $acc->type }}</div>
+                        <div class="text-{{strtolower($acc->type)}} text-2xl">{{ $acc->name }}</div>
+                        <div class="text-white font-normal inline-block py-0 px-3 rounded-lg bg-{{strtolower($acc->type)}}">{{ $acc->type }}</div>
                     </x-ui.table-td>
 
                     <x-ui.table-td class="align-top">

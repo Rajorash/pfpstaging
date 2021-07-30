@@ -21,7 +21,12 @@ module.exports = {
                 light_gray: '#848484',
                 blue: '#3E04E2',
                 green: '#94B140',
-                dashboard: '#FBFBFF'
+                dashboard: '#FBFBFF',
+                revenue: '#0E1747',
+                pretotal: '#475EE0',
+                salestax: '#2840C7',
+                prereal: '#1F264D',
+                postreal: '#1E2F94',
             },
             boxShadow: {
                 shadow1: '0px 75px 100px rgba(206, 208, 229, 0.71)',

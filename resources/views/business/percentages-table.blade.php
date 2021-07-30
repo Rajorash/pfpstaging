@@ -39,7 +39,7 @@
                 @continue
             @endif
             <tr class="{{$account_class[$acc->type]}} hover:bg-yellow-100 border-light_blue divide-x">
-                <x-ui.table-td padding="p-1 pr-2 pl-4" class="text-left sticky-column">{{ $acc->name }}</x-ui.table-td>
+                <x-ui.table-td padding="p-1 pr-2 pl-4" class="text-left sticky-column text-{{strtolower($acc->type)}}">{{ $acc->name }}</x-ui.table-td>
 
                 @forelse($rollout as $phase)
                     @php
