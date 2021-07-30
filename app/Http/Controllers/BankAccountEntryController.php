@@ -96,7 +96,7 @@ class BankAccountEntryController extends Controller
             return in_array($account_id, $business_account_ids->values()->toArray());
         });
 
-        $phase_id = $business->getPhaseIdByDate(Carbon::today());
+        $phase_id = $business->getPhaseIdByDate(Carbon::tomorrow());
 
         foreach( $amounts as $account_id => $amount ) {
             // find or create an entry

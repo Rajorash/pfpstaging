@@ -4,6 +4,7 @@ namespace App\Http\Livewire;
 
 use App\Models\Business;
 use App\Models\AllocationPercentage;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Livewire\Component;
 
@@ -92,7 +93,7 @@ class AllocationCalculator extends Component
 
     public function mapBusinessAccounts()
     {
-        $current_phase = $this->business->getPhaseIdByDate(today());
+        $current_phase = $this->business->getPhaseIdByDate(Carbon::tomorrow());
 
         return $this->business->accounts->mapToGroups(
             function ($account) use ($current_phase) {
