@@ -189,6 +189,8 @@ class BankAccountController extends Controller
      */
     public function destroy(Business $business, BankAccount $account)
     {
+
+        dd($business,$account);
         $this->authorize('view', $business);
 
         $account->delete();
