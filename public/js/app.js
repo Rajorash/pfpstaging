@@ -4278,6 +4278,7 @@ var calculatorCore = /*#__PURE__*/function () {
       $this.resetData();
       $this.events();
       $this.firstLoadData();
+      $this.cursorForTableFill();
     }
   }, {
     key: "resetData",
@@ -4370,6 +4371,43 @@ var calculatorCore = /*#__PURE__*/function () {
       } else {
         $this.elementTablePlace.html('<p class="p-8 text-red-700 text-bold">' + data.error.join('<br/>') + '</p>');
       }
+    }
+  }, {
+    key: "cursorForTableFill",
+    value: function cursorForTableFill() {
+      $(document).on('keydown', '.cursor-fill-data', function (event) {
+        var key = event.key; // "ArrowRight", "ArrowLeft", "ArrowUp", or "ArrowDown"
+
+        var currentColumn = event.target.dataset.column || 0;
+        var currentRow = event.target.dataset.row || 0;
+
+        if (key === "ArrowLeft" || key === "ArrowRight" || key === "ArrowUp" || key === "ArrowDown") {
+          switch (key) {
+            case "ArrowLeft":
+              currentColumn--;
+              break;
+
+            case "ArrowRight":
+              currentColumn++;
+              break;
+
+            case "ArrowUp":
+              currentRow--;
+              break;
+
+            case "ArrowDown":
+              currentRow++;
+              break;
+          }
+
+          var $newCell = $('[data-column="' + currentColumn + '"][data-row="' + currentRow + '"]');
+
+          if ($newCell.length) {
+            $newCell.focus();
+            $newCell.select();
+          }
+        }
+      });
     }
   }]);
 

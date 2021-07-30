@@ -1,4 +1,4 @@
-<x-ui.table-table class="table-sticky-header table-sticky-column">
+<x-ui.table-table class="table-sticky-header table-sticky-column cursor-fill-data">
     <thead>
     <tr class="border-light_blue divide-x border-b">
         <x-ui.table-th class="text-center" baseClass="w-24 text-dark_gray font-normal bg-white">
@@ -33,15 +33,29 @@
                 'prereal' => 'bg-yellow-200',
                 'postreal' => 'bg-indigo-100'
             ];
+
+            $rowIndex = 1;
+            $columnIndex = 0;
+
         @endphp
+
         @forelse($sorted as $acc)
+
+            @php
+                $columnIndex = 0;
+            @endphp
+
             @if ($acc->type == "revenue")
                 @continue
             @endif
             <tr class="{{$account_class[$acc->type]}} hover:bg-yellow-100 border-light_blue divide-x">
-                <x-ui.table-td padding="p-1 pr-2 pl-4" class="text-left sticky-column text-{{strtolower($acc->type)}}">{{ $acc->name }}</x-ui.table-td>
+                <x-ui.table-td padding="p-1 pr-2 pl-4"
+                               class="text-left sticky-column text-{{strtolower($acc->type)}}">{{ $acc->name }}</x-ui.table-td>
 
                 @forelse($rollout as $phase)
+                    @php
+                        $columnIndex++;
+                    @endphp
                     @php
                         $percentage = $percentages
                             ->where('phase_id', '=', $phase->id)
@@ -57,7 +71,10 @@
                             m-0 outline-none postreal text-right w-full"
                                data-phase-id="{{$phase->id}}"
                                data-account-id="{{$acc->id}}"
+                               data-row="{{$rowIndex}}"
+                               data-column="{{$columnIndex}}"
                                placeholder="0"
+                               autocomplete="off"
                                name="percentage"
                                type="text"
                                id="{{$acc->type}}_{{$phase->id}}_{{$acc->id}}"
@@ -69,6 +86,9 @@
                     <x-ui.table-td padding="p-1 pr-2 pl-6" class="text-center">N/A</x-ui.table-td>
                 @endforelse
             </tr>
+            @php
+                $rowIndex++;
+            @endphp
         @empty
             <tr class="border-light_blue divide-x bg-white">
                 <x-ui.table-td padding="p-1 pr-2 pl-6" class="text-center">N/A</x-ui.table-td>
