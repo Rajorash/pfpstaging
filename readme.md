@@ -87,5 +87,8 @@ $license->issue($advisor)->assign($business);
 
 ```
 
+If You see next error: **"node_modules\.bin\npm.ps1 cannot be loaded because running scripts is disabled on this system. For more information, see about_Execution_Policies at https:/go.microsoft.com/fwlink/?LinkID=135170.
+At line:1 char:1"**
 
+Run in powerShell next command ```Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy Unrestricted```
 

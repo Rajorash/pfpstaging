@@ -21,7 +21,7 @@
 
     <x-ui.table-tbody>
         @foreach($tableData as $type => $accounts)
-            <tr class="bg-blue text-white uppercase">
+            <tr class="bg-{{strtolower($type)}} text-white uppercase">
                 <x-ui.table-td padding="py-1 pr-2 pl-4" baseClass="text-white whitespace-nowrap sticky-column">
                     {{ucfirst($type)}} Accounts
                 </x-ui.table-td>

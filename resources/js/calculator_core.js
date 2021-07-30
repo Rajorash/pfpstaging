@@ -22,6 +22,7 @@ export class calculatorCore {
         $this.events();
 
         $this.firstLoadData();
+        $this.cursorForTableFill();
     }
 
     resetData() {
@@ -114,5 +115,42 @@ export class calculatorCore {
         } else {
             $this.elementTablePlace.html('<p class="p-8 text-red-700 text-bold">' + data.error.join('<br/>') + '</p>');
         }
+    }
+
+    cursorForTableFill() {
+        $(document).on('keydown', '.cursor-fill-data', function (event) {
+            const key = event.key; // "ArrowRight", "ArrowLeft", "ArrowUp", or "ArrowDown"
+
+            let currentColumn = event.target.dataset.column || 0;
+            let currentRow = event.target.dataset.row || 0;
+
+            if (
+                key === "ArrowLeft"
+                || key === "ArrowRight"
+                || key === "ArrowUp"
+                || key === "ArrowDown"
+            ) {
+                switch (key) {
+                    case "ArrowLeft":
+                        currentColumn--;
+                        break;
+                    case "ArrowRight":
+                        currentColumn++;
+                        break;
+                    case "ArrowUp":
+                        currentRow--
+                        break;
+                    case "ArrowDown":
+                        currentRow++;
+                        break;
+                }
+
+                let $newCell = $('[data-column="' + currentColumn + '"][data-row="' + currentRow + '"]');
+                if ($newCell.length) {
+                    $newCell.focus();
+                    $newCell.select();
+                }
+            }
+        });
     }
 }

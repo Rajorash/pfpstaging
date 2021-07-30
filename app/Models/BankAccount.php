@@ -12,10 +12,10 @@ class BankAccount extends Model
 {
     use Allocatable;
 
-    const ACCOUNT_TYPE_REVENUE  = 'revenue';
+    const ACCOUNT_TYPE_REVENUE = 'revenue';
     const ACCOUNT_TYPE_PRETOTAL = 'pretotal';
     const ACCOUNT_TYPE_SALESTAX = 'salestax';
-    const ACCOUNT_TYPE_PREREAL  = 'prereal';
+    const ACCOUNT_TYPE_PREREAL = 'prereal';
     const ACCOUNT_TYPE_POSTREAL = 'postreal';
 
     protected $fillable = ['name', 'type'];
@@ -46,6 +46,7 @@ class BankAccount extends Model
             5 => self::ACCOUNT_TYPE_POSTREAL
         ];
     }
+
     /*
         public function allocations()
         {
@@ -139,24 +140,24 @@ class BankAccount extends Model
 //        $getAllocationsTotalByDate = Cache::get($key);
 
 //        if ($getAllocationsTotalByDate === null) {
-            $getAllocationsTotalByDate = AccountFlow::where('account_id', $this->id)
-                ->with('allocations', function ($query) use ($date, $phaseId) {
-                    return $query->where('allocation_date', $date)
-                        ->where('phase_id', $phaseId);
-                })
-                ->get()
-                ->map(function ($item) {
-                    return collect($item->toArray())
-                        ->only('negative_flow', 'allocations')
-                        ->all();
-                })
-                ->map(function ($a_item) {
-                    return count($a_item['allocations']) > 0
-                        ? $a_item['negative_flow']
-                            ? $a_item['allocations'][0]['amount'] * -1
-                            : $a_item['allocations'][0]['amount']
-                        : 0;
-                })->sum();
+        $getAllocationsTotalByDate = AccountFlow::where('account_id', $this->id)
+            ->with('allocations', function ($query) use ($date, $phaseId) {
+                return $query->where('allocation_date', $date)
+                    ->where('phase_id', $phaseId);
+            })
+            ->get()
+            ->map(function ($item) {
+                return collect($item->toArray())
+                    ->only('negative_flow', 'allocations')
+                    ->all();
+            })
+            ->map(function ($a_item) {
+                return count($a_item['allocations']) > 0
+                    ? $a_item['negative_flow']
+                        ? $a_item['allocations'][0]['amount'] * -1
+                        : $a_item['allocations'][0]['amount']
+                    : 0;
+            })->sum();
 //            Cache::put($key, $getAllocationsTotalByDate);
 //        }
 
