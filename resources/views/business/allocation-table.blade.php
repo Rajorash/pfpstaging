@@ -1,4 +1,4 @@
-<x-ui.table-table class="table-sticky-header table-sticky-column">
+<x-ui.table-table class="table-sticky-header table-sticky-column cursor-fill-data">
     <thead>
     <tr class="border-light_blue divide-x border-b">
         <x-ui.table-th class="text-center" baseClass="min-w-24 w-32 text-dark_gray font-normal bg-white">
@@ -20,6 +20,11 @@
     </thead>
 
     <x-ui.table-tbody>
+        @php
+            $rowIndex = 0;
+            $columnIndex = 0;
+        @endphp
+
         @foreach($tableData as $type => $accounts)
             <tr class="bg-{{strtolower($type)}} text-white uppercase">
                 <x-ui.table-td padding="py-1 pr-2 pl-4" baseClass="text-white whitespace-nowrap sticky-column">
@@ -30,33 +35,53 @@
             </tr>
             @if($type == 'revenue')
                 @foreach($accounts as $id => $data)
+                    @php
+                        $rowIndex = 1;
+                    @endphp
                     <tr class="bg-indigo-100 hover:bg-yellow-100 border-light_blue divide-x">
                         <x-ui.table-td padding="p-1 pl-2"
                                        baseClass="text-dark_gray sticky-column">{{$data['name']}}</x-ui.table-td>
                         {{--                        <td class="border border-gray-300 whitespace-nowrap pl-2">{{$data['name']}}</td>--}}
                         @foreach($period as $date)
+                            @php
+                                $columnIndex++;
+                            @endphp
                             <x-ui.table-td class="text-right" padding="p-0" attr="disabled">
                                 <input
-                                    class="px-2 py-1 text-right bg-transparent border-none w-full"
+                                    class="px-2 py-1 text-right bg-transparent border-none w-full
+                                    focus:bg-gray-100 disabled:opacity-90"
                                     id="account_{{$id}}_{{$date->format('Y-m-d')}}"
-                                    type="text" value="{{number_format($data[$date->format('Y-m-d')], 0, '.', '')}}"
+                                    type="text"
+                                    value="{{number_format($data[$date->format('Y-m-d')], 0, '.', '')}}"
+                                    data-row="{{$rowIndex}}"
+                                    data-column="{{$columnIndex}}"
                                     disabled/>
                             </x-ui.table-td>
                         @endforeach
                     </tr>
                     @foreach($data as $key => $ext_data)
                         @if(is_array($ext_data))
+                            @php
+                                $rowIndex++;
+                                $columnIndex = 0;
+                            @endphp
                             <tr class="bg-white hover:bg-yellow-100 border-light_blue divide-x">
                                 <x-ui.table-td padding="p-1 pr-2 pl-6"
                                                baseClass="text-dark_gray whitespace-nowrap sticky-column">{{$ext_data['name']}}</x-ui.table-td>
-                                {{--                                <td class="border border-gray-300 whitespace-nowrap p-1 pr-2 pl-6">{{$ext_data['name']}}</td>--}}
                                 @foreach($period as $date)
+                                    @php
+                                        $columnIndex++;
+                                    @endphp
                                     <x-ui.table-td class="text-right hover:bg-yellow-100" padding="p-0" attr="disabled">
                                         <input
                                             class="px-2 py-1 w-full text-right bg-transparent border-0
                                             border-transparent outline-none
-                                            focus:outline-none focus:ring-1 focus:shadow-none focus:bg-white"
+                                            focus:outline-none focus:ring-1 focus:shadow-none disabled:opacity-90
+                                            @if(!$business->license->checkLicense) focus:bg-gray-100 @else focus:bg-yellow-50 @endif
+                                                "
                                             id="flow_{{$key}}_{{$date->format('Y-m-d')}}"
+                                            data-row="{{$rowIndex}}"
+                                            data-column="{{$columnIndex}}"
                                             type="text"
                                             value="{{number_format($ext_data[$date->format('Y-m-d')], 0, '.', '')}}"
                                             @if(!$business->license->checkLicense) disabled @endif/>
@@ -68,63 +93,104 @@
                 @endforeach
             @else
                 @foreach($accounts as $id => $data)
+                    @php
+                        $rowIndex++;
+                        $columnIndex = 0;
+                    @endphp
                     <tr class="bg-indigo-100 hover:bg-yellow-100 border-light_blue divide-x">
                         <x-ui.table-td class="text-left whitespace-nowrap sticky-column" padding="p-1 pr-2 pl-4">
                             {{$data['name']}}
                         </x-ui.table-td>
                         @foreach($period as $date)
+                            @php
+                                $columnIndex++;
+                            @endphp
                             <x-ui.table-td class="text-right" padding="p-0">
-                                <input class="px-2 py-1 w-full text-right bg-transparent border-none"
-                                       type="text" value="{{number_format($data[$date->format('Y-m-d')], 0, '.', '')}}"
-                                       disabled/>
+                                <input
+                                    class="px-2 py-1 w-full text-right bg-transparent border-none focus:bg-gray-100 disabled:opacity-90"
+                                    type="text" value="{{number_format($data[$date->format('Y-m-d')], 0, '.', '')}}"
+                                    data-row="{{$rowIndex}}"
+                                    data-column="{{$columnIndex}}"
+                                    disabled/>
                             </x-ui.table-td>
                         @endforeach
                     </tr>
                     @foreach($data as $key => $ext_data)
                         @if(is_array($ext_data))
                             @if($key == 'transfer')
+                                @php
+                                    $rowIndex++;
+                                    $columnIndex = 0;
+                                @endphp
                                 <tr class="bg-white hover:bg-yellow-100 border-light_blue divide-x">
                                     <x-ui.table-td padding="p-1 pr-2 pl-6"
                                                    class="text-left whitespace-nowrap sticky-column">
                                         Transfer In
                                     </x-ui.table-td>
                                     @foreach($period as $date)
+                                        @php
+                                            $columnIndex++;
+                                        @endphp
                                         <x-ui.table-td padding="p-0" class="text-right">
-                                            <input class="px-2 py-1 w-full text-right bg-transparent border-none"
-                                                   type="text"
-                                                   value="{{number_format($ext_data[$date->format('Y-m-d')], 0, '.', '')}}"
-                                                   disabled/>
+                                            <input
+                                                class="px-2 py-1 w-full text-right bg-transparent border-none focus:bg-gray-100 disabled:opacity-90"
+                                                type="text"
+                                                value="{{number_format($ext_data[$date->format('Y-m-d')], 0, '.', '')}}"
+                                                data-row="{{$rowIndex}}"
+                                                data-column="{{$columnIndex}}"
+                                                disabled/>
                                         </x-ui.table-td>
                                     @endforeach
                                 </tr>
                             @elseif($key == 'total')
+                                @php
+                                    $rowIndex++;
+                                    $columnIndex = 0;
+                                @endphp
                                 <tr class="bg-white hover:bg-yellow-100 border-light_blue divide-x">
                                     <x-ui.table-td padding="p-1 pr-2 pl-6"
                                                    class="text-left whitespace-nowrap sticky-column">
                                         Flow Total
                                     </x-ui.table-td>
                                     @foreach($period as $date)
+                                        @php
+                                            $columnIndex++;
+                                        @endphp
                                         <x-ui.table-td padding="p-0" class="text-right">
-                                            <input class="px-2 py-1 w-full text-right bg-transparent border-none"
-                                                   type="text"
-                                                   value="{{number_format($ext_data[$date->format('Y-m-d')], 0, '.', '')}}"
-                                                   disabled/>
+                                            <input
+                                                class="px-2 py-1 w-full text-right bg-transparent border-none focus:bg-gray-100 disabled:opacity-90"
+                                                type="text"
+                                                value="{{number_format($ext_data[$date->format('Y-m-d')], 0, '.', '')}}"
+                                                data-row="{{$rowIndex}}"
+                                                data-column="{{$columnIndex}}"
+                                                disabled/>
                                         </x-ui.table-td>
                                     @endforeach
                                 </tr>
                             @elseif(is_integer($key))
+                                @php
+                                    $rowIndex++;
+                                    $columnIndex = 0;
+                                @endphp
                                 <tr class="bg-indigo-100 hover:bg-yellow-100 border-light_blue divide-x">
                                     <x-ui.table-td padding="p-1 pr-2 pl-4"
                                                    class="text-left whitespace-nowrap sticky-column">
                                         {{$ext_data['name']}}
                                     </x-ui.table-td>
                                     @foreach($period as $date)
+                                        @php
+                                            $columnIndex++;
+                                        @endphp
                                         <x-ui.table-td padding="p-0" class="text-right hover:bg-yellow-200">
                                             <input class="px-2 py-1 w-full text-right bg-transparent border-0
                                                 border-transparent outline-none
-                                                focus:outline-none focus:ring-1 focus:shadow-none focus:bg-white"
+                                                focus:outline-none focus:ring-1 focus:shadow-none disabled:opacity-90
+                                                @if(!$business->license->checkLicense) focus:bg-gray-100 @else focus:bg-yellow-50 @endif
+                                                "
                                                    id="flow_{{$key}}_{{$date->format('Y-m-d')}}"
                                                    type="text"
+                                                   data-row="{{$rowIndex}}"
+                                                   data-column="{{$columnIndex}}"
                                                    value="{{number_format($ext_data[$date->format('Y-m-d')], 0, '.', '')}}"
                                                    @if(!$business->license->checkLicense) disabled @endif/>
                                         </x-ui.table-td>
@@ -142,3 +208,5 @@
         @endforeach
     </x-ui.table-tbody>
 </x-ui.table-table>
+<div style="display: none;" id="php_lastData" data-last_row_index="{{$rowIndex}}"
+     data-last_row_index="{{$columnIndex}}"></div>

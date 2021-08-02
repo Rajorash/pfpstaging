@@ -67,7 +67,7 @@
                     <x-ui.table-td padding="p-0" class="text-right">
                         <input class="percentage-value {{$acc->type}}
                             border-0 border-transparent bg-transparent
-                            focus:outline-none focus:ring-1 focus:shadow-none focus:bg-white
+                            focus:outline-none focus:ring-1 focus:shadow-none focus:bg-yellow-50
                             m-0 outline-none postreal text-right w-full"
                                data-phase-id="{{$phase->id}}"
                                data-account-id="{{$acc->id}}"
@@ -119,3 +119,5 @@
     </tr>
     </tfoot>
 </x-ui.table-table>
+<div style="display: none;" id="php_lastData" data-last_row_index="{{$rowIndex}}"
+     data-last_row_index="{{$columnIndex}}"></div>

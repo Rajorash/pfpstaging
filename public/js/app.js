@@ -4269,6 +4269,10 @@ var calculatorCore = /*#__PURE__*/function () {
     this.timeOutSeconds = 2000; //default delay before send data to server
 
     this.timeout = undefined; //just timeout object
+
+    this.lastRowIndex = null; //last index of row in table
+
+    this.lastColumnIndex = null; //last index of column in table
   }
 
   _createClass(calculatorCore, [{
@@ -4347,12 +4351,23 @@ var calculatorCore = /*#__PURE__*/function () {
           }
 
           $this.renderData(data);
+          $this.readLastIndexes();
         },
         complete: function complete() {
           $this.hideSpinner();
           $this.resetData();
         }
       });
+    }
+  }, {
+    key: "readLastIndexes",
+    value: function readLastIndexes() {
+      var $this = this;
+
+      if ($('#php_lastData') && $('#php_lastData').length) {
+        $this.lastRowIndex = parseInt($('#php_lastData').data('last_row_index'));
+        $this.lastColumnIndex = parseInt($('#php_lastData').data('last_row_index'));
+      }
     }
   }, {
     key: "renderData",
@@ -4375,39 +4390,57 @@ var calculatorCore = /*#__PURE__*/function () {
   }, {
     key: "cursorForTableFill",
     value: function cursorForTableFill() {
+      var $this = this;
       $(document).on('keydown', '.cursor-fill-data', function (event) {
         var key = event.key; // "ArrowRight", "ArrowLeft", "ArrowUp", or "ArrowDown"
 
         var currentColumn = event.target.dataset.column || 0;
         var currentRow = event.target.dataset.row || 0;
 
+        if ($this.debug) {
+          console.log('currentColumn: ' + currentColumn + '; currentRow: ' + currentRow);
+        }
+
         if (key === "ArrowLeft" || key === "ArrowRight" || key === "ArrowUp" || key === "ArrowDown") {
-          switch (key) {
-            case "ArrowLeft":
-              currentColumn--;
-              break;
-
-            case "ArrowRight":
-              currentColumn++;
-              break;
-
-            case "ArrowUp":
-              currentRow--;
-              break;
-
-            case "ArrowDown":
-              currentRow++;
-              break;
-          }
-
-          var $newCell = $('[data-column="' + currentColumn + '"][data-row="' + currentRow + '"]');
-
-          if ($newCell.length) {
-            $newCell.focus();
-            $newCell.select();
-          }
+          $this.searchNextNotDisabledFiled(key, currentRow, currentColumn);
         }
       });
+    }
+  }, {
+    key: "searchNextNotDisabledFiled",
+    value: function searchNextNotDisabledFiled(key, currentRow, currentColumn) {
+      var $this = this;
+
+      if ($this.debug) {
+        console.log(key, currentRow, currentColumn, $this.lastRowIndex, $this.lastColumnIndex);
+      }
+
+      switch (key) {
+        case "ArrowLeft":
+          currentColumn--;
+          break;
+
+        case "ArrowRight":
+          currentColumn++;
+          break;
+
+        case "ArrowUp":
+          currentRow--;
+          break;
+
+        case "ArrowDown":
+          currentRow++;
+          break;
+      }
+
+      var $newCell = $('[data-column="' + currentColumn + '"][data-row="' + currentRow + '"]');
+
+      if ((!$newCell || $newCell.is(':disabled')) && currentRow > 0 && currentRow <= $this.lastRowIndex && currentColumn > 0 && currentColumn <= $this.lastColumnIndex) {
+        $this.searchNextNotDisabledFiled(key, currentRow, currentColumn);
+      } else {
+        $newCell.focus();
+        $newCell.select();
+      }
     }
   }]);
 
