@@ -1,16 +1,22 @@
 <x-ui.table-table class="table-sticky-header table-sticky-column cursor-fill-data">
     <thead>
-    <tr class="border-light_blue divide-x border-b">
-        <x-ui.table-th class="text-center" baseClass="w-24 text-dark_gray font-normal bg-white">
+    <tr class="border-b divide-x border-light_blue">
+        <x-ui.table-th class="text-left" baseClass="w-24 pr-2 pl-4 text-dark_gray font-normal bg-white">
             Account
         </x-ui.table-th>
-
         @forelse($rollout as $phase)
-            <x-ui.table-th baseClass="w-24 font-normal bg-white"
-                           class="text-center min-w-24 {{ Carbon\Carbon::parse($phase->end_date)->isToday() ? 'text-blue': 'text-dark_gray' }} ">
-                <span
-                    class="block text-xs font-normal">{{Carbon\Carbon::parse($phase->end_date)->format('M Y')}}</span>
-                <span class="block text-xl">{{Carbon\Carbon::parse($phase->end_date)->format('j')}}</span>
+            @php $isCurrent = $phase->id == $business->current_phase; @endphp
+            <x-ui.table-th baseClass="w-24 font-normal"
+            class="text-center min-w-24 {{ $isCurrent ? 'bg-blue text-white': 'bg-white text-dark_gray' }}">
+                <span class="block text-xs font-normal {{ $isCurrent ? 'text-indigo-300': 'text-gray-400' }}">
+                    Phase Ending
+                </span>
+                <span class="block text-xs font-normal">
+                    {{$phase->end_date->format('M Y')}}
+                </span>
+                <span class="block text-xl">
+                    {{$phase->end_date->format('j')}}
+                </span>
             </x-ui.table-th>
         @empty
             <x-ui.table-th class="text-center min-w-20" baseClass="w-24 text-dark_gray font-normal">No phases exist...
@@ -90,7 +96,7 @@
                 $rowIndex++;
             @endphp
         @empty
-            <tr class="border-light_blue divide-x bg-white">
+            <tr class="bg-white divide-x border-light_blue">
                 <x-ui.table-td padding="p-1 pr-2 pl-6" class="text-center">N/A</x-ui.table-td>
                 @forelse($rollout as $phase)
                     <x-ui.table-td padding="p-1 pr-2 pl-6" class="text-center">N/A</x-ui.table-td>
@@ -101,9 +107,9 @@
         @endforelse
     </x-ui.table-tbody>
     <tfoot>
-    <tr class="bg-blue border-light_blue divide-x">
+    <tr class="divide-x bg-blue border-light_blue">
         <x-ui.table-td padding="p-2" class="text-center" baseClass="text-white">
-            <span id="processCounter" class="hidden opacity-50 font-normal text-xs"></span>
+            <span id="processCounter" class="hidden text-xs font-normal opacity-50"></span>
         </x-ui.table-td>
         @forelse($rollout as $phase)
             <x-ui.table-td padding="p-2 pr-2 pl-6"

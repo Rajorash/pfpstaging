@@ -282,5 +282,25 @@ class BankAccount extends Model
         return $this->hasOne(TaxRate::class);
     }
 
+    /**
+     * returns true if the account type should be able to be deleted
+     *
+     * @return boolean
+     */
+    public function isDeletable()
+    {
+        $undeletable_types = [
+            self::ACCOUNT_TYPE_REVENUE,
+            self::ACCOUNT_TYPE_SALESTAX,
+        ];
+
+        if( in_array($this->type, $undeletable_types ) )
+        {
+            return false;
+        }
+
+        return true;
+
+    }
 
 }
