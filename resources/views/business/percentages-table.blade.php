@@ -12,10 +12,10 @@
                     Phase Ending
                 </span>
                 <span class="block text-xs font-normal">
-                    {{Carbon\Carbon::parse($phase->end_date)->format('M Y')}}
+                    {{$phase->end_date->format('M Y')}}
                 </span>
                 <span class="block text-xl">
-                    {{Carbon\Carbon::parse($phase->end_date)->format('j')}}
+                    {{$phase->end_date->format('j')}}
                 </span>
             </x-ui.table-th>
         @empty
