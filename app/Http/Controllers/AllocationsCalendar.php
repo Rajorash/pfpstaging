@@ -22,11 +22,17 @@ class AllocationsCalendar extends Controller
     {
         $this->business = Business::where('id', $request->business)->first();
 
+        $maxDate = $this->business->rollout()->max('end_date');
+        $minDate = $this->business->rollout()->min('end_date');
+
+
         $data = [
             'rangeArray' => $this->getRangeArray(),
             'business' => $this->business,
             'startDate' => session()->get('startDate_'.$this->business->id, Carbon::now()->format('Y-m-d')),
             'currentRangeValue' => session()->get('rangeValue_'.$this->business->id, $this->defaultCurrentRangeValue),
+            'minDate' => Carbon::parse($minDate)->format('Y-m-d'),
+            'maxDate' => Carbon::parse($maxDate)->format('Y-m-d'),
         ];
 
         return view('business.allocations-calculator', $data);
@@ -98,6 +104,8 @@ class AllocationsCalendar extends Controller
         $rangeValue = $request->rangeValue;
         $businessId = $request->businessId;
         $business = Business::find($businessId);
+        $phase = $business->getPhaseIdByDate($startDate);
+
         $cells = $request->cells;
         $this->business = Business::where('id', $businessId)->first();
 
@@ -123,6 +131,7 @@ class AllocationsCalendar extends Controller
         $response['html'] = view('business.allocation-table')
             ->with([
                 'tableData' => $tableData,
+                'phase' => $phase,
                 'period' => $period,
                 'startDate' => Carbon::parse($startDate),
                 'range' => $rangeValue,
