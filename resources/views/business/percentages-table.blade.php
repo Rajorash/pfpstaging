@@ -4,16 +4,16 @@
         <x-ui.table-th class="text-left" baseClass="w-24 pr-2 pl-4 text-dark_gray font-normal bg-white">
             Account
         </x-ui.table-th>
-
         @forelse($rollout as $phase)
-            <x-ui.table-th baseClass="w-24 font-normal bg-white"
-            class="text-center min-w-24 {{ Carbon\Carbon::parse($phase->end_date)->isToday() ? 'text-blue': 'text-dark_gray' }} ">
-            <span class="block text-xs font-normal text-gray-400">
-                Phase Ending
-            </span>
-            <span class="block text-xs font-normal">
-                {{Carbon\Carbon::parse($phase->end_date)->format('M Y')}}
-            </span>
+            @php $isCurrent = $phase->id == $business->current_phase; @endphp
+            <x-ui.table-th baseClass="w-24 font-normal"
+            class="text-center min-w-24 {{ $isCurrent ? 'bg-blue text-white': 'bg-white text-dark_gray' }}">
+                <span class="block text-xs font-normal {{ $isCurrent ? 'text-indigo-300': 'text-gray-400' }}">
+                    Phase Ending
+                </span>
+                <span class="block text-xs font-normal">
+                    {{Carbon\Carbon::parse($phase->end_date)->format('M Y')}}
+                </span>
                 <span class="block text-xl">
                     {{Carbon\Carbon::parse($phase->end_date)->format('j')}}
                 </span>

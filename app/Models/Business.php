@@ -78,6 +78,11 @@ class Business extends Model
         return $phase->id;
     }
 
+    public function getCurrentPhaseAttribute()
+    {
+        return $this->getPhaseIdByDate( today() );
+    }
+
     /**
      * Get id of the FIRST account of the given type for the current business
      *
