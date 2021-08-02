@@ -87,9 +87,12 @@
                                     @endif
                                     <span>
                                         {{$business->license->account_number }}
-                                        <a href="{{route('licenses.business', ['business' => $business])}}">
+                                        <a class="text-indigo-500 hover:text-indigo-700"
+                                           href="{{route('licenses.business', ['business' => $business])}}"
+                                           >
                                             <x-icons.external-link class="inline w-auto h-5 mr-2 align-text-bottom" />
-                                        </a></span>
+                                        </a>
+                                    </span>
                                 </span>
                             </span>
                         @else
