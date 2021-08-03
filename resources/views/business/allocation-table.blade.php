@@ -75,8 +75,12 @@
                         @foreach($period as $date)
                             <x-ui.table-td class="text-right" padding="p-0">
                                 <input class="px-2 py-1 w-full text-right bg-transparent border-none"
-                                       type="text" value="{{number_format($data[$date->format('Y-m-d')], 0, '.', '')}}"
-                                       disabled/>
+                                       type="text"
+                                       id="account_{{$id}}_{{$date->format('Y-m-d')}}"
+                                       value="{{is_array($data[$date->format('Y-m-d')])
+                                                ? number_format($data[$date->format('Y-m-d')][0], 0, '.', '')
+                                                : number_format($data[$date->format('Y-m-d')], 0, '.', '')}}"
+                                       @if(!$business->license->checkLicense) disabled @endif/>
                             </x-ui.table-td>
                         @endforeach
                     </tr>
