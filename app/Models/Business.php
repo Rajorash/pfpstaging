@@ -75,7 +75,7 @@ class Business extends Model
             Cache::put($key, $phase);
         }
 
-        return $phase->id;
+        return $phase ? $phase->id : null;
     }
 
     public function getCurrentPhaseAttribute()
