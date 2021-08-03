@@ -93,7 +93,7 @@ class AllocationCalculator extends Component
 
     public function mapBusinessAccounts()
     {
-        $current_phase = $this->business->getPhaseIdByDate(Carbon::tomorrow());
+        $current_phase = $this->business->current_phase;
 
         return $this->business->accounts->mapToGroups(
             function ($account) use ($current_phase) {
