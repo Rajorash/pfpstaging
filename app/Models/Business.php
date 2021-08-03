@@ -65,6 +65,12 @@ class Business extends Model
         return $allocations;
     }
 
+    /**
+     * return the active phase by a given date
+     *
+     * @param $date
+     * @return null|int $phase_id
+     */
     public function getPhaseIdByDate($date)
     {
         $key = 'getPhaseIdByDate_'.$date;
@@ -72,12 +78,30 @@ class Business extends Model
 
         if ($phase === null) {
             $phase = $this->rollout()->where('end_date', '>=', $date)->first();
+
+            // if the final phase has already expired, default back to phase
+            // with the latest end date
+            if (empty($phase)) {
+                $phase = $this->rollout()->sortBy('end_date')->last();
+            }
+
             Cache::put($key, $phase);
         }
 
         return $phase ? $phase->id : null;
     }
 
+    /**
+     * Utility function to get current phase, uses getPhaseIdByDate() with
+     * parameter of todays date
+     *
+     * Can be called as a property on a Business model instance
+     *
+     * Usage: Business::first()->current_phase
+     * Output: 2 (example business phase id)
+     *
+     * @return null|int $phase_id
+     */
     public function getCurrentPhaseAttribute()
     {
         return $this->getPhaseIdByDate( today() );
