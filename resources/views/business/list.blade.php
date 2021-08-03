@@ -87,7 +87,7 @@
                                     @endif
                                     <span>
                                         {{$business->license->account_number }}
-                                        <a class="text-indigo-500 hover:text-indigo-700"
+                                        <a class="text-blue hover:text-dark_gray2"
                                            href="{{route('licenses.business', ['business' => $business])}}"
                                            >
                                             <x-icons.external-link class="inline w-auto h-5 mr-2 align-text-bottom" />
@@ -143,8 +143,8 @@
                         </x-ui.table-td>
                         {{-- Data Entry column --}}
                         <x-ui.table-td>
-                            <x-ui.button-small href="{{route('allocations-calendar', ['business' => $business])}}">Data
-                                Entry
+                            <x-ui.button-small class="whitespace-nowrap" href="{{route('allocations-calendar', ['business' => $business])}}">
+                                Data Entry
                             </x-ui.button-small>
                         </x-ui.table-td>
                         {{-- Forecast column --}}
