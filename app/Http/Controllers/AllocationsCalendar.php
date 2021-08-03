@@ -31,8 +31,8 @@ class AllocationsCalendar extends Controller
             'business' => $this->business,
             'startDate' => session()->get('startDate_'.$this->business->id, Carbon::now()->format('Y-m-d')),
             'currentRangeValue' => session()->get('rangeValue_'.$this->business->id, $this->defaultCurrentRangeValue),
-            'minDate' => Carbon::parse($minDate)->format('Y-m-d'),
-            'maxDate' => Carbon::parse($maxDate)->format('Y-m-d'),
+            'minDate' => Carbon::parse($minDate)->subMonths(3)->format('Y-m-d'),
+            'maxDate' => Carbon::parse($maxDate)->subDays(31)->format('Y-m-d'),
         ];
 
         return view('business.allocations-calculator', $data);
