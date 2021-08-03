@@ -44,7 +44,7 @@ class Business extends Model
      *
      * If the license is not set, then returns null.
      *
-     * @return User::class || null;
+     * @return User|null;
      */
     public function getAdvisorAttribute() {
         return optional($this->license)->advisor;
