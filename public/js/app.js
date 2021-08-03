@@ -4321,7 +4321,6 @@ var calculatorCore = /*#__PURE__*/function () {
     key: "loadData",
     value: function loadData(event) {
       var $this = this;
-      console.log('found');
       $this.collectData(event);
       clearTimeout($this.timedOut);
       $this.timedOut = setTimeout(function () {
