@@ -48,7 +48,7 @@
                 @foreach ($businesses as $business)
                     <tr>
                         {{-- Business Column --}}
-                        <x-ui.table-td class="whitespace-nowrap" padding="pl-12 pr-2 py-4">
+                        <x-ui.table-td padding="pl-12 pr-2 py-4">
                             {{ $business->name }}
                         </x-ui.table-td>
                         {{-- Owner Column --}}
