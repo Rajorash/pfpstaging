@@ -64,7 +64,6 @@ export class calculatorCore {
 
     loadData(event) {
         let $this = this;
-
         $this.collectData(event);
 
         clearTimeout($this.timedOut);

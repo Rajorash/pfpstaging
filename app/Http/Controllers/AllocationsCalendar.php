@@ -51,12 +51,12 @@ class AllocationsCalendar extends Controller
     {
         if (is_array($cells) && count($cells) > 0) {
             foreach ($cells as $singleCell) {
-                preg_match('/\w+_(\d+)_(\d{4}-\d{2}-\d{2})/', $singleCell['cellId'], $matches);
-                $allocation_id = (integer) $matches[1];
-                $date = $matches[2];
+                preg_match('/(\w+)_(\d+)_(\d{4}-\d{2}-\d{2})/', $singleCell['cellId'], $matches);
+                $allocation_id = (integer) $matches[2];
+                $date = $matches[3];
                 $value = (float) $singleCell['cellValue'];
 
-                $this->storeSingle('flow', $allocation_id, $value, $date);
+                $this->storeSingle($matches[1], $allocation_id, $value, $date, ($matches[1]=='account'));
             }
         }
 
@@ -68,7 +68,7 @@ class AllocationsCalendar extends Controller
      *
      * @return void
      */
-    public function storeSingle($type, $allocation_id, $amount, $date)
+    public function storeSingle($type, $allocation_id, $amount, $date, $manual_entry = false)
     {
         /*        $this->validate([
                     'amount' => 'numeric|nullable'
@@ -88,6 +88,9 @@ class AllocationsCalendar extends Controller
         if ($type == 'flow') {
             $account = $this->getFlowAccount($allocation_id);
         } else {
+            if ($manual_entry) {
+                array_push($values, $manual_entry);
+            }
             $account = $this->getBackAccount($allocation_id);
         }
         $account->allocate(...$values);
@@ -231,6 +234,8 @@ class AllocationsCalendar extends Controller
                                     $flow_total = $value['negative']
                                         ? $flow_total - $flows[$id][$key][$date_ymd]
                                         : $flow_total + $flows[$id][$key][$date_ymd];
+                                } elseif ($key == $date->format('Y-m-d 00:00:00')) {
+                                    $response[BankAccount::ACCOUNT_TYPE_SALESTAX][$id]['manual'][$date_ymd] = $value[1];
                                 }
                             }
 
@@ -246,7 +251,9 @@ class AllocationsCalendar extends Controller
                             $previousDate = Carbon::parse($date)->subDays(1)->format('Y-m-d');
 
                             if (array_key_exists($previousDate, $response[BankAccount::ACCOUNT_TYPE_SALESTAX][$id])) {
-                                $actualValue += $response[BankAccount::ACCOUNT_TYPE_SALESTAX][$id][$previousDate];
+                                $actualValue += is_array($response[BankAccount::ACCOUNT_TYPE_SALESTAX][$id][$previousDate])
+                                    ? $response[BankAccount::ACCOUNT_TYPE_SALESTAX][$id][$previousDate][0]
+                                    : $response[BankAccount::ACCOUNT_TYPE_SALESTAX][$id][$previousDate];
                             } else {
                                 $previousNonZero = $this->getPreviousNonZeroValue($id, $dateFrom);
                                 if (is_numeric($previousNonZero)) {
@@ -254,7 +261,13 @@ class AllocationsCalendar extends Controller
                                 }
                             }
 
-                            if ($response[BankAccount::ACCOUNT_TYPE_SALESTAX][$id][$date_ymd] != $actualValue) {
+                            $stored_value = is_array($response[BankAccount::ACCOUNT_TYPE_SALESTAX][$id][$date_ymd])
+                                ? $response[BankAccount::ACCOUNT_TYPE_SALESTAX][$id][$date_ymd][0]
+                                : $response[BankAccount::ACCOUNT_TYPE_SALESTAX][$id][$date_ymd];
+
+                            if ($stored_value != $actualValue &&
+                                ! $response[BankAccount::ACCOUNT_TYPE_SALESTAX][$id]['manual'][$date_ymd]
+                            ) {
                                 $response[BankAccount::ACCOUNT_TYPE_SALESTAX][$id][$date_ymd] = $actualValue;
                                 $this->storeSingle('account', $id, $actualValue, $date_ymd);
                             }
@@ -279,6 +292,8 @@ class AllocationsCalendar extends Controller
                                     $flow_total = $value['negative']
                                         ? $flow_total - $flows[$id][$key][$date_ymd]
                                         : $flow_total + $flows[$id][$key][$date_ymd];
+                                } elseif ($key == $date->format('Y-m-d 00:00:00')) {
+                                    $response[BankAccount::ACCOUNT_TYPE_PRETOTAL][$id]['manual'][$date_ymd] = $value[1];
                                 }
                             }
                             $response[BankAccount::ACCOUNT_TYPE_PRETOTAL][$id]['total'][$date_ymd] = $flow_total;
@@ -290,14 +305,23 @@ class AllocationsCalendar extends Controller
                                 $response[BankAccount::ACCOUNT_TYPE_PRETOTAL][$id]['transfer'][$date_ymd];
                             $previousDate = Carbon::parse($date)->subDays(1)->format('Y-m-d');
                             if (array_key_exists($previousDate, $response[BankAccount::ACCOUNT_TYPE_PRETOTAL][$id])) {
-                                $actualValue += $response[BankAccount::ACCOUNT_TYPE_PRETOTAL][$id][$previousDate];
+                                $actualValue += is_array($response[BankAccount::ACCOUNT_TYPE_PRETOTAL][$id][$previousDate])
+                                    ? $response[BankAccount::ACCOUNT_TYPE_PRETOTAL][$id][$previousDate][0]
+                                    : $response[BankAccount::ACCOUNT_TYPE_PRETOTAL][$id][$previousDate];
                             } else {
                                 $previousNonZero = $this->getPreviousNonZeroValue($id, $dateFrom);
                                 if (is_numeric($previousNonZero)) {
                                     $actualValue += $previousNonZero;
                                 }
                             }
-                            if ($response[BankAccount::ACCOUNT_TYPE_PRETOTAL][$id][$date_ymd] != $actualValue) {
+
+                            $stored_value = is_array($response[BankAccount::ACCOUNT_TYPE_PRETOTAL][$id][$date_ymd])
+                                ? $response[BankAccount::ACCOUNT_TYPE_PRETOTAL][$id][$date_ymd][0]
+                                : $response[BankAccount::ACCOUNT_TYPE_PRETOTAL][$id][$date_ymd];
+
+                            if ($stored_value != $actualValue &&
+                                ! $response[BankAccount::ACCOUNT_TYPE_PRETOTAL][$id]['manual'][$date_ymd]
+                            ) {
                                 $response[BankAccount::ACCOUNT_TYPE_PRETOTAL][$id][$date_ymd] = $actualValue;
                                 $this->storeSingle('account', $id, $actualValue, $date_ymd);
                             }
@@ -321,6 +345,8 @@ class AllocationsCalendar extends Controller
                                     $flow_total = $value['negative']
                                         ? $flow_total - $flows[$id][$key][$date_ymd]
                                         : $flow_total + $flows[$id][$key][$date_ymd];
+                                } elseif ($key == $date->format('Y-m-d 00:00:00')) {
+                                    $response[BankAccount::ACCOUNT_TYPE_PREREAL][$id]['manual'][$date_ymd] = $value[1];
                                 }
                             }
                             $response[BankAccount::ACCOUNT_TYPE_PREREAL][$id]['total'][$date_ymd] = $flow_total;
@@ -332,14 +358,23 @@ class AllocationsCalendar extends Controller
                                 $response[BankAccount::ACCOUNT_TYPE_PREREAL][$id]['transfer'][$date_ymd];
                             $previousDate = Carbon::parse($date->format('Y-m-d'))->subDays(1)->format('Y-m-d');
                             if (array_key_exists($previousDate, $response[BankAccount::ACCOUNT_TYPE_PREREAL][$id])) {
-                                $actualValue += $response[BankAccount::ACCOUNT_TYPE_PREREAL][$id][$previousDate];
+                                $actualValue += is_array($response[BankAccount::ACCOUNT_TYPE_PREREAL][$id][$previousDate])
+                                    ? $response[BankAccount::ACCOUNT_TYPE_PREREAL][$id][$previousDate][0]
+                                    : $response[BankAccount::ACCOUNT_TYPE_PREREAL][$id][$previousDate];
                             } else {
                                 $previousNonZero = $this->getPreviousNonZeroValue($id, $dateFrom);
                                 if (is_numeric($previousNonZero)) {
                                     $actualValue += $previousNonZero;
                                 }
                             }
-                            if ($response[BankAccount::ACCOUNT_TYPE_PREREAL][$id][$date_ymd] != $actualValue) {
+
+                            $stored_value = is_array($response[BankAccount::ACCOUNT_TYPE_PREREAL][$id][$date_ymd])
+                                ? $response[BankAccount::ACCOUNT_TYPE_PREREAL][$id][$date_ymd][0]
+                                : $response[BankAccount::ACCOUNT_TYPE_PREREAL][$id][$date_ymd];
+
+                            if ($stored_value != $actualValue &&
+                                ! $response[BankAccount::ACCOUNT_TYPE_PREREAL][$id]['manual'][$date_ymd]
+                            ) {
                                 $response[BankAccount::ACCOUNT_TYPE_PREREAL][$id][$date_ymd] = $actualValue;
                                 $this->storeSingle('account', $id, $actualValue, $date->format('Y-m-d'));
                             }
@@ -368,6 +403,8 @@ class AllocationsCalendar extends Controller
                                     $flow_total = $value['negative']
                                         ? $flow_total - $flows[$id][$key][$date_ymd]
                                         : $flow_total + $flows[$id][$key][$date_ymd];
+                                } elseif ($key == $date->format('Y-m-d 00:00:00')) {
+                                    $response[BankAccount::ACCOUNT_TYPE_POSTREAL][$id]['manual'][$date_ymd] = $value[1];
                                 }
                             }
                             $response[BankAccount::ACCOUNT_TYPE_POSTREAL][$id]['total'][$date_ymd] = $flow_total;
@@ -379,14 +416,23 @@ class AllocationsCalendar extends Controller
                                 $response[BankAccount::ACCOUNT_TYPE_POSTREAL][$id]['transfer'][$date_ymd];
                             $previousDate = Carbon::parse($date->format('Y-m-d'))->subDays(1)->format('Y-m-d');
                             if (array_key_exists($previousDate, $response[BankAccount::ACCOUNT_TYPE_POSTREAL][$id])) {
-                                $actualValue += $response[BankAccount::ACCOUNT_TYPE_POSTREAL][$id][$previousDate];
+                                $actualValue += is_array($response[BankAccount::ACCOUNT_TYPE_POSTREAL][$id][$previousDate])
+                                    ? $response[BankAccount::ACCOUNT_TYPE_POSTREAL][$id][$previousDate][0]
+                                    : $response[BankAccount::ACCOUNT_TYPE_POSTREAL][$id][$previousDate];
                             } else {
                                 $previousNonZero = $this->getPreviousNonZeroValue($id, $dateFrom);
                                 if (is_numeric($previousNonZero)) {
                                     $actualValue += $previousNonZero;
                                 }
                             }
-                            if ($response[BankAccount::ACCOUNT_TYPE_POSTREAL][$id][$date_ymd] != $actualValue) {
+
+                            $stored_value = is_array($response[BankAccount::ACCOUNT_TYPE_POSTREAL][$id][$date_ymd])
+                                ? $response[BankAccount::ACCOUNT_TYPE_POSTREAL][$id][$date_ymd][0]
+                                : $response[BankAccount::ACCOUNT_TYPE_POSTREAL][$id][$date_ymd];
+
+                            if ($stored_value != $actualValue &&
+                                ! $response[BankAccount::ACCOUNT_TYPE_POSTREAL][$id]['manual'][$date_ymd]
+                            ) {
                                 $response[BankAccount::ACCOUNT_TYPE_POSTREAL][$id][$date_ymd] = $actualValue;
                                 $this->storeSingle('account', $id, $actualValue, $date->format('Y-m-d'));
                             }
@@ -421,9 +467,11 @@ class AllocationsCalendar extends Controller
                     ];
                 }
 
+                $amounts = $item->allocations->pluck('amount', 'allocation_date')->toArray();
+                $manuals = $item->allocations->pluck('manual_entry', 'allocation_date')->toArray();
+
                 $item->account_values = [
-                    $item->id => $item->allocations->pluck('amount', 'allocation_date')->toArray()
-                        + $flows
+                    $item->id => array_merge_recursive($amounts, $manuals) + $flows
                 ];
                 return $item;
             })->all();

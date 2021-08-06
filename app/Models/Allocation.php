@@ -20,7 +20,7 @@ class Allocation extends Model
      *
      * @var array
      */
-    protected $fillable = ['phase_id', 'allocatable_id', 'allocatable_type', 'amount', 'allocation_date'];
+    protected $fillable = ['phase_id', 'allocatable_id', 'allocatable_type', 'amount', 'allocation_date', 'manual_entry'];
 
     public function allocatable()
     {

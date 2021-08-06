@@ -41,7 +41,7 @@ trait Allocatable
         [
             'phase_id' => $phase_id,
             'amount' => $amount,
-            'manual_entry' => $manual_entry
+            'manual_entry' => ($manual_entry ? 1 : null)
         ]);
 
         return $allocation;
