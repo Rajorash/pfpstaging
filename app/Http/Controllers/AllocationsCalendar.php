@@ -218,9 +218,7 @@ class AllocationsCalendar extends Controller
                             }
                             break;
                         case BankAccount::ACCOUNT_TYPE_SALESTAX: // Tax amt
-                            $response[BankAccount::ACCOUNT_TYPE_SALESTAX][$id]['transfer'][$date_ymd] = ($income > 0)
-                                ? round($income - $income / ($percents[$type][$id] / 100 + 1), 4)
-                                : 0;
+                            $response[BankAccount::ACCOUNT_TYPE_SALESTAX][$id]['transfer'][$date_ymd] =  $this->calculateSalestaxTransfer($id, $income, $percents);
 
                             $flow_total = 0;
 
@@ -266,7 +264,7 @@ class AllocationsCalendar extends Controller
                                 : $response[BankAccount::ACCOUNT_TYPE_SALESTAX][$id][$date_ymd];
 
                             if ($stored_value != $actualValue &&
-                                ! $response[BankAccount::ACCOUNT_TYPE_SALESTAX][$id]['manual'][$date_ymd]
+                                ! $this->hasManualEntry(BankAccount::ACCOUNT_TYPE_SALESTAX, $id, $date_ymd)
                             ) {
                                 $response[BankAccount::ACCOUNT_TYPE_SALESTAX][$id][$date_ymd] = $actualValue;
                                 $this->storeSingle('account', $id, $actualValue, $date_ymd);
@@ -373,7 +371,7 @@ class AllocationsCalendar extends Controller
                                 : $response[BankAccount::ACCOUNT_TYPE_PREREAL][$id][$date_ymd];
 
                             if ($stored_value != $actualValue &&
-                                ! $response[BankAccount::ACCOUNT_TYPE_PREREAL][$id]['manual'][$date_ymd]
+                                ! $this->hasManualEntry(BankAccount::ACCOUNT_TYPE_PREREAL, $id, $date_ymd)
                             ) {
                                 $response[BankAccount::ACCOUNT_TYPE_PREREAL][$id][$date_ymd] = $actualValue;
                                 $this->storeSingle('account', $id, $actualValue, $date->format('Y-m-d'));
@@ -431,7 +429,7 @@ class AllocationsCalendar extends Controller
                                 : $response[BankAccount::ACCOUNT_TYPE_POSTREAL][$id][$date_ymd];
 
                             if ($stored_value != $actualValue &&
-                                ! $response[BankAccount::ACCOUNT_TYPE_POSTREAL][$id]['manual'][$date_ymd]
+                                ! $this->hasManualEntry(BankAccount::ACCOUNT_TYPE_POSTREAL, $id, $date_ymd)
                             ) {
                                 $response[BankAccount::ACCOUNT_TYPE_POSTREAL][$id][$date_ymd] = $actualValue;
                                 $this->storeSingle('account', $id, $actualValue, $date->format('Y-m-d'));
@@ -443,6 +441,44 @@ class AllocationsCalendar extends Controller
         }
 
         return $response;
+    }
+
+    /**
+     * Calculate the amount to transfer for a salestax account based
+     * on the income and percentage value
+     *
+     * @param [type] $id
+     * @param [type] $income
+     * @param [type] $percents
+     * @return int|float
+     */
+    private function calculateSalestaxTransfer($id, $income, $percents)
+    {
+        $transfer_amount = 0;
+
+        if ($income > 0) {
+            $transfer_amount = round($income - $income / ($percents[BankAccount::ACCOUNT_TYPE_SALESTAX][$id] / 100 + 1), 4);
+        }
+
+        return $transfer_amount;
+    }
+
+    /**
+     * Returns true if a manual entry exists for the given account
+     * type, id and date
+     *
+     * @param [type] $type
+     * @param [type] $id
+     * @param [type] $date_ymd
+     * @return boolean
+     */
+    private function hasManualEntry($type, $id, $date_ymd)
+    {
+        if( isset($response[$type][$id]['manual'][$date_ymd]) ) {
+            return true;
+        }
+
+        return false;
     }
 
     private function getRawData($businessId, $dateFrom, $dateTo)
