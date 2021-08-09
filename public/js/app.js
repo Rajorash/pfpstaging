@@ -4062,6 +4062,10 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
+function _get(target, property, receiver) { if (typeof Reflect !== "undefined" && Reflect.get) { _get = Reflect.get; } else { _get = function _get(target, property, receiver) { var base = _superPropBase(target, property); if (!base) return; var desc = Object.getOwnPropertyDescriptor(base, property); if (desc.get) { return desc.get.call(receiver); } return desc.value; }; } return _get(target, property, receiver || target); }
+
+function _superPropBase(object, property) { while (!Object.prototype.hasOwnProperty.call(object, property)) { object = _getPrototypeOf(object); if (object === null) break; } return object; }
+
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
@@ -4097,6 +4101,7 @@ $(function () {
       _this = _super.call(this);
       _this.ajaxUrl = window.allocationsControllerUpdate;
       _this.elementTablePlace = $('#allocationTablePlace');
+      _this.autoSubmitDataDelay = $.cookie('allocation_autoSubmitDataDelay') !== undefined ? parseInt($.cookie('allocation_autoSubmitDataDelay')) : _this.autoSubmitDataDelayDefault;
       return _this;
     }
 
@@ -4104,8 +4109,12 @@ $(function () {
       key: "events",
       value: function events() {
         var $this = this;
+
+        _get(_getPrototypeOf(AllocationCalculator.prototype), "events", this).call(this);
+
         $(document).on('change', '#startDate, #currentRangeValue, #allocationTablePlace input', function (event) {
           $this.loadData(event);
+          $this.progressBar();
         });
       }
     }, {
@@ -4138,6 +4147,14 @@ $(function () {
           console.log('collectData', $this.data);
         }
       }
+    }, {
+      key: "updateSubmitDataDelay",
+      value: function updateSubmitDataDelay() {
+        var $this = this;
+        $.cookie('allocation_autoSubmitDataDelay', $this.autoSubmitDataDelay, {
+          expires: 14
+        });
+      }
     }]);
 
     return AllocationCalculator;
@@ -4163,6 +4180,8 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 
 __webpack_require__(/*! alpinejs */ "./node_modules/alpinejs/dist/alpine.js");
+
+__webpack_require__(/*! jquery.cookie */ "./node_modules/jquery.cookie/jquery.cookie.js");
 
 __webpack_require__(/*! arrow-table */ "./node_modules/arrow-table/src/arrow-table.js"); // require('./allocations');
 // require('./percentages');
@@ -4273,6 +4292,13 @@ var calculatorCore = /*#__PURE__*/function () {
     this.lastRowIndex = null; //last index of row in table
 
     this.lastColumnIndex = null; //last index of column in table
+
+    this.delayProgressId = 'delay_progress';
+    this.delayProgressInterval = undefined;
+    this.delayProgressTimeIntervalMiliseconds = 20;
+    this.autoSubmitDataDelayId = 'delay_submit_data';
+    this.autoSubmitDataDelayDefault = 2;
+    this.autoSubmitDataDelay = this.autoSubmitDataDelayDefault;
   }
 
   _createClass(calculatorCore, [{
@@ -4283,6 +4309,16 @@ var calculatorCore = /*#__PURE__*/function () {
       $this.events();
       $this.firstLoadData();
       $this.cursorForTableFill();
+    }
+  }, {
+    key: "events",
+    value: function events() {
+      var $this = this;
+      $(document).on('change', '#' + $this.autoSubmitDataDelayId, function (event) {
+        $this.autoSubmitDataDelay = $(this).val();
+        $this.updateSubmitDataDelay();
+        $this.timeOutSeconds = 1000 * parseInt($this.autoSubmitDataDelay);
+      });
     }
   }, {
     key: "resetData",
@@ -4328,11 +4364,23 @@ var calculatorCore = /*#__PURE__*/function () {
       }, $this.timeOutSeconds);
     }
   }, {
+    key: "progressBar",
+    value: function progressBar() {
+      var $this = this;
+      clearInterval($this.delayProgressInterval);
+      $('#' + $this.delayProgressId).width($('#' + $this.delayProgressId).parent().width());
+      $this.delayProgressInterval = setInterval(function () {
+        var width = $('#' + $this.delayProgressId).width() - $('#' + $this.delayProgressId).parent().width() / $this.timeOutSeconds * $this.delayProgressTimeIntervalMiliseconds;
+        $('#' + $this.delayProgressId).width(width);
+      }, $this.delayProgressTimeIntervalMiliseconds);
+    }
+  }, {
     key: "firstLoadData",
     value: function firstLoadData() {
       var $this = this;
       $this.collectData();
       $this.ajaxLoadWorker();
+      $this.autoSubmitDataLoadData();
     }
   }, {
     key: "ajaxLoadWorker",
@@ -4441,6 +4489,12 @@ var calculatorCore = /*#__PURE__*/function () {
         $newCell.focus();
         $newCell.select();
       }
+    }
+  }, {
+    key: "autoSubmitDataLoadData",
+    value: function autoSubmitDataLoadData() {
+      var $this = this;
+      $('#' + $this.autoSubmitDataDelayId).val($this.autoSubmitDataDelay > 0 ? $this.autoSubmitDataDelay : 2);
     }
   }]);
 
@@ -5108,6 +5162,10 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
+function _get(target, property, receiver) { if (typeof Reflect !== "undefined" && Reflect.get) { _get = Reflect.get; } else { _get = function _get(target, property, receiver) { var base = _superPropBase(target, property); if (!base) return; var desc = Object.getOwnPropertyDescriptor(base, property); if (desc.get) { return desc.get.call(receiver); } return desc.value; }; } return _get(target, property, receiver || target); }
+
+function _superPropBase(object, property) { while (!Object.prototype.hasOwnProperty.call(object, property)) { object = _getPrototypeOf(object); if (object === null) break; } return object; }
+
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
@@ -5143,6 +5201,7 @@ $(function () {
       _this = _super.call(this);
       _this.ajaxUrl = window.percentagesControllerUpdate;
       _this.elementTablePlace = $('#percentagesTablePlace');
+      _this.autoSubmitDataDelay = $.cookie('percentage_autoSubmitDataDelay') !== undefined ? parseInt($.cookie('percentage_autoSubmitDataDelay')) : _this.autoSubmitDataDelayDefault;
       return _this;
     }
 
@@ -5150,8 +5209,12 @@ $(function () {
       key: "events",
       value: function events() {
         var $this = this;
+
+        _get(_getPrototypeOf(PercentagesCalculator.prototype), "events", this).call(this);
+
         $(document).on('change', 'input.percentage-value', function (event) {
           $this.loadData(event);
+          $this.progressBar();
         });
       }
     }, {
@@ -5180,6 +5243,22 @@ $(function () {
         if ($this.debug) {
           console.log('collectData', $this.data);
         }
+      }
+    }, {
+      key: "updateSubmitDataSwitcher",
+      value: function updateSubmitDataSwitcher() {
+        var $this = this;
+        $.cookie('percentage_autoSubmitDataSwitcher', $this.autoSubmitDataSwitcher, {
+          expires: 14
+        });
+      }
+    }, {
+      key: "updateSubmitDataDelay",
+      value: function updateSubmitDataDelay() {
+        var $this = this;
+        $.cookie('percentage_autoSubmitDataDelay', $this.autoSubmitDataDelay, {
+          expires: 14
+        });
       }
     }]);
 
@@ -5297,8 +5376,6 @@ $(function () {
       _this = _super.call(this);
       _this.ajaxUrl = window.projectionsControllerUpdate;
       _this.elementTablePlace = $('#projectionsTablePlace');
-      _this.timeOutSeconds = 0; //set delay to 0 miliseconds
-
       return _this;
     }
 
@@ -5332,6 +5409,130 @@ $(function () {
     ProjectionsCalculatorClass.init();
   }
 });
+
+/***/ }),
+
+/***/ "./node_modules/jquery.cookie/jquery.cookie.js":
+/*!*****************************************************!*\
+  !*** ./node_modules/jquery.cookie/jquery.cookie.js ***!
+  \*****************************************************/
+/***/ ((module, exports, __webpack_require__) => {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
+ * jQuery Cookie Plugin v1.4.1
+ * https://github.com/carhartl/jquery-cookie
+ *
+ * Copyright 2013 Klaus Hartl
+ * Released under the MIT license
+ */
+(function (factory) {
+	if (true) {
+		// AMD
+		!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js")], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+		__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+		(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+		__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	} else {}
+}(function ($) {
+
+	var pluses = /\+/g;
+
+	function encode(s) {
+		return config.raw ? s : encodeURIComponent(s);
+	}
+
+	function decode(s) {
+		return config.raw ? s : decodeURIComponent(s);
+	}
+
+	function stringifyCookieValue(value) {
+		return encode(config.json ? JSON.stringify(value) : String(value));
+	}
+
+	function parseCookieValue(s) {
+		if (s.indexOf('"') === 0) {
+			// This is a quoted cookie as according to RFC2068, unescape...
+			s = s.slice(1, -1).replace(/\\"/g, '"').replace(/\\\\/g, '\\');
+		}
+
+		try {
+			// Replace server-side written pluses with spaces.
+			// If we can't decode the cookie, ignore it, it's unusable.
+			// If we can't parse the cookie, ignore it, it's unusable.
+			s = decodeURIComponent(s.replace(pluses, ' '));
+			return config.json ? JSON.parse(s) : s;
+		} catch(e) {}
+	}
+
+	function read(s, converter) {
+		var value = config.raw ? s : parseCookieValue(s);
+		return $.isFunction(converter) ? converter(value) : value;
+	}
+
+	var config = $.cookie = function (key, value, options) {
+
+		// Write
+
+		if (value !== undefined && !$.isFunction(value)) {
+			options = $.extend({}, config.defaults, options);
+
+			if (typeof options.expires === 'number') {
+				var days = options.expires, t = options.expires = new Date();
+				t.setTime(+t + days * 864e+5);
+			}
+
+			return (document.cookie = [
+				encode(key), '=', stringifyCookieValue(value),
+				options.expires ? '; expires=' + options.expires.toUTCString() : '', // use expires attribute, max-age is not supported by IE
+				options.path    ? '; path=' + options.path : '',
+				options.domain  ? '; domain=' + options.domain : '',
+				options.secure  ? '; secure' : ''
+			].join(''));
+		}
+
+		// Read
+
+		var result = key ? undefined : {};
+
+		// To prevent the for loop in the first place assign an empty array
+		// in case there are no cookies at all. Also prevents odd result when
+		// calling $.cookie().
+		var cookies = document.cookie ? document.cookie.split('; ') : [];
+
+		for (var i = 0, l = cookies.length; i < l; i++) {
+			var parts = cookies[i].split('=');
+			var name = decode(parts.shift());
+			var cookie = parts.join('=');
+
+			if (key && key === name) {
+				// If second argument (value) is a function it's a converter...
+				result = read(cookie, value);
+				break;
+			}
+
+			// Prevent storing a cookie that we couldn't decode.
+			if (!key && (cookie = read(cookie)) !== undefined) {
+				result[name] = cookie;
+			}
+		}
+
+		return result;
+	};
+
+	config.defaults = {};
+
+	$.removeCookie = function (key, options) {
+		if ($.cookie(key) === undefined) {
+			return false;
+		}
+
+		// Must not alter options, thus extending a fresh object...
+		$.cookie(key, '', $.extend({}, options, { expires: -1 }));
+		return !$.cookie(key);
+	};
+
+}));
+
 
 /***/ }),
 

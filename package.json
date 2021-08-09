@@ -38,6 +38,7 @@
     "dependencies": {
         "arrow-table": "^1.0.0",
         "install": "^0.13.0",
+        "jquery.cookie": "^1.4.1",
         "jquery.nicescroll": "^3.7.6",
         "npm": "^7.19.1"
     }

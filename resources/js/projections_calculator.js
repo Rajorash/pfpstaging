@@ -15,7 +15,6 @@ $(function () {
             this.ajaxUrl = window.projectionsControllerUpdate;
             this.elementTablePlace = $('#projectionsTablePlace');
 
-            this.timeOutSeconds = 0; //set delay to 0 miliseconds
         }
 
         events() {

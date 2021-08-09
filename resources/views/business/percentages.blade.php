@@ -12,6 +12,9 @@
     @if(!optional($business->license)->checkLicense)
         <div class="text-center text-red-500 font-bold">{{__('License is inactive. Edit data forbidden.')}}</div>
     @endif
+
+    <x-ui.data-submit-controls />
+
     <x-ui.main>
         <div id="percentagesTablePlace" class="global_nice_scroll">
             <div class="p-8 text-center opacity-50">...loading</div>

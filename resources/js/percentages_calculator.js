@@ -14,13 +14,19 @@ $(function () {
 
             this.ajaxUrl = window.percentagesControllerUpdate;
             this.elementTablePlace = $('#percentagesTablePlace');
+
+            this.autoSubmitDataDelay = $.cookie('percentage_autoSubmitDataDelay') !== undefined
+                ? parseInt($.cookie('percentage_autoSubmitDataDelay'))
+                : this.autoSubmitDataDelayDefault;
         }
 
         events() {
             let $this = this;
+            super.events();
 
             $(document).on('change', 'input.percentage-value', function (event) {
                 $this.loadData(event);
+                $this.progressBar();
             });
         }
 
@@ -52,6 +58,18 @@ $(function () {
             if ($this.debug) {
                 console.log('collectData', $this.data);
             }
+        }
+
+        updateSubmitDataSwitcher() {
+            let $this = this;
+
+            $.cookie('percentage_autoSubmitDataSwitcher', $this.autoSubmitDataSwitcher, {expires: 14});
+        }
+
+        updateSubmitDataDelay() {
+            let $this = this;
+
+            $.cookie('percentage_autoSubmitDataDelay', $this.autoSubmitDataDelay, {expires: 14});
         }
     }
 

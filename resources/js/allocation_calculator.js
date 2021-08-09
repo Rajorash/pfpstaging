@@ -13,14 +13,19 @@ $(function () {
 
             this.ajaxUrl = window.allocationsControllerUpdate;
             this.elementTablePlace = $('#allocationTablePlace');
-        }
 
+            this.autoSubmitDataDelay = $.cookie('allocation_autoSubmitDataDelay') !== undefined
+                ? parseInt($.cookie('allocation_autoSubmitDataDelay'))
+                : this.autoSubmitDataDelayDefault;
+        }
 
         events() {
             let $this = this;
+            super.events();
 
             $(document).on('change', '#startDate, #currentRangeValue, #allocationTablePlace input', function (event) {
                 $this.loadData(event);
+                $this.progressBar();
             });
         }
 
@@ -55,6 +60,12 @@ $(function () {
             if ($this.debug) {
                 console.log('collectData', $this.data);
             }
+        }
+
+        updateSubmitDataDelay() {
+            let $this = this;
+
+            $.cookie('allocation_autoSubmitDataDelay', $this.autoSubmitDataDelay, {expires: 14});
         }
     }
 

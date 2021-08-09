@@ -16,6 +16,14 @@ export class calculatorCore {
 
         this.lastRowIndex = null; //last index of row in table
         this.lastColumnIndex = null; //last index of column in table
+
+        this.delayProgressId = 'delay_progress';
+        this.delayProgressInterval = undefined;
+        this.delayProgressTimeIntervalMiliseconds = 20;
+
+        this.autoSubmitDataDelayId = 'delay_submit_data';
+        this.autoSubmitDataDelayDefault = 2;
+        this.autoSubmitDataDelay = this.autoSubmitDataDelayDefault;
     }
 
     init() {
@@ -26,6 +34,16 @@ export class calculatorCore {
 
         $this.firstLoadData();
         $this.cursorForTableFill();
+    }
+
+    events() {
+        let $this = this;
+
+        $(document).on('change', '#' + $this.autoSubmitDataDelayId, function (event) {
+            $this.autoSubmitDataDelay = $(this).val();
+            $this.updateSubmitDataDelay();
+            $this.timeOutSeconds = 1000 * parseInt($this.autoSubmitDataDelay);
+        });
     }
 
     resetData() {
@@ -64,12 +82,28 @@ export class calculatorCore {
 
     loadData(event) {
         let $this = this;
+
         $this.collectData(event);
 
         clearTimeout($this.timedOut);
+
         $this.timedOut = setTimeout(function () {
             $this.ajaxLoadWorker();
         }, $this.timeOutSeconds);
+    }
+
+    progressBar() {
+        let $this = this;
+
+        clearInterval($this.delayProgressInterval);
+
+        $('#' + $this.delayProgressId).width($('#' + $this.delayProgressId).parent().width());
+
+        $this.delayProgressInterval = setInterval(function () {
+            let width = $('#' + $this.delayProgressId).width()
+                - $('#' + $this.delayProgressId).parent().width() / $this.timeOutSeconds * $this.delayProgressTimeIntervalMiliseconds;
+            $('#' + $this.delayProgressId).width(width);
+        }, $this.delayProgressTimeIntervalMiliseconds);
     }
 
     firstLoadData() {
@@ -77,6 +111,7 @@ export class calculatorCore {
 
         $this.collectData();
         $this.ajaxLoadWorker();
+        $this.autoSubmitDataLoadData();
     }
 
     ajaxLoadWorker() {
@@ -184,5 +219,11 @@ export class calculatorCore {
             $newCell.focus();
             $newCell.select();
         }
+    }
+
+    autoSubmitDataLoadData() {
+        let $this = this;
+
+        $('#' + $this.autoSubmitDataDelayId).val(($this.autoSubmitDataDelay > 0 ? $this.autoSubmitDataDelay : 2));
     }
 }

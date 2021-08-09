@@ -1,7 +1,9 @@
 require('./bootstrap');
 require('alpinejs');
 
+require('jquery.cookie');
 require('arrow-table');
+
 // require('./allocations');
 // require('./percentages');
 require('./pfp_functions');
