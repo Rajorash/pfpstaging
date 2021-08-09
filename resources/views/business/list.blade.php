@@ -81,17 +81,19 @@
                             <span class="text-sm text-light_gray">
                                 <span class="flex items-center whitespace-nowrap">
                                 @if ($business->license->checkLicense)
-                                        <x-icons.active :class="'h-4 w-auto text-green mr-1 align-text-bottom'"/>
-                                    @else
-                                        <x-icons.inactive :class="'h-4 w-auto text-gray-500 mr-1 align-text-bottom'"/>
-                                    @endif
+                                    <x-icons.active :class="'h-4 w-auto text-green mr-1 align-text-bottom'"/>
+                                @else
+                                    <x-icons.inactive :class="'h-4 w-auto text-gray-500 mr-1 align-text-bottom'"/>
+                                @endif
                                     <span>
-                                        {{$business->license->account_number }}
+                                        {{ $business->license->account_number }}
+                                        @if( $currentUser->isAdvisor() )
                                         <a class="text-blue hover:text-dark_gray2"
-                                           href="{{route('licenses.business', ['business' => $business])}}"
-                                           >
-                                            <x-icons.external-link class="inline w-auto h-5 mr-2 align-text-bottom" />
+                                        href="{{route('licenses.business', ['business' => $business])}}"
+                                        >
+                                        <x-icons.link class="inline w-auto h-4 mr-2 align-text-bottom" />
                                         </a>
+                                        @endif
                                     </span>
                                 </span>
                             </span>
