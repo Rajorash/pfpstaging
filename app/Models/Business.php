@@ -73,7 +73,7 @@ class Business extends Model
      */
     public function getPhaseIdByDate($date)
     {
-        $key = 'getPhaseIdByDate_'.$date;
+        $key = 'getPhaseIdByDate_'.$this->id.'_'.$date;
         $phase = Cache::get($key);
 
         if ($phase === null) {
