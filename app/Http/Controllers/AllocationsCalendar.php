@@ -602,7 +602,8 @@ class AllocationsCalendar extends Controller
                     return array_column(collect($a_item)->toArray(), 'val', 'id');
                 })->toArray();
 
-            Cache::put($key, $phasePercentValues, now()->addMinutes(10));
+            // Cache::put($key, $phasePercentValues, now()->addMinutes(10));
+            Cache::put($key, $phasePercentValues);
         }
 
         return $phasePercentValues;
