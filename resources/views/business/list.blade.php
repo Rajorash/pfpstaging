@@ -35,6 +35,8 @@
                     {{-- Maintenance column header row --}}
                     <x-ui.table-th></x-ui.table-th>
                 @endif
+                {{-- Allocations Calculator column header row --}}
+                <x-ui.table-th></x-ui.table-th>
                 {{-- Percentages column header row --}}
                 <x-ui.table-th></x-ui.table-th>
                 {{-- Data Entry column header row --}}
@@ -137,6 +139,12 @@
                             @endif
                         </x-ui.table-td>
                         @endif
+                        {{-- Allocations Calculator column --}}
+                        <x-ui.table-td>
+                            <x-ui.button-small href="{{route('allocation-calculator-with-id', ['businessId' => $business->id])}}">
+                                Allocations
+                            </x-ui.button-small>
+                        </x-ui.table-td>
                         {{-- Percentages column --}}
                         <x-ui.table-td>
                             <x-ui.button-small href="{{route('allocations-percentages', ['business' => $business])}}">

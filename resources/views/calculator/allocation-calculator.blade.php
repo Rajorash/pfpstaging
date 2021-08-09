@@ -4,7 +4,7 @@
     </x-slot>
 
     <x-ui.main>
-        <livewire:allocation-calculator :businesses="$businesses"/>
+        <livewire:allocation-calculator :businesses="$businesses" :businessId="$businessId"/>
     </x-ui.main>
 
 </x-app-layout>
