@@ -85,7 +85,7 @@ class Business extends Model
                 $phase = $this->rollout()->sortBy('end_date')->last();
             }
 
-            Cache::put($key, $phase);
+            Cache::put($key, $phase, now()->addMinutes(10));
         }
 
         return $phase ? $phase->id : null;
@@ -121,7 +121,7 @@ class Business extends Model
 
         if ($account === null) {
             $account = $this->accounts()->where('type', '=', $accountType)->first();
-            Cache::put($key, $account);
+            Cache::put($key, $account, now()->addMinutes(10));
         }
 
         return $account->id;
@@ -141,7 +141,7 @@ class Business extends Model
 
         if ($accountIds === null) {
             $accountIds = $this->accounts()->where('type', '=', $accountType)->pluck('id')->toArray();
-            Cache::put($key, $accountIds);
+            Cache::put($key, $accountIds, now()->addMinutes(10));
         }
 
         return $accountIds;

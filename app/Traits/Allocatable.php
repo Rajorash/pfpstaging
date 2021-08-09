@@ -51,6 +51,14 @@ trait Allocatable
      * Return an allocation for the current Allocatable model for the given
      * date if one exists
      *
+     * @deprecated 9th August 2021
+     * Allocations from multiple different sources could all share
+     * the same date.
+     * Used only in deprecated file from grep search
+     * `grep -iR getAllocationByDate ./app`
+     * ./app/Http/Livewire/Calculator/__AccountValue.php
+     *
+     *
      * @param  date|string  $date
      * @return void
      */
@@ -77,6 +85,11 @@ trait Allocatable
     /**
      * Return an allocation for the current Allocatable model for the given
      * date if one exists
+     *
+     * @deprecated 9th August 2021
+     * Allocations from multiple different sources could all share the same
+     * date.
+     * Does not appear in grep search `grep -iR getAllocationAmount ./app`
      *
      * @param  date|string  $date
      * @return void

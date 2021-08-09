@@ -18,7 +18,7 @@ trait GettersTrait
 
         if ($bankAccount === null) {
             $bankAccount = BankAccount::find($accountId);
-            Cache::put($key, $bankAccount);
+            Cache::put($key, $bankAccount, now()->addMinutes(10));
         }
 
         return $bankAccount;
@@ -32,7 +32,7 @@ trait GettersTrait
 
         if ($flowAccount === null) {
             $flowAccount = AccountFlow::find($accountId);
-            Cache::put($key, $flowAccount);
+            Cache::put($key, $flowAccount, now()->addMinutes(10));
         }
 
         return $flowAccount;
@@ -45,7 +45,7 @@ trait GettersTrait
 
         if ($businesses === null) {
             $businesses = Business::all();
-            Cache::put($key, $businesses);
+            Cache::put($key, $businesses, now()->addMinutes(10));
         }
 
         return $businesses;

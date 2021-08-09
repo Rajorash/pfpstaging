@@ -100,7 +100,7 @@ class AllocationsController extends Controller
 
         if ($phases === null) {
             $phases = Phase::where('business_id', '=', $business->id)->orderBy('end_date')->get();
-            Cache::put($key, $phases);
+            Cache::put($key, $phases, now()->addMinutes(10));
         }
 
         $currentEndDate = 0;
@@ -235,7 +235,7 @@ class AllocationsController extends Controller
                     ->whereIn('allocatable_id', $idsArray)
                     ->where('allocatable_type', 'like', '%'.$type)
                     ->get()->toArray();
-                Cache::put($key, $allocation);
+                Cache::put($key, $allocation, now()->addMinutes(10));
             }
 //
 //            $allocation = Allocation::whereIn('allocation_date', $dates)
@@ -412,7 +412,7 @@ class AllocationsController extends Controller
 
         if ($getBusinessById === null) {
             $getBusinessById = Business::with(['accounts'])->find($business_id);
-            Cache::put($key, $getBusinessById);
+            Cache::put($key, $getBusinessById, now()->addMinutes(10));
         }
 
         return $getBusinessById;
@@ -425,7 +425,7 @@ class AllocationsController extends Controller
 
         if ($getPhaseById === null) {
             $getPhaseById = Phase::where('business_id', '=', $business_id)->orderBy('end_date')->get();
-            Cache::put($key, $getPhaseById);
+            Cache::put($key, $getPhaseById, now()->addMinutes(10));
         }
 
         return $getPhaseById;

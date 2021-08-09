@@ -120,7 +120,7 @@ class BankAccount extends Model
                 })->map(function ($a_item) {
                     return array_column(collect($a_item)->toArray(), 'val', 'id');
                 })->toArray();
-            Cache::put($key, $getAllAllocationPercentages);
+            Cache::put($key, $getAllAllocationPercentages, now()->addMinutes(10));
         }
 
         return $getAllAllocationPercentages;
@@ -192,7 +192,7 @@ class BankAccount extends Model
                         ? $a_item['allocations'][0]['amount']
                         : 0;
                 })->sum();
-            Cache::put($key, $getRevenueByDate);
+            Cache::put($key, $getRevenueByDate, now()->addMinutes(10));
         }
 
         return $getRevenueByDate;

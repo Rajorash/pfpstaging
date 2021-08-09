@@ -534,7 +534,7 @@ class AllocationsCalendar extends Controller
                         ? $a_item['allocations'][0]['amount']
                         : 0;
                 })->sum();
-            Cache::put($key, $getIncomeByDate);
+            Cache::put($key, $getIncomeByDate, now()->addMinutes(10));
         }
 
         return $getIncomeByDate;
@@ -602,7 +602,7 @@ class AllocationsCalendar extends Controller
                     return array_column(collect($a_item)->toArray(), 'val', 'id');
                 })->toArray();
 
-            Cache::put($key, $phasePercentValues);
+            Cache::put($key, $phasePercentValues, now()->addMinutes(10));
         }
 
         return $phasePercentValues;
