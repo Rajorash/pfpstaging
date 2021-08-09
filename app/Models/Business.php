@@ -85,7 +85,7 @@ class Business extends Model
                 $phase = $this->rollout()->sortBy('end_date')->last();
             }
 
-            Cache::put($key, $phase, now()->addMinutes(10));
+            Cache::put($key, $phase, now()->addHours(1));
         }
 
         return $phase ? $phase->id : null;
