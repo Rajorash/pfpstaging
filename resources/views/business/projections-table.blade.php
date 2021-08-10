@@ -1,11 +1,11 @@
-<x-ui.table-table class="table-sticky-header table-sticky-column">
+<x-ui.table-table class="relative">
     <thead class="">
     <tr class="border-light_blue divide-x border-b">
-        <x-ui.table-th class="text-center"
+        <x-ui.table-th class="text-center sticky top-0 left-0 z-30"
                        baseClass="w-24 min-w-24 text-dark_gray font-normal bg-white"></x-ui.table-th>
         @foreach($dates as $date)
             <x-ui.table-th
-                class="text-center {{ Carbon\Carbon::parse($date)->isToday() ? 'text-blue': 'text-dark_gray' }}"
+                class="text-center sticky top-0 {{ Carbon\Carbon::parse($date)->isToday() ? 'text-blue': 'text-dark_gray' }}"
                 baseClass="w-24 min-w-24 font-normal bg-white">
                     <span
                         class="block text-xs font-normal">{{Carbon\Carbon::parse($date)->format('M Y')}}</span>
@@ -17,7 +17,7 @@
     <x-ui.table-tbody>
         @foreach($allocations as $allocation)
             <tr class="hover:bg-yellow-100 border-light_blue divide-x {{$loop->odd ? 'bg-indigo-100' : 'bg-white' }}">
-                <x-ui.table-td padding="p-1 pr-2 pl-4" class="text-left sticky-column">
+                <x-ui.table-td padding="p-1 pr-2 pl-4" class="text-left sticky-column sticky left-0 {{$loop->odd ? 'bg-indigo-100' : 'bg-white' }}">
                     {{ $allocation['account']->name }}
                 </x-ui.table-td>
 

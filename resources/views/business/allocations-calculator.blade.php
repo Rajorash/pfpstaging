@@ -34,10 +34,10 @@
         <div class="text-center text-red-500 font-bold">{{__('License is inactive. Edit data forbidden.')}}</div>
     @endif
 
-    <x-ui.data-submit-controls />
+    <x-ui.data-submit-controls :heightController="true" />
 
     <x-ui.main width="w-full">
-        <div id="allocationTablePlace" class="global_nice_scroll">
+        <div id="allocationTablePlace" class="global_nice_scroll overflow-scroll relative block_different_height">
             <div class="p-8 text-center opacity-50">...loading</div>
         </div>
     </x-ui.main>

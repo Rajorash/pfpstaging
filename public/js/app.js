@@ -4102,6 +4102,7 @@ $(function () {
       _this.ajaxUrl = window.allocationsControllerUpdate;
       _this.elementTablePlace = $('#allocationTablePlace');
       _this.autoSubmitDataDelay = $.cookie('allocation_autoSubmitDataDelay') !== undefined ? parseInt($.cookie('allocation_autoSubmitDataDelay')) : _this.autoSubmitDataDelayDefault;
+      _this.heightMode = $.cookie('allocation_heightMode') !== undefined ? $.cookie('allocation_heightMode') : _this.heightModeDefault;
       return _this;
     }
 
@@ -4155,6 +4156,44 @@ $(function () {
           expires: 14
         });
       }
+    }, {
+      key: "heightModeDataLoadData",
+      value: function heightModeDataLoadData() {
+        _get(_getPrototypeOf(AllocationCalculator.prototype), "heightModeDataLoadData", this).call(this);
+
+        var $this = this;
+        $this.switchHeightMode();
+      }
+    }, {
+      key: "switchHeightMode",
+      value: function switchHeightMode() {
+        var $this = this;
+
+        if ($this.heightMode === 'full') {
+          $('.block_different_height').height('auto');
+        } else {
+          var height = $(window).height() - 20;
+
+          if ($('.block_different_height').offset()) {
+            height -= $('.block_different_height').offset().top;
+          }
+
+          $('.block_different_height').height(height);
+        }
+
+        setTimeout(function () {
+          $(".global_nice_scroll").getNiceScroll().resize();
+        }, 500);
+      }
+    }, {
+      key: "updateHeightMode",
+      value: function updateHeightMode() {
+        var $this = this;
+        $this.switchHeightMode();
+        $.cookie('allocation_heightMode', $this.heightMode, {
+          expires: 14
+        });
+      }
     }]);
 
     return AllocationCalculator;
@@ -4172,11 +4211,8 @@ $(function () {
 /*!*****************************!*\
   !*** ./resources/js/app.js ***!
   \*****************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
 
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _pfp_functions_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./pfp_functions.js */ "./resources/js/pfp_functions.js");
 __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 
 __webpack_require__(/*! alpinejs */ "./node_modules/alpinejs/dist/alpine.js");
@@ -4207,11 +4243,11 @@ $(window).on('resize', function () {
   resizeTimer = setTimeout(function () {
     $(".global_nice_scroll").getNiceScroll().resize();
   }, 300);
-});
-
-var pfpFunctionsGlobal = new _pfp_functions_js__WEBPACK_IMPORTED_MODULE_0__.pfpFunctions();
-pfpFunctionsGlobal.tableStickyHeader();
-pfpFunctionsGlobal.tableStickyFirstColumn();
+}); // import {pfpFunctions} from "./pfp_functions.js";
+//
+// let pfpFunctionsGlobal = new pfpFunctions();
+// pfpFunctionsGlobal.tableStickyHeader();
+// pfpFunctionsGlobal.tableStickyFirstColumn();
 
 /***/ }),
 
@@ -4299,6 +4335,9 @@ var calculatorCore = /*#__PURE__*/function () {
     this.autoSubmitDataDelayId = 'delay_submit_data';
     this.autoSubmitDataDelayDefault = 2;
     this.autoSubmitDataDelay = this.autoSubmitDataDelayDefault;
+    this.heightModeDefaultSelector = '[name="block_different_height"]';
+    this.heightModeDefault = 'full';
+    this.heightMode = this.heightModeDefault;
   }
 
   _createClass(calculatorCore, [{
@@ -4318,6 +4357,10 @@ var calculatorCore = /*#__PURE__*/function () {
         $this.autoSubmitDataDelay = $(this).val();
         $this.updateSubmitDataDelay();
         $this.timeOutSeconds = 1000 * parseInt($this.autoSubmitDataDelay);
+      });
+      $(document).on('change', $this.heightModeDefaultSelector, function (event) {
+        $this.heightMode = $(this).val();
+        $this.updateHeightMode();
       });
     }
   }, {
@@ -4381,6 +4424,7 @@ var calculatorCore = /*#__PURE__*/function () {
       $this.collectData();
       $this.ajaxLoadWorker();
       $this.autoSubmitDataLoadData();
+      $this.heightModeDataLoadData();
     }
   }, {
     key: "ajaxLoadWorker",
@@ -4496,6 +4540,21 @@ var calculatorCore = /*#__PURE__*/function () {
       var $this = this;
       $('#' + $this.autoSubmitDataDelayId).val($this.autoSubmitDataDelay > 0 ? $this.autoSubmitDataDelay : 2);
     }
+  }, {
+    key: "heightModeDataLoadData",
+    value: function heightModeDataLoadData() {
+      var $this = this;
+
+      if ($($this.heightModeDefaultSelector).length) {
+        $($this.heightModeDefaultSelector + '[value="' + $this.heightMode + '"]').prop('checked', true);
+      }
+    }
+  }, {
+    key: "updateSubmitDataDelay",
+    value: function updateSubmitDataDelay() {}
+  }, {
+    key: "updateHeightMode",
+    value: function updateHeightMode() {}
   }]);
 
   return calculatorCore;

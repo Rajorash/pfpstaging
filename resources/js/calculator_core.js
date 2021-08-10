@@ -24,6 +24,10 @@ export class calculatorCore {
         this.autoSubmitDataDelayId = 'delay_submit_data';
         this.autoSubmitDataDelayDefault = 2;
         this.autoSubmitDataDelay = this.autoSubmitDataDelayDefault;
+
+        this.heightModeDefaultSelector = '[name="block_different_height"]';
+        this.heightModeDefault = 'full';
+        this.heightMode = this.heightModeDefault;
     }
 
     init() {
@@ -43,6 +47,11 @@ export class calculatorCore {
             $this.autoSubmitDataDelay = $(this).val();
             $this.updateSubmitDataDelay();
             $this.timeOutSeconds = 1000 * parseInt($this.autoSubmitDataDelay);
+        });
+
+        $(document).on('change', $this.heightModeDefaultSelector, function (event) {
+            $this.heightMode = $(this).val();
+            $this.updateHeightMode();
         });
     }
 
@@ -112,6 +121,7 @@ export class calculatorCore {
         $this.collectData();
         $this.ajaxLoadWorker();
         $this.autoSubmitDataLoadData();
+        $this.heightModeDataLoadData();
     }
 
     ajaxLoadWorker() {
@@ -226,4 +236,19 @@ export class calculatorCore {
 
         $('#' + $this.autoSubmitDataDelayId).val(($this.autoSubmitDataDelay > 0 ? $this.autoSubmitDataDelay : 2));
     }
+
+    heightModeDataLoadData() {
+        let $this = this;
+
+        if ($($this.heightModeDefaultSelector).length) {
+            $($this.heightModeDefaultSelector + '[value="' + $this.heightMode + '"]').prop('checked', true);
+        }
+    }
+
+    updateSubmitDataDelay() {
+    }
+
+    updateHeightMode() {
+    }
+
 }

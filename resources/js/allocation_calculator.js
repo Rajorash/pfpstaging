@@ -17,6 +17,10 @@ $(function () {
             this.autoSubmitDataDelay = $.cookie('allocation_autoSubmitDataDelay') !== undefined
                 ? parseInt($.cookie('allocation_autoSubmitDataDelay'))
                 : this.autoSubmitDataDelayDefault;
+
+            this.heightMode = $.cookie('allocation_heightMode') !== undefined
+                ? $.cookie('allocation_heightMode')
+                : this.heightModeDefault;
         }
 
         events() {
@@ -66,6 +70,41 @@ $(function () {
             let $this = this;
 
             $.cookie('allocation_autoSubmitDataDelay', $this.autoSubmitDataDelay, {expires: 14});
+        }
+
+        heightModeDataLoadData() {
+            super.heightModeDataLoadData();
+            let $this = this;
+
+            $this.switchHeightMode();
+        }
+
+        switchHeightMode() {
+            let $this = this;
+
+            if ($this.heightMode === 'full') {
+                $('.block_different_height').height('auto');
+            } else {
+                let height = $(window).height() - 20;
+
+                if ($('.block_different_height').offset()) {
+                    height -= $('.block_different_height').offset().top;
+                }
+
+                $('.block_different_height').height(height);
+            }
+
+            setTimeout(function () {
+                $(".global_nice_scroll").getNiceScroll().resize();
+            }, 500);
+        }
+
+        updateHeightMode() {
+            let $this = this;
+
+            $this.switchHeightMode();
+
+            $.cookie('allocation_heightMode', $this.heightMode, {expires: 14});
         }
     }
 

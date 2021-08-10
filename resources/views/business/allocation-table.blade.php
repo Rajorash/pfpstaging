@@ -1,10 +1,10 @@
 @if (!$phase)
  <x-ui.error class="p-12 block">Date is to fare or late. Set another date.</x-ui.error>
 @else
-    <x-ui.table-table class="table-sticky-header table-sticky-column cursor-fill-data">
+    <x-ui.table-table class="cursor-fill-data relative mb-2">
         <thead>
         <tr class="border-light_blue divide-x border-b">
-            <x-ui.table-th class="text-center" baseClass="min-w-24 w-32 text-dark_gray font-normal bg-white">
+            <x-ui.table-th class="text-center sticky top-0 left-0" baseClass="min-w-24 w-32 text-dark_gray font-normal bg-white z-30">
                 <span id="processCounter" class="hidden opacity-50 font-normal text-xs"></span>
             </x-ui.table-th>
 
@@ -12,8 +12,8 @@
                 @php
                     $date = Carbon\Carbon::parse($date);
                 @endphp
-                <x-ui.table-th class="text-center {{ $date->isToday() ? 'text-blue': 'text-dark_gray' }}"
-                               baseClass="min-w-24 font-normal bg-white">
+                <x-ui.table-th class="text-center {{ $date->isToday() ? 'text-blue': 'text-dark_gray' }} sticky top-0"
+                               baseClass="min-w-24 font-normal bg-white z-20">
                     <span class="block text-xs font-normal">{{$date->format('M Y')}}</span>
                     <span class="block text-xl">{{$date->format('j')}}</span>
                     <span class="block text-xs font-normal">{{$date->format('D')}}</span>
@@ -30,7 +30,7 @@
 
             @foreach($tableData as $type => $accounts)
                 <tr class="bg-{{strtolower($type)}} text-white uppercase">
-                    <x-ui.table-td padding="py-1 pr-2 pl-4" baseClass="text-white whitespace-nowrap sticky-column">
+                    <x-ui.table-td padding="py-1 pr-2 pl-4" baseClass="text-white whitespace-nowrap bg-{{strtolower($type)}} sticky left-0 z-10">
                         {{ucfirst($type)}} Accounts
                     </x-ui.table-td>
                     <x-ui.table-td attr="colspan={{$range}}">
@@ -43,7 +43,7 @@
                         @endphp
                         <tr class="bg-indigo-100 hover:bg-yellow-100 border-light_blue divide-x">
                             <x-ui.table-td padding="p-1 pl-2"
-                                           baseClass="text-dark_gray sticky-column">{{$data['name']}}</x-ui.table-td>
+                                           baseClass="text-dark_gray sticky left-0 bg-indigo-100 z-10">{{$data['name']}}</x-ui.table-td>
                             {{--                        <td class="border border-gray-300 whitespace-nowrap pl-2">{{$data['name']}}</td>--}}
                             @foreach($period as $date)
                                 @php
@@ -70,7 +70,7 @@
                                 @endphp
                                 <tr class="bg-white hover:bg-yellow-100 border-light_blue divide-x">
                                     <x-ui.table-td padding="p-1 pr-2 pl-6"
-                                                   baseClass="text-dark_gray whitespace-nowrap sticky-column">{{$ext_data['name']}}</x-ui.table-td>
+                                                   baseClass="text-dark_gray whitespace-nowrap sticky left-0 bg-white z-10">{{$ext_data['name']}}</x-ui.table-td>
                                     @foreach($period as $date)
                                         @php
                                             $columnIndex++;
@@ -102,7 +102,7 @@
                             $columnIndex = 0;
                         @endphp
                         <tr class="bg-indigo-100 hover:bg-yellow-100 border-light_blue divide-x">
-                            <x-ui.table-td class="text-left whitespace-nowrap sticky-column" padding="p-1 pr-2 pl-4">
+                            <x-ui.table-td class="text-left whitespace-nowrap bg-indigo-100 z-10 sticky left-0" padding="p-1 pr-2 pl-4">
                                 {{$data['name']}}
                             </x-ui.table-td>
                             @foreach($period as $date)
@@ -132,7 +132,7 @@
                                     @endphp
                                     <tr class="bg-white hover:bg-yellow-100 border-light_blue divide-x">
                                         <x-ui.table-td padding="p-1 pr-2 pl-6"
-                                                       class="text-left whitespace-nowrap sticky-column">
+                                                       class="text-left whitespace-nowrap sticky left-0 bg-white z-10">
                                             Transfer In
                                         </x-ui.table-td>
                                         @foreach($period as $date)
@@ -157,7 +157,7 @@
                                     @endphp
                                     <tr class="bg-white hover:bg-yellow-100 border-light_blue divide-x">
                                         <x-ui.table-td padding="p-1 pr-2 pl-6"
-                                                       class="text-left whitespace-nowrap sticky-column">
+                                                       class="text-left whitespace-nowrap sticky bg-white left-0 z-10">
                                             Flow Total
                                         </x-ui.table-td>
                                         @foreach($period as $date)
@@ -182,7 +182,7 @@
                                     @endphp
                                     <tr class="bg-indigo-100 hover:bg-yellow-100 border-light_blue divide-x">
                                         <x-ui.table-td padding="p-1 pr-2 pl-4"
-                                                       class="text-left whitespace-nowrap sticky-column">
+                                                       class="text-left whitespace-nowrap sticky bg-indigo-100 left-0 z-10">
                                             {{$ext_data['name']}}
                                         </x-ui.table-td>
                                         @foreach($period as $date)

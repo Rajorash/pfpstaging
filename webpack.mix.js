@@ -1,5 +1,6 @@
 require('dotenv').config();
 const mix = require('laravel-mix');
+const tailwindcss = require('tailwindcss');
 let productionSourceMaps = true;
 
 /*
@@ -15,6 +16,9 @@ let productionSourceMaps = true;
 
 mix.js('resources/js/app.js', 'public/js')
     .sass('resources/scss/all.scss', 'public/css')
+    .options({
+        postCss: [ tailwindcss('./tailwind.config.js') ],
+    })
     .postCss('resources/css/app.css', 'public/css', [
         require('postcss-import'),
         require('tailwindcss'),

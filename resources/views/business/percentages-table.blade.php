@@ -1,13 +1,13 @@
-<x-ui.table-table class="table-sticky-header table-sticky-column cursor-fill-data">
+<x-ui.table-table class="cursor-fill-data relative">
     <thead>
     <tr class="border-b divide-x border-light_blue">
-        <x-ui.table-th class="text-left" baseClass="w-24 pr-2 pl-4 text-dark_gray font-normal bg-white">
+        <x-ui.table-th class="text-left sticky top-0 left-0 z-20" baseClass="w-24 pr-2 pl-4 text-dark_gray font-normal bg-white">
             Account
         </x-ui.table-th>
         @forelse($rollout as $phase)
             @php $isCurrent = $phase->id == $business->current_phase; @endphp
             <x-ui.table-th baseClass="w-24 font-normal"
-            class="text-center min-w-24 {{ $isCurrent ? 'bg-blue text-white': 'bg-white text-dark_gray' }}">
+            class="text-center sticky top-0 z-10 left-0 min-w-24 {{ $isCurrent ? 'bg-blue text-white': 'bg-white text-dark_gray' }}">
                 <span class="block text-xs font-normal {{ $isCurrent ? 'text-indigo-300': 'text-gray-400' }}">
                     Phase Ending
                 </span>
@@ -19,7 +19,7 @@
                 </span>
             </x-ui.table-th>
         @empty
-            <x-ui.table-th class="text-center min-w-20" baseClass="w-24 text-dark_gray font-normal">No phases exist...
+            <x-ui.table-th class="text-center sticky top-0 z-10 min-w-20" baseClass="w-24 text-dark_gray font-normal">No phases exist...
             </x-ui.table-th>
         @endforelse
     </tr>
@@ -56,7 +56,7 @@
             @endif
             <tr class="{{$account_class[$acc->type]}} hover:bg-yellow-100 border-light_blue divide-x">
                 <x-ui.table-td padding="p-1 pr-2 pl-4"
-                               class="text-left sticky-column text-{{strtolower($acc->type)}}">{{ $acc->name }}</x-ui.table-td>
+                               class="text-left sticky left-0 z-10 {{$account_class[$acc->type]}} text-{{strtolower($acc->type)}}">{{ $acc->name }}</x-ui.table-td>
 
                 @forelse($rollout as $phase)
                     @php

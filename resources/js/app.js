@@ -26,8 +26,8 @@ $(window).on('resize', function () {
     }, 300);
 });
 
-import {pfpFunctions} from "./pfp_functions.js";
-
-let pfpFunctionsGlobal = new pfpFunctions();
-pfpFunctionsGlobal.tableStickyHeader();
-pfpFunctionsGlobal.tableStickyFirstColumn();
+// import {pfpFunctions} from "./pfp_functions.js";
+//
+// let pfpFunctionsGlobal = new pfpFunctions();
+// pfpFunctionsGlobal.tableStickyHeader();
+// pfpFunctionsGlobal.tableStickyFirstColumn();
