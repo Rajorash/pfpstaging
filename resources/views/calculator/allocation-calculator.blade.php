@@ -1,5 +1,9 @@
 <x-app-layout>
     <x-slot name="header">
+        @isset($business)
+        {{$business->name}}
+        <x-icons.chevron-right :class="'h-4 w-auto inline-block px-2'"/>
+        @endisset
         {{ __('Allocations Calculator') }}
     </x-slot>
 
