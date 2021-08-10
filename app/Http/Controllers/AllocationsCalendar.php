@@ -70,30 +70,20 @@ class AllocationsCalendar extends Controller
      */
     public function storeSingle($type, $allocation_id, $amount, $date, $manual_entry = false)
     {
-        /*        $this->validate([
-                    'amount' => 'numeric|nullable'
-                ]);
 
-                $data = array(
-                    'amount' => $amount
-                );
-        */
         $phaseId = $this->business->getPhaseIdByDate($date);
         $values = [
-            $amount,
-            $date,
-            $phaseId
+
         ];
 
         if ($type == 'flow') {
             $account = $this->getFlowAccount($allocation_id);
         } else {
-            if ($manual_entry) {
-                array_push($values, $manual_entry);
-            }
-            $account = $this->getBackAccount($allocation_id);
+            $account = $this->getBankAccount($allocation_id);
         }
-        $account->allocate(...$values);
+
+        $account->allocate($amount, $date, $phaseId, $manual_entry);
+
     }
 
     public function updateData(Request $request)
