@@ -57,66 +57,66 @@
                         <x-ui.table-td>
                             <div class="flex items-center">
                                 @if($business->owner)
-                                <div class="flex-shrink-0 w-10 h-10">
-                                    <img class="w-10 h-10 rounded-full"
-                                    src="{{ $business->owner->profile_photo_url }}"
-                                    alt="">
-                                </div>
-                                <div class="ml-4">
-                                    <div class="">
-                                        {{ $business->owner->name }}
+                                    <div class="flex-shrink-0 w-10 h-10">
+                                        <img class="w-10 h-10 rounded-full"
+                                             src="{{ $business->owner->profile_photo_url }}"
+                                             alt="">
                                     </div>
-                                    <div class="text-sm text-light_gray">
-                                        {{ $business->owner->email }}
+                                    <div class="ml-4">
+                                        <div class="">
+                                            {{ $business->owner->name }}
+                                        </div>
+                                        <div class="text-sm text-light_gray">
+                                            {{ $business->owner->email }}
+                                        </div>
                                     </div>
-                                </div>
                                 @endif
                             </div>
                         </x-ui.table-td>
                         {{-- License Column --}}
                         <x-ui.table-td>
-                        @if ( is_object($business->license) )
-                            {{$business->license->advisor->name}}
-                            @if($business->license->advisor->id == $currentUser->id)
-                                <span class="text-light_gray">(You)</span>
-                            @endif <br>
-                            <span class="text-sm text-light_gray">
+                            @if ( is_object($business->license) )
+                                {{$business->license->advisor->name}}
+                                @if($business->license->advisor->id == $currentUser->id)
+                                    <span class="text-light_gray">(You)</span>
+                                @endif <br>
+                                <span class="text-sm text-light_gray">
                                 <span class="flex items-center whitespace-nowrap">
                                 @if ($business->license->checkLicense)
-                                    <x-icons.active :class="'h-4 w-auto text-green mr-1 align-text-bottom'"/>
-                                @else
-                                    <x-icons.inactive :class="'h-4 w-auto text-gray-500 mr-1 align-text-bottom'"/>
-                                @endif
+                                        <x-icons.active :class="'h-4 w-auto text-green mr-1 align-text-bottom'"/>
+                                    @else
+                                        <x-icons.inactive :class="'h-4 w-auto text-gray-500 mr-1 align-text-bottom'"/>
+                                    @endif
                                     <span>
                                         {{ $business->license->account_number }}
                                         @if( $currentUser->isAdvisor() )
-                                        <a class="text-blue hover:text-dark_gray2"
-                                        href="{{route('licenses.business', ['business' => $business])}}"
-                                        >
-                                        <x-icons.link class="inline w-auto h-4 mr-2 align-text-bottom" />
+                                            <a class="text-blue hover:text-dark_gray2"
+                                               href="{{route('licenses.business', ['business' => $business])}}"
+                                            >
+                                        <x-icons.link class="inline w-auto h-4 mr-2 align-text-bottom"/>
                                         </a>
                                         @endif
                                     </span>
                                 </span>
                             </span>
-                        @else
-                            {{__('Not licensed')}}
-                        @endif
-                        @if ( is_object($business->collaboration) && is_object($business->collaboration->advisor))
-                            <div class="text-sm text-light_gray">
-                                @if($business->collaboration->advisor->user_id != auth()->user()->id)
-                                    In collaboration with <b>{{$business->collaboration->advisor->user->name}}</b>
-                                @else
-                                    @if(is_object($business->license))
-                                    As collaborationist with <b>{{$business->license->advisor->name}}</b>
+                            @else
+                                {{__('Not licensed')}}
+                            @endif
+                            @if ( is_object($business->collaboration) && is_object($business->collaboration->advisor))
+                                <div class="text-sm text-light_gray">
+                                    @if($business->collaboration->advisor->user_id != auth()->user()->id)
+                                        In collaboration with <b>{{$business->collaboration->advisor->user->name}}</b>
+                                    @else
+                                        @if(is_object($business->license))
+                                            As collaborationist with <b>{{$business->license->advisor->name}}</b>
+                                        @endif
                                     @endif
-                                @endif
 
-                                @if (($expire = new \DateTime($business->collaboration->expires_at))->getTimestamp() > time())
-                                    till {{$expire->format('Y-m-d')}}
-                                @endif
-                            </div>
-                        @endif
+                                    @if (($expire = new \DateTime($business->collaboration->expires_at))->getTimestamp() > time())
+                                        till {{$expire->format('Y-m-d')}}
+                                    @endif
+                                </div>
+                            @endif
                         </x-ui.table-td>
                         {{-- Accounts Column --}}
                         <x-ui.table-td class="text-center">
@@ -125,41 +125,47 @@
                             </a>
                         </x-ui.table-td>
                         @if(Auth::user()->isAdvisor())
-                        {{-- Maintenance column --}}
-                        <x-ui.table-td>
-                            @if(
-                            (is_object($business->collaboration)
-                            && is_object($business->collaboration->advisor)
-                            && $business->collaboration->advisor->user_id  != auth()->user()->id)
-                            || !is_object($business->collaboration))
-                                <x-ui.button-small
-                                    href="{{route('maintenance.business', ['business' => $business])}}">
-                                    Maintenance
-                                </x-ui.button-small>
-                            @endif
-                        </x-ui.table-td>
+                            {{-- Maintenance column --}}
+                            <x-ui.table-td>
+                                @if(
+                                (is_object($business->collaboration)
+                                && is_object($business->collaboration->advisor)
+                                && $business->collaboration->advisor->user_id  != auth()->user()->id)
+                                || !is_object($business->collaboration))
+                                    <x-ui.button-small title="Maintenance"
+                                                       href="{{route('maintenance.business', ['business' => $business])}}">
+                                        <x-icons.gear :class="'h-4 w-auto my-0.5 inline-block'"/>
+                                    </x-ui.button-small>
+                                @endif
+                            </x-ui.table-td>
                         @endif
                         {{-- Allocations Calculator column --}}
                         <x-ui.table-td>
-                            <x-ui.button-small href="{{route('allocation-calculator-with-id', ['business' => $business])}}">
-                                Allocations
+                            <x-ui.button-small title="Rollout Percentages (Allocations)"
+                                               href="{{route('allocation-calculator-with-id', ['business' => $business])}}">
+                                <x-icons.calculator :class="'h-5 w-auto inline-block'"/>
+
                             </x-ui.button-small>
                         </x-ui.table-td>
                         {{-- Percentages column --}}
                         <x-ui.table-td>
-                            <x-ui.button-small href="{{route('allocations-percentages', ['business' => $business])}}">
-                                Percentages
+                            <x-ui.button-small title="Rollout Percentages"
+                                               href="{{route('allocations-percentages', ['business' => $business])}}">
+                                <x-icons.percent :class="'h-5 w-auto inline-block'"/>
                             </x-ui.button-small>
                         </x-ui.table-td>
                         {{-- Data Entry column --}}
                         <x-ui.table-td>
-                            <x-ui.button-small class="whitespace-nowrap" href="{{route('allocations-calendar', ['business' => $business])}}">
-                                Data Entry
+                            <x-ui.button-small title="Data Entry" class="whitespace-nowrap"
+                                               href="{{route('allocations-calendar', ['business' => $business])}}">
+                                <x-icons.table :class="'h-5 w-auto inline-block'"/>
                             </x-ui.button-small>
                         </x-ui.table-td>
                         {{-- Forecast column --}}
                         <x-ui.table-td padding="pl-2 pr-12 py-4">
-                            <x-ui.button-small href="{{route('projections', ['business' => $business])}}">Forecast
+                            <x-ui.button-small title="Projection Forecast"
+                                               href="{{route('projections', ['business' => $business])}}">
+                                <x-icons.presentation-chart :class="'h-4 w-auto my-0.5 inline-block'"/>
                             </x-ui.button-small>
                         </x-ui.table-td>
                     </tr>
