@@ -176,7 +176,7 @@ Route::group(['middleware' => 'auth'], function () {
         '/calculator',
         [AllocationCalculatorController::class, 'index'])->name('allocation-calculator');
     Route::get(
-        '/calculator/{businessId}',
+        '/calculator/{business}',
         [AllocationCalculatorController::class, 'indexWithId'])->name('allocation-calculator-with-id');
 
     // Projection forecast tool

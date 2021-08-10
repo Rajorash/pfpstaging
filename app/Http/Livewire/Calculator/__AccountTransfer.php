@@ -25,7 +25,7 @@ class __AccountTransfer extends Component
         $this->uid = 'account_transfer_'.$accountId.'_'.substr($date, 0, 10);
         $this->accountId = $accountId;
 //        $this->account = BankAccount::find($accountId);
-        $this->account = $this->getBackAccount($accountId);
+        $this->account = $this->getBankAccount($accountId);
         $this->date = $date;
         $this->phase_id = $this->account->business->getPhaseIdByDate($date);
         $this->amount = $this->account->getTransferAmount($this->date, $this->phase_id);

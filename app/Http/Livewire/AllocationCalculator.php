@@ -41,7 +41,7 @@ class AllocationCalculator extends Component
 
     public function updatedSelectedBusinessId($businessId)
     {
-        return redirect()->route('allocation-calculator-with-id', ['businessId' => $businessId]);
+        return redirect()->route('allocation-calculator-with-id', ['business' => $businessId]);
     }
 
     public function updatedRevenue($new_value)

@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Cache;
 
 trait GettersTrait
 {
-    private function getBackAccount($accountId)
+    private function getBankAccount($accountId)
     {
         $key = 'BankAccount_'.$accountId;
 

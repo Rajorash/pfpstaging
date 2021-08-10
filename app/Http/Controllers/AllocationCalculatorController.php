@@ -23,12 +23,12 @@ class AllocationCalculatorController extends Controller
         return $this->getView();
     }
 
-    public function indexWithId($businessId)
+    public function indexWithId(Business $business)
     {
-        return $this->getView($businessId);
+        return $this->getView($business);
     }
 
-    public function getView($businessId = null)
+    public function getView(Business $business = null)
     {
         $businesses = $this->getBusinessAll();
 
@@ -38,7 +38,8 @@ class AllocationCalculatorController extends Controller
 
         return view('calculator.allocation-calculator', [
             'businesses' => $filtered,
-            'businessId' => $businessId
+            'business' => $business,
+            'businessId' => optional($business)->id,
         ]);
     }
 }

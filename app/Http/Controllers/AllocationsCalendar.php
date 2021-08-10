@@ -70,30 +70,20 @@ class AllocationsCalendar extends Controller
      */
     public function storeSingle($type, $allocation_id, $amount, $date, $manual_entry = false)
     {
-        /*        $this->validate([
-                    'amount' => 'numeric|nullable'
-                ]);
 
-                $data = array(
-                    'amount' => $amount
-                );
-        */
         $phaseId = $this->business->getPhaseIdByDate($date);
         $values = [
-            $amount,
-            $date,
-            $phaseId
+
         ];
 
         if ($type == 'flow') {
             $account = $this->getFlowAccount($allocation_id);
         } else {
-            if ($manual_entry) {
-                array_push($values, $manual_entry);
-            }
-            $account = $this->getBackAccount($allocation_id);
+            $account = $this->getBankAccount($allocation_id);
         }
-        $account->allocate(...$values);
+
+        $account->allocate($amount, $date, $phaseId, $manual_entry);
+
     }
 
     public function updateData(Request $request)
@@ -264,7 +254,7 @@ class AllocationsCalendar extends Controller
                                 : $response[BankAccount::ACCOUNT_TYPE_SALESTAX][$id][$date_ymd];
 
                             if ($stored_value != $actualValue &&
-                                ! $this->hasManualEntry(BankAccount::ACCOUNT_TYPE_SALESTAX, $id, $date_ymd)
+                                ! $this->hasManualEntry($response, BankAccount::ACCOUNT_TYPE_SALESTAX, $id, $date_ymd)
                             ) {
                                 $response[BankAccount::ACCOUNT_TYPE_SALESTAX][$id][$date_ymd] = $actualValue;
                                 $this->storeSingle('account', $id, $actualValue, $date_ymd);
@@ -371,7 +361,7 @@ class AllocationsCalendar extends Controller
                                 : $response[BankAccount::ACCOUNT_TYPE_PREREAL][$id][$date_ymd];
 
                             if ($stored_value != $actualValue &&
-                                ! $this->hasManualEntry(BankAccount::ACCOUNT_TYPE_PREREAL, $id, $date_ymd)
+                                ! $this->hasManualEntry($response, BankAccount::ACCOUNT_TYPE_PREREAL, $id, $date_ymd)
                             ) {
                                 $response[BankAccount::ACCOUNT_TYPE_PREREAL][$id][$date_ymd] = $actualValue;
                                 $this->storeSingle('account', $id, $actualValue, $date->format('Y-m-d'));
@@ -429,7 +419,7 @@ class AllocationsCalendar extends Controller
                                 : $response[BankAccount::ACCOUNT_TYPE_POSTREAL][$id][$date_ymd];
 
                             if ($stored_value != $actualValue &&
-                                ! $this->hasManualEntry(BankAccount::ACCOUNT_TYPE_POSTREAL, $id, $date_ymd)
+                                ! $this->hasManualEntry($response, BankAccount::ACCOUNT_TYPE_POSTREAL, $id, $date_ymd)
                             ) {
                                 $response[BankAccount::ACCOUNT_TYPE_POSTREAL][$id][$date_ymd] = $actualValue;
                                 $this->storeSingle('account', $id, $actualValue, $date->format('Y-m-d'));
@@ -471,8 +461,9 @@ class AllocationsCalendar extends Controller
      * @param [type] $id
      * @param [type] $date_ymd
      * @return boolean
+     *
      */
-    private function hasManualEntry($type, $id, $date_ymd)
+    private function hasManualEntry($response, $type, $id, $date_ymd)
     {
         if( isset($response[$type][$id]['manual'][$date_ymd]) ) {
             return true;
