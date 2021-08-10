@@ -141,7 +141,7 @@
                         @endif
                         {{-- Allocations Calculator column --}}
                         <x-ui.table-td>
-                            <x-ui.button-small href="{{route('allocation-calculator-with-id', ['businessId' => $business->id])}}">
+                            <x-ui.button-small href="{{route('allocation-calculator-with-id', ['business' => $business])}}">
                                 Allocations
                             </x-ui.button-small>
                         </x-ui.table-td>
