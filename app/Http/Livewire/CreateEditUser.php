@@ -50,6 +50,9 @@ class CreateEditUser extends Component
     public $roleAdvisorId;
     public $roleClientId;
 
+    protected $validatorRules;
+    protected $validatorMessages;
+
     /**
      * @var App\Http\Controllers\UserController
      */
@@ -71,6 +74,25 @@ class CreateEditUser extends Component
             $this->adminsUsersArray = $this->UserController->getAdmins();
             $this->advisorsUsersArray = $this->UserController->getAdvisor();
         }
+        $this->validatorRules = [
+            'name' => 'required|min:2',
+            'email' => 'required|email|unique:users,email'.($this->user ? ','.$this->user->id : ''),
+            'timezone' => 'present|timezone',
+            'roles' => 'required',
+            'title' => 'nullable|string|min:3',
+            'responsibility' => 'nullable|string|min:4',
+            'selectedAdminId' => (auth()->user()->isSuperAdmin()
+                && in_array($this->roleAdvisorId, $this->roles))
+                ? 'required'
+                : '',
+            'selectedAdvisorId' => (auth()->user()->isSuperAdmin()
+                && in_array($this->roleClientId, $this->roles))
+                ? 'required'
+                : ''
+        ];
+        $this->validatorMessages = [
+            'email.unique' => 'The email has already been taken in system, not only on your account.'
+        ];
     }
 
     /**
@@ -113,6 +135,7 @@ class CreateEditUser extends Component
                 $this->selectedAdvisorIdAllowEdit = false;
             }
         }
+
     }
 
     /**
@@ -189,6 +212,18 @@ class CreateEditUser extends Component
         $this->collaborations = array_filter($this->collaborations);
     }
 
+    public function updatedEmail()
+    {
+        $validator = Validator::make(
+            ['email' => $this->email,],
+            ['email' => $this->validatorRules['email']],
+            $this->validatorMessages
+        );
+
+        $validator->validate();
+
+    }
+
     /**
      * Save new or update existing User with licensing and roles
      *
@@ -197,31 +232,20 @@ class CreateEditUser extends Component
      */
     public function store()
     {
-        $validator = Validator::make([
-            'name' => $this->name,
-            'email' => $this->email,
-            'timezone' => $this->timezone,
-            'roles' => $this->roles,
-            'title' => $this->title,
-            'responsibility' => $this->responsibility,
-            'selectedAdminId' => $this->selectedRegionalAdminId,
-            'selectedAdvisorId' => $this->selectedAdvisorId
-        ], [
-            'name' => 'required|min:2',
-            'email' => 'required|email|unique:users,email'.($this->user ? ','.$this->user->id : ''),
-            'timezone' => 'present|timezone',
-            'roles' => 'required',
-            'title' => 'nullable|string|min:3',
-            'responsibility' => 'nullable|string|min:4',
-            'selectedAdminId' => (auth()->user()->isSuperAdmin()
-                && in_array($this->roleAdvisorId, $this->roles))
-                ? 'required'
-                : '',
-            'selectedAdvisorId' => (auth()->user()->isSuperAdmin()
-                && in_array($this->roleClientId, $this->roles))
-                ? 'required'
-                : ''
-        ]);
+        $validator = Validator::make(
+            [
+                'name' => $this->name,
+                'email' => $this->email,
+                'timezone' => $this->timezone,
+                'roles' => $this->roles,
+                'title' => $this->title,
+                'responsibility' => $this->responsibility,
+                'selectedAdminId' => $this->selectedRegionalAdminId,
+                'selectedAdvisorId' => $this->selectedAdvisorId
+            ],
+            $this->validatorRules,
+            $this->validatorMessages
+        );
 
         $validator->validate();
 
