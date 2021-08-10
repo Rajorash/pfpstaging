@@ -207,7 +207,7 @@ class CreateEditUser extends Component
             'selectedAdminId' => $this->selectedRegionalAdminId,
             'selectedAdvisorId' => $this->selectedAdvisorId
         ], [
-            'name' => 'required|min:6',
+            'name' => 'required|min:2',
             'email' => 'required|email|unique:users,email'.($this->user ? ','.$this->user->id : ''),
             'timezone' => 'present|timezone',
             'roles' => 'required',
