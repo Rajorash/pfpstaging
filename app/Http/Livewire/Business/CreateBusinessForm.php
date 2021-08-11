@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\Business;
 use App\Models\License;
 use Livewire\Component;
+use Carbon\Carbon;
 
 class CreateBusinessForm extends Component
 {
@@ -60,6 +61,7 @@ class CreateBusinessForm extends Component
             'email',
             'exists:users,email'
         ],
+        'phaseStart' => 'required|date'
     ];
 
     /**
@@ -74,6 +76,9 @@ class CreateBusinessForm extends Component
         'email.exists' => "That email is not registered."
     ];
 
+    public $phaseStart;
+    public $phaseStartMin;
+
     /**
      * Function fires on initial load and check
      * prerequisites for creating a business
@@ -83,6 +88,8 @@ class CreateBusinessForm extends Component
     public function mount()
     {
         $this->validateAdvisorRole(Auth::user());
+        $this->phaseStart = date('Y-m-d');
+        $this->phaseStartMin = Carbon::now()->add(-3, 'month')->firstOfMonth()->format('Y-m-d');
         // $this->checkLicenses(); // TO-DO - implement once licensing sorted
     }
 
@@ -134,6 +141,7 @@ class CreateBusinessForm extends Component
         // create the business and assign to the user
         $new_business = new Business;
         $new_business->name = $data['businessname'];
+        $new_business->start_date = $this->phaseStart;
         if ($data['email'] && $owner && $this->validateClientRole($owner)) {
             $new_business->owner()->associate($owner);
         }

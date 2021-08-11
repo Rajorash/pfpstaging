@@ -21,6 +21,8 @@ class BusinessMaintenance extends Component
     public $availableLicenses = 0;
     public $iWouldLikeToDelete = false;
     public $businessName = '';
+    public $iWouldLikeToChangeStartDate = false;
+    public $businessStartDate;
 
     public $failure = false;
     public $failureMessage;
@@ -46,6 +48,7 @@ class BusinessMaintenance extends Component
         $this->freshData();
 
         $this->businessName = $this->business->name;
+        $this->businessStartDate = $this->business->start_date;
 
         if ($this->business->license) {
             $this->activeLicense = $this->business->license->active;
@@ -84,10 +87,12 @@ class BusinessMaintenance extends Component
 
         $validator = Validator::make([
             'businessName' => $this->businessName,
-            'emailCollaborate' => $this->emailCollaborate
+            'emailCollaborate' => $this->emailCollaborate,
+            'businessStartDate' => $this->businessStartDate
         ], [
             'businessName' => 'required',
-            'emailCollaborate' => 'nullable|email'
+            'emailCollaborate' => 'nullable|email',
+            'businessStartDate' => 'nullable|date'
         ]);
 
         $validator->validate();
@@ -155,6 +160,11 @@ class BusinessMaintenance extends Component
                 event(new BusinessProcessed('newOwner', $this->business, Auth::user()));
             }
 
+            if ($this->iWouldLikeToChangeStartDate) {
+                $this->business->start_date = $this->businessStartDate;
+                $this->business->save();
+            }
+
             if ($collaborator
                 && $this->emailCollaborate != optional(optional(optional($this->business->collaboration)->advisor)->user)->email) {
 
@@ -168,7 +178,7 @@ class BusinessMaintenance extends Component
                 ]);
                 $this->freshData();
                 event(new BusinessProcessed('collaboration', $this->business, Auth::user()));
-            } elseif (empty($this->emailCollaborate)) {
+            } elseif (empty($this->emailCollaborate) && is_object($this->business->collaboration)) {
 
                 event(new BusinessProcessed('collaborationDelete', $this->business, Auth::user()));
                 Collaboration::where('business_id', '=', $this->business->id)->delete();

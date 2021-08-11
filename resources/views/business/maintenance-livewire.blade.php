@@ -118,6 +118,34 @@
 
                 <div class="table-row">
                     <div class="table-cell w-1/4 pb-4 text-left pt-8">
+                        {{ __('Phase start date') }}
+                    </div>
+                    <div class="table-cell w-3/4 pb-4 text-left pt-8">
+                        <input type="checkbox"
+                               wire:model="iWouldLikeToChangeStartDate"
+                               id="iWouldLikeToChangeStartDate"/>
+                        <label for="iWouldLikeToChangeStartDate"
+                               class="pl-2">{{__('Mark this, if you would like to change of First Phase date start')}}
+                    </div>
+                </div>
+                <div class="table-row">
+                    <div class="table-cell w-1/4 pb-4 text-left">
+
+                    </div>
+                    <div class="table-cell w-3/4 pb-4 text-left">
+                        <input type="date"
+                               class="disabled:opacity-50"
+                               @if (!$iWouldLikeToChangeStartDate)
+                               disabled
+                               @endif
+                               wire:model="businessStartDate"
+                               id="businessStartDate"/>
+                        <x-jet-input-error for="businessStartDate" class="mt-2 text-left"/>
+                    </div>
+                </div>
+
+                <div class="table-row">
+                    <div class="table-cell w-1/4 pb-4 text-left pt-8">
                         {{ __('Delete business') }}
                     </div>
                     <div class="table-cell w-3/4 pb-4 text-left pt-8">

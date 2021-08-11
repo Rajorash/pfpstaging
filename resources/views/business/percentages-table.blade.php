@@ -8,13 +8,13 @@
             @php $isCurrent = $phase->id == $business->current_phase; @endphp
             <x-ui.table-th baseClass="w-24 font-normal"
             class="text-center sticky top-0 z-10 left-0 min-w-24 {{ $isCurrent ? 'bg-blue text-white': 'bg-white text-dark_gray' }}">
-                <span class="block text-xs font-normal {{ $isCurrent ? 'text-indigo-300': 'text-gray-400' }}">
-                    Phase Ending
+                <span class="block text-xs font-normal mb-2" title="{{__('Start of phase')}}">
+                    {{$phase->start_date->format('j, M Y')}}
                 </span>
-                <span class="block text-xs font-normal">
+                <span class="block text-normal" title="{{__('End of phase')}}">
                     {{$phase->end_date->format('M Y')}}
                 </span>
-                <span class="block text-xl">
+                <span class="block text-xl" title="{{__('End of phase')}}">
                     {{$phase->end_date->format('j')}}
                 </span>
             </x-ui.table-th>

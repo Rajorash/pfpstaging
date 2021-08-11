@@ -38,6 +38,18 @@
                                  wire:keydown.enter="submitForm"
                     />
                     <x-jet-input-error for="email" class="mt-2 text-left"/>
+
+                    <div class="flex w-3/4">
+                        <div class="w-1/2">
+                            <x-jet-input type="date" class="mt-1 block w-full"
+                                         x-ref="phaseStart"
+                                         min="{{$phaseStartMin}}"
+                                         wire:model="phaseStart"
+                            />
+                        </div>
+                        <div class="w-1/2 pt-3 text-left pl-2">{{__('Date of start a phase')}}</div>
+                    </div>
+                    <x-jet-input-error for="phaseStart" class="mt-2 text-left"/>
                 </div>
             @endif
         </x-slot>

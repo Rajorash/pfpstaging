@@ -13,14 +13,14 @@ class Phase extends Model
      *
      * @var array
      */
-    protected $fillable = ['end_date'];
+    protected $fillable = ['end_date', 'start_date'];
 
     /**
      * The attributes that should be cast to native types.
      *
      * @var array
      */
-    protected $casts = ['end_date' => 'date'];
+    protected $casts = ['end_date' => 'date', 'start_date' => 'date'];
 
     public function business() {
         return $this->belongsTo(Business::class);

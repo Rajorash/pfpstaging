@@ -1,5 +1,24 @@
 <div class="flex flex-wrap flex-shrink-0 mt-8 ml-auto secondary-nav">
 
+    @if(Auth::user()->isAdvisor()
+        &&
+        (is_object($business->collaboration)
+            && is_object($business->collaboration->advisor)
+            && $business->collaboration->advisor->user_id  != auth()->user()->id)
+            || !is_object($business->collaboration)
+        )
+        @php
+            $active = request()->is('*business/*/maintenance');
+        @endphp
+        <a href="{{route('maintenance.business', ['business' => $business])}}" title="Maintenance"
+           class="bg-white block rounded box-border p-3 flex mr-6 h-12
+        @if($active) text-blue @else text-gray-700 @endif
+               ">
+            <x-icons.gear :class="'h-4 w-auto my-0.5 inline-block'"/>
+            <span class="ml-2 text-lg inline-block @if($active) text-blue @else hidden @endif">Maintenance</span>
+        </a>
+    @endif
+
     @php
         $active = request()->is('*business/*/accounts');
     @endphp

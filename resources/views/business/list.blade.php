@@ -41,9 +41,9 @@
                     {{-- Maintenance column header row --}}
                     <x-ui.table-th></x-ui.table-th>
                 @endif
-                {{-- Allocations Calculator column header row --}}
-                <x-ui.table-th></x-ui.table-th>
                 {{-- Percentages column header row --}}
+                <x-ui.table-th></x-ui.table-th>
+                {{-- Allocations Calculator column header row --}}
                 <x-ui.table-th></x-ui.table-th>
                 {{-- Data Entry column header row --}}
                 <x-ui.table-th></x-ui.table-th>
@@ -145,19 +145,19 @@
                                 @endif
                             </x-ui.table-td>
                         @endif
+                        {{-- Percentages column --}}
+                        <x-ui.table-td>
+                            <x-ui.button-small title="Rollout Percentages"
+                                               href="{{route('allocations-percentages', ['business' => $business])}}">
+                                <x-icons.percent :class="'h-5 w-auto inline-block'"/>
+                            </x-ui.button-small>
+                        </x-ui.table-td>
                         {{-- Allocations Calculator column --}}
                         <x-ui.table-td>
                             <x-ui.button-small title="Allocations Calculator"
                                                href="{{route('allocation-calculator-with-id', ['business' => $business])}}">
                                 <x-icons.calculator :class="'h-5 w-auto inline-block'"/>
 
-                            </x-ui.button-small>
-                        </x-ui.table-td>
-                        {{-- Percentages column --}}
-                        <x-ui.table-td>
-                            <x-ui.button-small title="Rollout Percentages"
-                                               href="{{route('allocations-percentages', ['business' => $business])}}">
-                                <x-icons.percent :class="'h-5 w-auto inline-block'"/>
                             </x-ui.button-small>
                         </x-ui.table-td>
                         {{-- Data Entry column --}}
