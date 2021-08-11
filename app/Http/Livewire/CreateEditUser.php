@@ -92,7 +92,7 @@ class CreateEditUser extends Component
                 : ''
         ];
         $this->validatorMessages = [
-            'email.unique' => 'The email has already been taken in system, not only on your account.'
+            'email.unique' => 'The email has already been taken.'
         ];
     }
 
