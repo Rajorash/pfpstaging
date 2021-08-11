@@ -11,7 +11,6 @@ export class calculatorCore {
 
         this.pfpFunctions = new pfpFunctions(); //external functions
 
-        this.timeOutSeconds = 2000; //default delay before send data to server
         this.timeout = undefined; //just timeout object
 
         this.lastRowIndex = null; //last index of row in table
@@ -24,6 +23,8 @@ export class calculatorCore {
         this.autoSubmitDataDelayId = 'delay_submit_data';
         this.autoSubmitDataDelayDefault = 2;
         this.autoSubmitDataDelay = this.autoSubmitDataDelayDefault;
+
+        this.timeOutSeconds = 1000 * parseInt(this.autoSubmitDataDelay);  //default delay before send data to server
 
         this.heightModeDefaultSelector = '[name="block_different_height"]';
         this.heightModeDefault = 'full';

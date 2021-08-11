@@ -18,6 +18,8 @@ $(function () {
             this.autoSubmitDataDelay = $.cookie('percentage_autoSubmitDataDelay') !== undefined
                 ? parseInt($.cookie('percentage_autoSubmitDataDelay'))
                 : this.autoSubmitDataDelayDefault;
+
+            this.timeOutSeconds = 1000 * parseInt(this.autoSubmitDataDelay);
         }
 
         events() {

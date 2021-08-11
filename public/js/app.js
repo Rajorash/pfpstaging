@@ -4102,6 +4102,7 @@ $(function () {
       _this.ajaxUrl = window.allocationsControllerUpdate;
       _this.elementTablePlace = $('#allocationTablePlace');
       _this.autoSubmitDataDelay = $.cookie('allocation_autoSubmitDataDelay') !== undefined ? parseInt($.cookie('allocation_autoSubmitDataDelay')) : _this.autoSubmitDataDelayDefault;
+      _this.timeOutSeconds = 1000 * parseInt(_this.autoSubmitDataDelay);
       _this.heightMode = $.cookie('allocation_heightMode') !== undefined ? $.cookie('allocation_heightMode') : _this.heightModeDefault;
       return _this;
     }
@@ -4321,8 +4322,6 @@ var calculatorCore = /*#__PURE__*/function () {
     this.elementLoadingSpinner = $('#loadingSpinner');
     this.pfpFunctions = new _pfp_functions_js__WEBPACK_IMPORTED_MODULE_0__.pfpFunctions(); //external functions
 
-    this.timeOutSeconds = 2000; //default delay before send data to server
-
     this.timeout = undefined; //just timeout object
 
     this.lastRowIndex = null; //last index of row in table
@@ -4335,6 +4334,8 @@ var calculatorCore = /*#__PURE__*/function () {
     this.autoSubmitDataDelayId = 'delay_submit_data';
     this.autoSubmitDataDelayDefault = 2;
     this.autoSubmitDataDelay = this.autoSubmitDataDelayDefault;
+    this.timeOutSeconds = 1000 * parseInt(this.autoSubmitDataDelay); //default delay before send data to server
+
     this.heightModeDefaultSelector = '[name="block_different_height"]';
     this.heightModeDefault = 'full';
     this.heightMode = this.heightModeDefault;
@@ -5261,6 +5262,7 @@ $(function () {
       _this.ajaxUrl = window.percentagesControllerUpdate;
       _this.elementTablePlace = $('#percentagesTablePlace');
       _this.autoSubmitDataDelay = $.cookie('percentage_autoSubmitDataDelay') !== undefined ? parseInt($.cookie('percentage_autoSubmitDataDelay')) : _this.autoSubmitDataDelayDefault;
+      _this.timeOutSeconds = 1000 * parseInt(_this.autoSubmitDataDelay);
       return _this;
     }
 

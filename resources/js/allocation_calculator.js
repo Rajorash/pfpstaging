@@ -18,6 +18,8 @@ $(function () {
                 ? parseInt($.cookie('allocation_autoSubmitDataDelay'))
                 : this.autoSubmitDataDelayDefault;
 
+            this.timeOutSeconds = 1000 * parseInt(this.autoSubmitDataDelay);
+
             this.heightMode = $.cookie('allocation_heightMode') !== undefined
                 ? $.cookie('allocation_heightMode')
                 : this.heightModeDefault;
