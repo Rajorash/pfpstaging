@@ -6,6 +6,12 @@
 
     <x-ui.main>
 
+        @if (session('status'))
+        <div class="p-3 mx-12 mt-8 text-base text-indigo-500 bg-indigo-100 border border-indigo-300 rounded-lg status">
+            {{ session('status') }}
+        </div>
+        @endif
+
         <x-ui.table-table>
             <x-ui.table-caption>
                 Businesses Visible To You
@@ -141,7 +147,7 @@
                         @endif
                         {{-- Allocations Calculator column --}}
                         <x-ui.table-td>
-                            <x-ui.button-small title="Rollout Percentages (Allocations)"
+                            <x-ui.button-small title="Allocations Calculator"
                                                href="{{route('allocation-calculator-with-id', ['business' => $business])}}">
                                 <x-icons.calculator :class="'h-5 w-auto inline-block'"/>
 

@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Livewire\Component;
 use Illuminate\Support\Str;
+use Illuminate\Http\RedirectResponse;
 
 class CreateEditUser extends Component
 {
@@ -397,6 +398,7 @@ class CreateEditUser extends Component
             } else {
                 if ($user->isClient() && auth()->user()->isAdvisor()) {
                     // if an advisor creates a client user, redirect to the business listing page to create a business.
+                    session()->flash('status', "Client created! You may now create the client business with email of {$user->email}. Click the Create Business button.");
                     return redirect("business");
                 } else {
                     return redirect("user/{$user->id}");
