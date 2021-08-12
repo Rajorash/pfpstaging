@@ -1,13 +1,14 @@
 <x-ui.table-table class="cursor-fill-data relative">
     <thead>
     <tr class="border-b divide-x border-light_blue">
-        <x-ui.table-th class="text-left sticky top-0 left-0 z-20" baseClass="w-24 pr-2 pl-4 text-dark_gray font-normal bg-white">
+        <x-ui.table-th class="text-left sticky top-0 left-0 z-40"
+                       baseClass="w-24 pr-2 pl-4 text-dark_gray font-normal bg-white">
             Account
         </x-ui.table-th>
         @forelse($rollout as $phase)
             @php $isCurrent = $phase->id == $business->current_phase; @endphp
             <x-ui.table-th baseClass="w-24 font-normal"
-            class="text-center sticky top-0 z-10 left-0 min-w-24 {{ $isCurrent ? 'bg-blue text-white': 'bg-white text-dark_gray' }}">
+                           class="text-center sticky top-0 z-30 left-0 min-w-24 {{ $isCurrent ? 'bg-blue text-white': 'bg-white text-dark_gray' }}">
                 <span class="block text-xs font-normal mb-2" title="{{__('Start of phase')}}">
                     {{$phase->start_date->format('j, M Y')}}
                 </span>
@@ -19,7 +20,8 @@
                 </span>
             </x-ui.table-th>
         @empty
-            <x-ui.table-th class="text-center sticky top-0 z-10 min-w-20" baseClass="w-24 text-dark_gray font-normal">No phases exist...
+            <x-ui.table-th class="text-center sticky top-0 z-10 min-w-20" baseClass="w-24 text-dark_gray font-normal">No
+                phases exist...
             </x-ui.table-th>
         @endforelse
     </tr>
@@ -56,7 +58,7 @@
             @endif
             <tr class="{{$account_class[$acc->type]}} hover:bg-yellow-100 border-light_blue divide-x">
                 <x-ui.table-td padding="p-1 pr-2 pl-4"
-                               class="text-left sticky left-0 z-10 {{$account_class[$acc->type]}} text-{{strtolower($acc->type)}}">{{ $acc->name }}</x-ui.table-td>
+                               class="text-left sticky left-0 z-30 {{$account_class[$acc->type]}} text-{{strtolower($acc->type)}}">{{ $acc->name }}</x-ui.table-td>
 
                 @forelse($rollout as $phase)
                     @php
@@ -70,9 +72,15 @@
                             ->first()
                             ?? null
                     @endphp
-                    <x-ui.table-td padding="p-0" class="text-right">
-                        <input class="percentage-value {{$acc->type}}
+                    <x-ui.table-td padding="p-0" class="text-right relative">
+{{--                        <div draggable="true" class="absolute w-3 h-full--}}
+{{--                        border-4 border-t-0 border-b-0 border-solid border-transparent--}}
+{{--                        hover:border-gray-300 transition-all cursor-move--}}
+{{--                        z-10 pfp_copy_move_element"></div>--}}
+                        <input draggable="true" class="percentage-value {{$acc->type}}
+                            pfp_copy_move_element
                             border-0 border-transparent bg-transparent
+                            hover:bg-yellow-50 z-0
                             focus:outline-none focus:ring-1 focus:shadow-none focus:bg-yellow-50
                             m-0 outline-none postreal text-right w-full"
                                data-phase-id="{{$phase->id}}"

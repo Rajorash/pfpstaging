@@ -4339,6 +4339,7 @@ var calculatorCore = /*#__PURE__*/function () {
     this.heightModeDefaultSelector = '[name="block_different_height"]';
     this.heightModeDefault = 'full';
     this.heightMode = this.heightModeDefault;
+    this.copyMoveClassName = 'pfp_copy_move_element';
   }
 
   _createClass(calculatorCore, [{
@@ -4362,6 +4363,14 @@ var calculatorCore = /*#__PURE__*/function () {
       $(document).on('change', $this.heightModeDefaultSelector, function (event) {
         $this.heightMode = $(this).val();
         $this.updateHeightMode();
+      });
+      $(document).on('dragend', '.' + $this.copyMoveClassName, function (event) {
+        var $sourceElement = $(this);
+        var $targetElement = $(document.elementFromPoint(event.clientX, event.clientY));
+
+        if ($targetElement.hasClass($this.copyMoveClassName)) {
+          $targetElement.val($sourceElement.val()).change();
+        }
       });
     }
   }, {

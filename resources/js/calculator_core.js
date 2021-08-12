@@ -29,6 +29,8 @@ export class calculatorCore {
         this.heightModeDefaultSelector = '[name="block_different_height"]';
         this.heightModeDefault = 'full';
         this.heightMode = this.heightModeDefault;
+
+        this.copyMoveClassName = 'pfp_copy_move_element';
     }
 
     init() {
@@ -53,6 +55,15 @@ export class calculatorCore {
         $(document).on('change', $this.heightModeDefaultSelector, function (event) {
             $this.heightMode = $(this).val();
             $this.updateHeightMode();
+        });
+
+        $(document).on('dragend', '.' + $this.copyMoveClassName, function (event) {
+            let $sourceElement = $(this);
+            let $targetElement = $(document.elementFromPoint(event.clientX, event.clientY));
+
+            if ($targetElement.hasClass($this.copyMoveClassName)) {
+                $targetElement.val($sourceElement.val()).change();
+            }
         });
     }
 
