@@ -7,9 +7,10 @@
     <x-ui.main>
 
         @if (session('status'))
-        <div class="p-3 mx-12 mt-8 text-base text-indigo-500 bg-indigo-100 border border-indigo-300 rounded-lg status">
-            {{ session('status') }}
-        </div>
+            <div
+                class="p-3 mx-12 mt-8 text-base text-indigo-500 bg-indigo-100 border border-indigo-300 rounded-lg status">
+                {{ session('status') }}
+            </div>
         @endif
 
         <x-ui.table-table>
@@ -41,6 +42,8 @@
                     {{-- Maintenance column header row --}}
                     <x-ui.table-th></x-ui.table-th>
                 @endif
+                {{-- Accounts --}}
+                <x-ui.table-th></x-ui.table-th>
                 {{-- Percentages column header row --}}
                 <x-ui.table-th></x-ui.table-th>
                 {{-- Allocations Calculator column header row --}}
@@ -59,6 +62,7 @@
                         <x-ui.table-td padding="pl-12 pr-2 py-4">
                             {{ $business->name }}
                         </x-ui.table-td>
+
                         {{-- Owner Column --}}
                         <x-ui.table-td>
                             <div class="flex items-center">
@@ -79,6 +83,7 @@
                                 @endif
                             </div>
                         </x-ui.table-td>
+
                         {{-- License Column --}}
                         <x-ui.table-td>
                             @if ( is_object($business->license) )
@@ -124,14 +129,16 @@
                                 </div>
                             @endif
                         </x-ui.table-td>
+
                         {{-- Accounts Column --}}
                         <x-ui.table-td class="text-center">
                             <a href="{{url('/business/'.$business->id.'/accounts')}}">
                                 <x-ui.badge> {{$business->accounts()->count()}}</x-ui.badge>
                             </a>
                         </x-ui.table-td>
+
+                        {{-- Maintenance column --}}
                         @if(Auth::user()->isAdvisor())
-                            {{-- Maintenance column --}}
                             <x-ui.table-td>
                                 @if(
                                 (is_object($business->collaboration)
@@ -145,6 +152,15 @@
                                 @endif
                             </x-ui.table-td>
                         @endif
+
+                        {{-- Accounts --}}
+                        <x-ui.table-td>
+                            <x-ui.button-small title="Accounts"
+                                               href="{{url('/business/'.$business->id.'/accounts')}}">
+                                <x-icons.vallet :class="'h-5 w-auto inline-block'"/>
+                            </x-ui.button-small>
+                        </x-ui.table-td>
+
                         {{-- Percentages column --}}
                         <x-ui.table-td>
                             <x-ui.button-small title="Rollout Percentages"
@@ -152,6 +168,7 @@
                                 <x-icons.percent :class="'h-5 w-auto inline-block'"/>
                             </x-ui.button-small>
                         </x-ui.table-td>
+
                         {{-- Allocations Calculator column --}}
                         <x-ui.table-td>
                             <x-ui.button-small title="Allocations Calculator"
@@ -160,6 +177,7 @@
 
                             </x-ui.button-small>
                         </x-ui.table-td>
+
                         {{-- Data Entry column --}}
                         <x-ui.table-td>
                             <x-ui.button-small title="Data Entry" class="whitespace-nowrap"
@@ -167,6 +185,7 @@
                                 <x-icons.table :class="'h-5 w-auto inline-block'"/>
                             </x-ui.button-small>
                         </x-ui.table-td>
+
                         {{-- Forecast column --}}
                         <x-ui.table-td padding="pl-2 pr-12 py-4">
                             <x-ui.button-small title="Projection Forecast"
