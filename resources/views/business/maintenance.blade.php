@@ -1,8 +1,8 @@
 <x-app-layout>
     <x-slot name="header">
-        {{ __('Maintenance business')}}
-        <x-icons.chevron-right :class="'h-4 w-auto inline-block px-2'"/>
         {{$business->name }}
+        <x-icons.chevron-right :class="'h-4 w-auto inline-block px-2'"/>
+        {{ __('Maintenance')}}
     </x-slot>
 
     <x-slot name="subMenu">
