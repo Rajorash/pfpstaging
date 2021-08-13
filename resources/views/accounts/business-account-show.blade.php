@@ -25,35 +25,34 @@
                 <tr>
                     <x-ui.table-td class="align-top whitespace-nowrap" padding="pl-12 pr-2 py-4">
                         <div class="text-{{strtolower($acc->type)}} text-2xl">{{ $acc->name }}</div>
-                        <div class="text-white font-normal inline-block py-0 px-3 rounded-lg bg-{{strtolower($acc->type)}}">{{ $acc->type }}</div>
+                        <div
+                            class="text-white font-normal inline-block py-0 px-3 rounded-lg bg-{{strtolower($acc->type)}}">{{ $acc->type }}</div>
                     </x-ui.table-td>
 
                     <x-ui.table-td class="align-top">
                         <div class="pb-2 text-lg">Account Flows</div>
                         @forelse($acc->flows as $flow)
-                            <div class="table">
-                                <div class="table-row">
-                                    <div
-                                        class="table-cell pb-2 text-sm pr-4 text-{{$flow->isNegative() ? 'red-500' : 'green' }}">
+                            <div class="table w-full mb-2">
+                                <div class="table-row hover:bg-gray-100 w-full text-sm">
+                                    <div class="table-cell px-2 pb-1 rounded-tl-lg rounded-bl-lg text-{{$flow->isNegative() ? 'red-500' : 'green' }}">
                                         {{ $flow->label }}
                                     </div>
-                                    <div class="table-cell">
-                                        <x-ui.button-small attr="title=Edit"
-                                                           class="w-auto h-6 mr-4 text-light_purple" padding="py-1 px-1"
+                                    <div class="table-cell px-2 pb-1 w-10">
+                                        <x-ui.button-small title="Edit"
+                                                           class="w-auto h-6 text-light_purple hover:text-purple-700"
                                                            background="bg-transparent hover:bg-transparent border-transparent border-transparent"
                                                            href="{{url('/accounts/'.$acc->id.'/flow/'.$flow->id.'/edit')}}">
                                             <x-icons.edit class="w-3 h-auto"/>
                                         </x-ui.button-small>
                                     </div>
-                                    <div class="table-cell pb-2 w-28">
+                                    <div class="table-cell px-2 pb-1 rounded-tr-lg rounded-br-lg w-10">
                                         <form class="inline-block"
                                               action="{{url('/accounts/'.$acc->id.'/flow/'.$flow->id)}}"
                                               method="POST">
                                             @method('DELETE')
                                             @csrf
                                             <x-ui.button-small background="bg-transparent hover:bg-transparent"
-                                                               padding="py-1 px-1"
-                                                               class="w-auto h-6 mr-4 text-red-300 border-transparent hover:text-red-700"
+                                                               class="w-auto h-6 text-red-300 border-transparent hover:text-red-700"
                                                                attr="title=Delete" type="button">
                                                 <x-icons.delete class="w-3 h-auto"/>
                                             </x-ui.button-small>
@@ -87,23 +86,23 @@
                                     @if( $acc->isDeletable() )
 
                                         <div class="flex flex-inline">
-                                        @if($confirmingId === $acc->id)
-                                        <x-ui.button-small
-                                          background="bg-red-500 hover:bg-dark_gray2"
-                                          type="button"
-                                          wire:click="deleteAccount({{$acc->id}})">
-                                            <x-icons.confirm class="w-3 h-auto mr-2"/>
-                                            Confirm&nbsp;Delete?
-                                        </x-ui.button-small>
-                                        @else
-                                        <x-ui.button-small
-                                          background="bg-red-900 hover:bg-dark_gray2"
-                                          type="button"
-                                          wire:click="confirmDeleteAccount({{$acc->id}})">
-                                            <x-icons.delete class="w-3 h-auto mr-2"/>
-                                            Delete
-                                        </x-ui.button-small>
-                                        @endif
+                                            @if($confirmingId === $acc->id)
+                                                <x-ui.button-small
+                                                    background="bg-red-500 hover:bg-dark_gray2"
+                                                    type="button"
+                                                    wire:click="deleteAccount({{$acc->id}})">
+                                                    <x-icons.confirm class="w-3 h-auto mr-2"/>
+                                                    Confirm&nbsp;Delete?
+                                                </x-ui.button-small>
+                                            @else
+                                                <x-ui.button-small
+                                                    background="bg-red-900 hover:bg-dark_gray2"
+                                                    type="button"
+                                                    wire:click="confirmDeleteAccount({{$acc->id}})">
+                                                    <x-icons.delete class="w-3 h-auto mr-2"/>
+                                                    Delete
+                                                </x-ui.button-small>
+                                            @endif
                                         </div>
 
                                     @endif
