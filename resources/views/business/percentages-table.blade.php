@@ -73,10 +73,6 @@
                             ?? null
                     @endphp
                     <x-ui.table-td padding="p-0" class="text-right relative">
-{{--                        <div draggable="true" class="absolute w-3 h-full--}}
-{{--                        border-4 border-t-0 border-b-0 border-solid border-transparent--}}
-{{--                        hover:border-gray-300 transition-all cursor-move--}}
-{{--                        z-10 pfp_copy_move_element"></div>--}}
                         <input draggable="true" class="percentage-value {{$acc->type}}
                             pfp_copy_move_element
                             border-0 border-transparent bg-transparent
