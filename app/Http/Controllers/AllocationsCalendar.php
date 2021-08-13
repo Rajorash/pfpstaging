@@ -232,7 +232,6 @@ class AllocationsCalendar extends Controller
                             if (
                                 isset($flows[$id])
                                 && array_key_exists($key, $flows[$id])
-                                && isset($flows[$id][$key])
                                 && count($flows[$id][$key]) == $complete) {
                                 $response[BankAccount::ACCOUNT_TYPE_SALESTAX][$id] += $flows[$id];
                             }
