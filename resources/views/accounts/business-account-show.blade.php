@@ -41,9 +41,14 @@
                                     @if(auth()->user()->isAdvisor() || auth()->user()->isClient())
                                         <div class="table-cell px-2 pb-1 w-10">
                                             <div class="flex">
-                                                @if(count($flow->recurringTransactions))
+                                                @php
+                                                    $recurringTransactionsCount = count($flow->recurringTransactions);
+                                                @endphp
+                                                @if($recurringTransactionsCount)
                                                     <div class="leading-6"
-                                                         title="{{__('Flow contains').' '.count($flow->recurringTransactions).' '.Str::plural('recurring task', count($flow->recurringTransactions))}}">{{count($flow->recurringTransactions)}}</div>
+                                                         title="{{__('Flow contains').' '.$recurringTransactionsCount
+                                                            .' '.Str::plural('recurring task', $recurringTransactionsCount)}}">
+                                                        {{$recurringTransactionsCount}}</div>
                                                 @endif
                                                 <x-ui.button-small title="Recurring transactions"
                                                                    class="w-auto h-6 text-green hover:opacity-100 opacity-40"
