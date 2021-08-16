@@ -9,7 +9,7 @@ class AccountFlow extends Model
 {
     use Allocatable;
 
-    protected $fillable = ['name','negative_flow'];
+    protected $fillable = ['name', 'negative_flow'];
 
     protected $casts = [
         'negative_flow' => 'boolean'
@@ -23,5 +23,10 @@ class AccountFlow extends Model
     public function isNegative()
     {
         return $this->negative_flow;
+    }
+
+    public function recurringTransactions()
+    {
+        return $this->hasMany(RecurringTransactions::class, 'account_id', 'id');
     }
 }

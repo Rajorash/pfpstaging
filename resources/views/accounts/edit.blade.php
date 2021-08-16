@@ -3,7 +3,7 @@
     <x-slot name="header">
         {{$business->name}}
         <x-icons.chevron-right :class="'h-4 w-auto inline-block px-2'"/>
-        Update Account
+        {{ __('Update Account') }}
     </x-slot>
 
     <x-slot name="subMenu">

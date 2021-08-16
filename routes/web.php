@@ -8,6 +8,7 @@ use App\Http\Controllers\BankAccountEntryController;
 use App\Http\Controllers\BusinessController;
 use App\Http\Controllers\LicenseController;
 use App\Http\Controllers\ProjectionController;
+use App\Http\Controllers\RecurringTransactionsController;
 use App\Http\Controllers\UserController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Support\Facades\Auth;
@@ -164,6 +165,26 @@ Route::group(['middleware' => 'auth'], function () {
     Route::put(
         '/accounts/{account}/flow/{flow}',
         [BankAccountController::class, 'updateFlow']
+    );
+
+    Route::get(
+        '/accounts/{account}/flow/{flow}/recurring',
+        [RecurringTransactionsController::class, 'list']
+    )->name('recurring-list');
+
+    Route::get(
+        '/accounts/{account}/flow/{flow}/recurring/add',
+        [RecurringTransactionsController::class, 'create']
+    )->name('recurring-create');
+
+    Route::get(
+        '/accounts/{account}/flow/{flow}/recurring/{recurring}/edit',
+        [RecurringTransactionsController::class, 'edit']
+    )->name('recurring-edit');
+
+    Route::delete(
+        '/accounts/{account}/flow/{flow}/recurring/{recurring}/delete',
+        [RecurringTransactionsController::class, 'delete']
     );
 
     Route::post(

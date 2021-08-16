@@ -34,9 +34,26 @@
                         @forelse($acc->flows as $flow)
                             <div class="table w-full mb-2">
                                 <div class="table-row hover:bg-gray-100 w-full text-sm">
-                                    <div class="table-cell px-2 pb-1 rounded-tl-lg rounded-bl-lg text-{{$flow->isNegative() ? 'red-500' : 'green' }}">
+                                    <div
+                                        class="table-cell px-2 pb-1 rounded-tl-lg rounded-bl-lg text-{{$flow->isNegative() ? 'red-500' : 'green' }}">
                                         {{ $flow->label }}
                                     </div>
+                                    @if(auth()->user()->isAdvisor() || auth()->user()->isClient())
+                                        <div class="table-cell px-2 pb-1 w-10">
+                                            <div class="flex">
+                                                @if(count($flow->recurringTransactions))
+                                                    <div class="leading-6"
+                                                         title="{{__('Flow contains').' '.count($flow->recurringTransactions).' '.Str::plural('recurring task', count($flow->recurringTransactions))}}">{{count($flow->recurringTransactions)}}</div>
+                                                @endif
+                                                <x-ui.button-small title="Recurring transactions"
+                                                                   class="w-auto h-6 text-green hover:opacity-100 opacity-40"
+                                                                   background="bg-transparent hover:bg-transparent border-transparent border-transparent"
+                                                                   href="{{url('/accounts/'.$acc->id.'/flow/'.$flow->id.'/recurring')}}">
+                                                    <x-icons.recurring class="w-3 h-auto"/>
+                                                </x-ui.button-small>
+                                            </div>
+                                        </div>
+                                    @endif
                                     <div class="table-cell px-2 pb-1 w-10">
                                         <x-ui.button-small title="Edit"
                                                            class="w-auto h-6 text-light_purple hover:text-purple-700"
