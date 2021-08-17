@@ -6,7 +6,8 @@
         "watch": "npm run development -- --watch",
         "watch-poll": "npm run watch -- --watch-poll",
         "hot": "mix watch --hot",
-        "production": "mix --production"
+        "production": "mix --production",
+        "prod": "npm run production"
     },
     "devDependencies": {
         "@babel/preset-react": "^7.14.5",

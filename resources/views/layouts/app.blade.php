@@ -26,9 +26,9 @@
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     <link rel="stylesheet" href="{{ asset('css/all.css') }}">
 
-    @livewireStyles
+@livewireStyles
 
-    <!-- Scripts -->
+<!-- Scripts -->
     <script src="{{ mix('js/app.js') }}" defer></script>
 </head>
 <body class="font-sans antialiased relative text-light_gray">
@@ -61,6 +61,8 @@
     {{ $slot }}
 
 </div>
+
+<div id="delay_progress" class="absolute rounded bg-blue h-1 bottom-2 right-4 sm:right-6 lg:right-8 z-50"></div>
 
 @stack('modals')
 

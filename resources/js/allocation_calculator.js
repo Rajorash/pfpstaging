@@ -87,7 +87,7 @@ $(function () {
             if ($this.heightMode === 'full') {
                 $('.block_different_height').height('auto');
             } else {
-                let height = $(window).height() - 20;
+                let height = $(window).height() - 50;
 
                 if ($('.block_different_height').offset()) {
                     height -= $('.block_different_height').offset().top;
