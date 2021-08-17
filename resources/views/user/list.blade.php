@@ -26,7 +26,13 @@
                     <x-slot name="right">
                         <x-ui.button-normal href="{{route('users.create')}}">
                             <x-icons.user-add/>
-                            <span class="ml-2">Create User</span>
+                            <span class="ml-2">
+                                @if (Auth::user()->isRegionalAdmin())
+                                    {{ __('Create Advisor') }}
+                                @else
+                                    {{ __('Create User') }}
+                                @endif
+                            </span>
                         </x-ui.button-normal>
                     </x-slot>
                 @endif
