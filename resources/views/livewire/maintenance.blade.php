@@ -29,5 +29,6 @@
                 @endif
             </div>
         </div>
+        <div class="col-span-2 h-80 global_nice_scroll">{{phpinfo()}}</div>
     </div>
 </div>
