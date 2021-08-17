@@ -31,6 +31,8 @@ export class calculatorCore {
         this.heightMode = this.heightModeDefault;
 
         this.copyMoveClassName = 'pfp_copy_move_element';
+
+        this.windowCoordinates = {};
     }
 
     init() {
@@ -82,6 +84,10 @@ export class calculatorCore {
     showSpinner() {
         let $this = this;
 
+        if ($this.debug) {
+            console.log('showSpinner');
+        }
+
         $('html, body').css({
             overflow: 'hidden',
             height: '100%'
@@ -98,11 +104,19 @@ export class calculatorCore {
             height: 'auto'
         });
 
+        if ($this.debug) {
+            console.log('hideSpinner');
+        }
+
         $this.elementLoadingSpinner.hide();
     }
 
     loadData(event) {
         let $this = this;
+
+        if ($this.debug) {
+            console.log('loadData');
+        }
 
         $this.collectData(event);
 
@@ -116,6 +130,10 @@ export class calculatorCore {
     progressBar() {
         let $this = this;
 
+        if ($this.debug) {
+            console.log('progressBar');
+        }
+
         clearInterval($this.delayProgressInterval);
 
         $('#' + $this.delayProgressId).width($('#' + $this.delayProgressId).parent().width());
@@ -124,6 +142,9 @@ export class calculatorCore {
             let width = $('#' + $this.delayProgressId).width()
                 - $('#' + $this.delayProgressId).parent().width() / $this.timeOutSeconds * $this.delayProgressTimeIntervalMiliseconds;
             $('#' + $this.delayProgressId).width(width);
+            if ($this.debug) {
+                console.log('progressBar after SetInterval');
+            }
         }, $this.delayProgressTimeIntervalMiliseconds);
     }
 
@@ -143,8 +164,9 @@ export class calculatorCore {
             type: 'POST',
             url: $this.ajaxUrl,
             data: $this.data,
+            async: true,
             beforeSend: function () {
-                $this.showSpinner()
+                $this.showSpinner();
             },
             success: function (data) {
                 if ($this.debug) {
@@ -156,12 +178,17 @@ export class calculatorCore {
             complete: function () {
                 $this.hideSpinner();
                 $this.resetData();
+                $this.scrollToLatestPoint();
             }
         });
     }
 
     readLastIndexes() {
         let $this = this;
+
+        if ($this.debug) {
+            console.log('readLastIndexes');
+        }
 
         if ($('#php_lastData') && $('#php_lastData').length) {
             $this.lastRowIndex = parseInt($('#php_lastData').data('last_row_index'));
@@ -172,11 +199,16 @@ export class calculatorCore {
     renderData(data) {
         let $this = this;
 
+        if ($this.debug) {
+            console.log('renderData');
+        }
+
         if (data.error.length === 0) {
             $this.elementTablePlace.html(data.html);
 
             if ($this.lastCoordinatesElementId) {
                 $('#' + $this.lastCoordinatesElementId).focus();
+                $('#' + $this.lastCoordinatesElementId).select();
             }
 
             $this.pfpFunctions.tableStickyHeader();
@@ -188,6 +220,10 @@ export class calculatorCore {
 
     cursorForTableFill() {
         let $this = this;
+
+        if ($this.debug) {
+            console.log('cursorForTableFill');
+        }
 
         $(document).on('keydown', '.cursor-fill-data', function (event) {
             const key = event.key; // "ArrowRight", "ArrowLeft", "ArrowUp", or "ArrowDown"
@@ -212,7 +248,7 @@ export class calculatorCore {
         let $this = this;
 
         if ($this.debug) {
-            console.log(key, currentRow, currentColumn, $this.lastRowIndex, $this.lastColumnIndex);
+            console.log('searchNextNotDisabledFiled', key, currentRow, currentColumn, $this.lastRowIndex, $this.lastColumnIndex);
         }
 
         switch (key) {
@@ -261,6 +297,30 @@ export class calculatorCore {
     }
 
     updateHeightMode() {
+    }
+
+    scrollToLatestPoint() {
+        let $this = this;
+
+        if ($this.debug) {
+            console.log('scrollToLatestPoint');
+        }
+
+        if ($this.lastCoordinatesElementId && $('#' + $this.lastCoordinatesElementId).length) {
+            let $elementOffset = $('#' + $this.lastCoordinatesElementId).offset();
+
+            if ($elementOffset.hasOwnProperty('top') && $elementOffset.hasOwnProperty('left')) {
+                if ($this.heightMode === 'full') {
+                    if (
+                        $this.windowCoordinates.hasOwnProperty('top')
+                        && $this.windowCoordinates.hasOwnProperty('left')
+                    ) {
+                        $(window).scrollTop($this.windowCoordinates.top);
+                        $(window).scrollLeft($this.windowCoordinates.left);
+                    }
+                }
+            }
+        }
     }
 
 }

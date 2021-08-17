@@ -14,7 +14,7 @@
         </div>
     @endif
     <div>
-        <input type="number" min="1" max="30" id="delay_submit_data" class="py-0 px-1 text-center mr-1">
+        <input type="number" min="1" max="30" id="delay_submit_data" class="py-0 px-1 text-center mr-1 rounded">
         <label for="delay_submit_data">delay (in sec) between submit data</label>
     </div>
 </div>

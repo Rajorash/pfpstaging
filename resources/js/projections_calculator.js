@@ -30,6 +30,11 @@ $(function () {
 
             $this.changesCounter++;
 
+            $this.windowCoordinates = {
+                top: $(window).scrollTop(),
+                left: $(window).scrollLeft()
+            };
+
             $this.data.businessId = $('#businessId').val();
             $this.data.rangeValue = $('#currentProjectionsRange').val();
 

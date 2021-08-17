@@ -37,7 +37,7 @@
     <x-ui.data-submit-controls :heightController="true" />
 
     <x-ui.main width="w-full">
-        <div id="allocationTablePlace" class="global_nice_scroll overflow-scroll relative block_different_height">
+        <div id="allocationTablePlace" class="global_nice_scroll overflow-scroll relative block_different_height return_coordinates_table">
             <div class="p-8 text-center opacity-50">...loading</div>
         </div>
     </x-ui.main>

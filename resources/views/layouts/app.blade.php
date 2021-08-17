@@ -62,10 +62,11 @@
 
 </div>
 
-<div id="delay_progress" class="absolute rounded bg-blue h-1 bottom-2 right-4 sm:right-6 lg:right-8 z-50"></div>
+<div id="delay_progress" class="fixed rounded bg-blue h-1 bottom-2 right-4 sm:right-6 lg:right-8 z-50"></div>
 
 @stack('modals')
 
 @livewireScripts
+<div id="ddd" class="absolute z-50 w-2 h-2 bg-red-600"></div>
 </body>
 </html>

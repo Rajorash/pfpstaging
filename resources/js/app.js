@@ -12,12 +12,12 @@ require('./percentages_calculator');
 require('./projections_calculator');
 require('./jquery.floatThead.min');
 
+let resizeTimer;
+
 $('.global_nice_scroll').niceScroll({
     cursorwidth: '10px',
     zindex: 20
 });
-
-let resizeTimer;
 
 $(window).on('resize', function () {
     clearTimeout(resizeTimer);

@@ -42,6 +42,10 @@ $(function () {
             if (event && typeof event.target.id === 'string') {
 
                 $this.lastCoordinatesElementId = event.target.id;
+                $this.windowCoordinates = {
+                    top: $(window).scrollTop(),
+                    left: $(window).scrollLeft()
+                };
 
                 $this.data.cells.push({
                     cellId: event.target.id,

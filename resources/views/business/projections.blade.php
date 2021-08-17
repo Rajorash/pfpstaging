@@ -24,7 +24,7 @@
     </x-slot>
 
     <x-ui.main width="w-full">
-        <div id="projectionsTablePlace" class="global_nice_scroll">
+        <div id="projectionsTablePlace" class="global_nice_scroll return_coordinates_table">
             <div class="p-8 text-center opacity-50">...loading</div>
         </div>
     </x-ui.main>
