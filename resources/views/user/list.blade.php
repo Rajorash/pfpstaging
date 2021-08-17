@@ -1,13 +1,23 @@
 <x-app-layout>
     <x-slot name="header">
-        {{ __('Users') }}
+        @if (Auth::user()->isRegionalAdmin())
+            {{ __('Advisors') }}
+        @else
+            {{ __('Users') }}
+        @endif
     </x-slot>
 
     <x-ui.main>
 
         <x-ui.table-table>
             <x-ui.table-caption>
-                <span>Users Visible To You</span>
+                <span>
+                    @if (Auth::user()->isRegionalAdmin())
+                        {{ __('Advisors Visible To You') }}
+                    @else
+                        {{ __('Users Visible To You') }}
+                    @endif
+                </span>
                 @if(
                     Auth::user()->isSuperAdmin() ||
                     Auth::user()->roles->pluck('name')->contains('admin') ||
@@ -161,22 +171,29 @@
                             </x-ui.table-td>
                             <x-ui.table-td>
                                 <x-ui.button-small href="{{url('/user/'.$user->id)}}">
-                                    See User
+                                    @if (Auth::user()->isRegionalAdmin())
+                                        {{ __('See Advisor') }}
+                                    @else
+                                        {{ __('See user') }}
+                                    @endif
                                 </x-ui.button-small>
                             </x-ui.table-td>
                             <x-ui.table-td>
                                 @if(Auth::user()->isSuperAdmin() || Auth::user()->isAdvisor())
                                     <x-ui.button-small href="{{route('users.edit', ['user'=>$user])}}">
-                                        Edit User
+                                        @if (Auth::user()->isRegionalAdmin())
+                                            {{ __('Edit Advisor') }}
+                                        @else
+                                            {{ __('Edit user') }}
+                                        @endif
                                     </x-ui.button-small>
                                 @endif
                             </x-ui.table-td>
-                            <x-ui.table-td>
+                            <x-ui.table-td class="pr-12">
                                 @if(Auth::user()->isRegionalAdmin() && $user->isAdvisor())
                                     <x-ui.button-small href="{{route('licenses.list', ['user'=>$user])}}">
-                                        Licenses
+                                        {{__('Licenses')}}
                                     </x-ui.button-small>
-                                    {{--                                    <livewire:licenses-counter :user="$user" :key="$user->id"/>--}}
                                 @endif
                             </x-ui.table-td>
                         </tr>

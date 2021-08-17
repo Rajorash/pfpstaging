@@ -58,10 +58,14 @@
     @if(!Auth::user()->isClient())
         <div class="p-6 border-t border-light_blue">
             <div class="mx-12 my-4">
+                @php
+                $userCardTitle = Auth::user()->isRegionalAdmin() ? 'Advisors' : 'Users';
+                $userCardLinkTitle = Auth::user()->isRegionalAdmin() ? 'See advisors' : 'See users';
+                @endphp
                 <x-ui.dashboard-card
                     :route="route('users')"
-                    :title="'Users'"
-                    :linkTitle="'See users'"
+                    :title="$userCardTitle"
+                    :linkTitle="$userCardLinkTitle"
                 >
                     <x-slot name="icon">
                         <x-icons.users :class="'w-auto h-5 text-blue'"/>

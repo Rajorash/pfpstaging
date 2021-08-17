@@ -1,21 +1,33 @@
 <x-app-layout>
     <x-slot name="header">
-        Users
+        @if (Auth::user()->isRegionalAdmin())
+            {{ __('Advisors') }}
+        @else
+            {{ __('Users') }}
+        @endif
         <x-icons.chevron-right :class="'h-4 w-auto inline-block px-2'"/>
-        User Details
+        @if (Auth::user()->isRegionalAdmin())
+            {{ __('Advisors Details') }}
+        @else
+            {{ __('Users Details') }}
+        @endif
     </x-slot>
 
     <x-ui.main>
 
         <x-ui.table-table>
             <x-ui.table-caption class="pt-12 pb-6 px-72 relative">
-                User Details
+                @if (Auth::user()->isRegionalAdmin())
+                    {{ __('Advisors Details') }}
+                @else
+                    {{ __('Users Details') }}
+                @endif
 
                 <x-slot name="left">
                     <div class="absolute left-12 top-12">
                         <x-ui.button-normal href="{{route('users')}}">
                             <x-icons.chevron-left :class="'h-3 w-auto'"/>
-                            <span class="ml-2">Go back</span>
+                            <span class="ml-2">{{__('Go back')}}</span>
                         </x-ui.button-normal>
                     </div>
                 </x-slot>
@@ -151,22 +163,22 @@
                                                     </div>
                                                 </div>
                                                 @if(count($user->collaborations))
-                                                <div class="table-row">
-                                                    <div class="table-cell pb-2">{{__('Collaborations')}}</div>
-                                                    <div class="table-cell pb-2">
-                                                        @if(Auth::user()->isRegionalAdmin())
-                                                            {{count($user->collaborations)}}
-                                                        @else
-                                                            <ol class="list-disc">
-                                                                @foreach ($user->collaborations as $business)
-                                                                    <li>
-                                                                        <a href="/business/{{$business->id}}">{{$business->name}}</a>
-                                                                    </li>
-                                                                @endforeach
-                                                            </ol>
-                                                        @endif
+                                                    <div class="table-row">
+                                                        <div class="table-cell pb-2">{{__('Collaborations')}}</div>
+                                                        <div class="table-cell pb-2">
+                                                            @if(Auth::user()->isRegionalAdmin())
+                                                                {{count($user->collaborations)}}
+                                                            @else
+                                                                <ol class="list-disc">
+                                                                    @foreach ($user->collaborations as $business)
+                                                                        <li>
+                                                                            <a href="/business/{{$business->id}}">{{$business->name}}</a>
+                                                                        </li>
+                                                                    @endforeach
+                                                                </ol>
+                                                            @endif
+                                                        </div>
                                                     </div>
-                                                </div>
                                                 @endif
                                             @endif
                                         @endif

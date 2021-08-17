@@ -17,10 +17,10 @@
                         {{ __('Dashboard') }}
                     </x-jet-nav-link>
                     @if(!Auth::user()->isRegionalAdmin())
-                    <x-jet-nav-link href="{{ route('allocation-calculator') }}"
-                                    :active="request()->routeIs('allocation-calculator')">
-                        {{ __('Calculator') }}
-                    </x-jet-nav-link>
+                        <x-jet-nav-link href="{{ route('allocation-calculator') }}"
+                                        :active="request()->routeIs('allocation-calculator')">
+                            {{ __('Calculator') }}
+                        </x-jet-nav-link>
                         <x-jet-nav-link href="{{ route('businesses') }}"
                                         :active="request()->is('*business/*') || request()->is('business')">
                             {{ __('Businesses') }}
@@ -28,7 +28,11 @@
                     @endif
                     @if(Auth::user()->isSuperAdmin() || Auth::user()->isRegionalAdmin() || Auth::user()->isAdvisor())
                         <x-jet-nav-link href="{{ route('users') }}" :active="request()->routeIs('users')">
-                            {{ __('Users') }}
+                            @if (Auth::user()->isRegionalAdmin())
+                                {{ __('Advisors') }}
+                            @else
+                                {{ __('Users') }}
+                            @endif
                         </x-jet-nav-link>
                     @endif
                 </div>
@@ -211,16 +215,25 @@
             <x-jet-responsive-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-jet-responsive-nav-link>
-            <x-jet-responsive-nav-link href="{{ route('allocation-calculator') }}"
-                                       :active="request()->routeIs('allocation-calculator')">
-                {{ __('Calculator') }}
-            </x-jet-responsive-nav-link>
-            <x-jet-responsive-nav-link href="{{ route('businesses') }}" :active="request()->routeIs('businesses')">
-                {{ __('Businesses') }}
-            </x-jet-responsive-nav-link>
-            <x-jet-responsive-nav-link href="{{ route('users') }}" :active="request()->routeIs('users')">
-                {{ __('Users') }}
-            </x-jet-responsive-nav-link>
+            @if(!Auth::user()->isRegionalAdmin())
+                <x-jet-responsive-nav-link href="{{ route('allocation-calculator') }}"
+                                           :active="request()->routeIs('allocation-calculator')">
+                    {{ __('Calculator') }}
+                </x-jet-responsive-nav-link>
+                <x-jet-responsive-nav-link href="{{ route('businesses') }}"
+                                           :active="request()->is('*business/*') || request()->is('business')">
+                    {{ __('Businesses') }}
+                </x-jet-responsive-nav-link>
+            @endif
+            @if(Auth::user()->isSuperAdmin() || Auth::user()->isRegionalAdmin() || Auth::user()->isAdvisor())
+                <x-jet-responsive-nav-link href="{{ route('users') }}" :active="request()->routeIs('users')">
+                    @if (Auth::user()->isRegionalAdmin())
+                        {{ __('Advisors') }}
+                    @else
+                        {{ __('Users') }}
+                    @endif
+                </x-jet-responsive-nav-link>
+            @endif
         </div>
 
         <!-- Responsive Settings Options -->
