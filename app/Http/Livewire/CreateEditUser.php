@@ -4,6 +4,7 @@ namespace App\Http\Livewire;
 
 use App\Events\UserRegistered;
 use App\Http\Controllers\UserController;
+use App\Interfaces\RoleInterface;
 use App\Models\Advisor;
 use App\Models\Business;
 use App\Models\Collaboration;
@@ -84,14 +85,7 @@ class CreateEditUser extends Component
             'roles' => 'required',
             'title' => 'nullable|string|min:3',
             'responsibility' => 'nullable|string|min:4',
-            'selectedAdminId' => (auth()->user()->isSuperAdmin()
-                && in_array($this->roleAdvisorId, $this->roles))
-                ? 'required'
-                : '',
-            'selectedAdvisorId' => (auth()->user()->isSuperAdmin()
-                && in_array($this->roleClientId, $this->roles))
-                ? 'required'
-                : ''
+
         ];
         $this->validatorMessages = [
             'email.unique' => 'The email has already been taken.'
@@ -167,13 +161,28 @@ class CreateEditUser extends Component
             $this->licensesBusiness = empty($this->licensesBusiness)
                 ? $this->user->activeLicenses->pluck('id', 'id')->toArray()
                 : $this->licensesBusiness;
+
             $this->collaborations = empty($this->collaborations)
                 ? $this->user->activeCollaborations->pluck('business_id', 'business_id')->toArray()
                 : $this->collaborations;
+
             if (!$this->UserController->checkAdvisor($this->roles)) {
                 $this->collaborations = [];
                 $this->licensesBusiness = [];
                 $this->businesses = [];
+            }
+
+            $newRoles = array_diff($this->roles, $this->user->roles->pluck('id')->toArray());
+
+            if (!empty($newRoles)) {
+                foreach ($newRoles as $newRoleId) {
+                    if ($newRoleId == RoleInterface::ROLE_IDS[RoleInterface::ROLE_ADVISOR]) {
+                        $this->selectedRegionalAdminIdAllowEdit = true;
+                    }
+                    if ($newRoleId == RoleInterface::ROLE_IDS[RoleInterface::ROLE_CLIENT]) {
+                        $this->selectedAdvisorIdAllowEdit = true;
+                    }
+                }
             }
         }
     }
@@ -237,6 +246,16 @@ class CreateEditUser extends Component
     {
         $this->validatorRules = [
             'email' => 'required|email|unique:users,email'.($this->user ? ','.$this->user->id : ''),
+            'selectedRegionalAdminId' => (auth()->user()->isSuperAdmin()
+                && in_array($this->roleAdvisorId, $this->roles)
+            )
+                ? 'required'
+                : '',
+            'selectedAdvisorId' => (auth()->user()->isSuperAdmin()
+                && in_array($this->roleClientId, $this->roles)
+            )
+                ? 'required'
+                : ''
         ];
 
         $validator = Validator::make(
@@ -247,7 +266,7 @@ class CreateEditUser extends Component
                 'roles' => $this->roles,
                 'title' => $this->title,
                 'responsibility' => $this->responsibility,
-                'selectedAdminId' => $this->selectedRegionalAdminId,
+                'selectedRegionalAdminId' => $this->selectedRegionalAdminId,
                 'selectedAdvisorId' => $this->selectedAdvisorId
             ],
             $this->validatorRules,
@@ -401,7 +420,8 @@ class CreateEditUser extends Component
         }
     }
 
-    protected function _superAdminLicenseProcess($user, $time_created) {
+    protected function _superAdminLicenseProcess($user, $time_created)
+    {
         //get ALL licenses - active and revoked
         $currentAdvisorsLicenses = License::whereIn('business_id', $user->licenses->pluck('id'))
             ->where('advisor_id', $user->id)
@@ -436,7 +456,7 @@ class CreateEditUser extends Component
         }
 
         //license for revoke
-        foreach (array_diff($currentAdvisorBusinessesByLicenses,$this->licensesBusiness) as $businessId) {
+        foreach (array_diff($currentAdvisorBusinessesByLicenses, $this->licensesBusiness) as $businessId) {
             $currentLicense = License::where('business_id', $businessId)
                 ->where('advisor_id', $user->id)
                 ->first();
