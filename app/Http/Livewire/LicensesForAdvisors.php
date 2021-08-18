@@ -58,17 +58,19 @@ class LicensesForAdvisors extends Component
 
     public function render()
     {
-        // $licensesCounterHistory = \App\Models\LicensesForAdvisors::where('advisor_id', '=', $this->user->id)
-        //     ->with('regionalAdmin')
-        //     ->orderByDesc('created_at')
-        //     ->paginate($this->perPage);
-        $licensesCounterHistory = License::whereAdvisorId($this->user->id)
+        $licensesCurrent = License::whereAdvisorId($this->user->id)
             // ->with('regionalAdmin')
+            ->orderByDesc('created_at')
+            ->get();
+
+        $licensesCounterHistory = \App\Models\LicensesForAdvisors::where('advisor_id', '=', $this->user->id)
+            ->with('regionalAdmin')
             ->orderByDesc('created_at')
             ->paginate($this->perPage);
 
         return view('license.advisor-details',
             [
+                'licensesCurrent' => $licensesCurrent,
                 'licensesCounterHistory' => $licensesCounterHistory
             ]
         );

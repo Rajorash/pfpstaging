@@ -9,7 +9,7 @@
         <x-business-nav businessId="{{$business->id}}" :business="$business"/>
     </x-slot>
     <x-ui.main>
-        <livewire:business-account-show :business="$business" />
+        <livewire:business-account-show :business="$business"/>
     </x-ui.main>
 
 </x-app-layout>

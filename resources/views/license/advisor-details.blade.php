@@ -20,6 +20,14 @@
                         <div class="table-cell pb-2">
                             @if(count($user->licenses))
                                 {{count($user->licenses)}}
+                                <x-ui.badge background="bg-green">
+                                    Active:&nbsp;{{count($user->activeLicenses)}}
+                                </x-ui.badge>
+                                @if (count($user->notActiveLicenses))
+                                    <x-ui.badge background="bg-gray-500">
+                                        Disabled:&nbsp;{{count($user->notActiveLicenses)}}
+                                    </x-ui.badge>
+                                @endif
                             @else
                                 <span class="text-red-700">No Licenses assigned</span>
                             @endif
@@ -33,7 +41,7 @@
                                 <x-ui.badge
                                     background="bg-red-700">{{$user->seats}}</x-ui.badge>
                             @else
-                                <x-ui.badge>{{$user->seats - count($user->licenses)}}</x-ui.badge>
+                                <x-ui.badge>{{$user->seats - count($user->activeLicenses)}}</x-ui.badge>
                             @endif
                         </div>
                     </div>
@@ -60,7 +68,8 @@
                                 autofocus
                                 wire:model.debounce.1s="licensesCounter"
                             />
-                            <span class="text-sm">{{__('Change value and wait 2 seconds. Value will be save automatically')}}</span>
+                            <span
+                                class="text-sm">{{__('Change value and wait 2 seconds. Value will be save automatically')}}</span>
                             <x-jet-input-error for="licensesCounter" class="text-left mt-2"/>
                         </div>
                     </div>
@@ -77,6 +86,45 @@
         </div>
     </div>
 
+    @if (count($licensesCurrent))
+        <x-ui.table-table>
+            <x-ui.table-caption>
+                <span>{{__('Licenses')}}</span>
+            </x-ui.table-caption>
+            <thead>
+            <tr class="border-light_blue border-t border-b">
+                <x-ui.table-th>License Number</x-ui.table-th>
+                <x-ui.table-th>License status</x-ui.table-th>
+                <x-ui.table-th>Business Name</x-ui.table-th>
+                <x-ui.table-th>Date Created</x-ui.table-th>
+                @if(Auth::user()->isRegionalAdmin())
+                    <x-ui.table-th></x-ui.table-th>
+                @endif
+            </tr>
+            </thead>
+            <x-ui.table-tbody>
+                @foreach ($licensesCurrent as $row)
+                    <tr>
+                        <x-ui.table-td>{{$row->account_number}}</x-ui.table-td>
+                        <x-ui.table-td>
+                            @if ($row->getCheckLicenseAttribute())
+                                <x-icons.active :class="'h-4 w-auto text-green mr-1 align-text-bottom'"/>
+                            @else
+                                <x-icons.inactive :class="'h-4 w-auto text-gray-500 mr-1 align-text-bottom'"/>
+                            @endif
+                        </x-ui.table-td>
+                        <x-ui.table-td>{{optional($row->business)->name ?? 'N/A'}}</x-ui.table-td>
+                        <x-ui.table-td>{{$row->created_at->diffForHumans()}}</x-ui.table-td>
+                    </tr>
+                @endforeach
+            </x-ui.table-tbody>
+        </x-ui.table-table>
+        <div class="m-6">
+            @if ($licensesCounterHistory)
+                {{ $licensesCounterHistory->links() }}
+            @endif
+        </div>
+    @endif
     @if (count($licensesCounterHistory))
         <x-ui.table-table>
             <x-ui.table-caption>
@@ -85,8 +133,7 @@
             <thead>
             <tr class="border-light_blue border-t border-b">
                 <x-ui.table-th>Regional Admin</x-ui.table-th>
-                <x-ui.table-th>License Number</x-ui.table-th>
-                <x-ui.table-th>Business Name</x-ui.table-th>
+                <x-ui.table-th>Licenses</x-ui.table-th>
                 <x-ui.table-th>Date Created</x-ui.table-th>
                 @if(Auth::user()->isRegionalAdmin())
                     <x-ui.table-th></x-ui.table-th>
@@ -96,10 +143,8 @@
             <x-ui.table-tbody>
                 @foreach ($licensesCounterHistory as $row)
                     <tr>
-                        {{-- {{$row->regionalAdminByAdvisor}} --}}
-                        <x-ui.table-td>{{$row->admin->name}}</x-ui.table-td>
-                        <x-ui.table-td>{{$row->account_number}}</x-ui.table-td>
-                        <x-ui.table-td>{{optional($row->business)->name ?? 'N/A'}}</x-ui.table-td>
+                        <x-ui.table-td>{{optional($row->regionalAdmin)->name ?? 'N/A'}}</x-ui.table-td>
+                        <x-ui.table-td>{{$row->licenses}}</x-ui.table-td>
                         <x-ui.table-td>{{$row->created_at->diffForHumans()}}</x-ui.table-td>
                     </tr>
                 @endforeach

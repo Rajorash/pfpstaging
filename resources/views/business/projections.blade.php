@@ -16,7 +16,8 @@
                 <label for="range">Range</label>
                 <select name="range" id="currentProjectionsRange" class="form-select rounded py-1 mx-3 my-0">
                     @foreach ($rangeArray as $key => $value)
-                        <option value="{{$key}}" @if($key == $currentProjectionsRange) selected @endif>{{$value}}</option>
+                        <option value="{{$key}}"
+                                @if($key == $currentProjectionsRange) selected @endif>{{$value}}</option>
                     @endforeach
                 </select>
             </div>

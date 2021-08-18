@@ -35,10 +35,10 @@ class License extends Model
      *
      * @return void
      */
-    public function admin()
-    {
-        return $this->hasOne(User::class, 'id', 'regionaladmin_id');
-    }
+//    public function admin()
+//    {
+//        return $this->hasOne(User::class, 'id', 'regionaladmin_id');
+//    }
 
     public function advisor()
     {
@@ -107,6 +107,14 @@ class License extends Model
         $this->revoked_ts = Carbon::now();
     }
 
+    public function unRevoke()
+    {
+        $this->active = true;
+        $this->revoked_ts = null;
+//        $this->assigned_ts = Carbon::now();
+    }
+
+
     /**
      * Extend the expiry date of the license by n months,
      * default value is 3
@@ -121,7 +129,10 @@ class License extends Model
 
     public function getCheckLicenseAttribute()
     {
-        if (Carbon::parse($this->expires_ts)->timestamp - Carbon::now()->timestamp > 0 && $this->active) {
+        if (
+            Carbon::parse($this->expires_ts)->timestamp - Carbon::now()->timestamp > 0
+            && $this->active
+        ) {
             return true;
         }
 

@@ -16,7 +16,7 @@
     <x-ui.main>
 
         <x-ui.table-table>
-            <x-ui.table-caption class="pt-12 pb-6 px-72 relative">
+            <x-ui.table-caption class="pt-12 pb-6 px-48 lg:px-52 xl:px-60 2xl:px-72 relative">
                 @if (Auth::user()->isRegionalAdmin())
                     {{ __('Advisors Details') }}
                 @else
@@ -35,7 +35,8 @@
             </x-ui.table-caption>
             <x-ui.table-tbody>
                 <tr>
-                    <x-ui.table-td class="text-center bg-gray-100" padding="px-72 py-4">
+                    <x-ui.table-td class="text-center bg-gray-100"
+                                   padding="px-12 sm:px-24 md:px-36 lg:px-48 xl:px-60 2xl:px-72 py-4">
                         <div class="table w-full">
                             <div class="table-row">
                                 <div class="table-cell w-1/3 text-left align-top">
@@ -140,7 +141,7 @@
                                                     <div class="table-cell pb-2">{{__('Available Seats')}}</div>
                                                     <div class="table-cell pb-2">
                                                         @php
-                                                            $availableSeats = $user->seats - count($user->licenses);
+                                                            $availableSeats = $user->seats - count($user->activeLicenses);
                                                         @endphp
                                                         @if($availableSeats < 0)
                                                             <x-ui.badge background="bg-red-700">
@@ -148,12 +149,31 @@
                                                         @else
                                                             <x-ui.badge>{{$availableSeats .' / '. $user->seats}}</x-ui.badge>
                                                         @endif
-
-                                                        @if(count($user->licenses))
+                                                        @if(count($user->activeLicenses))
                                                             @if(!Auth::user()->isRegionalAdmin())
                                                                 <ol class="list-disc">
-                                                                    @foreach ($user->licenses as $business)
+                                                                    @foreach ($user->activeLicenses as $business)
                                                                         <li>
+                                                                            <x-icons.active
+                                                                                :class="'h-4 w-auto text-green mr-1 align-text-bottom inline'"/>
+                                                                            <a href="/business/{{$business->id}}">{{$business->name}}</a>
+                                                                        </li>
+                                                                    @endforeach
+                                                                </ol>
+                                                            @endif
+                                                        @endif
+                                                        @if(count($user->notActiveLicenses))
+                                                            @if (count($user->notActiveLicenses))
+                                                                <x-ui.badge background="bg-gray-500">
+                                                                    Disabled:&nbsp;{{count($user->notActiveLicenses)}}
+                                                                </x-ui.badge>
+                                                            @endif
+                                                            @if(!Auth::user()->isRegionalAdmin())
+                                                                <ol class="list-disc">
+                                                                    @foreach ($user->notActiveLicenses as $business)
+                                                                        <li class="text-gray-400">
+                                                                            <x-icons.inactive
+                                                                                :class="'h-4 w-auto text-gray-500 mr-1 align-text-bottom inline'"/>
                                                                             <a href="/business/{{$business->id}}">{{$business->name}}</a>
                                                                         </li>
                                                                     @endforeach

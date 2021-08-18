@@ -18,7 +18,7 @@
         @endif
 
         <x-ui.table-table>
-            <x-ui.table-caption class="pt-12 pb-6 px-72 relative">
+            <x-ui.table-caption class="pt-12 pb-6 px-48 lg:px-52 xl:px-60 2xl:px-72 relative relative">
                 {{ __('Add Recurring Transactions for Flow') }}
                 &quot;{{$accountFlow->label}}&quot;
 
@@ -35,7 +35,8 @@
             </x-ui.table-caption>
             <x-ui.table-tbody>
                 <tr>
-                    <x-ui.table-td class="text-center bg-gray-100" padding="px-72 py-4">
+                    <x-ui.table-td class="text-center bg-gray-100"
+                                   padding="px-12 sm:px-24 md:px-36 lg:px-48 xl:px-60 2xl:px-72 py-4">
                         <livewire:recurring-transactions-livewire :accountFlow="$accountFlow"
                                                                   :bankAccount="$bankAccount"
                                                                   :recurringTransactions="$recurringTransactions"

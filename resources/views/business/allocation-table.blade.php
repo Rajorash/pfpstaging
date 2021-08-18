@@ -86,7 +86,7 @@
                                             @if(!$business->license->checkLicense) focus:bg-gray-100
                                             @else pfp_copy_move_element hover:bg-yellow-50 focus:bg-yellow-50
                                             @endif "
-                                            @if($business->license->checkLicense) draggable="true" @endif
+                                                @if($business->license->checkLicense) draggable="true" @endif
                                                 id="flow_{{$key}}_{{$date->format('Y-m-d')}}"
                                                 data-row="{{$rowIndex}}"
                                                 data-column="{{$columnIndex}}"

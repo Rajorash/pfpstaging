@@ -91,14 +91,14 @@
                                        readonly
                                        @endif
 
-                                       @if ($roleAdvisorId == $role_id && count($licenses))
+                                       @if ($roleAdvisorId == $role_id && count($licensesBusiness))
                                        disabled
                                        @endif
 
                                        value="{{ $role_id }}"
                                 />
                                 <label for="roles_{{$role_id}}">{{ $role_label }}</label>
-                                @if ($roleAdvisorId == $role_id && count($licenses))
+                                @if ($roleAdvisorId == $role_id && count($licensesBusiness))
                                     <p class="text-sm pl-5 italic">{{__('Advisor role can not be revoked if at least one business is selected for licensing.')}}</p>
                                 @endif
                             </div>
@@ -161,7 +161,8 @@
                                                         rounded-md shadow-sm">
                                 <option>Select Advisor for Client</option>
                                 @foreach ($advisorsUsersArray as $advisor_row)
-                                    <option value="{{$advisor_row->id}}">{{$advisor_row->name}} ({{$advisor_row->email}})
+                                    <option value="{{$advisor_row->id}}">{{$advisor_row->name}} ({{$advisor_row->email}}
+                                        )
                                     </option>
                                 @endforeach
                             </select>
@@ -181,14 +182,14 @@
                     <div class="table-cell w-3/4 pb-4">
                         @foreach ($businesses as $business_id => $business_name)
                             <div class="text-left my-2">
-                                <input type="checkbox" name="licenses[]"
-                                       id="licenses_{{$business_id}}"
-                                       wire:model="licenses.{{$business_id}}"
+                                <input type="checkbox" name="licensesBusiness[]"
+                                       id="licensesBusiness_{{$business_id}}"
+                                       wire:model="licensesBusiness.{{$business_id}}"
                                        value="{{ $business_id }}"/>
-                                <label for="licenses_{{$business_id}}">{{ $business_name }}</label>
+                                <label for="licensesBusiness_{{$business_id}}">{{ $business_name }}</label>
                             </div>
                         @endforeach
-                        <x-jet-input-error for="licenses" class="text-left mt-2"/>
+                        <x-jet-input-error for="licensesBusiness" class="text-left mt-2"/>
                     </div>
                 </div>
             @endif

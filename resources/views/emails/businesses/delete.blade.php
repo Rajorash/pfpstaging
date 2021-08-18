@@ -1,12 +1,12 @@
 @component('mail::message')
-# Business deleted
+    # Business deleted
 
-{!! $string !!}
+    {!! $string !!}
 
-@component('mail::button', ['url' => route('businesses')])
-    Goto Business
-@endcomponent
+    @component('mail::button', ['url' => route('businesses')])
+        Goto Business
+    @endcomponent
 
-Thanks,<br>
-{{ config('app.name') }}
+    Thanks,<br>
+    {{ config('app.name') }}
 @endcomponent

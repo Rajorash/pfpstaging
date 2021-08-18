@@ -7,6 +7,7 @@ use App\Http\Controllers\UserController;
 use App\Models\Advisor;
 use App\Models\Business;
 use App\Models\Collaboration;
+use App\Models\License;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\LicensesForAdvisors;
@@ -35,7 +36,7 @@ class CreateEditUser extends Component
     //array for Businesses
     public $businesses = [];
     //array for Licenses
-    public $licenses = [];
+    public $licensesBusiness = [];
     //array for Collaborations
     public $collaborations = [];
 
@@ -75,6 +76,7 @@ class CreateEditUser extends Component
             $this->adminsUsersArray = $this->UserController->getAdmins();
             $this->advisorsUsersArray = $this->UserController->getAdvisor();
         }
+
         $this->validatorRules = [
             'name' => 'required|min:2',
             'email' => 'required|email|unique:users,email'.($this->user ? ','.$this->user->id : ''),
@@ -114,7 +116,7 @@ class CreateEditUser extends Component
             $this->title = $this->user->title;
             $this->responsibility = $this->user->responsibility;
 
-            $this->businesses = $this->licenses = $this->collaborations = [];
+            $this->businesses = $this->licensesBusiness = $this->collaborations = [];
 
             //remove current User from Collections
             if (Auth::user()->isSuperAdmin()) {
@@ -162,15 +164,15 @@ class CreateEditUser extends Component
 
         //edit user
         if ($this->user) {
-            $this->licenses = empty($this->licenses)
-                ? $this->user->licenses->pluck('id', 'id')->toArray()
-                : $this->licenses;
+            $this->licensesBusiness = empty($this->licensesBusiness)
+                ? $this->user->activeLicenses->pluck('id', 'id')->toArray()
+                : $this->licensesBusiness;
             $this->collaborations = empty($this->collaborations)
                 ? $this->user->activeCollaborations->pluck('business_id', 'business_id')->toArray()
                 : $this->collaborations;
             if (!$this->UserController->checkAdvisor($this->roles)) {
                 $this->collaborations = [];
-                $this->licenses = [];
+                $this->licensesBusiness = [];
                 $this->businesses = [];
             }
         }
@@ -182,7 +184,7 @@ class CreateEditUser extends Component
         $this->email = null;
         $this->timezone = null;
         $this->roles = [];
-        $this->licenses = [];
+        $this->licensesBusiness = [];
         $this->businesses = [];
         $this->title = null;
         $this->responsibility = null;
@@ -200,9 +202,9 @@ class CreateEditUser extends Component
     /**
      * hook where Licenses updated on front
      */
-    public function updatedLicenses()
+    public function updatedLicensesBusiness()
     {
-        $this->licenses = array_filter($this->licenses);
+        $this->licensesBusiness = array_filter($this->licensesBusiness);
     }
 
     /**
@@ -233,6 +235,10 @@ class CreateEditUser extends Component
      */
     public function store()
     {
+        $this->validatorRules = [
+            'email' => 'required|email|unique:users,email'.($this->user ? ','.$this->user->id : ''),
+        ];
+
         $validator = Validator::make(
             [
                 'name' => $this->name,
@@ -252,7 +258,7 @@ class CreateEditUser extends Component
 
         $validator->after(function ($validator) {
             if (
-                !empty($this->licenses)
+                !empty($this->licensesBusiness)
                 && !empty($this->roles)
                 && !$this->UserController->checkAdvisor($this->roles)
             ) {
@@ -288,20 +294,7 @@ class CreateEditUser extends Component
             $time_created = date('Y-m-d h:i:s', time());
 
             //reattach licenses
-            $user->licenses()->detach();
-            if (is_array($this->licenses)) {
-
-                foreach ($this->licenses as $license) {
-                    $business = Business::find($license);
-                    $user->assignLicense([
-                        $business->id => [
-                            'account_number' => uniqid(),
-                            'created_at' => $time_created,
-                            'updated_at' => $time_created
-                        ]
-                    ]);
-                }
-            }
+            $this->_superAdminLicenseProcess($user, $time_created);
 
             //reattach collaborations
             $user->activeCollaborations()->delete();
@@ -326,7 +319,7 @@ class CreateEditUser extends Component
                 foreach ($userRoles as $role_id) {
                     if (!in_array($role_id, $this->roles)) {
 
-                        if ($role_id == User::ROLE_IDS[User::ROLE_ADVISOR] && !empty($this->licenses)) {
+                        if ($role_id == User::ROLE_IDS[User::ROLE_ADVISOR] && !empty($this->licensesBusiness)) {
                             $validator->errors()->add(
                                 'roles', 'Before removing Advisor role user must have 0 active licenses'
                             );
@@ -398,12 +391,57 @@ class CreateEditUser extends Component
             } else {
                 if ($user->isClient() && auth()->user()->isAdvisor()) {
                     // if an advisor creates a client user, redirect to the business listing page to create a business.
-                    session()->flash('status', "Client created! You may now create the client business with email of {$user->email}. Click the Create Business button.");
+                    session()->flash('status',
+                        "Client created! You may now create the client business with email of {$user->email}. Click the Create Business button.");
                     return redirect("business");
                 } else {
                     return redirect("user/{$user->id}");
                 }
             }
+        }
+    }
+
+    protected function _superAdminLicenseProcess($user, $time_created) {
+        //get ALL licenses - active and revoked
+        $currentAdvisorsLicenses = License::whereIn('business_id', $user->licenses->pluck('id'))
+            ->where('advisor_id', $user->id)
+            ->get();
+        $currentAdvisorBusinessesByLicenses = $currentAdvisorsLicenses->pluck('business_id')->toArray();
+
+        foreach ($this->licensesBusiness as $businessId) {
+            if (in_array($businessId, $currentAdvisorBusinessesByLicenses)) {
+
+                //exists record, getLicense
+                $currentLicense = License::where('business_id', $businessId)
+                    ->where('advisor_id', $user->id)
+                    ->first();
+
+                //check if revoked - return
+                if ($currentLicense->revoked_ts || !$currentLicense->active) {
+                    $currentLicense->unRevoke();
+                    $currentLicense->save();
+                }
+
+            } else {
+                //new license
+                $business = Business::find($businessId);
+                $user->assignLicense([
+                    $business->id => [
+                        'account_number' => uniqid(),
+                        'created_at' => $time_created,
+                        'updated_at' => $time_created
+                    ]
+                ]);
+            }
+        }
+
+        //license for revoke
+        foreach (array_diff($currentAdvisorBusinessesByLicenses,$this->licensesBusiness) as $businessId) {
+            $currentLicense = License::where('business_id', $businessId)
+                ->where('advisor_id', $user->id)
+                ->first();
+            $currentLicense->revoke();
+            $currentLicense->save();
         }
     }
 

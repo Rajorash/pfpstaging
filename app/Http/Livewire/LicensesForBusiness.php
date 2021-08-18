@@ -44,7 +44,7 @@ class LicensesForBusiness extends Component
 
         if ($this->business->license) {
             $this->expired = Carbon::parse($this->business->license->expires_ts ?? Carbon::now()->addMonths(3))->format('Y-m-d\TH:i');;
-            $this->activeLicense = $this->business->license->active;
+            $this->activeLicense = $this->business->license->checkLicense;
             $this->allowToSetLicense = true;
         } else {
             $this->expired = Carbon::now()->addMonths(3)->format('Y-m-d\TH:i');;

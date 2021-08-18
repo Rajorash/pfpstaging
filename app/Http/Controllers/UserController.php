@@ -54,15 +54,15 @@ class UserController extends Controller
         }
 
         if (Auth::user()->isRegionalAdmin()) {
-            // if (Auth::user()->advisorsByRegionalAdmin) {
-            //     return User::whereIn('id', Auth::user()->advisorsByRegionalAdmin->pluck('id'))
-            //     ->with('businesses')
-            //     ->orderBy('name')
-            //     ->paginate($this->perPage);
-            // }
             $licenses = License::whereRegionaladminId(Auth::user()->id);
 
-            return User::whereIn('id', $licenses->pluck('advisor_id'))
+            $collection = $licenses->pluck('advisor_id');
+            if (Auth::user()->advisorsByRegionalAdmin) {
+                $collection = $collection->merge(Auth::user()->advisorsByRegionalAdmin->pluck('id'));
+            }
+            $collection = $collection->unique();
+
+            return User::whereIn('id', $collection)
                 ->withCount('businesses')
                 ->orderBy('name')
                 ->paginate($this->perPage);

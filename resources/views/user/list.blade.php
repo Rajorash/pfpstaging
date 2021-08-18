@@ -143,7 +143,7 @@
                                     @if ($user->isAdvisor())
                                         @if ($user->advisorsLicenses->last())
                                             @php
-                                                $availableSeats = $user->seats - count($user->licenses);
+                                                $availableSeats = $user->seats - count($user->activeLicenses);
                                             @endphp
 
                                             @if($availableSeats < 0)
@@ -156,7 +156,7 @@
                                             @if (count($user->notActiveLicenses))
                                                 <br/>
                                                 <x-ui.badge background="bg-gray-500">
-                                                    Disabled: {{count($user->notActiveLicenses)}}
+                                                    Disabled:&nbsp;{{count($user->notActiveLicenses)}}
                                                 </x-ui.badge>
                                             @endif
 
