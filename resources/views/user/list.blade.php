@@ -1,6 +1,9 @@
 <x-app-layout>
     <x-slot name="header">
-        @if (Auth::user()->isRegionalAdmin())
+        @if (Auth::user()->isRegionalAdmin()
+             && !Auth::user()->isSuperAdmin()
+             && !Auth::user()->isAdvisor()
+             && !Auth::user()->isClient())
             {{ __('Advisors') }}
         @else
             {{ __('Users') }}
@@ -12,7 +15,10 @@
         <x-ui.table-table>
             <x-ui.table-caption>
                 <span>
-                    @if (Auth::user()->isRegionalAdmin())
+                    @if (Auth::user()->isRegionalAdmin()
+                         && !Auth::user()->isSuperAdmin()
+                         && !Auth::user()->isAdvisor()
+                         && !Auth::user()->isClient())
                         {{ __('Advisors Visible To You') }}
                     @else
                         {{ __('Users Visible To You') }}
@@ -27,7 +33,10 @@
                         <x-ui.button-normal href="{{route('users.create')}}">
                             <x-icons.user-add/>
                             <span class="ml-2">
-                                @if (Auth::user()->isRegionalAdmin())
+                                @if (Auth::user()->isRegionalAdmin()
+                                     && !Auth::user()->isSuperAdmin()
+                                     && !Auth::user()->isAdvisor()
+                                     && !Auth::user()->isClient())
                                     {{ __('Create Advisor') }}
                                 @else
                                     {{ __('Create User') }}
@@ -177,7 +186,10 @@
                             </x-ui.table-td>
                             <x-ui.table-td>
                                 <x-ui.button-small href="{{url('/user/'.$user->id)}}">
-                                    @if (Auth::user()->isRegionalAdmin())
+                                    @if (Auth::user()->isRegionalAdmin()
+                                         && !Auth::user()->isSuperAdmin()
+                                         && !Auth::user()->isAdvisor()
+                                         && !Auth::user()->isClient())
                                         {{ __('See Advisor') }}
                                     @else
                                         {{ __('See user') }}
@@ -187,7 +199,10 @@
                             <x-ui.table-td>
                                 @if(Auth::user()->isSuperAdmin() || Auth::user()->isAdvisor())
                                     <x-ui.button-small href="{{route('users.edit', ['user'=>$user])}}">
-                                        @if (Auth::user()->isRegionalAdmin())
+                                        @if (Auth::user()->isRegionalAdmin()
+                                             && !Auth::user()->isSuperAdmin()
+                                             && !Auth::user()->isAdvisor()
+                                             && !Auth::user()->isClient())
                                             {{ __('Edit Advisor') }}
                                         @else
                                             {{ __('Edit user') }}

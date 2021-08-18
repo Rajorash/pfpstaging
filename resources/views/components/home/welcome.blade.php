@@ -13,13 +13,15 @@
 </div>
 
 <div class="bg-dashboard grid grid-cols-1
-    @if(!Auth::user()->isClient())
+    @if(Auth::user()->isRegionalAdmin()
+        || Auth::user()->isSuperAdmin()
+        || Auth::user()->isAdvisor())
     md:grid-cols-2
     @else
     md:grid-cols-3
     @endif
     ">
-    @if(!Auth::user()->isRegionalAdmin())
+    @if(Auth::user()->isSuperAdmin() || Auth::user()->isAdvisor() || Auth::user()->isClient())
         <div class="p-6">
             <div class="mx-12 my-4">
                 <x-ui.dashboard-card
@@ -55,12 +57,22 @@
         </div>
     @endif
 
-    @if(!Auth::user()->isClient())
+    @if(Auth::user()->isRegionalAdmin()
+        || Auth::user()->isSuperAdmin()
+        || Auth::user()->isAdvisor())
         <div class="p-6 border-t border-light_blue">
             <div class="mx-12 my-4">
                 @php
-                    $userCardTitle = Auth::user()->isRegionalAdmin() ? 'Advisors' : 'Users';
-                    $userCardLinkTitle = Auth::user()->isRegionalAdmin() ? 'See advisors' : 'See users';
+                    if (Auth::user()->isRegionalAdmin()
+                         && !Auth::user()->isSuperAdmin()
+                         && !Auth::user()->isAdvisor()
+                         && !Auth::user()->isClient()) {
+                         $userCardTitle = 'Advisors' ;
+                         $userCardLinkTitle =  'See advisors' ;
+                    } else {
+                         $userCardTitle = 'Users';
+                         $userCardLinkTitle =  'See users';
+                    }
                 @endphp
                 <x-ui.dashboard-card
                     :route="route('users')"
@@ -77,7 +89,10 @@
     @endif
 
     <div class="p-6 border-t border-light_blue md:border-l
-        @if(Auth::user()->isClient())
+        @if(Auth::user()->isRegionalAdmin()
+        || Auth::user()->isSuperAdmin()
+        || Auth::user()->isAdvisor())
+    @else
         md:border-t-0
         @endif">
         <div class="mx-12 my-4">

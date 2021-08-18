@@ -150,7 +150,7 @@
                                                             <x-ui.badge>{{$availableSeats .' / '. $user->seats}}</x-ui.badge>
                                                         @endif
                                                         @if(count($user->activeLicenses))
-                                                            @if(!Auth::user()->isRegionalAdmin())
+                                                            @if(Auth::user()->isSuperAdmin() || Auth::user()->isAdvisor() || Auth::user()->isClient())
                                                                 <ol class="list-disc">
                                                                     @foreach ($user->activeLicenses as $business)
                                                                         <li>
@@ -168,7 +168,7 @@
                                                                     Disabled:&nbsp;{{count($user->notActiveLicenses)}}
                                                                 </x-ui.badge>
                                                             @endif
-                                                            @if(!Auth::user()->isRegionalAdmin())
+                                                            @if(Auth::user()->isSuperAdmin() || Auth::user()->isAdvisor() || Auth::user()->isClient())
                                                                 <ol class="list-disc">
                                                                     @foreach ($user->notActiveLicenses as $business)
                                                                         <li class="text-gray-400">

@@ -16,7 +16,7 @@
                                     :active="request()->is('*dashboard.*') || request()->is('*dashboard*')">
                         {{ __('Dashboard') }}
                     </x-jet-nav-link>
-                    @if(!Auth::user()->isRegionalAdmin())
+                    @if(Auth::user()->isSuperAdmin() || Auth::user()->isAdvisor() || Auth::user()->isClient())
                         <x-jet-nav-link href="{{ route('allocation-calculator') }}"
                                         :active="request()->routeIs('allocation-calculator')">
                             {{ __('Calculator') }}
@@ -28,7 +28,10 @@
                     @endif
                     @if(Auth::user()->isSuperAdmin() || Auth::user()->isRegionalAdmin() || Auth::user()->isAdvisor())
                         <x-jet-nav-link href="{{ route('users') }}" :active="request()->routeIs('users')">
-                            @if (Auth::user()->isRegionalAdmin())
+                            @if (Auth::user()->isRegionalAdmin()
+                                    && !Auth::user()->isSuperAdmin()
+                                    && !Auth::user()->isAdvisor()
+                                    && !Auth::user()->isClient())
                                 {{ __('Advisors') }}
                             @else
                                 {{ __('Users') }}
@@ -134,7 +137,9 @@
                                 {{ __('Profile') }}
                             </x-jet-dropdown-link>
 
-                            @if(!Auth::user()->isRegionalAdmin())
+                            @if(Auth::user()->isSuperAdmin()
+                                || Auth::user()->isAdvisor()
+                                || Auth::user()->isClient())
                                 <x-jet-dropdown-link href="{{ route('businesses') }}">
                                 <span class="inline-block mr-4 pt-0.5 w-4 text-center"><x-icons.case
                                         :class="'w-4 h-auto'"/></span>
@@ -215,7 +220,7 @@
             <x-jet-responsive-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-jet-responsive-nav-link>
-            @if(!Auth::user()->isRegionalAdmin())
+            @if(Auth::user()->isSuperAdmin() || Auth::user()->isAdvisor() || Auth::user()->isClient())
                 <x-jet-responsive-nav-link href="{{ route('allocation-calculator') }}"
                                            :active="request()->routeIs('allocation-calculator')">
                     {{ __('Calculator') }}
@@ -227,7 +232,10 @@
             @endif
             @if(Auth::user()->isSuperAdmin() || Auth::user()->isRegionalAdmin() || Auth::user()->isAdvisor())
                 <x-jet-responsive-nav-link href="{{ route('users') }}" :active="request()->routeIs('users')">
-                    @if (Auth::user()->isRegionalAdmin())
+                    @if (Auth::user()->isRegionalAdmin()
+                            && !Auth::user()->isSuperAdmin()
+                            && !Auth::user()->isAdvisor()
+                            && !Auth::user()->isClient())
                         {{ __('Advisors') }}
                     @else
                         {{ __('Users') }}
