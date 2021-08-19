@@ -61,9 +61,22 @@ class RecurringTransactionsLivewire extends Component
         return view('recurring.recurring-transactions-livewire');
     }
 
+    public function rules()
+    {
+        return [
+            'title' => 'required',
+            'value' => 'required|numeric|gt:0',
+            'date_start' => 'required|date',
+            'date_end' => 'nullable|date|after:date_start',
+            'repeat_rules_week_days' => 'required_if:repeat_every_type,'.RecurringTransactions::REPEAT_WEEK
+        ];
+    }
+
     public function updated()
     {
-        if ($this->value) {
+        $this->validate();
+
+        if ($this->value > 0) {
             $this->description = $this->accountFlow->isNegative()
                 ? __('Subtraction')
                 : __('Addition');
@@ -144,17 +157,15 @@ class RecurringTransactionsLivewire extends Component
                     Carbon::parse($this->date_end)->format('M d, Y')
                     : '';
 
+        } else {
+            $this->description = '';
         }
     }
 
     public function store()
     {
-        $this->validate([
-            'title' => 'required',
-            'date_start' => 'required|date',
-            'date_end' => 'nullable|date|after:date_start',
-            'repeat_rules_week_days' => 'required_if:repeat_every_type,'.RecurringTransactions::REPEAT_WEEK
-        ]);
+        $this->validate();
+
         if (is_object($this->recurringTransactions)
             && is_a($this->recurringTransactions, 'App\Models\RecurringTransactions')) {
             $recurring = $this->recurringTransactions;

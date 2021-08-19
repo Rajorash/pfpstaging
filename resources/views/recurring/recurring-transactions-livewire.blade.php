@@ -34,6 +34,7 @@
                                     class="w-full"
                                     type="text"
                                     name="value"
+                                    autocomplete="off"
                                     wire:model.lazy="value"
                                 />
                             </div>
