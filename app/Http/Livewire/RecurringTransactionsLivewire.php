@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire;
 
+use App\Http\Controllers\RecurringTransactionsController;
 use App\Models\RecurringTransactions;
 use Carbon\Carbon;
 use Livewire\Component;
@@ -12,6 +13,9 @@ class RecurringTransactionsLivewire extends Component
     public $accountFlow;
     public $bankAccount;
     public $recurringTransactions;
+    public $forecast;
+
+    protected $RecurringTransactionsController;
 
     public $repeatTimeArray;
     public $weekDaysArray;
@@ -25,6 +29,13 @@ class RecurringTransactionsLivewire extends Component
     public $repeat_every_number;
     public $repeat_every_type;
     public $repeat_rules_week_days = [];
+
+    public function __construct($id = null)
+    {
+        parent::__construct($id);
+
+        $this->RecurringTransactionsController = new RecurringTransactionsController();
+    }
 
     public function mount()
     {
@@ -45,6 +56,7 @@ class RecurringTransactionsLivewire extends Component
                     $this->repeat_rules_week_days = $this->recurringTransactions->repeat_rules['days'];
                 }
             }
+
         } else {
             $this->value = 0;
             $this->date_start = Carbon::now()->format('Y-m-d');
@@ -54,6 +66,9 @@ class RecurringTransactionsLivewire extends Component
                 strtolower(Carbon::now()->format('l'))
             ];
         }
+
+        $recurring = $this->_updateRecurringobject();
+        $this->forecast = $this->RecurringTransactionsController->getForecast($recurring);
     }
 
     public function render()
@@ -61,7 +76,7 @@ class RecurringTransactionsLivewire extends Component
         return view('recurring.recurring-transactions-livewire');
     }
 
-    public function rules()
+    public function rules(): array
     {
         return [
             'title' => 'required',
@@ -160,12 +175,12 @@ class RecurringTransactionsLivewire extends Component
         } else {
             $this->description = '';
         }
+
+        $recurring = $this->_updateRecurringobject();
+        $this->forecast = $this->RecurringTransactionsController->getForecast($recurring);
     }
 
-    public function store()
-    {
-        $this->validate();
-
+    private function _updateRecurringobject() {
         if (is_object($this->recurringTransactions)
             && is_a($this->recurringTransactions, 'App\Models\RecurringTransactions')) {
             $recurring = $this->recurringTransactions;
@@ -190,6 +205,15 @@ class RecurringTransactionsLivewire extends Component
                 'days' => $this->repeat_rules_week_days
             ];
         }
+
+        return $recurring;
+    }
+
+    public function store()
+    {
+        $this->validate();
+
+        $recurring = $this->_updateRecurringobject();
 
         $recurring->accountFlow()->associate($this->accountFlow);
 

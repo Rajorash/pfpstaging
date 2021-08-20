@@ -137,6 +137,25 @@
 
                 <div class="table-row">
                     <div class="table-cell w-1/4 pb-4 text-left">
+                        {{__('Forecast')}}
+                    </div>
+                    <div class="table-cell w-3/4 pb-4 text-left">
+                        @if (!empty($forecast))
+                            @foreach ($forecast as $forecastDate => $forecastValue)
+                                <div>
+                                    <b>{{$accountFlow->isNegative() ? '-' : '+'}}{{$forecastValue}}</b>
+                                    {{__('on')}}
+                                    <b>{{Carbon\Carbon::parse($forecastDate)->format('Y-m-d, l')}}</b>
+                                </div>
+                            @endforeach
+                        @else
+                            <x-ui.error>Forecast is empty. This rule will not affect the data</x-ui.error>
+                        @endif
+                    </div>
+                </div>
+
+                <div class="table-row">
+                    <div class="table-cell w-1/4 pb-4 text-left">
 
                     </div>
                     <div class="table-cell w-3/4 pb-4 text-left">

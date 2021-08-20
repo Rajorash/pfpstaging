@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use App\Traits\Allocatable;
+use Eloquent;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
@@ -21,16 +23,16 @@ use Illuminate\Support\Carbon;
  * @property-read int|null $allocations_count
  * @property-read Collection|RecurringTransactions[] $recurringTransactions
  * @property-read int|null $recurring_transactions_count
- * @method static \Illuminate\Database\Eloquent\Builder|AccountFlow newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|AccountFlow newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|AccountFlow query()
- * @method static \Illuminate\Database\Eloquent\Builder|AccountFlow whereAccountId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|AccountFlow whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|AccountFlow whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|AccountFlow whereLabel($value)
- * @method static \Illuminate\Database\Eloquent\Builder|AccountFlow whereNegativeFlow($value)
- * @method static \Illuminate\Database\Eloquent\Builder|AccountFlow whereUpdatedAt($value)
- * @mixin \Eloquent
+ * @method static Builder|AccountFlow newModelQuery()
+ * @method static Builder|AccountFlow newQuery()
+ * @method static Builder|AccountFlow query()
+ * @method static Builder|AccountFlow whereAccountId($value)
+ * @method static Builder|AccountFlow whereCreatedAt($value)
+ * @method static Builder|AccountFlow whereId($value)
+ * @method static Builder|AccountFlow whereLabel($value)
+ * @method static Builder|AccountFlow whereNegativeFlow($value)
+ * @method static Builder|AccountFlow whereUpdatedAt($value)
+ * @mixin Eloquent
  */
 class AccountFlow extends Model
 {
