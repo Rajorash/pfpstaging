@@ -5,7 +5,20 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Carbon;
 
+/**
+ * @property integer $id
+ * @property AccountFlow $account_id
+ * @property string $title
+ * @property string $description
+ * @property float $value
+ * @property Carbon $date_start
+ * @property Carbon|null $date_end
+ * @property integer $repeat_every_number
+ * @property string $repeat_every_type
+ * @property array $repeat_rules
+ */
 class RecurringTransactions extends Model
 {
     use HasFactory, SoftDeletes;
