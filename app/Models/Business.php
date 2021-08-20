@@ -2,10 +2,48 @@
 
 namespace App\Models;
 
+use Eloquent;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 
+/**
+ * App\Models\Business
+ *
+ * @property int $id
+ * @property string $name
+ * @property int|null $owner_id
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property Carbon|null $deleted_at
+ * @property string|null $start_date
+ * @property-read Collection|BankAccount[] $accounts
+ * @property-read int|null $accounts_count
+ * @property-read Collaboration|null $collaboration
+ * @property-read User|\App\Models\null; $advisor
+ * @property-read null|int $current_phase
+ * @property-read License|null $license
+ * @property-read User|null $owner
+ * @property-read Collection|Phase[] $rollout
+ * @property-read int|null $rollout_count
+ * @method static Builder|Business newModelQuery()
+ * @method static Builder|Business newQuery()
+ * @method static \Illuminate\Database\Query\Builder|Business onlyTrashed()
+ * @method static Builder|Business query()
+ * @method static Builder|Business whereCreatedAt($value)
+ * @method static Builder|Business whereDeletedAt($value)
+ * @method static Builder|Business whereId($value)
+ * @method static Builder|Business whereName($value)
+ * @method static Builder|Business whereOwnerId($value)
+ * @method static Builder|Business whereStartDate($value)
+ * @method static Builder|Business whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|Business withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|Business withoutTrashed()
+ * @mixin Eloquent
+ */
 class Business extends Model
 {
     use SoftDeletes;
@@ -46,7 +84,8 @@ class Business extends Model
      *
      * @return User|null;
      */
-    public function getAdvisorAttribute() {
+    public function getAdvisorAttribute()
+    {
         return optional($this->license)->advisor;
     }
 
@@ -104,7 +143,7 @@ class Business extends Model
      */
     public function getCurrentPhaseAttribute()
     {
-        return $this->getPhaseIdByDate( today() );
+        return $this->getPhaseIdByDate(today());
     }
 
     /**

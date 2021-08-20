@@ -25,8 +25,6 @@ class User extends Authenticatable implements RoleInterface, MustVerifyEmail
     use Notifiable;
     use TwoFactorAuthenticatable;
 
-
-
     /**
      * The attributes that are mass assignable.
      *
@@ -117,21 +115,4 @@ class User extends Authenticatable implements RoleInterface, MustVerifyEmail
         return $this->active;
     }
 
-
-
-//    public function relatedToAdmin()
-//    {
-//        if ($this->isAdvisor()) {
-//            return $this->hasOneThrough(
-//                User::class,
-//                Advisor::class,
-//                'regional_admin_id',
-//                'id',
-//                'id',
-//                'id'
-//            );
-//        } else {
-//            return null;
-//        }
-//    }
 }

@@ -2,12 +2,15 @@
 
 namespace App\Models;
 
+use Eloquent;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 
 /**
+ * App\Models\RecurringTransactions
+ *
  * @property integer $id
  * @property AccountFlow $account_id
  * @property string $title
@@ -18,6 +21,30 @@ use Illuminate\Support\Carbon;
  * @property integer $repeat_every_number
  * @property string $repeat_every_type
  * @property array $repeat_rules
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property Carbon|null $deleted_at
+ * @property-read \App\Models\AccountFlow $accountFlow
+ * @method static \Illuminate\Database\Eloquent\Builder|RecurringTransactions newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|RecurringTransactions newQuery()
+ * @method static \Illuminate\Database\Query\Builder|RecurringTransactions onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|RecurringTransactions query()
+ * @method static \Illuminate\Database\Eloquent\Builder|RecurringTransactions whereAccountId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|RecurringTransactions whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|RecurringTransactions whereDateEnd($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|RecurringTransactions whereDateStart($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|RecurringTransactions whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|RecurringTransactions whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|RecurringTransactions whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|RecurringTransactions whereRepeatEveryNumber($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|RecurringTransactions whereRepeatEveryType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|RecurringTransactions whereRepeatRules($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|RecurringTransactions whereTitle($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|RecurringTransactions whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|RecurringTransactions whereValue($value)
+ * @method static \Illuminate\Database\Query\Builder|RecurringTransactions withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|RecurringTransactions withoutTrashed()
+ * @mixin Eloquent
  */
 class RecurringTransactions extends Model
 {

@@ -3,15 +3,51 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use Eloquent;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * App\Models\License
+ *
+ * @property int $id
+ * @property string $account_number
+ * @property int $active
+ * @property int|null $advisor_id
+ * @property int|null $business_id
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property int|null $regionaladmin_id
+ * @property \Illuminate\Support\Carbon $issued_ts
+ * @property \Illuminate\Support\Carbon|null $assigned_ts
+ * @property \Illuminate\Support\Carbon|null $expires_ts
+ * @property string|null $revoked_ts
+ * @property-read \App\Models\User|null $advisor
+ * @property-read \App\Models\Business|null $business
+ * @property-read mixed $check_license
+ * @method static Builder|License newModelQuery()
+ * @method static Builder|License newQuery()
+ * @method static Builder|License query()
+ * @method static Builder|License whereAccountNumber($value)
+ * @method static Builder|License whereActive($value)
+ * @method static Builder|License whereAdvisorId($value)
+ * @method static Builder|License whereAssignedTs($value)
+ * @method static Builder|License whereBusinessId($value)
+ * @method static Builder|License whereCreatedAt($value)
+ * @method static Builder|License whereExpiresTs($value)
+ * @method static Builder|License whereId($value)
+ * @method static Builder|License whereIssuedTs($value)
+ * @method static Builder|License whereRegionaladminId($value)
+ * @method static Builder|License whereRevokedTs($value)
+ * @method static Builder|License whereUpdatedAt($value)
+ * @mixin Eloquent
+ */
 class License extends Model
 {
     protected $fillable = [
         'account_number',
         'advisor_id',
         'business_id',
-//        'regionaladmin_id',
         'active',
         'issued_ts',
         'assigned_ts',
@@ -28,17 +64,6 @@ class License extends Model
         'assigned_ts' => 'datetime',
         'expires_ts' => 'datetime',
     ];
-
-    /**
-     * Return the Regional Admin relationship. The Regional Admin is the user who created and provisioned the
-     * license to the advisor (if assigned)
-     *
-     * @return void
-     */
-//    public function admin()
-//    {
-//        return $this->hasOne(User::class, 'id', 'regionaladmin_id');
-//    }
 
     public function advisor()
     {
@@ -111,9 +136,7 @@ class License extends Model
     {
         $this->active = true;
         $this->revoked_ts = null;
-//        $this->assigned_ts = Carbon::now();
     }
-
 
     /**
      * Extend the expiry date of the license by n months,
