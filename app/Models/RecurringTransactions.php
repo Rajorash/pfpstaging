@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Eloquent;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -24,24 +25,24 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property Carbon|null $deleted_at
- * @property-read \App\Models\AccountFlow $accountFlow
- * @method static \Illuminate\Database\Eloquent\Builder|RecurringTransactions newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|RecurringTransactions newQuery()
+ * @property-read AccountFlow $accountFlow
+ * @method static Builder|RecurringTransactions newModelQuery()
+ * @method static Builder|RecurringTransactions newQuery()
  * @method static \Illuminate\Database\Query\Builder|RecurringTransactions onlyTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|RecurringTransactions query()
- * @method static \Illuminate\Database\Eloquent\Builder|RecurringTransactions whereAccountId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|RecurringTransactions whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|RecurringTransactions whereDateEnd($value)
- * @method static \Illuminate\Database\Eloquent\Builder|RecurringTransactions whereDateStart($value)
- * @method static \Illuminate\Database\Eloquent\Builder|RecurringTransactions whereDeletedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|RecurringTransactions whereDescription($value)
- * @method static \Illuminate\Database\Eloquent\Builder|RecurringTransactions whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|RecurringTransactions whereRepeatEveryNumber($value)
- * @method static \Illuminate\Database\Eloquent\Builder|RecurringTransactions whereRepeatEveryType($value)
- * @method static \Illuminate\Database\Eloquent\Builder|RecurringTransactions whereRepeatRules($value)
- * @method static \Illuminate\Database\Eloquent\Builder|RecurringTransactions whereTitle($value)
- * @method static \Illuminate\Database\Eloquent\Builder|RecurringTransactions whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|RecurringTransactions whereValue($value)
+ * @method static Builder|RecurringTransactions query()
+ * @method static Builder|RecurringTransactions whereAccountId($value)
+ * @method static Builder|RecurringTransactions whereCreatedAt($value)
+ * @method static Builder|RecurringTransactions whereDateEnd($value)
+ * @method static Builder|RecurringTransactions whereDateStart($value)
+ * @method static Builder|RecurringTransactions whereDeletedAt($value)
+ * @method static Builder|RecurringTransactions whereDescription($value)
+ * @method static Builder|RecurringTransactions whereId($value)
+ * @method static Builder|RecurringTransactions whereRepeatEveryNumber($value)
+ * @method static Builder|RecurringTransactions whereRepeatEveryType($value)
+ * @method static Builder|RecurringTransactions whereRepeatRules($value)
+ * @method static Builder|RecurringTransactions whereTitle($value)
+ * @method static Builder|RecurringTransactions whereUpdatedAt($value)
+ * @method static Builder|RecurringTransactions whereValue($value)
  * @method static \Illuminate\Database\Query\Builder|RecurringTransactions withTrashed()
  * @method static \Illuminate\Database\Query\Builder|RecurringTransactions withoutTrashed()
  * @mixin Eloquent

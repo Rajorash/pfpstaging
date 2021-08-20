@@ -30,6 +30,8 @@ use Illuminate\Support\Carbon;
  * @method static Builder|Phase whereStartDate($value)
  * @method static Builder|Phase whereUpdatedAt($value)
  * @mixin Eloquent
+ * @property-read Collection|\App\Models\Allocation[] $allocations
+ * @property-read int|null $allocations_count
  */
 class Phase extends Model
 {
@@ -54,7 +56,7 @@ class Phase extends Model
     }
 
     public function allocations() {
-        return $this->hasMany(Allocations::class);
+        return $this->hasMany(Allocation::class);
     }
 
     public function percentages() {
