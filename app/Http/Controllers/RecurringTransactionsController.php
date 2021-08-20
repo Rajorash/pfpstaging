@@ -10,9 +10,12 @@ use Illuminate\Http\Request;
 
 class RecurringTransactionsController extends Controller
 {
-    //
-
-    public function list($bankAccountId, $accountFlowId)
+    /**
+     * @param  int  $bankAccountId
+     * @param  int  $accountFlowId
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+     */
+    public function list(int $bankAccountId, int $accountFlowId)
     {
         $bankAccount = BankAccount::findOrfail($bankAccountId);
         $accountFlow = AccountFlow::findOrfail($accountFlowId);
@@ -122,6 +125,11 @@ class RecurringTransactionsController extends Controller
         }
     }
 
+    /**
+     * @param  int  $bankAccountId
+     * @param  int  $accountFlowId
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+     */
     public function create(int $bankAccountId, int $accountFlowId)
     {
         $bankAccount = BankAccount::findOrfail($bankAccountId);
@@ -138,7 +146,13 @@ class RecurringTransactionsController extends Controller
         );
     }
 
-    public function edit($bankAccountId, $accountFlowId, $recurringId)
+    /**
+     * @param  int  $bankAccountId
+     * @param  int  $accountFlowId
+     * @param  int  $recurringId
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+     */
+    public function edit(int $bankAccountId, int $accountFlowId, int $recurringId)
     {
         $bankAccount = BankAccount::findOrfail($bankAccountId);
         $accountFlow = AccountFlow::findOrfail($accountFlowId);
@@ -154,7 +168,13 @@ class RecurringTransactionsController extends Controller
         );
     }
 
-    public function delete($bankAccountId, $accountFlowId, $recurringId)
+    /**
+     * @param  int  $bankAccountId
+     * @param  int  $accountFlowId
+     * @param  int  $recurringId
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
+    public function delete(int $bankAccountId, int $accountFlowId, int $recurringId)
     {
         $bankAccount = BankAccount::findOrfail($bankAccountId);
         $accountFlow = AccountFlow::findOrfail($accountFlowId);
@@ -162,11 +182,14 @@ class RecurringTransactionsController extends Controller
 
         $recurringTransactions->delete();
 
-        return redirect(route('recurring-list',
-            [
-                'account' => $bankAccount,
-                'flow' => $accountFlow
-            ]
-        ));
+        return redirect(
+            route(
+                'recurring-list',
+                [
+                    'account' => $bankAccount,
+                    'flow' => $accountFlow
+                ]
+            )
+        );
     }
 }
