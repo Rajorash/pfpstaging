@@ -55,7 +55,9 @@ class AllocationPercentage extends Model
             if ($phaseId && $businessId) {
                 $key = 'phasePercentValues_'.$phaseId.'_'.$businessId;
 
-                Cache::forget($key);
+                if (\Config::get('app.pfp_cache')) {
+                    Cache::forget($key);
+                };
             }
         });
     }

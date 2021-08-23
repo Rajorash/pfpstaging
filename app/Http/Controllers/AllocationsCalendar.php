@@ -217,7 +217,9 @@ class AllocationsCalendar extends Controller
                                 $response[BankAccount::ACCOUNT_TYPE_REVENUE][$id][$date_ymd] = $totalRevenue;
                                 $this->storeSingle('account', $id, $totalRevenue, $date_ymd);
                                 $key = 'getIncomeByDate_'.$businessId.'_'.$date_ymd;
-                                Cache::forget($key);
+                                if (\Config::get('app.pfp_cache')) {
+                                    Cache::forget($key);
+                                }
                             }
                             break;
                         case BankAccount::ACCOUNT_TYPE_SALESTAX: // Tax amt
@@ -544,7 +546,9 @@ class AllocationsCalendar extends Controller
                         ? $a_item['allocations'][0]['amount']
                         : 0;
                 })->sum();
-            Cache::put($key, $getIncomeByDate, now()->addMinutes(10));
+            if (\Config::get('app.pfp_cache')) {
+                Cache::put($key, $getIncomeByDate, now()->addMinutes(10));
+            }
         }
 
         return $getIncomeByDate;
@@ -592,7 +596,7 @@ class AllocationsCalendar extends Controller
     {
         $key = 'phasePercentValues_'.$phaseId.'_'.$businessId;
 
-        $phasePercentValues = Cache::get($key);
+        $phasePercentValues = \Config::get('app.pfp_cache') ? Cache::get($key) : null;
 
         if ($phasePercentValues === null) {
 
@@ -612,8 +616,9 @@ class AllocationsCalendar extends Controller
                     return array_column(collect($a_item)->toArray(), 'val', 'id');
                 })->toArray();
 
-            // Cache::put($key, $phasePercentValues, now()->addMinutes(10));
-            Cache::put($key, $phasePercentValues);
+            if (\Config::get('app.pfp_cache')) {
+                Cache::put($key, $phasePercentValues);
+            }
         }
 
         return $phasePercentValues;

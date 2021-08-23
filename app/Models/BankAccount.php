@@ -93,7 +93,7 @@ class BankAccount extends Model
     {
         $key = 'getAllocationPercentages_'.$phase_id.'|'.$this->id;
 
-        $getAllocationPercentages = Cache::get($key);
+        $getAllocationPercentages = \Config::get('app.pfp_cache') ? Cache::get($key) : null;
 
         if ($getAllocationPercentages === null) {
             if ($phase_id) {
@@ -106,7 +106,10 @@ class BankAccount extends Model
                     ::where('bank_account_id', '=', $this->id)
                     ->get();
             }
-            Cache::put($key, $getAllocationPercentages);
+
+            if (\Config::get('app.pfp_cache')) {
+                Cache::put($key, $getAllocationPercentages);
+            }
         }
         return $getAllocationPercentages;
 
@@ -134,7 +137,7 @@ class BankAccount extends Model
     {
         $key = 'getAllAllocationPercentages_'.$phaseId.'_'.$this->business_id;
 
-        $getAllAllocationPercentages = Cache::get($key);
+        $getAllAllocationPercentages = \Config::get('app.pfp_cache') ? Cache::get($key) : null;
 
         if ($getAllAllocationPercentages === null) {
             $getAllAllocationPercentages = BankAccount::where('business_id', $this->business_id)
@@ -152,7 +155,10 @@ class BankAccount extends Model
                 })->map(function ($a_item) {
                     return array_column(collect($a_item)->toArray(), 'val', 'id');
                 })->toArray();
-            Cache::put($key, $getAllAllocationPercentages, now()->addMinutes(10));
+
+            if (\Config::get('app.pfp_cache')) {
+                Cache::put($key, $getAllAllocationPercentages, now()->addMinutes(10));
+            }
         }
 
         return $getAllAllocationPercentages;
@@ -224,7 +230,10 @@ class BankAccount extends Model
                         ? $a_item['allocations'][0]['amount']
                         : 0;
                 })->sum();
-            Cache::put($key, $getRevenueByDate, now()->addMinutes(10));
+
+            if (\Config::get('app.pfp_cache')) {
+                Cache::put($key, $getRevenueByDate, now()->addMinutes(10));
+            }
         }
 
         return $getRevenueByDate;

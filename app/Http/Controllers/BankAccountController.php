@@ -76,7 +76,7 @@ class BankAccountController extends Controller
         if (count($phases)) {
             foreach ($phases as $phase) {
                 $key = 'phasePercentValues_'.$phase.'_'.$business->id;
-                Cache::forget($key);
+                \Config::get('app.pfp_cache') ? Cache::forget($key) : null;
             }
         }
 

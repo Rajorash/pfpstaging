@@ -65,7 +65,7 @@ trait Allocatable
     public function getAllocationByDate($date)
     {
         $key = 'getAllocationByDate_'.$date;
-        $getAllocationByDate = Cache::get($key);
+        $getAllocationByDate = \Config::get('app.pfp_cache') ? Cache::get($key) : null;
 
         if ($getAllocationByDate === null) {
             $getAllocationByDate = Allocation::where(
@@ -76,7 +76,9 @@ trait Allocatable
                 ]
             )->first();
 
-            Cache::put($key, $getAllocationByDate);
+            if (\Config::get('app.pfp_cache')) {
+                Cache::put($key, $getAllocationByDate);
+            }
         }
 
         return $getAllocationByDate;
@@ -97,7 +99,7 @@ trait Allocatable
     public function getAllocationAmount($date)
     {
         $key = 'getAllocationAmountByDate_'.$date;
-        $getAllocationAmountByDate = Cache::get($key);
+        $getAllocationAmountByDate = \Config::get('app.pfp_cache') ? Cache::get($key) : null;
 
         if ($getAllocationAmountByDate === null) {
             $getAllocationAmountByDate = Allocation::where(
@@ -108,7 +110,9 @@ trait Allocatable
                 ]
             )->first()->amount;
 
-            Cache::put($key, $getAllocationAmountByDate);
+            if (\Config::get('app.pfp_cache')) {
+                Cache::put($key, $getAllocationAmountByDate);
+            }
         }
 
         return $getAllocationAmountByDate;

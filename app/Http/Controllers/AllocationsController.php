@@ -96,11 +96,13 @@ class AllocationsController extends Controller
 
 //        $phases = Phase::where('business_id', '=', $business->id)->orderBy('end_date')->get();
         $key = 'getPhaseById_'.$business->id;
-        $phases = Cache::get($key);
+        $phases = \Config::get('app.pfp_cache') ? Cache::get($key) : null;
 
         if ($phases === null) {
             $phases = Phase::where('business_id', '=', $business->id)->orderBy('end_date')->get();
-            Cache::put($key, $phases, now()->addMinutes(10));
+            if (\Config::get('app.pfp_cache')) {
+                Cache::put($key, $phases, now()->addMinutes(10));
+            }
         }
 
         $currentEndDate = 0;
@@ -228,14 +230,16 @@ class AllocationsController extends Controller
 
             $key = 'Allocation_'.implode('|', $dates).'_'.implode('|', $idsArray).'_'.$type;
 
-            $allocation = Cache::get($key);
+            $allocation = \Config::get('app.pfp_cache') ? Cache::get($key) : null;
 
             if ($allocation === null) {
                 $allocation = Allocation::whereIn('allocation_date', $dates)
                     ->whereIn('allocatable_id', $idsArray)
                     ->where('allocatable_type', 'like', '%'.$type)
                     ->get()->toArray();
-                Cache::put($key, $allocation, now()->addMinutes(10));
+                if (\Config::get('app.pfp_cache')) {
+                    Cache::put($key, $allocation, now()->addMinutes(10));
+                }
             }
 //
 //            $allocation = Allocation::whereIn('allocation_date', $dates)
@@ -289,13 +293,14 @@ class AllocationsController extends Controller
                     'percent' => $cell['cellValue']
                 ]);
                 $key = 'phasePercentValues_'.$cell['phaseId'].'_'.$businessId;
-                Cache::forget($key);
+                if (\Config::get('app.pfp_cache')) {
+                    Cache::forget($key);
+                }
             }
         }
 
         if (!$businessId) {
             $response['error'][] = 'Business ID not set';
-        } else {
         }
 
         $business = Business::find($businessId);
@@ -304,18 +309,18 @@ class AllocationsController extends Controller
 
         // percentage total is based only on postreal accounts. ie. all postreal percentage values should add to 100%;
         $totals = $percentages
-            ->filter( function($percent) {
+            ->filter(function ($percent) {
                 return $percent->type == BankAccount::ACCOUNT_TYPE_POSTREAL;
             })
             ->groupBy('phase_id')
-            ->map(function ($item){
+            ->map(function ($item) {
                 return $item->sum('percent');
             })->toArray();
 
         $rollout = $business->rollout
             ->sortBy('end_date')
-            ->map(function($item) use ($totals) {
-                if(isset($totals[$item->id])) {
+            ->map(function ($item) use ($totals) {
+                if (isset($totals[$item->id])) {
                     $item['total'] = $totals[$item->id];
                 }
                 return $item;
@@ -397,7 +402,7 @@ class AllocationsController extends Controller
             'phase_id', 'bank_account_id', 'percent'
         ]);
 
-        $percentages->each( function( $percent ) {
+        $percentages->each(function ($percent) {
             $type = BankAccount::without('flows')->find($percent->bank_account_id)->type;
             Arr::add($percent, 'type', $type);
         });
@@ -408,11 +413,13 @@ class AllocationsController extends Controller
     private function getBusinessById($business_id)
     {
         $key = 'getBusinessById_'.$business_id;
-        $getBusinessById = Cache::get($key);
+        $getBusinessById = \Config::get('app.pfp_cache') ? Cache::get($key) : null;
 
         if ($getBusinessById === null) {
             $getBusinessById = Business::with(['accounts'])->find($business_id);
-            Cache::put($key, $getBusinessById, now()->addMinutes(10));
+            if (\Config::get('app.pfp_cache')) {
+                Cache::put($key, $getBusinessById, now()->addMinutes(10));
+            }
         }
 
         return $getBusinessById;
@@ -421,11 +428,13 @@ class AllocationsController extends Controller
     private function getPhaseById($business_id)
     {
         $key = 'getPhaseById_'.$business_id;
-        $getPhaseById = Cache::get($key);
+        $getPhaseById = \Config::get('app.pfp_cache') ? Cache::get($key) : null;
 
         if ($getPhaseById === null) {
             $getPhaseById = Phase::where('business_id', '=', $business_id)->orderBy('end_date')->get();
-            Cache::put($key, $getPhaseById, now()->addMinutes(10));
+            if (\Config::get('app.pfp_cache')) {
+                Cache::put($key, $getPhaseById, now()->addMinutes(10));
+            }
         }
 
         return $getPhaseById;

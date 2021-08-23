@@ -94,11 +94,13 @@ class Business extends Model
         $phaseIds = $this->rollout()->pluck('id');
 
         $key = 'allocations_'.$phaseIds->implode('_');
-        $allocations = Cache::get($key);
+        $allocations = \Config::get('app.pfp_cache') ? Cache::get($key) : null;
 
         if ($allocations === null) {
             $allocations = Allocation::whereIn('phase_id', $phaseIds)->get();
-            Cache::put($key, $allocations);
+            if (\Config::get('app.pfp_cache')) {
+                Cache::put($key, $allocations);
+            }
         }
 
         return $allocations;
@@ -113,7 +115,7 @@ class Business extends Model
     public function getPhaseIdByDate($date)
     {
         $key = 'getPhaseIdByDate_'.$this->id.'_'.$date;
-        $phase = Cache::get($key);
+        $phase = \Config::get('app.pfp_cache') ? Cache::get($key) : null;
 
         if ($phase === null) {
             $phase = $this->rollout()->where('end_date', '>=', $date)->first();
@@ -124,7 +126,9 @@ class Business extends Model
                 $phase = $this->rollout()->sortBy('end_date')->last();
             }
 
-            Cache::put($key, $phase, now()->addHours(1));
+            if (\Config::get('app.pfp_cache')) {
+                Cache::put($key, $phase, now()->addHours(1));
+            }
         }
 
         return $phase ? $phase->id : null;
@@ -156,11 +160,14 @@ class Business extends Model
     {
         $key = 'getAccountIdByType_'.$accountType;
 
-        $account = Cache::get($key);
+        $account = \Config::get('app.pfp_cache') ? Cache::get($key) : null;
 
         if ($account === null) {
             $account = $this->accounts()->where('type', '=', $accountType)->first();
-            Cache::put($key, $account, now()->addMinutes(10));
+
+            if (\Config::get('app.pfp_cache')) {
+                Cache::put($key, $account, now()->addMinutes(10));
+            }
         }
 
         return $account->id;
@@ -176,11 +183,17 @@ class Business extends Model
     {
         $key = 'getAllAccountIdsByType_'.$accountType;
 
-        $accountIds = Cache::get($key);
+        $accountIds = \Config::get('app.pfp_cache') ? Cache::get($key) : null;
 
         if ($accountIds === null) {
-            $accountIds = $this->accounts()->where('type', '=', $accountType)->pluck('id')->toArray();
-            Cache::put($key, $accountIds, now()->addMinutes(10));
+            $accountIds = $this->accounts()
+                ->where('type', '=', $accountType)
+                ->pluck('id')
+                ->toArray();
+
+            if (\Config::get('app.pfp_cache')) {
+                Cache::put($key, $accountIds, now()->addMinutes(10));
+            }
         }
 
         return $accountIds;

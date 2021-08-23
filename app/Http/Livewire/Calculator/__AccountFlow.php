@@ -44,12 +44,12 @@ class __AccountFlow extends Component
     {
         $key = 'getFlow_'.$flowId;
 
-        $getFlow = Cache::get($key);
+        $getFlow = \Config::get('app.pfp_cache') ? Cache::get($key) : null;
 
         if ($getFlow === null) {
             $getFlow = Flow::find($flowId);
 
-            Cache::put($key, $getFlow);
+            \Config::get('app.pfp_cache') ? Cache::put($key, $getFlow) : null;
         }
 
         return $getFlow;
@@ -64,7 +64,7 @@ class __AccountFlow extends Component
     {
         $key = 'getAllocation_'.$flowId.'_'.$date;
 
-        $getAllocation = Cache::get($key);
+        $getAllocation = \Config::get('app.pfp_cache') ? Cache::get($key) : null;
 
         if ($getAllocation === null) {
             $getAllocation = Allocation::where([
@@ -73,7 +73,9 @@ class __AccountFlow extends Component
                 ['allocation_date', '=', $date]
             ])->first();
 
-            Cache::put($key, $getAllocation);
+            if (\Config::get('app.pfp_cache')) {
+                Cache::put($key, $getAllocation);
+            };
         }
 
         return $getAllocation ?? null;

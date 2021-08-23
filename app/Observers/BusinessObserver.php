@@ -20,14 +20,19 @@ class BusinessObserver
     {
         $this->initialisePhases($business);
         $this->initialiseAccounts($business);
-        // clear the cached all businesses object
-        Cache::forget('Business_all');
+
+        if (\Config::get('app.pfp_cache')) {
+            // clear the cached all businesses object
+            Cache::forget('Business_all');
+        }
     }
 
     public function updated(Business $business)
     {
-        // clear the cached all businesses object
-        Cache::forget('Business_all');
+        if (\Config::get('app.pfp_cache')) {
+            // clear the cached all businesses object
+            Cache::forget('Business_all');
+        }
 
         if ($business->rollout) {
             $phase_index = 1;
@@ -42,8 +47,10 @@ class BusinessObserver
 
     public function deleted(Business $business)
     {
-        // clear the cached all businesses object
-        Cache::forget('Business_all');
+        if (\Config::get('app.pfp_cache')) {
+            // clear the cached all businesses object
+            Cache::forget('Business_all');
+        }
     }
 
     /**
