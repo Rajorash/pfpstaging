@@ -50,7 +50,7 @@ trait GettersTrait
         $businesses = \Config::get('app.pfp_cache') ? Cache::get($key) : null;
 
         if ($businesses === null) {
-            $businesses = Business::all();
+            $businesses = Business::with('owner', 'license', 'collaboration', 'license.advisor')->get();
 
             if (\Config::get('app.pfp_cache')) {
                 Cache::put($key, $businesses, now()->addMinutes(10));
