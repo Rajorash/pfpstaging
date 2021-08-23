@@ -25,7 +25,6 @@ class AllocationsCalendar extends Controller
         $maxDate = $this->business->rollout()->max('end_date');
         $minDate = $this->business->rollout()->min('end_date');
 
-
         $data = [
             'rangeArray' => $this->getRangeArray(),
             'business' => $this->business,
@@ -119,6 +118,19 @@ class AllocationsCalendar extends Controller
 
         $this->store($cells);
 
+        $RecurringTransactionsController = new RecurringTransactionsController();
+        $recurring = [];
+        $rawData = $this->getRawData($businessId, $startDate, $endDate);
+        foreach ($rawData as $account_item) {
+            foreach ($account_item->flows as $key => $value) {
+                $recurring[$value->id] = null;
+                if ($value->recurringTransactions->count()) {
+                    $recurring[$value->id] = $RecurringTransactionsController
+                        ->getAllFlowsForecasts($value->recurringTransactions, $startDate, $endDate);
+                }
+            }
+        }
+
         $tableData = $this->getGridData($rangeValue, $startDate, $endDate, $businessId);
 
         $response['html'] = view('business.allocation-table')
@@ -128,7 +140,8 @@ class AllocationsCalendar extends Controller
                 'period' => $period,
                 'startDate' => Carbon::parse($startDate),
                 'range' => $rangeValue,
-                'business' => $business
+                'business' => $business,
+                'recurring' => $recurring
             ])->render();
 
         return response()->json($response);
@@ -208,8 +221,8 @@ class AllocationsCalendar extends Controller
                             }
                             break;
                         case BankAccount::ACCOUNT_TYPE_SALESTAX: // Tax amt
-                            $response[BankAccount::ACCOUNT_TYPE_SALESTAX][$id]['transfer'][$date_ymd] = $this->calculateSalestaxTransfer($id,
-                                $income, $percents);
+                            $response[BankAccount::ACCOUNT_TYPE_SALESTAX][$id]['transfer'][$date_ymd] =
+                                $this->calculateSalestaxTransfer($id, $income, $percents);
 
                             $flow_total = 0;
 

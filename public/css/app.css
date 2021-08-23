@@ -11712,6 +11712,10 @@ select {
   cursor: not-allowed;
 }
 
+.cursor-copy {
+  cursor: copy;
+}
+
 .select-none {
   -webkit-user-select: none;
      -moz-user-select: none;
@@ -44099,6 +44103,10 @@ select {
     cursor: not-allowed;
   }
 
+  .sm\:cursor-copy {
+    cursor: copy;
+  }
+
   .sm\:select-none {
     -webkit-user-select: none;
        -moz-user-select: none;
@@ -76412,6 +76420,10 @@ select {
 
   .md\:cursor-not-allowed {
     cursor: not-allowed;
+  }
+
+  .md\:cursor-copy {
+    cursor: copy;
   }
 
   .md\:select-none {
@@ -108729,6 +108741,10 @@ select {
     cursor: not-allowed;
   }
 
+  .lg\:cursor-copy {
+    cursor: copy;
+  }
+
   .lg\:select-none {
     -webkit-user-select: none;
        -moz-user-select: none;
@@ -141044,6 +141060,10 @@ select {
     cursor: not-allowed;
   }
 
+  .xl\:cursor-copy {
+    cursor: copy;
+  }
+
   .xl\:select-none {
     -webkit-user-select: none;
        -moz-user-select: none;
@@ -173357,6 +173377,10 @@ select {
 
   .\32xl\:cursor-not-allowed {
     cursor: not-allowed;
+  }
+
+  .\32xl\:cursor-copy {
+    cursor: copy;
   }
 
   .\32xl\:select-none {

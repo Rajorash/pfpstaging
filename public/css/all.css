@@ -45,4 +45,10 @@ html {
   border-right-width: 1px;
 }
 
+.pfp_forecast_already_added {
+  cursor: not-allowed;
+  --tw-bg-opacity: 1;
+  background-color: rgba(229, 231, 235, var(--tw-bg-opacity));
+}
+
 /*# sourceMappingURL=all.css.map*/

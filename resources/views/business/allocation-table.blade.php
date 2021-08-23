@@ -45,7 +45,9 @@
                         @endphp
                         <tr class="bg-indigo-100 hover:bg-yellow-100 border-light_blue divide-x">
                             <x-ui.table-td padding="p-1 pl-2"
-                                           baseClass="text-dark_gray sticky left-0 bg-indigo-100 z-10">{{$data['name']}}</x-ui.table-td>
+                                           baseClass="text-dark_gray sticky left-0 bg-indigo-100 z-10">
+                                {{$data['name']}}
+                            </x-ui.table-td>
                             {{--                        <td class="border border-gray-300 whitespace-nowrap pl-2">{{$data['name']}}</td>--}}
                             @foreach($period as $date)
                                 @php
@@ -69,16 +71,18 @@
                                 @php
                                     $rowIndex++;
                                     $columnIndex = 0;
+
                                 @endphp
                                 <tr class="bg-white hover:bg-yellow-100 border-light_blue divide-x">
                                     <x-ui.table-td padding="p-1 pr-2 pl-6"
-                                                   baseClass="text-dark_gray whitespace-nowrap sticky left-0 bg-white z-10">{{$ext_data['name']}}</x-ui.table-td>
+                                                   baseClass="text-dark_gray whitespace-nowrap sticky left-0 bg-white z-10">
+                                        {{$ext_data['name']}}
+                                    </x-ui.table-td>
                                     @foreach($period as $date)
                                         @php
                                             $columnIndex++;
                                         @endphp
-                                        <x-ui.table-td class="text-right hover:bg-yellow-100" padding="p-0"
-                                                       attr="disabled">
+                                        <x-ui.table-td class="text-right hover:bg-yellow-100" padding="p-0">
                                             <input
                                                 class="px-2 py-1 w-full text-right bg-transparent border-0
                                             border-transparent outline-none
@@ -96,6 +100,41 @@
                                         </x-ui.table-td>
                                     @endforeach
                                 </tr>
+                                @if (isset($recurring[$key]))
+                                    @foreach($recurring[$key] as $recurringTitle => $recurringData)
+                                        @php
+                                            $columnIndex = 0;
+                                        @endphp
+                                        <tr class="bg-white hover:bg-yellow-100 border-light_blue divide-x text-xs">
+                                            <x-ui.table-td padding="p-1 pr-2 pl-6"
+                                                           baseClass="text-dark_gray whitespace-nowrap sticky left-0 bg-white z-10">
+                                                <x-icons.recurring class="w-3 h-auto inline mr-1"/>
+                                                <span title="{{$recurringData['description']}}">{{$recurringTitle}}</span>
+                                            </x-ui.table-td>
+                                            @foreach($period as $date)
+                                                @php
+                                                    $columnIndex++;
+                                                    $value = $recurringData['forecast'][$date->format('Y-m-d')] ?? 0;
+                                                @endphp
+                                                <x-ui.table-td class="text-right hover:bg-yellow-100" padding="p-0">
+                                                    @if($value)
+                                                        <input
+                                                            class="px-2 py-1 w-full text-right bg-transparent border-0
+                                            border-transparent outline-none cursor-copy pfp_forecast_value select-none
+                                            focus:outline-none focus:ring-1 focus:shadow-none disabled:opacity-90
+                                            text-xs"
+                                                            disabled
+                                                            data-for_row="{{$rowIndex}}"
+                                                            data-for_column="{{$columnIndex}}"
+                                                            type="text"
+                                                            value="{{number_format($value, 0, '.', '')}}"
+                                                        />
+                                                    @endif
+                                                </x-ui.table-td>
+                                            @endforeach
+                                        </tr>
+                                    @endforeach
+                                @endif
                             @endif
                         @endforeach
                     @endforeach
@@ -142,7 +181,7 @@
                                     <tr class="bg-white hover:bg-yellow-100 border-light_blue divide-x">
                                         <x-ui.table-td padding="p-1 pr-2 pl-6"
                                                        class="text-left whitespace-nowrap sticky left-0 bg-white z-10">
-                                            Transfer In
+                                            {{__('Transfer In')}}
                                         </x-ui.table-td>
                                         @foreach($period as $date)
                                             @php
@@ -218,6 +257,41 @@
                                             </x-ui.table-td>
                                         @endforeach
                                     </tr>
+                                    @if (isset($recurring[$key]))
+                                        @foreach($recurring[$key] as $recurringTitle => $recurringData)
+                                            @php
+                                                $columnIndex = 0;
+                                            @endphp
+                                            <tr class="bg-white hover:bg-yellow-100 border-light_blue divide-x text-xs">
+                                                <x-ui.table-td padding="p-1 pr-2 pl-6"
+                                                               baseClass="text-dark_gray whitespace-nowrap sticky left-0 bg-white z-10">
+                                                    <x-icons.recurring class="w-3 h-auto inline mr-1"/>
+                                                    {{$recurringTitle}}
+                                                </x-ui.table-td>
+                                                @foreach($period as $date)
+                                                    @php
+                                                        $columnIndex++;
+                                                        $value = $recurringData['forecast'][$date->format('Y-m-d')] ?? 0;
+                                                    @endphp
+                                                    <x-ui.table-td class="text-right hover:bg-yellow-100" padding="p-0">
+                                                        @if($value)
+                                                            <input
+                                                                class="px-2 py-1 w-full text-right bg-transparent border-0
+                                            border-transparent outline-none cursor-copy pfp_forecast_value select-none
+                                            focus:outline-none focus:ring-1 focus:shadow-none disabled:opacity-90
+                                            text-xs"
+                                                                draggable="true"
+                                                                data-for_row="{{$rowIndex}}"
+                                                                data-for_column="{{$columnIndex}}"
+                                                                type="text"
+                                                                value="{{number_format($value, 0, '.', '')}}"
+                                                            />
+                                                        @endif
+                                                    </x-ui.table-td>
+                                                @endforeach
+                                            </tr>
+                                        @endforeach
+                                    @endif
                                 @endif
                             @endif
                         @endforeach

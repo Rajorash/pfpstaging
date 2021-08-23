@@ -5,6 +5,6 @@
 'padding' => 'px-2 py-4',
 'attr' => ''
 ])
-<td class="{{$border}} {{$padding}} {{$baseClass}} {{$class}}" {{$attr}}>
+<td class="{{$border}} {{$padding}} {{$baseClass}} {{$class}}" {{$attr}} >
     {{$slot}}
 </td>

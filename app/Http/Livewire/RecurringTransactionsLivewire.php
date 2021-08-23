@@ -48,7 +48,10 @@ class RecurringTransactionsLivewire extends Component
             $this->description = $this->recurringTransactions->description;
             $this->value = $this->recurringTransactions->value;
             $this->date_start = Carbon::parse($this->recurringTransactions->date_start)->format('Y-m-d');
-            $this->date_end = Carbon::parse($this->recurringTransactions->date_end)->format('Y-m-d');
+            $this->date_end = $this->recurringTransactions->date_end
+                ? Carbon::parse($this->recurringTransactions->date_end)->format('Y-m-d') :
+                null;
+
             $this->repeat_every_number = $this->recurringTransactions->repeat_every_number;
             $this->repeat_every_type = $this->recurringTransactions->repeat_every_type;
             if ($this->recurringTransactions->repeat_every_type == RecurringTransactions::REPEAT_WEEK) {
@@ -180,7 +183,8 @@ class RecurringTransactionsLivewire extends Component
         $this->forecast = $this->RecurringTransactionsController->getForecast($recurring);
     }
 
-    private function _updateRecurringobject() {
+    private function _updateRecurringobject()
+    {
         if (is_object($this->recurringTransactions)
             && is_a($this->recurringTransactions, 'App\Models\RecurringTransactions')) {
             $recurring = $this->recurringTransactions;
@@ -194,9 +198,7 @@ class RecurringTransactionsLivewire extends Component
         $recurring->value = $this->value;
 
         $recurring->date_start = $this->date_start;
-        if ($this->date_end) {
-            $recurring->date_end = $this->date_end;
-        }
+        $recurring->date_end = $this->date_end ? $this->date_end : null;
 
         $recurring->repeat_every_number = $this->repeat_every_number;
         $recurring->repeat_every_type = $this->repeat_every_type;

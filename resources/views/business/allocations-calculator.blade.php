@@ -34,7 +34,7 @@
         <div class="text-center text-red-500 font-bold">{{__('License is inactive. Edit data forbidden.')}}</div>
     @endif
 
-    <x-ui.data-submit-controls :heightController="true"/>
+    <x-ui.data-submit-controls :heightController="true" :forecastController="true"/>
 
     <x-ui.main width="w-full">
         <div id="allocationTablePlace"

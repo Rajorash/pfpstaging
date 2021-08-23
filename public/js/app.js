@@ -4102,8 +4102,9 @@ $(function () {
       _this.ajaxUrl = window.allocationsControllerUpdate;
       _this.elementTablePlace = $('#allocationTablePlace');
       _this.autoSubmitDataDelay = $.cookie('allocation_autoSubmitDataDelay') !== undefined ? parseInt($.cookie('allocation_autoSubmitDataDelay')) : _this.autoSubmitDataDelayDefault;
-      _this.timeOutSeconds = 1000 * parseInt(_this.autoSubmitDataDelay);
+      _this.timeOutSeconds = 1000 * _this.autoSubmitDataDelay;
       _this.heightMode = $.cookie('allocation_heightMode') !== undefined ? $.cookie('allocation_heightMode') : _this.heightModeDefault;
+      _this.allowForecastDoubleClickId = 'allow_forecast_double_click';
       return _this;
     }
 
@@ -4117,6 +4118,13 @@ $(function () {
         $(document).on('change', '#startDate, #currentRangeValue, #allocationTablePlace input', function (event) {
           $this.loadData(event);
           $this.progressBar();
+        });
+        $(document).on('dblclick', '.pfp_forecast_value', function () {
+          if ($('#' + $this.allowForecastDoubleClickId).is(':checked') && !$(this).hasClass('pfp_forecast_already_added')) {
+            var targetSelector = $this.getTargetSelectorForForecast($(this).data('for_row'), $(this).data('for_column'));
+            $(targetSelector).val(parseFloat($(targetSelector).val()) + parseFloat($(this).val())).select(false).change();
+            $(this).addClass('pfp_forecast_already_added');
+          }
         });
       }
     }, {
@@ -4178,12 +4186,13 @@ $(function () {
           $('.block_different_height').height('auto');
         } else {
           var height = $(window).height() - 50;
+          var blockDifferentHeight = $('.block_different_height');
 
-          if ($('.block_different_height').offset()) {
-            height -= $('.block_different_height').offset().top;
+          if (blockDifferentHeight.offset()) {
+            height -= blockDifferentHeight.offset().top;
           }
 
-          $('.block_different_height').height(height);
+          blockDifferentHeight.height(height);
         }
 
         setTimeout(function () {
@@ -4198,6 +4207,25 @@ $(function () {
         $.cookie('allocation_heightMode', $this.heightMode, {
           expires: 14
         });
+      }
+    }, {
+      key: "getTargetSelectorForForecast",
+      value: function getTargetSelectorForForecast(row, col) {
+        return '[data-row="' + row + '"][data-column="' + col + '"]';
+      }
+    }, {
+      key: "forecastAutoFillValues",
+      value: function forecastAutoFillValues() {
+        var $this = this;
+        $('.pfp_forecast_value').each(function (i, element) {
+          var targetSelector = $this.getTargetSelectorForForecast($(element).data('for_row'), $(element).data('for_column'));
+
+          if (parseFloat($(targetSelector).val()) === 0 || $(targetSelector).hasClass('pfp_allow_to_forecast_autofill')) {
+            $(targetSelector).val(parseFloat($(targetSelector).val()) + parseFloat($(element).val())).select(false).addClass('pfp_allow_to_forecast_autofill').change();
+            $(element).addClass('pfp_forecast_already_added');
+          }
+        });
+        $('.pfp_allow_to_forecast_autofill').removeClass('pfp_allow_to_forecast_autofill');
       }
     }]);
 
@@ -4484,7 +4512,9 @@ var calculatorCore = /*#__PURE__*/function () {
         complete: function complete() {
           $this.hideSpinner();
           $this.resetData();
-          $this.scrollToLatestPoint();
+          $this.scrollToLatestPoint(); //only for Allocations table
+
+          $this.forecastAutoFillValues();
         }
       });
     }
@@ -4628,6 +4658,9 @@ var calculatorCore = /*#__PURE__*/function () {
         }
       }
     }
+  }, {
+    key: "forecastAutoFillValues",
+    value: function forecastAutoFillValues() {}
   }]);
 
   return calculatorCore;

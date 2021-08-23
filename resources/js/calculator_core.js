@@ -179,6 +179,8 @@ export class calculatorCore {
                 $this.hideSpinner();
                 $this.resetData();
                 $this.scrollToLatestPoint();
+                //only for Allocations table
+                $this.forecastAutoFillValues();
             }
         });
     }
@@ -321,6 +323,10 @@ export class calculatorCore {
                 }
             }
         }
+    }
+
+    forecastAutoFillValues() {
+
     }
 
 }

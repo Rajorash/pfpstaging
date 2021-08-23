@@ -2,9 +2,11 @@
 
 namespace App\Http\Livewire;
 
+use App\Http\Controllers\RecurringTransactionsController;
 use App\Models\AccountFlow;
 use App\Models\BankAccount;
 use App\Models\Business;
+use Carbon\Carbon;
 use Livewire\Component;
 
 class BusinessAccountShow extends Component
@@ -18,6 +20,19 @@ class BusinessAccountShow extends Component
     {
         $this->business->refresh();
         $this->accounts = $this->business->accounts->load('flows');
+
+//        //TODO: remove, its only for debug
+//        $recurringAll = [];
+//        foreach ($this->accounts as $account) {
+//            foreach ($account->flows as $flow) {
+//                if ($flow->recurringTransactions->count()) {
+//                    $RecurringTransactionsController = new RecurringTransactionsController();
+//                    $recurringAll[$flow->id] = $RecurringTransactionsController
+//                        ->getAllFlowsForecasts($flow->recurringTransactions, '2021-09-01', '2022-03-01');
+//                }
+//            }
+//        }
+//        dd($recurringAll);
     }
 
     public function deleteAccount($accountId)

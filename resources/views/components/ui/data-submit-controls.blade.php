@@ -1,10 +1,17 @@
 @props([
 'width' => 'max-w-7xl',
-'heightController' => false
+'heightController' => false,
+'forecastController' => false
 ])
 <div
     class="{{$width}} mx-auto py-1 px-4 sm:px-6 lg:px-8
     text-sm flex justify-end flex-nowrap items-baseline relative">
+    @if($forecastController)
+        <div class="mr-8 flex flex-nowrap">
+            <input type="checkbox" id="allow_forecast_double_click" class="mr-2"/>
+            <label for="allow_forecast_double_click">{{__('Allow manually add forecast value by double click')}}</label>
+        </div>
+    @endif
     @if($heightController)
         <div class="mr-8 flex flex-nowrap">
             <input type="radio" value="full" id="height_full" name="block_different_height"
