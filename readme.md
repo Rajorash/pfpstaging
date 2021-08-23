@@ -40,3 +40,55 @@ Most of the data will be prefilled for you as long as you seed the db. You can l
   <dt>user</dt><dd>advisor@pfp.com</dd>
   <dt>pw</dt><dd>letmeinnow!</dd>
 </dl>
+
+
+---
+### Classes
+## App/Models/License
+#### Properties 
+* account_number
+* advisor_id
+* business_id
+* regionaladmin_id
+* active
+* issued_ts
+* assigned_ts
+* expires_ts
+* revoked_ts
+* created_ts
+* updaetd_ts
+
+#### Functions
+**issue(User $advisor)**
+```php
+
+$license = new License;
+//setup initial license values...
+$license->issue($advisor);
+
+// call can also be chained since it returns the License object
+$license = new License;
+//setup initial license values...
+$license->issue($advisor)->assign($business);
+
+```
+
+**assign(Business $business)**
+```php
+
+$license = new License;
+//setup initial license values...
+$license->assign($business);
+
+// call can also be chained since it returns the License object
+$license = new License;
+//setup initial license values...
+$license->issue($advisor)->assign($business);
+
+```
+
+If You see next error: **"node_modules\.bin\npm.ps1 cannot be loaded because running scripts is disabled on this system. For more information, see about_Execution_Policies at https:/go.microsoft.com/fwlink/?LinkID=135170.
+At line:1 char:1"**
+
+Run in powerShell next command ```Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy Unrestricted```
+

@@ -124,17 +124,24 @@ class BusinessPolicy
         }
 
         // owners can access their own business
-        if ($business->owner && $user->id === $business->owner->id) {
+        if ($user->id == optional($business->owner)->id) {
             return true;
         }
 
         // advisors can access the businesses that they advise
-        if ($business->license && $user->id === $business->license->advisor_id) {
+        // NOTE: do not use strict comparison === as it will return false.
+        if ( $user->id == optional($business->advisor)->id ) {
+            return true;
+        }
+
+        //advisor can access the business by license
+        if ($user->activeLicenses->pluck('id')->has($business->id)) {
             return true;
         }
 
         // advisors can access the businesses that they collaborate on
-        if ($business->collaboration && $user->id === $business->collaboration->advisor_id) {
+        // NOTE: do not use strict comparison === as it will return false.
+        if ( $user->id == optional(optional($business->collaboration)->advisor)->user_id ) {
             // need to add expiry check
             return true;
         }

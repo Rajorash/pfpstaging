@@ -2,18 +2,27 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\UserRegistered;
 use App\Models\Business;
+use App\Models\License;
 use App\Traits\GettersTrait;
-use Auth;
+use Livewire\WithPagination;
+
+//use Auth;
 use App\Models\User;
 use App\Models\Role;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
     use GettersTrait;
+    use WithPagination;
+
+    protected $perPage = 10;
+    protected $paginationTheme = 'tailwind';
 
     /**
      * Display a listing of the resource.
@@ -22,18 +31,56 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::all();
+        $this->authorize('indexUsers', Auth::user());
 
+        $currUserId = auth()->user()->id;
+        $filtered = $this->getUserList();
+
+        abort_if($filtered == null, 403, 'Access denied');
+
+
+        return view('user.list',
+            [
+                'users' => $filtered,
+                'currUserId' => $currUserId
+            ]
+        );
+    }
+
+    private function getUserList()
+    {
         if (Auth::user()->isSuperAdmin()) {
-            $filtered = $users;
-        } else {
-            $filtered = $users->filter(function ($user) {
-                return Auth::user()->can('view', $user);
-            })->values();
-            // return $filtered;
+            return User::orderBy('name')->paginate($this->perPage);
         }
 
-        return view('user.list', ['users' => $filtered]);
+        if (Auth::user()->isRegionalAdmin()) {
+            $licenses = License::whereRegionaladminId(Auth::user()->id);
+
+            $collection = $licenses->pluck('advisor_id');
+            if (Auth::user()->advisorsByRegionalAdmin) {
+                $collection = $collection->merge(Auth::user()->advisorsByRegionalAdmin->pluck('id'));
+            }
+            $collection = $collection->unique();
+
+            return User::whereIn('id', $collection)
+                ->withCount('businesses')
+                ->orderBy('name')
+                ->paginate($this->perPage);
+
+        }
+
+        if (Auth::user()->isAdvisor()) {
+            return User::where(
+                function ($subQuery) {
+                    $subQuery->whereIn('id', Auth::user()->licenses->pluck('owner_id'));
+                    $subQuery->OrwhereIn('id', Auth::user()->clientsByAdvisor->pluck('id'));
+                })->with('businesses')
+                ->orderBy('name')
+                ->paginate($this->perPage);
+            //$filtered = User::whereIn('id', Auth::user()->advisors->pluck('id'));
+        }
+
+        return null;
     }
 
     /**
@@ -46,10 +93,12 @@ class UserController extends Controller
     {
         $this->authorize('create', $user);
 
-        $ownerRoleId = auth()->user()->roles->min('id');
-        $roles = Role::where('id', '>', $ownerRoleId)->get()->pluck('label', 'id')->toArray();
+//        $ownerRoleId = auth()->user()->roles->min('id');
+//        $roles = $this->getRolesAllowedToGrant();
 
-        return view('user.create', ['roles' => $roles]);
+        return view('user.create'
+//            , ['roles' => $roles]
+        );
     }
 
     /**
@@ -74,12 +123,14 @@ class UserController extends Controller
         $user->email = $data['email'];
         $user->password = Hash::make(Str::random(10));
         $user->timezone = $data['timezone'];
+        $user->active = boolval($request['active']);
+        $user->title = $request['title'];
+        $user->responsibility = $request['responsibility'];
         $user->save();
 
         $ownerRoleId = auth()->user()->roles->min('id');
         // assign client role
-        foreach ($data['roles'] as $role_id)
-        {
+        foreach ($data['roles'] as $role_id) {
             if ($ownerRoleId < $role_id) {
                 $client_role = Role::find($role_id);
                 $user->assignRole($client_role);
@@ -127,135 +178,12 @@ class UserController extends Controller
     {
         $this->authorize('edit', $user);
 
-        $ownerRoleId = auth()->user()->roles->min('id');
-        $roles = Role::where('id', '>', $ownerRoleId)->get()->pluck('label', 'id')->toArray();
-        $userRoles = $user->roles->pluck('id')->toArray();
-
-        $businesses = $licenses = [];
-        if (in_array(User::ROLE_IDS[User::ROLE_ADVISOR], $userRoles)) {
-
-            $businesses = $this->getBusinessAll();
-            if (!Auth::user()->isSuperAdmin()) {
-                $businesses = $businesses->filter(function ($business) {
-                    return Auth::user()->can('view', $business);
-                })->values();
-            }
-            $businesses = $businesses->pluck('name', 'id')->toArray();
-            $licenses = $user->licenses->pluck('id')->toArray();
-        }
-
         return view(
             'user.edit',
             [
                 'user' => $user,
-                'userRoles' => $userRoles,
-                'roles' => $roles,
-                'businesses' => $businesses,
-                'licenses' => $licenses
             ]
         );
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, User $user)
-    {
-        $validator = \Validator::make($request->all(), [
-            'name' => 'required',
-            'email' => 'required|email|unique:users,email,'.$user->id,
-            'timezone' => 'present|timezone',
-            'roles' => 'required',
-        ]);
-        $validator->validate();
-
-        $advisorId = User::ROLE_IDS[User::ROLE_ADVISOR];
-        $validator->after(function ($validator) use ($request, $advisorId) {
-            if (
-                is_array($request->licenses) &&
-                is_array($request->roles) &&
-                !in_array($advisorId, $request->roles)
-            ) {
-                $validator->errors()->add(
-                    'roles', 'Advisor role can not be revoked if at least one business is selected for licensing.'
-                );
-            }
-        });
-
-        if ($validator->fails()) {
-            $userRoles = $user->roles->pluck('id')->toArray();
-            $ownerRoleId = auth()->user()->roles->min('id');
-            $roles = Role::where('id', '>', $ownerRoleId)->get()->pluck('label', 'id')->toArray();
-            $businesses = $licenses = [];
-            if (in_array(User::ROLE_IDS[User::ROLE_ADVISOR], $userRoles)) {
-
-                $businesses = $this->getBusinessAll();
-                if (!Auth::user()->isSuperAdmin()) {
-                    $businesses = $businesses->filter(function ($business) {
-                        return Auth::user()->can('view', $business);
-                    })->values();
-                }
-                $businesses = $businesses->pluck('name', 'id')->toArray();
-                $licenses = $user->licenses->pluck('id')->toArray();
-            }
-
-            return view(
-                'user.edit',
-                [
-                    'user' => $user,
-                    'userRoles' => $userRoles,
-                    'roles' => $roles,
-                    'businesses' => $businesses,
-                    'licenses' => $licenses,
-                    "errors"  => $validator->messages()
-                ]
-            );
-        }
-
-        $user->name = $request->name;
-        $user->email = $request->email;
-        $user->timezone = $request->timezone;
-        $user->save();
-
-        $user->licenses()->detach();
-        if (is_array($request->licenses)) {
-
-            $time_created = date('Y-m-d h:i:s', time());
-            foreach ($request->licenses as $license)
-            {
-                $business = Business::find($license);
-                $user->assignLicense([
-                    $business->id => [
-                        'account_number' => uniqid(),
-                        'created_at' => $time_created,
-                        'updated_at' => $time_created
-                    ]
-                ]);
-            }
-        }
-
-        $ownerRoleId = auth()->user()->roles->min('id');
-        $userRoles = $user->roles->pluck('id')->toArray();
-        $toDetach = [];
-        foreach ($userRoles as $role_id) {
-            if ($ownerRoleId > $role_id && ($role_id != User::ROLE_ADVISOR || empty($request->licenses))) {
-                $toDetach[] = $role_id;
-            }
-        }
-        $user->roles()->detach($toDetach);
-        foreach ($request->roles as $role_id)
-        {
-            if ($ownerRoleId < $role_id) {
-                $client_role = Role::find($role_id);
-                $user->assignRole($client_role);
-            }
-        }
-
-        return redirect("user");
     }
 
     /**
@@ -267,5 +195,111 @@ class UserController extends Controller
     public function destroy(User $user)
     {
         //
+    }
+
+    /**
+     * Get array of Roles current user is allowed to grant to others
+     * @return array
+     */
+    public function getRolesAllowedToGrant()
+    {
+        $roles = Role::all()->pluck('label', 'id')->toArray();
+        if (Auth::user()->isSuperAdmin()) {
+            unset($roles[1]);
+            return $roles;
+        }
+        $user = auth()->user();
+        return $user->roles->map(function ($item) use ($roles) {
+            if ($item->id < 4) {
+                $item['allowed_id'] = ($item->id + 1);
+                $item['allowed_label'] = $roles[($item->id + 1)];
+            }
+            return $item;
+        })->pluck('allowed_label', 'allowed_id')->filter(function ($value, $key) {
+            return !is_null($value);
+        })->toArray();
+    }
+
+    /**
+     * Check if current user has at least one license to create/activate Client
+     * @return bool
+     */
+    private function hasActiveLicense()
+    {
+        $user = auth()->user();
+        $userRoles = $user->roles->pluck('id')->toArray();
+        if (
+            Auth::user()->isSuperAdmin() ||
+            in_array(User::ROLE_IDS[User::ROLE_ADVISOR], $userRoles)
+        ) {
+            ;
+        }
+
+        return false;
+    }
+
+    /**
+     * Check if $userRoles contains Advisor role
+     * @param  array  $userRoles
+     * @return bool
+     */
+    public function checkAdvisor(array $userRoles)
+    {
+        return key_exists(User::ROLE_IDS[User::ROLE_ADVISOR], $userRoles);
+    }
+
+    /**
+     * Check if $userRoles contains Client role
+     * @param  array  $userRoles
+     * @return bool
+     */
+    public function checkClient(array $userRoles)
+    {
+        return key_exists(User::ROLE_IDS[User::ROLE_CLIENT], $userRoles);
+    }
+
+    protected function getUsersByType($type)
+    {
+        $users = User::where('id', '!=', '0')
+            ->with('roles')
+            ->orderBy('name')
+            ->get();
+
+        switch ($type) {
+            case User::ROLE_SUPERADMIN:
+                $users = $users->filter->isSuperAdmin();
+                break;
+            case User::ROLE_ADMIN:
+                $users = $users->filter->isRegionalAdmin();
+                break;
+            case User::ROLE_ADVISOR:
+                $users = $users->filter->isAdvisor();
+                break;
+            case User::ROLE_CLIENT:
+                $users = $users->filter->isClient();
+                break;
+        }
+
+        return $users;
+    }
+
+    public function getSuperAdmins()
+    {
+        return $this->getUsersByType(User::ROLE_SUPERADMIN);
+    }
+
+    public function getAdmins()
+    {
+        return $this->getUsersByType(User::ROLE_ADMIN);
+    }
+
+    public function getAdvisor()
+    {
+        return $this->getUsersByType(User::ROLE_ADVISOR);
+    }
+
+    public function getClient()
+    {
+        return $this->getUsersByType(User::ROLE_CLIENT);
     }
 }

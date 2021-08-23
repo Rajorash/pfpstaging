@@ -8,7 +8,7 @@ use App\Traits\GettersTrait;
 use Livewire\Component;
 use Carbon\Carbon;
 
-class AccountTotal extends Component
+class __AccountTotal extends Component
 {
     use GettersTrait;
 
@@ -25,7 +25,7 @@ class AccountTotal extends Component
         $this->uid = 'account_total_'.$accountId.'_'.substr($date, 0, 10);
         $this->accountId = $accountId;
 //        $this->account = BankAccount::find($accountId);
-        $this->account = $this->getBackAccount($accountId);
+        $this->account = $this->getBankAccount($accountId);
         $this->date = $date;
         $this->phase_id = $this->account->business->getPhaseIdByDate($date);
         $this->amount = $this->account->getAllocationsTotalByDate($this->date, $this->phase_id);

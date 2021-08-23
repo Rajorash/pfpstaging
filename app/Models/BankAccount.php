@@ -5,17 +5,49 @@ namespace App\Models;
 use App\Models\Allocation as Allocation;
 use App\Models\AllocationPercentage;
 use App\Traits\Allocatable;
+use Eloquent;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 
+/**
+ * App\Models\BankAccount
+ *
+ * @property int $id
+ * @property string $name
+ * @property string $type
+ * @property int $business_id
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read Collection|Allocation[] $allocations
+ * @property-read int|null $allocations_count
+ * @property-read Business $business
+ * @property-read Collection|AccountFlow[] $flows
+ * @property-read int|null $flows_count
+ * @property-read Collection|AllocationPercentage[] $percentages
+ * @property-read int|null $percentages_count
+ * @property-read TaxRate|null $taxRate
+ * @method static Builder|BankAccount newModelQuery()
+ * @method static Builder|BankAccount newQuery()
+ * @method static Builder|BankAccount query()
+ * @method static Builder|BankAccount whereBusinessId($value)
+ * @method static Builder|BankAccount whereCreatedAt($value)
+ * @method static Builder|BankAccount whereId($value)
+ * @method static Builder|BankAccount whereName($value)
+ * @method static Builder|BankAccount whereType($value)
+ * @method static Builder|BankAccount whereUpdatedAt($value)
+ * @mixin Eloquent
+ */
 class BankAccount extends Model
 {
     use Allocatable;
 
-    const ACCOUNT_TYPE_REVENUE  = 'revenue';
+    const ACCOUNT_TYPE_REVENUE = 'revenue';
     const ACCOUNT_TYPE_PRETOTAL = 'pretotal';
     const ACCOUNT_TYPE_SALESTAX = 'salestax';
-    const ACCOUNT_TYPE_PREREAL  = 'prereal';
+    const ACCOUNT_TYPE_PREREAL = 'prereal';
     const ACCOUNT_TYPE_POSTREAL = 'postreal';
 
     protected $fillable = ['name', 'type'];
@@ -46,6 +78,7 @@ class BankAccount extends Model
             5 => self::ACCOUNT_TYPE_POSTREAL
         ];
     }
+
     /*
         public function allocations()
         {
@@ -119,7 +152,7 @@ class BankAccount extends Model
                 })->map(function ($a_item) {
                     return array_column(collect($a_item)->toArray(), 'val', 'id');
                 })->toArray();
-            Cache::put($key, $getAllAllocationPercentages);
+            Cache::put($key, $getAllAllocationPercentages, now()->addMinutes(10));
         }
 
         return $getAllAllocationPercentages;
@@ -139,24 +172,24 @@ class BankAccount extends Model
 //        $getAllocationsTotalByDate = Cache::get($key);
 
 //        if ($getAllocationsTotalByDate === null) {
-            $getAllocationsTotalByDate = AccountFlow::where('account_id', $this->id)
-                ->with('allocations', function ($query) use ($date, $phaseId) {
-                    return $query->where('allocation_date', $date)
-                        ->where('phase_id', $phaseId);
-                })
-                ->get()
-                ->map(function ($item) {
-                    return collect($item->toArray())
-                        ->only('negative_flow', 'allocations')
-                        ->all();
-                })
-                ->map(function ($a_item) {
-                    return count($a_item['allocations']) > 0
-                        ? $a_item['negative_flow']
-                            ? $a_item['allocations'][0]['amount'] * -1
-                            : $a_item['allocations'][0]['amount']
-                        : 0;
-                })->sum();
+        $getAllocationsTotalByDate = AccountFlow::where('account_id', $this->id)
+            ->with('allocations', function ($query) use ($date, $phaseId) {
+                return $query->where('allocation_date', $date)
+                    ->where('phase_id', $phaseId);
+            })
+            ->get()
+            ->map(function ($item) {
+                return collect($item->toArray())
+                    ->only('negative_flow', 'allocations')
+                    ->all();
+            })
+            ->map(function ($a_item) {
+                return count($a_item['allocations']) > 0
+                    ? $a_item['negative_flow']
+                        ? $a_item['allocations'][0]['amount'] * -1
+                        : $a_item['allocations'][0]['amount']
+                    : 0;
+            })->sum();
 //            Cache::put($key, $getAllocationsTotalByDate);
 //        }
 
@@ -191,7 +224,7 @@ class BankAccount extends Model
                         ? $a_item['allocations'][0]['amount']
                         : 0;
                 })->sum();
-            Cache::put($key, $getRevenueByDate);
+            Cache::put($key, $getRevenueByDate, now()->addMinutes(10));
         }
 
         return $getRevenueByDate;
@@ -281,5 +314,22 @@ class BankAccount extends Model
         return $this->hasOne(TaxRate::class);
     }
 
+    /**
+     * returns true if the account type should be able to be deleted
+     *
+     * @return boolean
+     */
+    public function isDeletable()
+    {
+        $undeletable_types = [
+            self::ACCOUNT_TYPE_REVENUE,
+            self::ACCOUNT_TYPE_SALESTAX,
+        ];
 
+        if (in_array($this->type, $undeletable_types)) {
+            return false;
+        }
+
+        return true;
+    }
 }

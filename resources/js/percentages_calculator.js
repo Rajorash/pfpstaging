@@ -1,52 +1,35 @@
+import {calculatorCore} from "./calculator_core";
+
 $(function () {
+
     $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
 
-    class PercentagesCalculator {
+    class PercentagesCalculator extends calculatorCore {
         constructor() {
-            this.debug = false;
+            super();
 
             this.ajaxUrl = window.percentagesControllerUpdate;
-            this.elementPercentagesTablePlace = $('#percentagesTablePlace');
-            this.elementLoadingSpinner = $('#loadingSpinner');
+            this.elementTablePlace = $('#percentagesTablePlace');
 
-            this.changesCounter = 0;
-            this.changesCounterId = 'processCounter';
-            this.lastCoordinatesElementId = '';
+            this.autoSubmitDataDelay = $.cookie('percentage_autoSubmitDataDelay') !== undefined
+                ? parseInt($.cookie('percentage_autoSubmitDataDelay'))
+                : this.autoSubmitDataDelayDefault;
 
-            this.timeout;
-        }
-
-        init() {
-            let $this = this;
-
-            $this.resetData();
-            $this.events();
-
-            $this.firstLoadData();
+            this.timeOutSeconds = 1000 * parseInt(this.autoSubmitDataDelay);
         }
 
         events() {
             let $this = this;
+            super.events();
 
             $(document).on('change', 'input.percentage-value', function (event) {
                 $this.loadData(event);
+                $this.progressBar();
             });
-        }
-
-        resetData() {
-            let $this = this;
-
-            if ($this.debug) {
-                console.log('resetData');
-            }
-
-            $this.changesCounter = 0;
-            $this.data = {};
-            $this.data.cells = [];
         }
 
         collectData(event) {
@@ -59,6 +42,10 @@ $(function () {
             if (event && typeof event.target.id === 'string') {
 
                 $this.lastCoordinatesElementId = event.target.id;
+                $this.windowCoordinates = {
+                    top: $(window).scrollTop(),
+                    left: $(window).scrollLeft()
+                };
 
                 $this.data.cells.push({
                     cellId: event.target.id,
@@ -79,79 +66,16 @@ $(function () {
             }
         }
 
-        showSpinner() {
+        updateSubmitDataSwitcher() {
             let $this = this;
 
-            $('html, body').css({
-                overflow: 'hidden',
-                height: '100%'
-            });
-
-            $this.elementLoadingSpinner.show();
+            $.cookie('percentage_autoSubmitDataSwitcher', $this.autoSubmitDataSwitcher, {expires: 14});
         }
 
-        hideSpinner() {
+        updateSubmitDataDelay() {
             let $this = this;
 
-            $('html, body').css({
-                overflow: 'auto',
-                height: 'auto'
-            });
-
-            $this.elementLoadingSpinner.hide();
-        }
-
-        loadData(event) {
-            let $this = this;
-
-            $this.collectData(event);
-
-            clearTimeout($this.timedOut);
-            $this.timedOut = setTimeout(function () {
-                $this.ajaxLoadWorker();
-            }, 2000);
-        }
-
-        firstLoadData() {
-            let $this = this;
-
-            $this.collectData();
-            $this.ajaxLoadWorker();
-        }
-
-        ajaxLoadWorker() {
-            let $this = this;
-
-            $.ajax({
-                type: 'POST',
-                url: $this.ajaxUrl,
-                data: $this.data,
-                beforeSend: function () {
-                    $this.showSpinner()
-                },
-                success: function (data) {
-                    if ($this.debug) {
-                        console.log('loadData', data);
-                    }
-                    $this.renderData(data);
-                },
-                complete: function () {
-                    $this.hideSpinner();
-                    $this.resetData();
-                }
-            });
-        }
-
-        renderData(data) {
-            let $this = this;
-
-            if (data.error.length === 0) {
-                $this.elementPercentagesTablePlace.html(data.html);
-
-                if ($this.lastCoordinatesElementId) {
-                    $('#' + $this.lastCoordinatesElementId).focus();
-                }
-            }
+            $.cookie('percentage_autoSubmitDataDelay', $this.autoSubmitDataDelay, {expires: 14});
         }
     }
 

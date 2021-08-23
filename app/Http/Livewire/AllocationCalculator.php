@@ -4,6 +4,7 @@ namespace App\Http\Livewire;
 
 use App\Models\Business;
 use App\Models\AllocationPercentage;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Livewire\Component;
 
@@ -21,6 +22,7 @@ class AllocationCalculator extends Component
     public $selectedBusinessId;
     public Business $business;
     public $businesses;
+    public $businessId;
 
     public $mappedAccounts;
 
@@ -31,19 +33,21 @@ class AllocationCalculator extends Component
             'allocationSum' => 0,
             'checksum' => 0
         ]);
+
+        if ($this->businessId) {
+            $this->selectedBusinessId = $this->businessId;
+        }
     }
 
-    public function updatedSelectedBusinessId($new_value)
+    public function updatedSelectedBusinessId($businessId)
     {
-        $this->selectedBusinessId = $new_value;
-        $refresh;
+        return redirect()->route('allocation-calculator-with-id', ['business' => $businessId]);
     }
 
     public function updatedRevenue($new_value)
     {
         $this->revenue = is_numeric($new_value) ? $new_value : 0;
         $refresh;
-
     }
 
     private function getBusiness($selectedBusinessId)
@@ -52,7 +56,7 @@ class AllocationCalculator extends Component
         // $getBusiness = Cache::get($key);
 
         // if ($getBusiness === null) {
-            $getBusiness = Business::find($selectedBusinessId);
+        $getBusiness = Business::find($selectedBusinessId);
         //     Cache::put($key, $getBusiness);
         // }
 
@@ -92,7 +96,7 @@ class AllocationCalculator extends Component
 
     public function mapBusinessAccounts()
     {
-        $current_phase = $this->business->getPhaseIdByDate(today());
+        $current_phase = $this->business->current_phase;
 
         return $this->business->accounts->mapToGroups(
             function ($account) use ($current_phase) {

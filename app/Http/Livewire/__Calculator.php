@@ -7,7 +7,7 @@ use App\Models\BankAccount;
 use Livewire\Component;
 use Livewire\WithPagination;
 
-class Calculator extends Component
+class __Calculator extends Component
 {
     use WithPagination;
 

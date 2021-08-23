@@ -15,6 +15,26 @@
         <form method="POST" action="{{ route('login') }}">
             @csrf
 
+            @if (env('APP_ENV') == 'local')
+                <div class="flex pb-2">
+                    <a class="px-2 py-1 mr-2 border rounded border-gray-400 hover:bg-gray-100 cursor-pointer text-sm"
+                       onclick="(function(){$('#email').val('superadmin@pfp.com');$('#password').val('#j$dZW|bdYO+`CW`~,y|');})();return false;">
+                        Super Admin</a>
+                    <a class="px-2 py-1 mr-2 border rounded border-gray-400 hover:bg-gray-100 cursor-pointer text-sm"
+                       onclick="(function(){$('#email').val('regionaladmin@pfp.com');$('#password').val('#j$dSYUD(W@SbdYO+`CW');})();return false;">
+                        Regional Admin</a>
+                    <a class="px-2 py-1 mr-2 border rounded border-gray-400 hover:bg-gray-100 cursor-pointer text-sm"
+                       onclick="(function(){$('#email').val('advisor@pfp.com');$('#password').val('letmeinnow!');})();return false;">
+                        Test Advisor</a>
+                    <a class="px-2 py-1 mr-2 border rounded border-gray-400 hover:bg-gray-100 cursor-pointer text-sm"
+                       onclick="(function(){$('#email').val('craig@mintscdconsulting.com.au');$('#password').val('CML9Zy!&$H2#e@e9');})();return false;">
+                        Craig Minter</a>
+                    <a class="px-2 py-1 mr-2 border rounded border-gray-400 hover:bg-gray-100 cursor-pointer text-sm"
+                       onclick="(function(){$('#email').val('client@pfp.com');$('#password').val('letmeinnow!');})();return false;">
+                        Test Client</a>
+                </div>
+            @endif
+
             <div>
                 <x-jet-label for="email" value="{{ __('Email') }}"/>
                 <x-jet-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')"

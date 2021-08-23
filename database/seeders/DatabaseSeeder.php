@@ -18,7 +18,7 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             LicenseSeeder::class,
             BusinessSeeder::class,
-            AccountSeeder::class,
+            // AccountSeeder::class,
             PermissionsSeeder::class
         ]);
     }

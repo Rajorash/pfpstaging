@@ -12,19 +12,32 @@
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ml-20 sm:flex">
-                    <x-jet-nav-link href="{{ route('dashboard') }}" :active="request()->is('*dashboard.*') || request()->is('*dashboard*')">
+                    <x-jet-nav-link href="{{ route('dashboard') }}"
+                                    :active="request()->is('*dashboard.*') || request()->is('*dashboard*')">
                         {{ __('Dashboard') }}
                     </x-jet-nav-link>
-                    <x-jet-nav-link href="{{ route('allocation-calculator') }}"
-                                    :active="request()->routeIs('allocation-calculator')">
-                        {{ __('Calculator') }}
-                    </x-jet-nav-link>
-                    <x-jet-nav-link href="{{ route('businesses') }}" :active="request()->is('*business/*') || request()->is('business')">
-                        {{ __('Businesses') }}
-                    </x-jet-nav-link>
-                    <x-jet-nav-link href="{{ route('users') }}" :active="request()->routeIs('users')">
-                        {{ __('Users') }}
-                    </x-jet-nav-link>
+                    @if(Auth::user()->isSuperAdmin() || Auth::user()->isAdvisor() || Auth::user()->isClient())
+                        <x-jet-nav-link href="{{ route('allocation-calculator') }}"
+                                        :active="request()->routeIs('allocation-calculator')">
+                            {{ __('Calculator') }}
+                        </x-jet-nav-link>
+                        <x-jet-nav-link href="{{ route('businesses') }}"
+                                        :active="request()->is('*business/*') || request()->is('business')">
+                            {{ __('Businesses') }}
+                        </x-jet-nav-link>
+                    @endif
+                    @if(Auth::user()->isSuperAdmin() || Auth::user()->isRegionalAdmin() || Auth::user()->isAdvisor())
+                        <x-jet-nav-link href="{{ route('users') }}" :active="request()->routeIs('users')">
+                            @if (Auth::user()->isRegionalAdmin()
+                                    && !Auth::user()->isSuperAdmin()
+                                    && !Auth::user()->isAdvisor()
+                                    && !Auth::user()->isClient())
+                                {{ __('Advisors') }}
+                            @else
+                                {{ __('Users') }}
+                            @endif
+                        </x-jet-nav-link>
+                    @endif
                 </div>
             </div>
 
@@ -89,10 +102,11 @@
                     <x-jet-dropdown align="right" width="48">
                         <x-slot name="trigger">
                             @if (Laravel\Jetstream\Jetstream::managesProfilePhotos())
-                                <button
-                                    class="flex text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-gray-300 transition duration-150 ease-in-out">
+                                <button title="{{ Auth::user()->name }}"
+                                        class="flex text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-gray-300 transition duration-150 ease-in-out">
                                     <img class="h-8 w-8 rounded-full object-cover"
-                                         src="{{ Auth::user()->profile_photo_url }}" alt="{{ Auth::user()->name }}"/>
+                                         src="{{ Auth::user()->profile_photo_url }}" alt="{{ Auth::user()->name }}"
+                                         title="{{ Auth::user()->name }}"/>
                                 </button>
                             @else
                                 <span class="inline-flex rounded-md">
@@ -123,23 +137,41 @@
                                 {{ __('Profile') }}
                             </x-jet-dropdown-link>
 
-                            <x-jet-dropdown-link href="#">
+                            @if(Auth::user()->isSuperAdmin()
+                                || Auth::user()->isAdvisor()
+                                || Auth::user()->isClient())
+                                <x-jet-dropdown-link href="{{ route('businesses') }}">
                                 <span class="inline-block mr-4 pt-0.5 w-4 text-center"><x-icons.case
                                         :class="'w-4 h-auto'"/></span>
-                                {{ __('Create A Business') }}
-                            </x-jet-dropdown-link>
+                                    {{ __('Create A Business') }}
+                                </x-jet-dropdown-link>
+                            @endif
 
-                            <x-jet-dropdown-link href="#">
+                            @if(
+                                Auth::user()->isSuperAdmin()
+                                || Auth::user()->isRegionalAdmin()
+                                || Auth::user()->isAdvisor()
+                                )
+                                <x-jet-dropdown-link href="{{route('users.create')}}">
                                 <span class="inline-block mr-4 pt-0.5 w-4 text-center"><x-icons.user-add
                                         :class="'w-4 h-auto'"/></span>
-                                {{ __('Add An User') }}
-                            </x-jet-dropdown-link>
+                                    {{ __('Add A User') }}
+                                </x-jet-dropdown-link>
+                            @endif
 
-                            <x-jet-dropdown-link href="#">
-                                <span class="inline-block mr-4 pt-0.5 w-4 text-center"><x-icons.gear
+                            {{--                            <x-jet-dropdown-link href="#">--}}
+                            {{--                                <span class="inline-block mr-4 pt-0.5 w-4 text-center"><x-icons.gear--}}
+                            {{--                                        :class="'w-4 h-auto'"/></span>--}}
+                            {{--                                {{ __('Settings') }}--}}
+                            {{--                            </x-jet-dropdown-link>--}}
+
+                            @if (Auth::user()->isSuperAdmin())
+                                <x-jet-dropdown-link href="{{route('maintenance')}}">
+                                <span class="inline-block mr-4 pt-0.5 w-4 text-center"><x-icons.maintenance
                                         :class="'w-4 h-auto'"/></span>
-                                {{ __('Settings') }}
-                            </x-jet-dropdown-link>
+                                    {{ __('Maintenance') }}
+                                </x-jet-dropdown-link>
+                            @endif
 
                             @if (Laravel\Jetstream\Jetstream::hasApiFeatures())
                                 <x-jet-dropdown-link href="{{ route('api-tokens.index') }}">
@@ -188,16 +220,28 @@
             <x-jet-responsive-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-jet-responsive-nav-link>
-            <x-jet-responsive-nav-link href="{{ route('allocation-calculator') }}"
-                                       :active="request()->routeIs('allocation-calculator')">
-                {{ __('Calculator') }}
-            </x-jet-responsive-nav-link>
-            <x-jet-responsive-nav-link href="{{ route('businesses') }}" :active="request()->routeIs('businesses')">
-                {{ __('Businesses') }}
-            </x-jet-responsive-nav-link>
-            <x-jet-responsive-nav-link href="{{ route('users') }}" :active="request()->routeIs('users')">
-                {{ __('Users') }}
-            </x-jet-responsive-nav-link>
+            @if(Auth::user()->isSuperAdmin() || Auth::user()->isAdvisor() || Auth::user()->isClient())
+                <x-jet-responsive-nav-link href="{{ route('allocation-calculator') }}"
+                                           :active="request()->routeIs('allocation-calculator')">
+                    {{ __('Calculator') }}
+                </x-jet-responsive-nav-link>
+                <x-jet-responsive-nav-link href="{{ route('businesses') }}"
+                                           :active="request()->is('*business/*') || request()->is('business')">
+                    {{ __('Businesses') }}
+                </x-jet-responsive-nav-link>
+            @endif
+            @if(Auth::user()->isSuperAdmin() || Auth::user()->isRegionalAdmin() || Auth::user()->isAdvisor())
+                <x-jet-responsive-nav-link href="{{ route('users') }}" :active="request()->routeIs('users')">
+                    @if (Auth::user()->isRegionalAdmin()
+                            && !Auth::user()->isSuperAdmin()
+                            && !Auth::user()->isAdvisor()
+                            && !Auth::user()->isClient())
+                        {{ __('Advisors') }}
+                    @else
+                        {{ __('Users') }}
+                    @endif
+                </x-jet-responsive-nav-link>
+            @endif
         </div>
 
         <!-- Responsive Settings Options -->

@@ -6,7 +6,9 @@ use Auth;
 use App\Models\AccountFlow;
 use App\Models\BankAccount;
 use App\Models\Business;
+use App\Models\Phase;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class BankAccountController extends Controller
 {
@@ -69,6 +71,14 @@ class BankAccountController extends Controller
         $account->business_id = $business->id;
 
         $account->save();
+
+        $phases = Phase::where('business_id', '=', $business->id)->get()->pluck('id');
+        if (count($phases)) {
+            foreach ($phases as $phase) {
+                $key = 'phasePercentValues_'.$phase.'_'.$business->id;
+                Cache::forget($key);
+            }
+        }
 
         return redirect("business/".$business->id."/accounts");
     }
@@ -189,6 +199,8 @@ class BankAccountController extends Controller
      */
     public function destroy(Business $business, BankAccount $account)
     {
+
+        dd($business,$account);
         $this->authorize('view', $business);
 
         $account->delete();

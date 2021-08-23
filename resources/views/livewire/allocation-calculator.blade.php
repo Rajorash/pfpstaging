@@ -1,4 +1,4 @@
-<div class="p-6 sm:px-20 bg-white border-b border-gray-200">
+<div class="p-6 sm:px-20">
     <div class="text-lg text-center mb-4">Allocation Calculator For {{$this->business->name}}
         <select class="form-select rounded px-3 py-1 ml-4" name="" id="" wire:model="selectedBusinessId">
             @foreach ($selectOptions as $business_id => $business_name)

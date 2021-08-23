@@ -14,4 +14,7 @@ npm-debug.log
 yarn-error.log
 php-error.log
 .idea/workspace.xml
+.idea/pfp.iml
+.idea/php.xml
 /clear.cmd
+/.php-error.log

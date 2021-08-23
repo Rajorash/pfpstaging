@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BankAccount;
 use App\Models\BankAccountEntry;
 use App\Models\Business;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class BankAccountEntryController extends Controller
@@ -77,13 +79,13 @@ class BankAccountEntryController extends Controller
         $this->authorize('view', $business);
 
         $validator = $this->validate($request, [
-            'date'      => 'required|date',
+            // 'date'      => 'required|date',
             'amounts'   => 'array',
             'amounts.*' => 'numeric'
         ]);
 
-        $date = $request->date;
-        $amounts = collect($request->amount);
+        $today = Carbon::today()->format('Y-m-d');
+        $amounts = collect($request->amounts);
 
         // get all account ids belonging to the business
         $business_account_ids = $business->accounts->pluck('id');
@@ -94,12 +96,13 @@ class BankAccountEntryController extends Controller
             return in_array($account_id, $business_account_ids->values()->toArray());
         });
 
+        $phase_id = $business->getPhaseIdByDate(Carbon::tomorrow());
+
         foreach( $amounts as $account_id => $amount ) {
             // find or create an entry
-            $entry = BankAccountEntry::firstOrNew(['balance_date' => $date, 'bank_account_id' => $account_id]);
-            $entry->balance_amount = $amount;
-            $entry->balance_date = $date;
-            $entry->save();
+            if($account = BankAccount::find($account_id)) {
+                $account->allocate($amount, $today, $phase_id, true);
+            }
         }
 
         return redirect()->back()->with('success', 'Account entries successfully entered.');

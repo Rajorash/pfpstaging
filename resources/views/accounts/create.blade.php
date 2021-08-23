@@ -14,7 +14,7 @@
 
     <x-ui.main>
         <x-ui.table-table>
-            <x-ui.table-caption class="pt-12 pb-6 px-72 relative">
+            <x-ui.table-caption class="pt-12 pb-6 px-48 lg:px-52 xl:px-60 2xl:px-72 relative relative">
                 Create A New Account For {{$business->name}}
 
                 <x-slot name="left">
@@ -29,7 +29,8 @@
             </x-ui.table-caption>
             <x-ui.table-tbody>
                 <tr>
-                    <x-ui.table-td class="text-center bg-gray-100" padding="px-72 py-4">
+                    <x-ui.table-td class="text-center bg-gray-100"
+                                   padding="px-12 sm:px-24 md:px-36 lg:px-48 xl:px-60 2xl:px-72 py-4">
                         <form method="POST"
                               action="{{url('/business/'.$business->id.'/accounts')}}">
                             @csrf
@@ -51,7 +52,7 @@
                                         {{ __('Account Type') }}
                                     </div>
                                     <div class="table-cell w-3/4 pb-4">
-                                        <select name="type" id="type" class="form-select rounded p-2 my-0 w-full
+                                        <select name="account_type" id="type" class="form-select rounded p-2 my-0 w-full
                                                 form-input border-light_blue
                                                 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50
                                                 @error('type') bg-red-700 @enderror">

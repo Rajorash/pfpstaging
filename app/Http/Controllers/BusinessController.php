@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Traits\GettersTrait;
-use Auth;
+
+//use Auth;
 use App\Models\Business;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class BusinessController extends Controller
 {
@@ -19,15 +21,17 @@ class BusinessController extends Controller
     public function index()
     {
         $businesses = $this->getBusinessAll();
-        if (Auth::user()->isSuperAdmin()) {
-            $filtered = $businesses;
-        } else {
-            $filtered = $businesses->filter( function ($business) {
-                return Auth::user()->can('view', $business);
-            })->values();
-        }
+        $filtered = $businesses->filter(function ($business) {
+            return Auth::user()->can('view', $business);
+        })->values();
 
-        return view('business.list', ['businesses' => $filtered]);
+        return view(
+            'business.list',
+            [
+                'businesses' => $filtered,
+                'currentUser' => Auth::user(),
+            ]
+        );
     }
 
     /**
@@ -96,5 +100,13 @@ class BusinessController extends Controller
     public function destroy(Business $business)
     {
         $this->authorize('delete', $business);
+    }
+
+
+    public function maintenance(Business $business)
+    {
+        $this->authorize('update', $business);
+
+        return view('business.maintenance', ['business' => $business]);
     }
 }

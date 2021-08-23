@@ -9,7 +9,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Livewire\Component;
 
-class AccountValue extends Component
+class __AccountValue extends Component
 {
     use GettersTrait;
 
@@ -26,7 +26,7 @@ class AccountValue extends Component
         $this->uid = 'account_value_'.$accountId.'_'.substr($date, 0, 10);
         $this->accountId = $accountId;
 //        $this->account = BankAccount::find($accountId);
-        $this->account = $this->getBackAccount($accountId);
+        $this->account = $this->getBankAccount($accountId);
         $this->date = $date;
         $this->allocation = self::getAllocation($date);
         $this->phase_id = $this->account->business->getPhaseIdByDate($date);

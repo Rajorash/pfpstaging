@@ -1,3 +1,5 @@
+import {calculatorCore} from "./calculator_core";
+
 $(function () {
     $.ajaxSetup({
         headers: {
@@ -5,48 +7,32 @@ $(function () {
         }
     });
 
-    class AllocationCalculator {
+    class AllocationCalculator extends calculatorCore {
         constructor() {
-            this.debug = false;
+            super();
 
             this.ajaxUrl = window.allocationsControllerUpdate;
-            this.elementAllocationTablePlace = $('#allocationTablePlace');
-            this.elementLoadingSpinner = $('#loadingSpinner');
+            this.elementTablePlace = $('#allocationTablePlace');
 
-            this.changesCounter = 0;
-            this.changesCounterId = 'processCounter';
-            this.lastCoordinatesElementId = '';
+            this.autoSubmitDataDelay = $.cookie('allocation_autoSubmitDataDelay') !== undefined
+                ? parseInt($.cookie('allocation_autoSubmitDataDelay'))
+                : this.autoSubmitDataDelayDefault;
 
-            this.timeout;
-        }
+            this.timeOutSeconds = 1000 * parseInt(this.autoSubmitDataDelay);
 
-        init() {
-            let $this = this;
-
-            $this.resetData();
-            $this.events();
-
-            $this.firstLoadData();
+            this.heightMode = $.cookie('allocation_heightMode') !== undefined
+                ? $.cookie('allocation_heightMode')
+                : this.heightModeDefault;
         }
 
         events() {
             let $this = this;
+            super.events();
 
             $(document).on('change', '#startDate, #currentRangeValue, #allocationTablePlace input', function (event) {
                 $this.loadData(event);
+                $this.progressBar();
             });
-        }
-
-        resetData() {
-            let $this = this;
-
-            if ($this.debug) {
-                console.log('resetData');
-            }
-
-            $this.changesCounter = 0;
-            $this.data = {};
-            $this.data.cells = [];
         }
 
         collectData(event) {
@@ -61,6 +47,10 @@ $(function () {
             if (event && typeof event.target.id === 'string') {
 
                 $this.lastCoordinatesElementId = event.target.id;
+                $this.windowCoordinates = {
+                    top: $(window).scrollTop(),
+                    left: $(window).scrollLeft()
+                }
 
                 if (event.target.id !== 'currentRangeValue'
                     && event.target.id !== 'startDate') {
@@ -82,79 +72,45 @@ $(function () {
             }
         }
 
-        showSpinner() {
+        updateSubmitDataDelay() {
             let $this = this;
 
-            $('html, body').css({
-                overflow: 'hidden',
-                height: '100%'
-            });
-
-            $this.elementLoadingSpinner.show();
+            $.cookie('allocation_autoSubmitDataDelay', $this.autoSubmitDataDelay, {expires: 14});
         }
 
-        hideSpinner() {
+        heightModeDataLoadData() {
+            super.heightModeDataLoadData();
             let $this = this;
 
-            $('html, body').css({
-                overflow: 'auto',
-                height: 'auto'
-            });
-
-            $this.elementLoadingSpinner.hide();
+            $this.switchHeightMode();
         }
 
-        loadData(event) {
+        switchHeightMode() {
             let $this = this;
 
-            $this.collectData(event);
+            if ($this.heightMode === 'full') {
+                $('.block_different_height').height('auto');
+            } else {
+                let height = $(window).height() - 50;
 
-            clearTimeout($this.timedOut);
-            $this.timedOut = setTimeout(function () {
-                $this.ajaxLoadWorker();
-            }, 2000);
-        }
-
-        firstLoadData() {
-            let $this = this;
-
-            $this.collectData();
-            $this.ajaxLoadWorker();
-        }
-
-        ajaxLoadWorker() {
-            let $this = this;
-
-            $.ajax({
-                type: 'POST',
-                url: $this.ajaxUrl,
-                data: $this.data,
-                beforeSend: function () {
-                    $this.showSpinner()
-                },
-                success: function (data) {
-                    if ($this.debug) {
-                        console.log('loadData', data);
-                    }
-                    $this.renderData(data);
-                },
-                complete: function () {
-                    $this.hideSpinner();
-                    $this.resetData();
+                if ($('.block_different_height').offset()) {
+                    height -= $('.block_different_height').offset().top;
                 }
-            });
-        }
 
-        renderData(data) {
-            let $this = this;
-
-            if (data.error.length === 0) {
-                $this.elementAllocationTablePlace.html(data.html);
-
-                if ($this.lastCoordinatesElementId) {
-                    $('#' + $this.lastCoordinatesElementId).focus();
-                }
+                $('.block_different_height').height(height);
             }
+
+            setTimeout(function () {
+                $(".global_nice_scroll").getNiceScroll().resize();
+            }, 500);
+        }
+
+        updateHeightMode() {
+            let $this = this;
+
+            $this.switchHeightMode();
+
+            $.cookie('allocation_heightMode', $this.heightMode, {expires: 14});
         }
     }
 

@@ -1,11 +1,26 @@
-<div class="ml-auto secondary-nav flex flex-wrap mt-8">
+<div class="flex flex-wrap flex-shrink-0 mt-8 ml-auto secondary-nav">
+
+    @if(Auth::user()->isAdvisor()
+        &&
+        (is_object($business->collaboration)
+            && is_object($business->collaboration->advisor)
+            && $business->collaboration->advisor->user_id  != auth()->user()->id)
+            || !is_object($business->collaboration)
+        )
+        @php
+            $active = request()->is('*business/*/maintenance');
+        @endphp
+        <a href="{{route('maintenance.business', ['business' => $business])}}" title="Maintenance"
+           class="bg-white block rounded box-border p-3 flex mr-6 h-12
+        @if($active) text-blue @else text-gray-700 @endif
+               ">
+            <x-icons.gear :class="'h-4 w-auto my-0.5 inline-block'"/>
+            <span class="ml-2 text-lg inline-block @if($active) text-blue @else hidden @endif">Maintenance</span>
+        </a>
+    @endif
 
     @php
-        $active = (
-                            request()->is('*business/*')
-                            || request()->is('business')
-                        )
-                        && !request()->routeIs('allocations-calendar');
+        $active = request()->is('*business/*/accounts');
     @endphp
     <a href="{{url('/business/'.$businessId.'/accounts')}}" title="Accounts"
        class="bg-white block rounded box-border p-3 flex mr-6 h-12
@@ -16,36 +31,47 @@
     </a>
 
     @php
-        $active = request()->routeIs('allocations-calendar');
+        $active = request()->routeIs('allocations-percentages');
     @endphp
-    <a href="{{route('allocations-calendar', ['business' => $business])}}" title="Allocations"
+    <a href="{{route('allocations-percentages', ['business' => $business])}}" title="Rollout Percentages"
+       class="bg-white block rounded box-border p-3 flex text-gray-700 mr-6 h-12
+        @if($active) text-blue @else text-gray-700 @endif
+           ">
+        <x-icons.percent :class="'h-5 w-auto mt-1 inline-block'"/>
+        <span class="ml-2 text-lg inline-block @if($active) text-blue @else hidden @endif">Percentages</span>
+    </a>
+
+    @php
+        $active = request()->routeIs('allocation-calculator-with-id');
+    @endphp
+    <a href="{{route('allocation-calculator-with-id', ['business' => $business])}}" title="Allocation Calculator"
        class="bg-white block rounded box-border p-3 flex text-gray-700 mr-6 h-12
         @if($active) text-blue @else text-gray-700 @endif
            ">
         <x-icons.calculator :class="'h-6 w-auto inline-block'"/>
-        <span class="ml-2 text-lg inline-block @if($active) text-blue @else hidden @endif">Allocations</span>
+        <span class="ml-2 text-lg inline-block @if($active) text-blue @else hidden @endif">Calculator</span>
     </a>
 
     @php
-        $active = request()->routeIs('allocations-percentages');
+        $active = request()->routeIs('allocations-calendar');
     @endphp
-    <a href="{{route('allocations-percentages', ['business' => $business])}}" title="Percentages"
+    <a href="{{route('allocations-calendar', ['business' => $business])}}" title="Projection Data Entry"
        class="bg-white block rounded box-border p-3 flex text-gray-700 mr-6 h-12
         @if($active) text-blue @else text-gray-700 @endif
            ">
-        <x-icons.pie :class="'h-5 w-auto mt-1 inline-block'"/>
-        <span class="ml-2 text-lg inline-block @if($active) text-blue @else hidden @endif">Percentages</span>
+        <x-icons.table :class="'h-6 w-auto inline-block'"/>
+        <span class="ml-2 text-lg inline-block @if($active) text-blue @else hidden @endif">Data Entry</span>
     </a>
 
     @php
         $active = request()->routeIs('projections');
     @endphp
-    <a href="{{route('projections', ['business' => $business])}}" title="Projections"
+    <a href="{{route('projections', ['business' => $business])}}" title="Projection Forecast"
        class="bg-white block rounded box-border p-3 flex text-gray-700 h-12
         @if($active) text-blue @else text-gray-700 @endif
            ">
         <x-icons.presentation-chart :class="'h-5 w-auto mt-1 inline-block'"/>
-        <span class="ml-2 text-lg inline-block @if($active) text-blue @else hidden @endif">Projections</span>
+        <span class="ml-2 text-lg inline-block @if($active) text-blue @else hidden @endif">Projection Forecast</span>
     </a>
 
 

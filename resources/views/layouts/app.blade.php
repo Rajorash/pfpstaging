@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Mints CD Consulting') }}</title>
+    <title>{{ config('app.name', 'Mints CD Consulting') }} :: {!! strip_tags($header) !!}</title>
 
     <link rel="apple-touch-icon" sizes="180x180" href="{{url('/favicons/apple-touch-icon.png')}}">
     <link rel="icon" type="image/png" sizes="32x32" href="{{url('/favicons/favicon-32x32.png')}}">
@@ -26,9 +26,9 @@
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     <link rel="stylesheet" href="{{ asset('css/all.css') }}">
 
-    @livewireStyles
+@livewireStyles
 
-    <!-- Scripts -->
+<!-- Scripts -->
     <script src="{{ mix('js/app.js') }}" defer></script>
 </head>
 <body class="font-sans antialiased relative text-light_gray">
@@ -37,7 +37,7 @@
 <div class="min-h-screen bg-light_purple2 bg-right-bottom bg-no-repeat"
      style="background-image: url({{asset('images/bg.svg')}})">
     <div class="bg-white shadow-shadow4">
-        @livewire('navigation-menu')
+        <livewire:navigation-menu/>
     </div>
 
     <!-- Page Heading -->
@@ -62,8 +62,11 @@
 
 </div>
 
+<div id="delay_progress" class="fixed rounded bg-blue h-1 bottom-2 right-4 sm:right-6 lg:right-8 z-50"></div>
+
 @stack('modals')
 
 @livewireScripts
+<div id="ddd" class="absolute z-50 w-2 h-2 bg-red-600"></div>
 </body>
 </html>

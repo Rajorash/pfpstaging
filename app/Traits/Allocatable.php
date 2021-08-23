@@ -27,7 +27,7 @@ trait Allocatable
      * @param  integer  $phase_id
      * @return Allocation
      */
-    public function allocate($amount, $date = null, $phase_id = 1)
+    public function allocate($amount, $date = null, $phase_id = 1, $manual_entry = false)
     {
         // check input
 
@@ -38,10 +38,11 @@ trait Allocatable
             'allocatable_type' => get_class($this),
             'allocation_date' => $date
         ],
-            [
-                'phase_id' => $phase_id,
-                'amount' => $amount
-            ]);
+        [
+            'phase_id' => $phase_id,
+            'amount' => $amount,
+            'manual_entry' => ($manual_entry ? 1 : null)
+        ]);
 
         return $allocation;
     }
@@ -49,6 +50,14 @@ trait Allocatable
     /**
      * Return an allocation for the current Allocatable model for the given
      * date if one exists
+     *
+     * @deprecated 9th August 2021
+     * Allocations from multiple different sources could all share
+     * the same date.
+     * Used only in deprecated file from grep search
+     * `grep -iR getAllocationByDate ./app`
+     * ./app/Http/Livewire/Calculator/__AccountValue.php
+     *
      *
      * @param  date|string  $date
      * @return void
@@ -76,6 +85,11 @@ trait Allocatable
     /**
      * Return an allocation for the current Allocatable model for the given
      * date if one exists
+     *
+     * @deprecated 9th August 2021
+     * Allocations from multiple different sources could all share the same
+     * date.
+     * Does not appear in grep search `grep -iR getAllocationAmount ./app`
      *
      * @param  date|string  $date
      * @return void
