@@ -63,7 +63,7 @@ class UserController extends Controller
             $collection = $collection->unique();
 
             return User::whereIn('id', $collection)
-                ->withCount('businesses')
+                ->withCount('businesses', 'roles')
                 ->orderBy('name')
                 ->paginate($this->perPage);
 
@@ -74,7 +74,7 @@ class UserController extends Controller
                 function ($subQuery) {
                     $subQuery->whereIn('id', Auth::user()->licenses->pluck('owner_id'));
                     $subQuery->OrwhereIn('id', Auth::user()->clientsByAdvisor->pluck('id'));
-                })->with('businesses')
+                })->with('businesses', 'roles')
                 ->orderBy('name')
                 ->paginate($this->perPage);
             //$filtered = User::whereIn('id', Auth::user()->advisors->pluck('id'));
