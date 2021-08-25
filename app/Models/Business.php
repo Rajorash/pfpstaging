@@ -118,7 +118,10 @@ class Business extends Model
         $phase = \Config::get('app.pfp_cache') ? Cache::get($key) : null;
 
         if ($phase === null) {
-            $phase = $this->rollout()->where('end_date', '>=', $date)->first();
+            $phase = $this
+                ->rollout()
+                ->where('end_date', '>=', $date)
+                ->first();
 
             // if the final phase has already expired, default back to phase
             // with the latest end date

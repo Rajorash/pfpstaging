@@ -20,7 +20,7 @@ class AllocationsCalendar extends Controller
 
     public function calendar(Request $request)
     {
-        $this->business = Business::where('id', $request->business)->first();
+        $this->business = Business::where('id', $request->business)->with('rollout')->first();
 
         $maxDate = $this->business->rollout()->max('end_date');
         $minDate = $this->business->rollout()->min('end_date');
@@ -99,7 +99,17 @@ class AllocationsCalendar extends Controller
         $phase = $business->getPhaseIdByDate($startDate);
 
         $cells = $request->cells;
-        $this->business = Business::where('id', $businessId)->first();
+        $this->business = Business::where('id', $businessId)
+            ->with([
+                'owner',
+                'license',
+                'collaboration',
+                'license.advisor',
+                'accounts',
+                'accounts.flows',
+                'rollout'
+            ])
+            ->first();
 
         if (!$startDate) {
             $response['error'][] = 'Start date not set';
