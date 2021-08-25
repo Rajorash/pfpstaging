@@ -34,24 +34,26 @@ class UserPolicy
             return true;
         }
 
-        //a Regional Admin can view only own Advisor
-        if ($user->isRegionalAdmin()) {
-            if($user->id == $model->regionalAdminByAdvisor->pluck('id')->first()) {
-                return true;
-            }
-            // if regional admin and advisor share a license
-            $shared_licenses = License::whereAdvisorId($model->id)
-                                        ->whereRegionaladminId($user->id)
-                                        ->get();
+//        //a Regional Admin can view only own Advisor
+//        if ($user->isRegionalAdmin()) {
+//            if($user->id == $model->regionalAdminByAdvisor->pluck('id')->first()) {
+//                return true;
+//            }
+//            // if regional admin and advisor share a license
+//            $shared_licenses = License::whereAdvisorId($model->id)
+//                                        ->whereRegionaladminId($user->id)
+//                                        ->get();
+//
+//            if ($shared_licenses->isNotEmpty()) {
+//                return true;
+//            }
+//
+//        }
 
-            if ($shared_licenses->isNotEmpty()) {
-                return true;
-            }
-
+        //a Regional Admin can update only own Advisor
+        if ($user->isAdvisor() && $user->id == $model->advisorByClient->pluck('id')->first()) {
+            return true;
         }
-
-
-
 
         // a user can view themselves
         if ($user->id === $model->id) {
@@ -155,10 +157,10 @@ class UserPolicy
             return true;
         }
 
-        // advisors can update any clients they are collaborating on
-        if ($model->businesses->map->collaboration->pluck('advisor_id')->contains($user->id)) {
-            return true;
-        }
+//        // advisors can update any clients they are collaborating on
+//        if ($model->businesses->map->collaboration->pluck('advisor_id')->contains($user->id)) {
+//            return true;
+//        }
 
         return false;
     }
