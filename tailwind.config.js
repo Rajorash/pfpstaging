@@ -1,11 +1,46 @@
 const defaultTheme = require('tailwindcss/defaultTheme');
 
 module.exports = {
-    purge: [
-        './vendor/laravel/jetstream/**/*.blade.php',
-        './storage/framework/views/*.php',
-        './resources/views/**/*.blade.php',
-    ],
+    purge: {
+        content: [
+            './vendor/laravel/jetstream/**/*.blade.php',
+            './storage/framework/views/*.php',
+            './resources/**/*.blade.php',
+            './resources/**/*.js',
+        ],
+        safelist: [
+            'bg-light_blue',
+            'bg-light_purple',
+            'bg-light_purple2',
+            'bg-dark_gray',
+            'bg-dark_gray2',
+            'bg-light_gray',
+            'bg-blue',
+            'bg-green',
+            'bg-dashboard',
+            'bg-revenue',
+            'bg-pretotal',
+            'bg-salestax',
+            'bg-prereal',
+            'bg-postreal',
+
+
+            'text-light_blue',
+            'text-light_purple',
+            'text-light_purple2',
+            'text-dark_gray',
+            'text-dark_gray2',
+            'text-light_gray',
+            'text-blue',
+            'text-green',
+            'text-dashboard',
+            'text-revenue',
+            'text-pretotal',
+            'text-salestax',
+            'text-prereal',
+            'text-postreal',
+        ]
+    },
 
     theme: {
         extend: {

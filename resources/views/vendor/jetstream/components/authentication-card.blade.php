@@ -1,6 +1,6 @@
 <div
     class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100 bg-right-bottom bg-no-repeat"
-    style="background-image: url({{asset('images/bg.svg')}})">
+    style="background-image: url({{mix('images/bg.svg')}})">
     <div>
         {{ $logo }}
     </div>

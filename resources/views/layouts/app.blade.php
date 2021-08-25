@@ -23,8 +23,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Questrial&display=swap" rel="stylesheet">
 
     <!-- Styles -->
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/all.css') }}">
+    <link rel="stylesheet" href="{{ mix('css/app.css') }}">
+    <link rel="stylesheet" href="{{ mix('css/all.css') }}">
 
 @livewireStyles
 
@@ -35,7 +35,7 @@
 {{--<x-jet-banner/>--}}
 
 <div class="min-h-screen bg-light_purple2 bg-right-bottom bg-no-repeat"
-     style="background-image: url({{asset('images/bg.svg')}})">
+     style="background-image: url({{mix('images/bg.svg')}})">
     <div class="bg-white shadow-shadow4">
         <livewire:navigation-menu/>
     </div>
