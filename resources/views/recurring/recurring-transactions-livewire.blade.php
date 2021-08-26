@@ -1,5 +1,5 @@
 <div class="livewire-wrapper">
-    @if(Auth::user()->isAdvisor() || Auth::user()->isUser())
+    @if(Auth::user()->isAdvisor() || Auth::user()->isClient())
 
         <form wire:submit.prevent="store">
             <div class="table w-full mt-10">
@@ -91,15 +91,13 @@
                             />
 
                             <select name="repeat_every_type" id="repeat_every_type" wire:model="repeat_every_type"
-                                    class="w-4/5 form-input border-light_blue
-                                    focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50
-                                    rounded-md shadow-sm">
+                                    class="w-4/5 rounded-md shadow-sm form-input border-light_blue focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
                                 @foreach ($repeatTimeArray as $key => $value)
                                     <option value="{{$key}}">{{$value}}</option>
                                 @endforeach
                             </select>
                         </div>
-                        <x-jet-input-error for="repeat_every_type" class="text-left mt-2"/>
+                        <x-jet-input-error for="repeat_every_type" class="mt-2 text-left"/>
                     </div>
                 </div>
 
@@ -114,14 +112,14 @@
                                 @foreach ($weekDaysArray as $key => $value)
                                     <div class="mr-2">
                                         <input type="checkbox" wire:model="repeat_rules_week_days"
-                                               class="radio_as_switcher hidden"
+                                               class="hidden radio_as_switcher"
                                                value="{{$key}}" id="week_days_{{$key}}"/>
                                         <label for="week_days_{{$key}}"
                                                title="{{$value}}">{{substr($value, 0, 2)}}</label>
                                     </div>
                                 @endforeach
                             </div>
-                            <x-jet-input-error for="repeat_rules_week_days" class="text-left mt-2"/>
+                            <x-jet-input-error for="repeat_rules_week_days" class="mt-2 text-left"/>
                         </div>
                     </div>
                 @endif
