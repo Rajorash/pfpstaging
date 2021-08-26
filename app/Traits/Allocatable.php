@@ -22,27 +22,51 @@ trait Allocatable
      * Make an allocation against the Aloocatable object. Amount is
      *  required. default $date is current date and default phase is 1
      *
-     * @param  double  $amount
-     * @param  date  $date
+     * @param  float  $amount
+     * @param  null  $date  $date
      * @param  integer  $phase_id
+     * @param  bool  $manual_entry
+     * @param  bool  $checkIsValuePresent
      * @return Allocation
      */
-    public function allocate($amount, $date = null, $phase_id = 1, $manual_entry = false)
-    {
+    public function allocate(
+        float $amount,
+        string $date = null,
+        int $phase_id = 1,
+        bool $manual_entry = false,
+        bool $checkIsValuePresent = false
+    ) {
         // check input
+        $date = $date ?? Carbon::now()->format('Y-m-d');
+        $allocation = null;
 
-        $date = $date ?? Carbon::now();
+        $allowOperation = false;
+        if ($checkIsValuePresent) {
+            if (!$this->getAllocationByDate($date)) {
+                $allowOperation = true;
+            }
+        } else {
+            $allowOperation = true;
+        }
 
-        $allocation = Allocation::updateOrCreate([
-            'allocatable_id' => $this->id,
-            'allocatable_type' => get_class($this),
-            'allocation_date' => $date
-        ],
-        [
-            'phase_id' => $phase_id,
-            'amount' => $amount,
-            'manual_entry' => ($manual_entry ? 1 : null)
-        ]);
+        //   dd($this->getAllocationByDate($date), $this->id, get_class($this), $date, $phase_id, $amount, $manual_entry, $allowOperation);
+
+        if ($allowOperation) {
+            $allocation = Allocation::updateOrCreate(
+                [
+                    'allocatable_id' => $this->id,
+                    'allocatable_type' => get_class($this),
+                    'allocation_date' => $date
+                ],
+                [
+                    'phase_id' => $phase_id,
+                    'amount' => $amount,
+                    'manual_entry' => ($manual_entry ? 1 : null)
+                ]
+            );
+//            dd($allocation);
+        }
+
 
         return $allocation;
     }
@@ -51,6 +75,8 @@ trait Allocatable
      * Return an allocation for the current Allocatable model for the given
      * date if one exists
      *
+     * @param  date|string  $date
+     * @return void
      * @deprecated 9th August 2021
      * Allocations from multiple different sources could all share
      * the same date.
@@ -59,8 +85,6 @@ trait Allocatable
      * ./app/Http/Livewire/Calculator/__AccountValue.php
      *
      *
-     * @param  date|string  $date
-     * @return void
      */
     public function getAllocationByDate($date)
     {
@@ -88,13 +112,13 @@ trait Allocatable
      * Return an allocation for the current Allocatable model for the given
      * date if one exists
      *
+     * @param  date|string  $date
+     * @return void
      * @deprecated 9th August 2021
      * Allocations from multiple different sources could all share the same
      * date.
      * Does not appear in grep search `grep -iR getAllocationAmount ./app`
      *
-     * @param  date|string  $date
-     * @return void
      */
     public function getAllocationAmount($date)
     {

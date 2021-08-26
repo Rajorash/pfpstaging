@@ -24,11 +24,19 @@ class AllocationsCalendar extends Controller
 
         $maxDate = $this->business->rollout()->max('end_date');
         $minDate = $this->business->rollout()->min('end_date');
+        $startDate = session()->get('startDate_'.$this->business->id, Carbon::now()->format('Y-m-d'));
+
+        $this->pushRecurringTransactionData(
+            $this->business->id,
+            $startDate,
+            Carbon::now()->addMonths(13)->format('Y-m-d'),
+            true
+        );
 
         $data = [
             'rangeArray' => $this->getRangeArray(),
             'business' => $this->business,
-            'startDate' => session()->get('startDate_'.$this->business->id, Carbon::now()->format('Y-m-d')),
+            'startDate' => $startDate,
             'currentRangeValue' => session()->get('rangeValue_'.$this->business->id, $this->defaultCurrentRangeValue),
             'minDate' => Carbon::parse($minDate)->subMonths(3)->format('Y-m-d'),
             'maxDate' => Carbon::parse($maxDate)->subDays(31)->format('Y-m-d'),
@@ -46,7 +54,7 @@ class AllocationsCalendar extends Controller
         ];
     }
 
-    public function store($cells)
+    public function store($cells, bool $checkIsValuePresent = false)
     {
         if (is_array($cells) && count($cells) > 0) {
             foreach ($cells as $singleCell) {
@@ -55,7 +63,14 @@ class AllocationsCalendar extends Controller
                 $date = $matches[3];
                 $value = (float) $singleCell['cellValue'];
 
-                $this->storeSingle($matches[1], $allocation_id, $value, $date, ($matches[1] == 'account'));
+                $this->storeSingle(
+                    $matches[1],
+                    $allocation_id,
+                    $value,
+                    $date,
+                    ($matches[1] == 'account'),
+                    $checkIsValuePresent
+                );
             }
         }
 
@@ -64,16 +79,22 @@ class AllocationsCalendar extends Controller
 
     /**
      * Validate and store the Allocation
-     *
-     * @return void
+     * @param  string  $type
+     * @param  int  $allocation_id
+     * @param $amount
+     * @param  string  $date
+     * @param  bool  $manual_entry
+     * @param  bool  $checkIsValuePresent
      */
-    public function storeSingle($type, $allocation_id, $amount, $date, $manual_entry = false)
-    {
-
+    public function storeSingle(
+        string $type,
+        int $allocation_id,
+        $amount,
+        string $date,
+        bool $manual_entry = false,
+        bool $checkIsValuePresent = false
+    ) {
         $phaseId = $this->business->getPhaseIdByDate($date);
-        $values = [
-
-        ];
 
         if ($type == 'flow') {
             $account = $this->getFlowAccount($allocation_id);
@@ -81,8 +102,7 @@ class AllocationsCalendar extends Controller
             $account = $this->getBankAccount($allocation_id);
         }
 
-        $account->allocate($amount, $date, $phaseId, $manual_entry);
-
+        $account->allocate($amount, $date, $phaseId, $manual_entry, $checkIsValuePresent);
     }
 
     public function updateData(Request $request)
@@ -632,5 +652,80 @@ class AllocationsCalendar extends Controller
         }
 
         return $phasePercentValues;
+    }
+
+    /** Put data from RecurringTasks into allocation table
+     * @param  int  $businessId
+     * @param  string  $startDate
+     * @param  string  $endDate
+     * @param  bool  $ifThisAllocationsPage
+     */
+    public function pushRecurringTransactionData(
+        int $businessId,
+        string $startDate,
+        string $endDate,
+        bool $ifThisAllocationsPage
+    ) {
+        $RecurringTransactionsController = new RecurringTransactionsController();
+        $recurring = [];
+        $rawData = $this->getRawData($businessId, $startDate, $endDate);
+        foreach ($rawData as $account_item) {
+            foreach ($account_item->flows as $key => $value) {
+                $recurring[$value->id] = null;
+                if ($value->recurringTransactions->count()) {
+                    $recurring[$value->id] = $RecurringTransactionsController
+                        ->getAllFlowsForecasts($value->recurringTransactions, $startDate, $endDate);
+                }
+            }
+        }
+
+        if (!empty($recurring)) {
+
+            $rtEntryData = [];
+
+            foreach ($recurring as $flowId => $flowData) {
+                if ($flowData) {
+                    $keySuffix = 'flow_'.$flowId.'_';
+                    foreach ($flowData as $flowDataTitle => $flowDataRecords) {
+                        if (isset($flowDataRecords['forecast'])) {
+                            foreach ($flowDataRecords['forecast'] as $date => $value) {
+                                if (!isset($rtEntryData[$keySuffix.$date])) {
+                                    $rtEntryData[$keySuffix.$date] = 0;
+                                }
+                                $rtEntryData[$keySuffix.$date] += $value;
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (!empty($rtEntryData)) {
+                $push2Table = [
+                    'businessId' => $businessId,
+                    'startDate' => $startDate,
+                    'rangeValue' => 31,
+                    'cells' => []
+                ];
+                foreach ($rtEntryData as $cellId => $cellValue) {
+                    $push2Table['cells'][] = ['cellId' => $cellId, 'cellValue' => $cellValue];
+                }
+
+                //if we call this method from ProjectionController::class
+                if (!$this->business) {
+                    $this->business = Business::findOrFail($businessId);
+                }
+
+                //all period - long process
+                //$rangeValue = count(CarbonPeriod::create($startDate, $endDate)->toArray());
+                $rangeValue = 31;
+
+                $this->store($push2Table['cells'], true);
+
+                if (!$ifThisAllocationsPage) {
+                    //Allocations page has this functionality, and haven't a reason to call it again
+                    $this->getGridData($rangeValue, $startDate, $endDate, $businessId);
+                }
+            }
+        }
     }
 }

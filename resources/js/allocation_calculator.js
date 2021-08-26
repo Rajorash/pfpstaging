@@ -145,7 +145,6 @@ $(function () {
 
             $('.pfp_allow_to_forecast_autofill').removeClass('pfp_allow_to_forecast_autofill');
         }
-
     }
 
     if ($('#allocationTablePlace').length) {

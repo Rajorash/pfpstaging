@@ -21,6 +21,9 @@
                     @endforeach
                 </select>
             </div>
+            <div class="mr-4 py-2 pt-3.5">
+                {{__('The process can be lengthy as the system updates the data over a long period of time')}}
+            </div>
         </div>
     </x-slot>
 
