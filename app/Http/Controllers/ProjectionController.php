@@ -31,11 +31,6 @@ class ProjectionController extends Controller
             $this->defaultProjectionsRangeValue
         );
 
-        $maxDate = Carbon::now()->addMonths(13)->format('Y-m-d');
-        $startDate = session()->get('startDate_'.$business->id, Carbon::now()->format('Y-m-d'));
-        $AllocationsCalendarController = new AllocationsCalendar();
-        $AllocationsCalendarController->pushRecurringTransactionData($business->id, $startDate, $maxDate, false);
-
         return view(
             'business.projections',
             compact('business', 'rangeArray', 'currentProjectionsRange')
@@ -72,6 +67,12 @@ class ProjectionController extends Controller
         $start_date = $today = Carbon::now();
         // start date is shown, so adjust end_date -1 to compensate
         $end_date = Carbon::now()->$addDateStep($entries_to_show - 1);
+
+        if ($request->recalculateAll == '1') {
+            $startDate = session()->get('startDate_'.$businessId, Carbon::now()->format('Y-m-d'));
+            $AllocationsCalendarController = new AllocationsCalendar();
+            $AllocationsCalendarController->pushRecurringTransactionData($businessId, $startDate, $end_date, false);
+        }
 
         $dates = array();
         for ($date = $start_date; $date < $end_date; $date->$addDateStep()) {

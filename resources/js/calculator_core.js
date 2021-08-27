@@ -6,6 +6,7 @@ export class calculatorCore {
         this.changesCounter = 0;
         this.changesCounterId = 'processCounter';
         this.lastCoordinatesElementId = '';
+        this.elementTablePlace = '';
 
         this.elementLoadingSpinner = $('#loadingSpinner');
 
@@ -33,6 +34,8 @@ export class calculatorCore {
         this.copyMoveClassName = 'pfp_copy_move_element';
 
         this.windowCoordinates = {};
+
+        this.hideTableDuringRecalculate = false;
     }
 
     init() {
@@ -66,6 +69,11 @@ export class calculatorCore {
             if ($targetElement.hasClass($this.copyMoveClassName)) {
                 $targetElement.val($sourceElement.val()).change();
             }
+        });
+
+        $(window).bind('beforeunload', function () {
+            $this.hideTableDuringRecalculate = true;
+            $this.hideTableDuringRender();
         });
     }
 
@@ -166,6 +174,7 @@ export class calculatorCore {
             data: $this.data,
             async: true,
             beforeSend: function () {
+                $this.hideTableDuringRender();
                 $this.showSpinner();
             },
             success: function (data) {
@@ -183,6 +192,21 @@ export class calculatorCore {
                 $this.forecastAutoFillValues();
             }
         });
+    }
+
+    hideTableDuringRender() {
+        let $this = this;
+
+        if ($this.hideTableDuringRecalculate) {
+            $this.elementTablePlace.html('<div class="p-8 text-center opacity-50">...loading <span id="loading_timer_place"></span></div>');
+
+            let secondsTimer = 0;
+            let secondTimerPlace = $('#loading_timer_place');
+            setInterval(function () {
+                secondsTimer++;
+                secondTimerPlace.html('...' + secondsTimer);
+            }, 1000);
+        }
     }
 
     readLastIndexes() {

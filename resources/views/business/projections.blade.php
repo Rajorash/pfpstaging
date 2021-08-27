@@ -21,8 +21,9 @@
                     @endforeach
                 </select>
             </div>
-            <div class="mr-4 py-2 pt-3.5">
-                {{__('The process can be lengthy as the system updates the data over a long period of time')}}
+            <div class="mr-4 py-2">
+                <button id="recalculate_pf" class="text-center select-none border font-normal whitespace-no-wrap
+           rounded-lg py-1 px-6 leading-normal no-underline bg-blue text-white hover:bg-dark_gray2">{{__('Recalculate data for current period')}}</button>
             </div>
         </div>
     </x-slot>
