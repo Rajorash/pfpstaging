@@ -205,4 +205,5 @@ class User extends Authenticatable implements RoleInterface, MustVerifyEmail
 
         return $this->active;
     }
+
 }

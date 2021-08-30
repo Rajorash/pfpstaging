@@ -136,4 +136,18 @@ trait HasUserRoles
         return true;
     }
 
+    /**
+     * Returns true if the user has the passed role name
+     *
+     * @param [type] $role_name
+     * @return boolean
+     */
+    public function hasRole($role_name) {
+        if (is_null($this->roles->firstWhere('name', $role_name))) {
+            return false;
+        }
+
+        return true;
+    }
+
 }
