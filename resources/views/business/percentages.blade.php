@@ -9,11 +9,13 @@
         <x-business-nav businessId="{{$business->id}}" :business="$business"/>
     </x-slot>
 
-    @if(!optional($business->license)->checkLicense)
-        <div class="text-center text-red-500 font-bold">{{__('License is inactive. Edit data forbidden.')}}</div>
-    @endif
+    <x-slot name="subHeader">
+        <x-ui.data-submit-controls/>
+    </x-slot>
 
-    <x-ui.data-submit-controls/>
+    @if(!optional($business->license)->checkLicense)
+        <div class="font-bold text-center text-red-500">{{__('License is inactive. Edit data forbidden.')}}</div>
+    @endif
 
     <x-ui.main>
         <div id="percentagesTablePlace" class="global_nice_scroll return_coordinates_table">
