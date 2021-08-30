@@ -18,8 +18,32 @@ use App\Models\User;
 |
 */
 
-// Email routes
+/*
+|--------------------------------------------------------------------------
+| Mail Routes
+|--------------------------------------------------------------------------
+|
+| These routes can be used to check the rendering of mail during
+| development without requiring constant resends to Mailtrap or other
+| services.
+|
+| To have the email show in the list at /mail you should fill the details
+| in the array in the first route. Each mail has an entry for name, notes
+| and url. Please note that the 'mail' prefix is not required as it is
+| added in the template.
+|
+*/
 Route::prefix('mail')->group(function () {
+
+    Route::view('', 'dev.mail', [
+        'emails' => [
+            [
+                'name' => 'Verification Email',
+                'notes' => 'Sent to user on account creation',
+                'url' => 'verification'
+            ],
+        ],
+    ]);
 
     Route::get('verification', function () {
 
@@ -33,6 +57,7 @@ Route::prefix('mail')->group(function () {
                 $query->where('name', 'advisor');
             }
         )->first();
+
         return new MailVerification(
             $client,
             $advisor,
