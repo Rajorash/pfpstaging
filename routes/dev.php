@@ -1,9 +1,11 @@
 <?php
 
+use App\Mail\AdvisorChangedCountOfLicenses;
 use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Mail\MailVerification;
+use App\Mail\SendBusinessCollaborateNotification;
 use App\Models\User;
 
 /*
@@ -15,6 +17,16 @@ use App\Models\User;
 | routes are loaded by the RouteServiceProvider within a group which
 | contains the "web" middleware group. These should be used for views and
 | functionality related to development!
+|
+*/
+
+/*
+|--------------------------------------------------------------------------
+| Utility Variables
+|--------------------------------------------------------------------------
+|
+| Variabnles set here for instantiating various dev functions in the
+| routes below.
 |
 */
 
@@ -35,6 +47,17 @@ use App\Models\User;
 */
 Route::prefix('mail')->group(function () {
 
+    $client = User::whereHas(
+        'roles', function($query) {
+            $query->where('name', 'client');
+        }
+    )->first();
+    $advisor = User::whereHas(
+        'roles', function($query) {
+            $query->where('name', 'advisor');
+        }
+    )->first();
+
     Route::view('', 'dev.mail', [
         'emails' => [
             [
@@ -42,28 +65,55 @@ Route::prefix('mail')->group(function () {
                 'notes' => 'Sent to user on account creation',
                 'url' => 'verification'
             ],
+            [
+                'name' => 'AdvisorChangedCountOfLicenses',
+                'notes' => 'Sent to user when an advisor updates the license count',
+                'url' => 'license-count-changed'
+            ],
+            [
+                'name' => 'SendBusinessCollaborateNotification',
+                'notes' => 'Sent to business owner to notify of collaboration',
+                'url' => 'business-collaborate'
+            ],
         ],
     ]);
 
-    Route::get('verification', function () {
-
-        $client = User::whereHas(
-            'roles', function($query) {
-                $query->where('name', 'client');
-            }
-        )->first();
-        $advisor = User::whereHas(
-            'roles', function($query) {
-                $query->where('name', 'advisor');
-            }
-        )->first();
-
+    Route::get('verification', function () use ($client, $advisor) {
         return new MailVerification(
             $client,
             $advisor,
             Str::random()
         );
-
     });
+
+    Route::get('license-count-changed', function () use ($client, $advisor) {
+        $licenses = 7;
+        $assigned = 5;
+        $available = $licenses - $assigned;
+
+        return new AdvisorChangedCountOfLicenses(
+            $client,
+            $advisor,
+            $licenses,
+            $assigned,
+            $available
+        );
+    });
+
+    Route::get('business-collaborate', function () use ($advisor) {
+
+        $title = 'Collaboration for you';
+        $text = "Business <b>&quot;Business Name&quot;</b> linked to you by {$advisor->name}";
+
+        return new SendBusinessCollaborateNotification
+        (
+            $advisor->name,
+            "Business Name",
+            $title,
+            $text
+        );
+    });
+
+
 
 });
