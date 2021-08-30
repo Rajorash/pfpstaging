@@ -51,7 +51,9 @@
                 @endif
             </div>
             @if(isset($subHeader))
+            <div class="py-2">
                 {{$subHeader}}
+            </div>
             @endif
         </header>
     @endif
