@@ -27,7 +27,7 @@
                         <x-ui.button-normal
                             href="{{route('recurring-list', ['account'=>$bankAccount, 'flow'=> $accountFlow])}}">
                             <x-icons.chevron-left :class="'h-3 w-auto'"/>
-                            <span class="ml-2">Go back</span>
+                            <span class="ml-2">{{__('Go back')}}</span>
                         </x-ui.button-normal>
                     </div>
                 </x-slot>

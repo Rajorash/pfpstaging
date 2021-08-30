@@ -45,7 +45,7 @@
                             {{--                            @endif--}}
 
                         >
-                            <option value="0">:: Invite by email or leave as is</option>
+                            <option value="0">{{__(':: Invite by email or leave as is')}}</option>
                             @foreach ($advisorsClients as $client)
                                 <option value="{{$client->id}}">{{$client->name}} ({{$client->email}})
                                 </option>
@@ -174,11 +174,11 @@
         <div class="table-cell w-full pb-4 text-right">
             @if($iWouldLikeToDelete)
                 <x-ui.button-normal class="uppercase" type="button" wire:loading.attr="disabled">
-                    Delete Business
+                    {{__('Delete Business')}}
                 </x-ui.button-normal>
             @else
                 <x-ui.button-normal class="uppercase" type="button" wire:loading.attr="disabled">
-                    Update Business
+                    {{__('Update Business')}}
                 </x-ui.button-normal>
             @endif
         </div>
@@ -186,6 +186,6 @@
 </div>
 </form>
 @else
-    Access denied
-    @endif
-    </div>
+{{__('Access denied')}}
+@endif
+</div>

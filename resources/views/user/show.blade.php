@@ -66,7 +66,7 @@
                                                             @endforeach
                                                         </ol>
                                                     @else
-                                                        <span class="text-yellow-500">Not set yet</span>
+                                                        <span class="text-yellow-500">{{__('Not set yet')}}</span>
                                                     @endif
                                                 </div>
                                             </div>
@@ -81,7 +81,7 @@
                                                                 href="/user/{{$user->regionalAdminByAdvisor->pluck('id')->first()}}">
                                                                 {{$user->regionalAdminByAdvisor->pluck('name')->first()}}</a></span>
                                                     @else
-                                                        <span class="text-red-700">Error!</span>
+                                                        <span class="text-red-700">{{__('Error!')}}</span>
                                                     @endif
                                                 </div>
                                             </div>
@@ -97,7 +97,7 @@
                                                             @endforeach
                                                         </ol>
                                                     @else
-                                                        <span class="text-yellow-500">Not set yet</span>
+                                                        <span class="text-yellow-500">{{__('Not set yet')}}</span>
                                                     @endif
                                                 </div>
                                             </div>
@@ -112,7 +112,7 @@
                                                                 href="/user/{{$user->advisorByClient->pluck('id')->first()}}">
                                                                 {{$user->advisorByClient->pluck('name')->first()}}</a></span>
                                                     @else
-                                                        <span class="text-red-700">Error!</span>
+                                                        <span class="text-red-700">{{__('Error!')}}</span>
                                                     @endif
                                                 </div>
                                             </div>
@@ -131,7 +131,7 @@
                                                                 </div>
                                                             @endforeach
                                                         @else
-                                                            <span class="text-red-700">No businesses</span>
+                                                            <span class="text-red-700">{{__('No businesses')}}</span>
                                                         @endif
                                                     </div>
                                                 </div>
@@ -165,7 +165,7 @@
                                                         @if(count($user->notActiveLicenses))
                                                             @if (count($user->notActiveLicenses))
                                                                 <x-ui.badge background="bg-gray-500">
-                                                                    Disabled:&nbsp;{{count($user->notActiveLicenses)}}
+                                                                    {{__('Disabled:')}}&nbsp;{{count($user->notActiveLicenses)}}
                                                                 </x-ui.badge>
                                                             @endif
                                                             @if(Auth::user()->isSuperAdmin() || Auth::user()->isAdvisor() || Auth::user()->isClient())

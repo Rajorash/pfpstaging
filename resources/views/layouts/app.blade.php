@@ -17,21 +17,17 @@
     <meta name="msapplication-config" content="{{url('/favicons/browserconfig.xml')}}">
     <meta name="theme-color" content="#ffffff">
 
-    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Questrial&display=swap" rel="stylesheet">
 
-    <!-- Styles -->
     <link rel="stylesheet" href="{{ mix('css/app.css') }}">
     <link rel="stylesheet" href="{{ mix('css/all.css') }}">
 
 @livewireStyles
 
-<!-- Scripts -->
     <script src="{{ mix('js/app.js') }}" defer></script>
 </head>
 <body class="relative font-sans antialiased text-light_gray">
-{{--<x-jet-banner/>--}}
 
 <div class="min-h-screen bg-right-bottom bg-no-repeat bg-light_purple2"
      style="background-image: url({{mix('images/bg.svg')}})">
@@ -51,14 +47,13 @@
                 @endif
             </div>
             @if(isset($subHeader))
-            <div class="py-2">
-                {{$subHeader}}
-            </div>
+                <div class="py-2">
+                    {{$subHeader}}
+                </div>
             @endif
         </header>
     @endif
 
-<!-- Page Content -->
     {{ $slot }}
 
 </div>

@@ -147,7 +147,7 @@
                                 </div>
                             @endforeach
                         @else
-                            <x-ui.error>Forecast is empty. This rule will not affect the data</x-ui.error>
+                            <x-ui.error>{{__('Forecast is empty. This rule will not affect the data')}}</x-ui.error>
                         @endif
                     </div>
                 </div>
@@ -169,6 +169,6 @@
         </form>
 
     @else
-        Access denied
+        {{__('Access denied')}}
     @endif
 </div>

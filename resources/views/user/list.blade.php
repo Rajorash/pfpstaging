@@ -48,13 +48,13 @@
             </x-ui.table-caption>
             <thead>
             <tr class="border-light_blue border-t border-b">
-                <x-ui.table-th padding="pl-12 pr-2 py-4">Name</x-ui.table-th>
+                <x-ui.table-th padding="pl-12 pr-2 py-4">{{__('Name')}}</x-ui.table-th>
                 <x-ui.table-th>Title</x-ui.table-th>
-                <x-ui.table-th class="text-center">Status</x-ui.table-th>
+                <x-ui.table-th class="text-center">{{__('Status')}}</x-ui.table-th>
                 @if(Auth::user()->isSuperAdmin() || Auth::user()->isRegionalAdmin())
-                    <x-ui.table-th>Available seats</x-ui.table-th>
+                    <x-ui.table-th>{{__('Available seats')}}</x-ui.table-th>
                 @endif
-                <x-ui.table-th>Roles</x-ui.table-th>
+                <x-ui.table-th>{{__('Roles')}}</x-ui.table-th>
                 <x-ui.table-th></x-ui.table-th>
                 <x-ui.table-th></x-ui.table-th>
                 <x-ui.table-th class="mr-12"></x-ui.table-th>
@@ -82,13 +82,13 @@
                                             <div class="ml-4">
                                                 @if($user->isRegionalAdmin())
                                                     <div class="text-sm text-gray-500 font-medium">
-                                                        Advisors: {{count($user->advisorsByRegionalAdmin)}}
+                                                        {{__('Advisors:')}} {{count($user->advisorsByRegionalAdmin)}}
                                                     </div>
                                                 @endif
 
                                                 @if($user->isAdvisor())
                                                     <div class="text-sm text-gray-500 font-medium">
-                                                        Regional Admin:
+                                                        {{__('Regional Admin:')}}
                                                         @if($user->regionalAdminByAdvisor)
                                                             <span><a
                                                                     href="/user/{{$user->regionalAdminByAdvisor->pluck('id')->first()}}">
@@ -98,13 +98,13 @@
                                                         @endif
                                                     </div>
                                                     <div class="text-sm text-gray-500 font-medium">
-                                                        Clients: {{count($user->clientsByAdvisor)}}
+                                                        {{__('Clients:')}} {{count($user->clientsByAdvisor)}}
                                                     </div>
                                                 @endif
 
                                                 @if($user->isClient())
                                                     <div class="text-sm text-gray-500 font-medium">
-                                                        Advisor:
+                                                        {{__('Advisor:')}}
                                                         @if($user->advisorByClient)
                                                             <span><a
                                                                     href="/user/{{$user->advisorByClient->pluck('id')->first()}}">
@@ -121,13 +121,13 @@
                                             <div class="ml-4">
                                                 @if($user->isAdvisor())
                                                     <div class="text-sm text-gray-500 font-medium">
-                                                        Licensed businesses: {{count($user->licenses)}} <br>
-                                                        Collaborated businesses: {{count($user->collaborations)}}
+                                                        {{__('Licensed businesses:')}} {{count($user->licenses)}} <br>
+                                                        {{__('Collaborated businesses:')}} {{count($user->collaborations)}}
                                                     </div>
                                                 @endif
                                                 @if($user->isClient())
                                                     <div class="text-sm text-gray-500 font-medium">
-                                                        Businesses as Client: {{count($user->businesses)}}
+                                                        {{__('Businesses as Client:')}} {{count($user->businesses)}}
                                                     </div>
                                                 @endif
                                             </div>
@@ -141,9 +141,9 @@
                             </x-ui.table-td>
                             <x-ui.table-td class="text-center">
                                 @if($user->isActive())
-                                    <x-ui.badge>Active</x-ui.badge>
+                                    <x-ui.badge>{{__('Active')}}</x-ui.badge>
                                 @else
-                                    <x-ui.badge background="bg-light_gray">Inactive</x-ui.badge>
+                                    <x-ui.badge background="bg-light_gray">{{__('Inactive')}}</x-ui.badge>
                                 @endif
                             </x-ui.table-td>
 
@@ -165,7 +165,7 @@
                                             @if (count($user->notActiveLicenses))
                                                 <br/>
                                                 <x-ui.badge background="bg-gray-500">
-                                                    Disabled:&nbsp;{{count($user->notActiveLicenses)}}
+                                                    {{__('Disabled:')}}&nbsp;{{count($user->notActiveLicenses)}}
                                                 </x-ui.badge>
                                             @endif
 
@@ -181,7 +181,7 @@
                                 @if (!empty($user->roles->pluck('label')->toArray()))
                                     {{ implode(', ',$user->roles->pluck('label')->toArray()) }}
                                 @else
-                                    <span class="text-red-700">Error! User hasn't any role</span>
+                                    <span class="text-red-700">{{__('Error! User hasn\'t any role')}}</span>
                                 @endif
                             </x-ui.table-td>
                             <x-ui.table-td>

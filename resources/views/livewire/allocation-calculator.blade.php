@@ -1,5 +1,5 @@
 <div class="p-6 sm:px-20">
-    <div class="text-lg text-center mb-4">Allocation Calculator For {{$this->business->name}}
+    <div class="text-lg text-center mb-4">{{__('Allocation Calculator For')}} {{$this->business->name}}
         <select class="form-select rounded px-3 py-1 ml-4" name="" id="" wire:model="selectedBusinessId">
             @foreach ($selectOptions as $business_id => $business_name)
                 <option value="{{$business_id}}">{{$business_name}}</option>
@@ -10,14 +10,14 @@
         <tr>
             <x-ui.th></x-ui.th>
             <x-ui.th></x-ui.th>
-            <x-ui.th class="w-10">Actual</x-ui.th>
-            <x-ui.th>Roll Out %</x-ui.th>
-            <x-ui.th>Allocation $</x-ui.th>
+            <x-ui.th class="w-10">{{__('Actual')}}</x-ui.th>
+            <x-ui.th>{{__('Roll Out %')}}</x-ui.th>
+            <x-ui.th>{{__('Allocation $')}}</x-ui.th>
         </tr>
         {{-- Revenue account/s - should only be one? --}}
         @foreach ($mappedAccounts['revenue'] as $account)
             <tr>
-                <td class="px-2 py-1 border border-gray-300">Top line revenue - Account "{{$account['name']}}"</td>
+                <td class="px-2 py-1 border border-gray-300">{{__('Top line revenue - Account')}} "{{$account['name']}}"</td>
                 <td class="px-2 py-1 border border-gray-300"></td>
                 <td class="px-2 py-1 border border-gray-300 bg-yellow-100 w-32">
                     <x-ui.input type="text" wire:model="revenue"/>
@@ -38,7 +38,7 @@
             </tr>
         @endforeach
         <tr class="">
-            <td class="px-2 py-1 border border-gray-300">Net Cash Receipts</td>
+            <td class="px-2 py-1 border border-gray-300">{{__('Net Cash Receipts')}}</td>
             <td class="px-2 py-1 border border-gray-300"></td>
             <td class="text-right px-2 py-1 border border-gray-300">${{number_format($netCashReceipts, 0)}}</td>
             <td class="bg-gray-200 px-2 py-1 border border-gray-300"></td>
@@ -57,7 +57,7 @@
         @endforeach
         {{-- Net Cash Receipts --}}
         <tr class="bg-gray-200">
-            <td class="px-2 py-1 border border-gray-300">Real Revenue</td>
+            <td class="px-2 py-1 border border-gray-300">{{__('Real Revenue')}}</td>
             <td class="px-2 py-1 border border-gray-300"></td>
             <td class="text-right px-2 py-1 border border-gray-300 bg-green-100">
                 ${{number_format($realRevenue, 0)}}</td>
@@ -80,7 +80,7 @@
         {{-- Check sum --}}
         <tr class="bg-gray-200">
             <td class="px-2 py-1 border border-gray-300">
-                Allocation Sum
+                {{__('Allocation Sum')}}
             </td>
             <td class="px-2 py-1 border border-gray-300"></td>
             <td class="px-2 py-1 border border-gray-300"></td>
@@ -90,7 +90,7 @@
         </tr>
         <tr class="bg-gray-200">
             <td class="px-2 py-1 border border-gray-300">
-                Error Check
+                {{__('Error Check')}}
             </td>
             <td class="px-2 py-1 border border-gray-300"></td>
             <td class="px-2 py-1 border border-gray-300"></td>

@@ -1,5 +1,5 @@
 @if (!$phase)
-    <x-ui.error class="p-12 block">Date is to fare or late. Set another date.</x-ui.error>
+    <x-ui.error class="p-12 block">{{__('Date is to fare or late. Set another date.')}}</x-ui.error>
 @else
     <x-ui.table-table class="cursor-fill-data relative mb-2">
         <thead>

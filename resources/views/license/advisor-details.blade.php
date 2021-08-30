@@ -21,15 +21,15 @@
                             @if(count($user->licenses))
                                 {{count($user->licenses)}}
                                 <x-ui.badge background="bg-green">
-                                    Active:&nbsp;{{count($user->activeLicenses)}}
+                                    {{__('Active:')}}&nbsp;{{count($user->activeLicenses)}}
                                 </x-ui.badge>
                                 @if (count($user->notActiveLicenses))
                                     <x-ui.badge background="bg-gray-500">
-                                        Disabled:&nbsp;{{count($user->notActiveLicenses)}}
+                                        {{__('Disabled:')}}&nbsp;{{count($user->notActiveLicenses)}}
                                     </x-ui.badge>
                                 @endif
                             @else
-                                <span class="text-red-700">No Licenses assigned</span>
+                                <span class="text-red-700">{{__('No Licenses assigned')}}</span>
                             @endif
                         </div>
                     </div>
@@ -51,7 +51,7 @@
                         <div class="table-cell pb-2">
                             <input type="checkbox" wire:model="allowEdit"
                                    id="allowEdit"/>
-                            <label for="allowEdit" class="pl-2">Check it to allow edit count of Licenses</label>
+                            <label for="allowEdit" class="pl-2">{{__('Check it to allow edit count of Licenses')}}</label>
                         </div>
                     </div>
 
@@ -93,10 +93,10 @@
             </x-ui.table-caption>
             <thead>
             <tr class="border-light_blue border-t border-b">
-                <x-ui.table-th>License Number</x-ui.table-th>
-                <x-ui.table-th>License status</x-ui.table-th>
-                <x-ui.table-th>Business Name</x-ui.table-th>
-                <x-ui.table-th>Date Created</x-ui.table-th>
+                <x-ui.table-th>{{__('License Number')}}</x-ui.table-th>
+                <x-ui.table-th>{{__('License status')}}</x-ui.table-th>
+                <x-ui.table-th>{{__('Business Name')}}</x-ui.table-th>
+                <x-ui.table-th>{{__('Date Created')}}</x-ui.table-th>
                 @if(Auth::user()->isRegionalAdmin())
                     <x-ui.table-th></x-ui.table-th>
                 @endif
@@ -128,13 +128,13 @@
     @if (count($licensesCounterHistory))
         <x-ui.table-table>
             <x-ui.table-caption>
-                <span>History</span>
+                <span>{{__('History')}}</span>
             </x-ui.table-caption>
             <thead>
             <tr class="border-light_blue border-t border-b">
-                <x-ui.table-th>Regional Admin</x-ui.table-th>
-                <x-ui.table-th>Licenses</x-ui.table-th>
-                <x-ui.table-th>Date Created</x-ui.table-th>
+                <x-ui.table-th>{{__('Regional Admin')}}</x-ui.table-th>
+                <x-ui.table-th>{{__('Licenses')}}</x-ui.table-th>
+                <x-ui.table-th>{{__('Date Created')}}</x-ui.table-th>
                 @if(Auth::user()->isRegionalAdmin())
                     <x-ui.table-th></x-ui.table-th>
                 @endif

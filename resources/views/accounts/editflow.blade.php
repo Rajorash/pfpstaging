@@ -3,7 +3,7 @@
     <x-slot name="header">
         {{$business->name}}
         <x-icons.chevron-right :class="'h-4 w-auto inline-block px-2'"/>
-        Update Flow
+        {{__('Update Flow')}}
     </x-slot>
 
     <x-slot name="subMenu">
@@ -13,7 +13,7 @@
     <x-ui.main>
         <x-ui.table-table>
             <x-ui.table-caption class="pt-12 pb-6 px-48 lg:px-52 xl:px-60 2xl:px-72 relative relative">
-                Update Flow For {{$account->name}}
+                {{__('Update Flow For')}} {{$account->name}}
 
                 <x-slot name="left">
                     <div class="absolute left-12 top-12">
@@ -55,14 +55,14 @@
                                             <input class="form-radio" type="radio" name="flow-direction" id="flow-in"
                                                    autocomplete="off"
                                                    value="0" {{ $flow->isNegative() ? '' : 'checked' }}>
-                                            Positive
+                                            {{__('Positive')}}
                                         </label>
                                         <label
                                             class="">
                                             <input class="form-radio" type="radio" name="flow-direction" id="flow-out"
                                                    autocomplete="off"
                                                    value="1" {{ $flow->isNegative() ? 'checked' : '' }}>
-                                            Negative
+                                            {{__('Negative')}}
                                         </label>
                                         <x-jet-input-error for="flow-direction" class="mt-2"/>
                                     </div>
@@ -74,7 +74,7 @@
                                 <div class="table-row">
                                     <div class="table-cell w-full pb-4 text-right">
                                         <x-ui.button-normal class="uppercase" type="button">
-                                            Update Flow
+                                            {{__('Update Flow')}}
                                         </x-ui.button-normal>
                                     </div>
                                 </div>

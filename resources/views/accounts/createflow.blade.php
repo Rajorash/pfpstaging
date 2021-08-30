@@ -2,7 +2,7 @@
     <x-slot name="header">
         {{$business->name}}
         <x-icons.chevron-right :class="'h-4 w-auto inline-block px-2'"/>
-        Create Flow
+        {{__('Create Flow')}}
     </x-slot>
 
     <x-slot name="subMenu">
@@ -13,7 +13,7 @@
     <x-ui.main>
         <x-ui.table-table>
             <x-ui.table-caption class="pt-12 pb-6 px-48 lg:px-52 xl:px-60 2xl:px-72 relative relative">
-                Create A New Flow For {{$account->name}}
+                {{__('Create A New Flow For')}} {{$account->name}}
 
                 <x-slot name="left">
                     <div class="absolute left-12 top-12">
@@ -54,14 +54,14 @@
                                             <input class="form-radio" type="radio" name="flow-direction" id="flow-in"
                                                    autocomplete="off"
                                                    value="0">
-                                            Positive
+                                            {{__('Positive')}}
                                         </label>
                                         <label
                                             class="">
                                             <input class="form-radio" type="radio" name="flow-direction" id="flow-out"
                                                    autocomplete="off"
                                                    value="1">
-                                            Negative
+                                            {{__('Negative')}}
                                         </label>
                                         <x-jet-input-error for="flow-direction" class="mt-2"/>
                                     </div>
@@ -73,7 +73,7 @@
                                 <div class="table-row">
                                     <div class="table-cell w-full pb-4 text-right">
                                         <x-ui.button-normal class="uppercase" type="button">
-                                            Add Flow
+                                            {{__('Add Flow')}}
                                         </x-ui.button-normal>
                                     </div>
                                 </div>

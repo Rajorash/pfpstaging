@@ -2,7 +2,7 @@
     <x-slot name="header">
         {{$business->name}}
         <x-icons.chevron-right :class="'h-4 w-auto inline-block px-2'"/>
-        Percentages
+        {{__('Percentages')}}
     </x-slot>
 
     <x-slot name="subMenu">

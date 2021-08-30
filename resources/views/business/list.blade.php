@@ -15,11 +15,11 @@
 
         <x-ui.table-table>
             <x-ui.table-caption>
-                Businesses Visible To You
+                {{__('Businesses Visible To You')}}
 
                 @if($currentUser->isAdvisor())
                     <div class="pl-2 text-xl">
-                        Available seats: {{$currentUser->seats - count($currentUser->activeLicenses)}}
+                        {{__('Available seats:')}} {{$currentUser->seats - count($currentUser->activeLicenses)}}
                         / {{$currentUser->seats}}
                     </div>
                 @endif
@@ -31,13 +31,13 @@
             <thead>
             <tr class="border-t border-b border-light_blue">
                 {{-- Business Column header row --}}
-                <x-ui.table-th padding="pl-12 pr-2 py-4">Business Name</x-ui.table-th>
+                <x-ui.table-th padding="pl-12 pr-2 py-4">{{__('Business Name')}}</x-ui.table-th>
                 {{-- Owner Column header row --}}
                 <x-ui.table-th>Owner</x-ui.table-th>
                 {{-- License Column header row --}}
                 <x-ui.table-th>License</x-ui.table-th>
                 {{-- Accounts Column header row --}}
-                <x-ui.table-th class="text-center">Accounts</x-ui.table-th>
+                <x-ui.table-th class="text-center">{{__('Accounts')}}</x-ui.table-th>
                 @if($currentUser->isAdvisor())
                     {{-- Maintenance column header row --}}
                     <x-ui.table-th></x-ui.table-th>
@@ -89,7 +89,7 @@
                             @if ( is_object($business->license) )
                                 {{$business->license->advisor->name}}
                                 @if($business->license->advisor->id == $currentUser->id)
-                                    <span class="text-light_gray">(You)</span>
+                                    <span class="text-light_gray">{{__('(You)')}}</span>
                                 @endif <br>
                                 <span class="text-sm text-light_gray">
                                 <span class="flex items-center whitespace-nowrap">
@@ -116,15 +116,15 @@
                             @if ( is_object($business->collaboration) && is_object($business->collaboration->advisor))
                                 <div class="text-sm text-light_gray">
                                     @if($business->collaboration->advisor->user_id != auth()->user()->id)
-                                        In collaboration with <b>{{$business->collaboration->advisor->user->name}}</b>
+                                        {{__('In collaboration with')}} <b>{{$business->collaboration->advisor->user->name}}</b>
                                     @else
                                         @if(is_object($business->license))
-                                            As collaborationist with <b>{{$business->license->advisor->name}}</b>
+                                            {{__('As collaborationist with')}} <b>{{$business->license->advisor->name}}</b>
                                         @endif
                                     @endif
 
                                     @if (($expire = new \DateTime($business->collaboration->expires_at))->getTimestamp() > time())
-                                        till {{$expire->format('Y-m-d')}}
+                                            {{__('till')}} {{$expire->format('Y-m-d')}}
                                     @endif
                                 </div>
                             @endif
@@ -155,7 +155,7 @@
 
                         {{-- Accounts --}}
                         <x-ui.table-td>
-                            <x-ui.button-small title="Accounts"
+                            <x-ui.button-small title="{{__('Accounts')}}"
                                                href="{{url('/business/'.$business->id.'/accounts')}}">
                                 <x-icons.vallet :class="'h-5 w-auto inline-block'"/>
                             </x-ui.button-small>
@@ -163,7 +163,7 @@
 
                         {{-- Percentages column --}}
                         <x-ui.table-td>
-                            <x-ui.button-small title="Rollout Percentages"
+                            <x-ui.button-small title="{{__('Rollout Percentages')}}"
                                                href="{{route('allocations-percentages', ['business' => $business])}}">
                                 <x-icons.percent :class="'h-5 w-auto inline-block'"/>
                             </x-ui.button-small>
@@ -171,7 +171,7 @@
 
                         {{-- Allocations Calculator column --}}
                         <x-ui.table-td>
-                            <x-ui.button-small title="Allocations Calculator"
+                            <x-ui.button-small title="{{__('Allocations Calculator')}}"
                                                href="{{route('allocation-calculator-with-id', ['business' => $business])}}">
                                 <x-icons.calculator :class="'h-5 w-auto inline-block'"/>
 
@@ -188,7 +188,7 @@
 
                         {{-- Forecast column --}}
                         <x-ui.table-td padding="pl-2 pr-12 py-4">
-                            <x-ui.button-small title="Projection Forecast"
+                            <x-ui.button-small title="{{__('Projection Forecast')}}"
                                                href="{{route('projections', ['business' => $business])}}">
                                 <x-icons.presentation-chart :class="'h-4 w-auto my-0.5 inline-block'"/>
                             </x-ui.button-small>
