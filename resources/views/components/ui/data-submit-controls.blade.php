@@ -8,7 +8,7 @@
     @if($forecastController)
         <div title="Enabling this allows a user to manually add forecast values by double clicking them." class="flex items-center mr-4 flex-nowrap">
             <input type="checkbox" id="allow_forecast_double_click" class="px-2 py-2 mx-3 my-3 rounded form-input"/>
-            <label for="allow_forecast_double_click">{{__('Enable manual quick add')}}</label>
+            <label for="allow_forecast_double_click">{{__('Enable manual quick add')}} <strong>[?]</strong></label>
         </div>
     @endif
 
@@ -25,7 +25,7 @@
 
     <div class="flex items-center" title="The amount of seconds that will pass before the form will automatically recalculate after updating values">
         <input type="number" min="1" max="30" id="delay_submit_data" class="w-16 px-2 py-0 py-1 my-0 ml-3 mr-0 text-center rounded form-input">
-        <label class="ml-3" for="delay_submit_data">Auto submit delay (sec)</label>
+        <label class="ml-3" for="delay_submit_data">Auto submit delay (sec) <strong>[?]</strong></label>
     </div>
 
 </div>
