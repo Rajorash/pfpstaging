@@ -41,7 +41,7 @@
 
     <!-- Page Heading -->
     @if(isset($header))
-        <header class="px-4 py-6 mx-auto max-w-7xl sm:px-6 lg:px-8">
+        <header class="px-4 py-2 mx-auto max-w-7xl sm:px-6 lg:px-8">
             <div class="flex content-between">
                 <h2 class="mt-8 text-4xl font-normal leading-tight text-dark_gray2">
                     {{ $header }}
