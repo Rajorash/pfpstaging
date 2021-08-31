@@ -42,6 +42,8 @@
                     {{-- Maintenance column header row --}}
                     <x-ui.table-th></x-ui.table-th>
                 @endif
+                {{-- Account balance change manually --}}
+                <x-ui.table-th></x-ui.table-th>
                 {{-- Accounts --}}
                 <x-ui.table-th></x-ui.table-th>
                 {{-- Percentages column header row --}}
@@ -152,6 +154,14 @@
                                 @endif
                             </x-ui.table-td>
                         @endif
+
+                        {{-- Manually change balances --}}
+                        <x-ui.table-td>
+                            <x-ui.button-small title="{{__('Manually change balances')}}"
+                                               href="{{url('/business/'.$business->id.'/balance')}}">
+                                <x-icons.balance :class="'h-5 w-auto inline-block'"/>
+                            </x-ui.button-small>
+                        </x-ui.table-td>
 
                         {{-- Accounts --}}
                         <x-ui.table-td>

@@ -20,6 +20,17 @@
     @endif
 
     @php
+        $active = request()->routeIs('balance.business');
+    @endphp
+    <a href="{{url('/business/'.$businessId.'/balance')}}" title="{{__('Manually change balances')}}"
+       class="bg-white block rounded box-border p-3 flex mr-6 h-12
+        @if($active) text-blue @else text-gray-700 @endif
+           ">
+        <x-icons.balance :class="'h-6 w-auto inline-block'"/>
+        <span class="ml-2 text-lg inline-block @if($active) text-blue @else hidden @endif">{{__('Balances')}}</span>
+    </a>
+
+    @php
         $active = request()->is('*business/*/accounts');
     @endphp
     <a href="{{url('/business/'.$businessId.'/accounts')}}" title="{{__('Accounts')}}"

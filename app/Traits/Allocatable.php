@@ -49,8 +49,6 @@ trait Allocatable
             $allowOperation = true;
         }
 
-        //   dd($this->getAllocationByDate($date), $this->id, get_class($this), $date, $phase_id, $amount, $manual_entry, $allowOperation);
-
         if ($allowOperation) {
             $allocation = Allocation::updateOrCreate(
                 [
@@ -64,9 +62,7 @@ trait Allocatable
                     'manual_entry' => ($manual_entry ? 1 : null)
                 ]
             );
-//            dd($allocation);
         }
-
 
         return $allocation;
     }

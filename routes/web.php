@@ -50,7 +50,16 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get(
         '/business/{business}',
         [BusinessController::class, 'show']
-    );
+    )->name('show.business');
+
+    Route::get(
+        '/business/{business}/balance',
+        [BusinessController::class, 'balance']
+    )->name('balance.business');
+    Route::post(
+        '/business/{business}/balance',
+        [BusinessController::class, 'balanceStore']
+    )->name('balanceStore.business');
 
     Route::get(
         '/business/{business}/maintenance',

@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Allocation as Allocation;
 use App\Traits\GettersTrait;
 
 //use Auth;
 use App\Models\Business;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -102,11 +104,91 @@ class BusinessController extends Controller
         $this->authorize('delete', $business);
     }
 
-
     public function maintenance(Business $business)
     {
         $this->authorize('update', $business);
 
         return view('business.maintenance', ['business' => $business]);
+    }
+
+    public function balance(Business $business)
+    {
+        $this->authorize('update', $business);
+        $today = Carbon::now()->format('Y-m-d');
+
+        $result = $balances = $bankAccountTitles = [];
+
+        foreach ($business->accounts as $bankAccount) {
+            $bankAccountTitles[$bankAccount->id] = $bankAccount->name;
+            //TODO: check if we need this check
+            if ($bankAccount->type != 'revenue') {
+                foreach ($bankAccount->allocations as $allocation) {
+                    if ($allocation->allocatable_type == "App\Models\BankAccount") {
+                        $result[$bankAccount->id][$allocation->allocation_date->format('Y-m-d')] = $allocation->amount;
+                    }
+                }
+            }
+        }
+
+        foreach ($result as $bankAccountId => $allocationData) {
+            $balances[] = [
+                'title' => $bankAccountTitles[$bankAccountId],
+                'id' => $bankAccountId,
+                'amount' => $allocationData[$today] ?? 0.0
+            ];
+        }
+
+        return view('business.balance', [
+            'business' => $business,
+            'balances' => $balances,
+            'today' => $today,
+            'bankAccountId' => $bankAccountId
+        ]);
+    }
+
+    public function balanceStore(Business $business, Request $request)
+    {
+        $today = Carbon::now()->format('Y-m-d');
+        $phaseId = $business->getPhaseIdByDate($today);
+
+        //if more than 0 - we can laucnh recalculate
+        $howManyChanges = 0;
+        foreach ($request->balance as $allocatable_id => $amount) {
+            $allocation = Allocation::where(
+                [
+                    'allocatable_id' => $allocatable_id,
+                    'allocatable_type' => 'App\Models\BankAccount',
+                    'allocation_date' => $today
+                ],
+            )->first();
+
+            if (!$allocation || ($allocation && $allocation->amount != floatval($amount))) {
+                //new record or update if amount not equal
+                $allocation = Allocation::updateOrCreate(
+                    [
+                        'allocatable_id' => $allocatable_id,
+                        'allocatable_type' => 'App\Models\BankAccount',
+                        'allocation_date' => $today
+                    ],
+                    [
+                        'phase_id' => $phaseId,
+                        'amount' => $amount,
+                        'manual_entry' => 1
+                    ]
+                );
+                $howManyChanges++;
+            }
+        }
+
+        if ($howManyChanges > 0) {
+            $endDate = Carbon::parse($today)->addDays(31)->format('Y-m-d');
+            $allocationsCalendar = new AllocationsCalendar();
+            $allocationsCalendar->getGridData(31, $today, $endDate, $business->id);
+            session()->flash('status', "Updated accounts: ".$howManyChanges);
+        } else {
+            session()->flash('status', "Nothing to update");
+        }
+
+        return redirect()->route('balance.business', ['business' => $business]);
     }
 }

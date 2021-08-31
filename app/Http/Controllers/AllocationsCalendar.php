@@ -177,7 +177,7 @@ class AllocationsCalendar extends Controller
         return response()->json($response);
     }
 
-    private function getGridData($rangeValue, $dateFrom, $dateTo, $businessId)
+    public function getGridData($rangeValue, $dateFrom, $dateTo, $businessId)
     {
         $this->business = Business::where('id', $businessId)->first();
 
