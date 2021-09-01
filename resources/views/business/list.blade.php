@@ -118,15 +118,17 @@
                             @if ( is_object($business->collaboration) && is_object($business->collaboration->advisor))
                                 <div class="text-sm text-light_gray">
                                     @if($business->collaboration->advisor->user_id != auth()->user()->id)
-                                        {{__('In collaboration with')}} <b>{{$business->collaboration->advisor->user->name}}</b>
+                                        {{__('In collaboration with')}}
+                                        <b>{{$business->collaboration->advisor->user->name}}</b>
                                     @else
                                         @if(is_object($business->license))
-                                            {{__('As collaborationist with')}} <b>{{$business->license->advisor->name}}</b>
+                                            {{__('As collaborationist with')}}
+                                            <b>{{$business->license->advisor->name}}</b>
                                         @endif
                                     @endif
 
                                     @if (($expire = new \DateTime($business->collaboration->expires_at))->getTimestamp() > time())
-                                            {{__('till')}} {{$expire->format('Y-m-d')}}
+                                        {{__('till')}} {{$expire->format('Y-m-d')}}
                                     @endif
                                 </div>
                             @endif
@@ -135,7 +137,7 @@
                         {{-- Accounts Column --}}
                         <x-ui.table-td class="text-center">
                             <a href="{{url('/business/'.$business->id.'/accounts')}}">
-                                <x-ui.badge> {{$business->accounts()->count()}}</x-ui.badge>
+                                <x-ui.badge>{{$business->accounts_count}}</x-ui.badge>
                             </a>
                         </x-ui.table-td>
 

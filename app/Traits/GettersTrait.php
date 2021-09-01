@@ -58,7 +58,9 @@ trait GettersTrait
                 'accounts',
                 'accounts.flows',
                 'rollout'
-            )->get();
+            )
+                ->withCount('accounts')
+                ->get();
 
             if (\Config::get('app.pfp_cache')) {
                 Cache::put($key, $businesses, now()->addMinutes(10));
