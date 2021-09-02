@@ -53,7 +53,7 @@ class LicensesForAdvisors extends Component
 
     public function getAdvisorsLicensesAttribute()
     {
-        return License::whereAdvisorId($user->id)->get();
+        return License::whereAdvisorId($this->user->id)->get();
     }
 
     public function render()
