@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use App\Models\BankAccount;
 use Carbon\CarbonPeriod;
 use Illuminate\Support\Facades\Cache;
+use JamesMills\LaravelTimezone\Facades\Timezone;
 use function PHPUnit\Framework\containsIdentical;
 
 class AllocationsCalendar extends Controller
@@ -24,7 +25,7 @@ class AllocationsCalendar extends Controller
 
         $maxDate = $this->business->rollout()->max('end_date');
         $minDate = $this->business->rollout()->min('end_date');
-        $startDate = session()->get('startDate_'.$this->business->id, Carbon::now()->format('Y-m-d'));
+        $startDate = session()->get('startDate_'.$this->business->id, Timezone::convertToLocal(Carbon::now(), 'Y-m-d'));
 
         $this->pushRecurringTransactionData(
             $this->business->id,

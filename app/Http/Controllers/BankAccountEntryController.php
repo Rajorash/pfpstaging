@@ -7,6 +7,7 @@ use App\Models\BankAccountEntry;
 use App\Models\Business;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use JamesMills\LaravelTimezone\Facades\Timezone;
 
 class BankAccountEntryController extends Controller
 {
@@ -84,7 +85,7 @@ class BankAccountEntryController extends Controller
             'amounts.*' => 'numeric'
         ]);
 
-        $today = Carbon::today()->format('Y-m-d');
+        $today = Timezone::convertToLocal(Carbon::now(),'Y-m-d');
         $amounts = collect($request->amounts);
 
         // get all account ids belonging to the business

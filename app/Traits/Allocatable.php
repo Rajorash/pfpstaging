@@ -5,6 +5,7 @@ namespace App\Traits;
 use App\Models\Allocation as Allocation;
 use Carbon\Carbon as Carbon;
 use Illuminate\Support\Facades\Cache;
+use JamesMills\LaravelTimezone\Facades\Timezone;
 
 trait Allocatable
 {
@@ -37,7 +38,7 @@ trait Allocatable
         bool $checkIsValuePresent = false
     ) {
         // check input
-        $date = $date ?? Carbon::now()->format('Y-m-d');
+        $date = $date ?? Timezone::convertToLocal(Carbon::now(),'Y-m-d');
         $allocation = null;
 
         $allowOperation = false;

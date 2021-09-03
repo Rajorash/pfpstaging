@@ -11,7 +11,7 @@
 
             @foreach($period as $date)
                 @php
-                    $date = Carbon\Carbon::parse($date);
+                    $date = Carbon\Carbon::parse($date, 'Y-m-d H:i:s');
                 @endphp
                 <x-ui.table-th class="text-center {{ $date->isToday() ? 'text-blue': 'text-dark_gray' }} sticky top-0"
                                baseClass="min-w-24 font-normal bg-white z-20">

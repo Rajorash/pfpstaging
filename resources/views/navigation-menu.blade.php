@@ -2,7 +2,7 @@
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-24">
-            <div class="flex">
+            <div class="flex w-full">
                 <!-- Logo -->
                 <div class="flex-shrink-0 flex items-center">
                     <a href="{{ route('dashboard') }}">
@@ -38,6 +38,26 @@
                             @endif
                         </x-jet-nav-link>
                     @endif
+                </div>
+                <div class="flex-shrink-0 flex items-center ml-auto relative">
+                    <div class="text-xs">
+                        <div class="text-right opacity-50 -mt-4">{{Auth::user()->timezone}}</div>
+                        Your local time: <span id="your_time"
+                                                          data-time="{{ Timezone::convertToLocal(\Carbon\Carbon::now(), 'Y-m-d')
+                                                                    .'T'.Timezone::convertToLocal(\Carbon\Carbon::now(), 'H:i:s')}}">
+                        {{ Timezone::convertToLocal(\Carbon\Carbon::now(), 'H:i') }}
+                        </span>
+                    </div>
+                    <script type="text/javascript">
+                        let startTime = new Date(document.getElementById('your_time').dataset.time);
+                        setInterval(function () {
+                            startTime = new Date(startTime.getTime() + 1000);
+                            document.getElementById('your_time').innerText =
+                                (startTime.getHours() < 10 ? '0' + startTime.getHours() : startTime.getHours())
+                                + ':' + (startTime.getMinutes() < 10 ? '0' + startTime.getMinutes() : startTime.getMinutes());
+                        }, 1000);
+                    </script>
+                    <div class="text-xs absolute bottom-2 right-0"><a class="opacity-30 hover:opacity-100 hover:underline" href="{{ route('profile.show') }}">Change timezone</a></div>
                 </div>
             </div>
 

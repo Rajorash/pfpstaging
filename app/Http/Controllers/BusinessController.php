@@ -10,6 +10,7 @@ use App\Models\Business;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use JamesMills\LaravelTimezone\Facades\Timezone;
 
 class BusinessController extends Controller
 {
@@ -114,7 +115,7 @@ class BusinessController extends Controller
     public function balance(Business $business)
     {
         $this->authorize('update', $business);
-        $today = Carbon::now()->format('Y-m-d');
+        $today = Timezone::convertToLocal(Carbon::now(),'Y-m-d');
 
         $result = $balances = $bankAccountTitles = [];
 
@@ -122,10 +123,14 @@ class BusinessController extends Controller
             $bankAccountTitles[$bankAccount->id] = $bankAccount->name;
             //TODO: check if we need this check
             if ($bankAccount->type != 'revenue') {
-                foreach ($bankAccount->allocations as $allocation) {
-                    if ($allocation->allocatable_type == "App\Models\BankAccount") {
-                        $result[$bankAccount->id][$allocation->allocation_date->format('Y-m-d')] = $allocation->amount;
+                if (count($bankAccount->allocations)) {
+                    foreach ($bankAccount->allocations as $allocation) {
+                        if ($allocation->allocatable_type == "App\Models\BankAccount") {
+                            $result[$bankAccount->id][$allocation->allocation_date->format('Y-m-d')] = $allocation->amount;
+                        }
                     }
+                } else {
+                    $result[$bankAccount->id][$today] = 0;
                 }
             }
         }
@@ -142,13 +147,12 @@ class BusinessController extends Controller
             'business' => $business,
             'balances' => $balances,
             'today' => $today,
-            'bankAccountId' => $bankAccountId
         ]);
     }
 
     public function balanceStore(Business $business, Request $request)
     {
-        $today = Carbon::now()->format('Y-m-d');
+        $today = Timezone::convertToLocal(Carbon::now(),'Y-m-d');
         $phaseId = $business->getPhaseIdByDate($today);
 
         //if more than 0 - we can laucnh recalculate

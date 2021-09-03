@@ -80,10 +80,10 @@ class BankAccount extends Model
     }
 
 
-    public function allocations()
-    {
-        return $this->morphMany('App\Models\Allocation', 'allocatable');
-    }
+//    public function allocations()
+//    {
+//        return $this->morphMany('App\Models\Allocation', 'allocatable');
+//    }
 
     /**
      * @param  null  $phase_id

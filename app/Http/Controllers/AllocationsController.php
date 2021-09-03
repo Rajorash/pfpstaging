@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use JamesMills\LaravelTimezone\Facades\Timezone;
 
 class AllocationsController extends Controller
 {
@@ -43,7 +44,7 @@ class AllocationsController extends Controller
     public function allocations(Business $business)
     {
         $this->authorize('view', $business);
-        $today = Carbon::now();
+        $today = Timezone::convertToLocal(Carbon::now(),'Y-m-d');
         $start_date = Carbon::now()->addDays(-6);
         $end_date = Carbon::now()->addDays(7);
 

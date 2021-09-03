@@ -5,6 +5,7 @@ namespace App\Http\Livewire;
 use App\Http\Controllers\RecurringTransactionsController;
 use App\Models\RecurringTransactions;
 use Carbon\Carbon;
+use JamesMills\LaravelTimezone\Facades\Timezone;
 use Livewire\Component;
 use Str;
 
@@ -62,7 +63,7 @@ class RecurringTransactionsLivewire extends Component
 
         } else {
             $this->value = 0;
-            $this->date_start = Carbon::now()->format('Y-m-d');
+            $this->date_start = Timezone::convertToLocal(Carbon::now(),'Y-m-d');
             $this->repeat_every_number = 1;
             $this->repeat_every_type = RecurringTransactions::REPEAT_DEFAULT;
             $this->repeat_rules_week_days = [
