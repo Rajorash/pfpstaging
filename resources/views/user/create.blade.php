@@ -1,6 +1,13 @@
 <x-app-layout>
     <x-slot name="header">
-        {{__('Users')}}
+        @if (Auth::user()->isRegionalAdmin()
+             && !Auth::user()->isSuperAdmin()
+             && !Auth::user()->isAdvisor()
+             && !Auth::user()->isClient())
+            {{ __('Advisors') }}
+        @else
+            {{ __('Users') }}
+        @endif
         <x-icons.chevron-right :class="'h-4 w-auto inline-block px-2'"/>
         {{__('Create New')}}
     </x-slot>
