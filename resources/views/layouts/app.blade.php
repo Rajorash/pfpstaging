@@ -63,6 +63,7 @@
 @stack('modals')
 
 @livewireScripts
-<div id="ddd" class="absolute z-50 w-2 h-2 bg-red-600"></div>
+{{-- commented below line, removes small box at bottom of layout. --}}
+{{-- <div id="ddd" class="absolute z-50 w-2 h-2 bg-red-600"></div> --}}
 </body>
 </html>
