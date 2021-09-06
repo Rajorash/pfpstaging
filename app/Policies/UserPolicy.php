@@ -35,20 +35,20 @@ class UserPolicy
         }
 
 //        //a Regional Admin can view only own Advisor
-//        if ($user->isRegionalAdmin()) {
-//            if($user->id == $model->regionalAdminByAdvisor->pluck('id')->first()) {
-//                return true;
-//            }
-//            // if regional admin and advisor share a license
-//            $shared_licenses = License::whereAdvisorId($model->id)
-//                                        ->whereRegionaladminId($user->id)
-//                                        ->get();
-//
-//            if ($shared_licenses->isNotEmpty()) {
-//                return true;
-//            }
-//
-//        }
+        if ($user->isRegionalAdmin()) {
+            if($user->id == $model->regionalAdminByAdvisor->pluck('id')->first()) {
+                return true;
+            }
+            // if regional admin and advisor share a license
+            $shared_licenses = License::whereAdvisorId($model->id)
+                                        ->whereRegionaladminId($user->id)
+                                        ->get();
+
+            if ($shared_licenses->isNotEmpty()) {
+                return true;
+            }
+
+        }
 
         //a Regional Admin can update only own Advisor
         if ($user->isAdvisor() && $user->id == $model->advisorByClient->pluck('id')->first()) {
