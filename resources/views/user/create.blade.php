@@ -17,7 +17,14 @@
 
         <x-ui.table-table>
             <x-ui.table-caption class="pt-12 pb-6 px-48 lg:px-52 xl:px-60 2xl:px-72 relative relative">
-                {{__('Create a New User')}}
+                @if (Auth::user()->isRegionalAdmin()
+                     && !Auth::user()->isSuperAdmin()
+                     && !Auth::user()->isAdvisor()
+                     && !Auth::user()->isClient())
+                    {{__('Create a New Advisor')}}
+                @else
+                    {{__('Create a New User')}}
+                @endif
 
                 <x-slot name="left">
                     <div class="absolute left-12 top-12">

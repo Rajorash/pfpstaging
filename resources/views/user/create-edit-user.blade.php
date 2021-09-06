@@ -237,9 +237,23 @@
                 <div class="table-cell w-full pb-4 text-right">
                     <x-ui.button-normal class="uppercase" type="button" wire:loading.attr="disabled">
                         @if($user)
-                            {{__('Save User')}}
+                            @if (Auth::user()->isRegionalAdmin()
+                                 && !Auth::user()->isSuperAdmin()
+                                 && !Auth::user()->isAdvisor()
+                                 && !Auth::user()->isClient())
+                                {{__('Save Advisor')}}
+                            @else
+                                {{__('Save User')}}
+                            @endif
                         @else
-                            {{__('Create User')}}
+                            @if (Auth::user()->isRegionalAdmin()
+                                 && !Auth::user()->isSuperAdmin()
+                                 && !Auth::user()->isAdvisor()
+                                 && !Auth::user()->isClient())
+                                {{__('Create Advisor')}}
+                            @else
+                                {{__('Create User')}}
+                            @endif
                         @endif
                     </x-ui.button-normal>
                 </div>
