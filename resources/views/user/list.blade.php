@@ -55,9 +55,11 @@
                     <x-ui.table-th>{{__('Available seats')}}</x-ui.table-th>
                 @endif
                 <x-ui.table-th>{{__('Roles')}}</x-ui.table-th>
+                @if(Auth::user()->isRegionalAdmin() && $user->isAdvisor())
+                    <x-ui.table-th class="mr-12"></x-ui.table-th>
+                @endif
                 <x-ui.table-th></x-ui.table-th>
                 <x-ui.table-th></x-ui.table-th>
-                <x-ui.table-th class="mr-12"></x-ui.table-th>
             </tr>
             </thead>
 
@@ -184,18 +186,13 @@
                                     <span class="text-red-700">{{__('Error! User hasn\'t any role')}}</span>
                                 @endif
                             </x-ui.table-td>
-                            <x-ui.table-td>
-                                <x-ui.button-small href="{{url('/user/'.$user->id)}}">
-                                    @if (Auth::user()->isRegionalAdmin()
-                                         && !Auth::user()->isSuperAdmin()
-                                         && !Auth::user()->isAdvisor()
-                                         && !Auth::user()->isClient())
-                                        {{ __('See Advisor') }}
-                                    @else
-                                        {{ __('See user') }}
-                                    @endif
-                                </x-ui.button-small>
-                            </x-ui.table-td>
+                            @if(Auth::user()->isRegionalAdmin() && $user->isAdvisor())
+                                <x-ui.table-td>
+                                    <x-ui.button-small href="{{route('licenses.list', ['user'=>$user])}}">
+                                        {{__('Licenses')}}
+                                    </x-ui.button-small>
+                                </x-ui.table-td>
+                            @endif
                             <x-ui.table-td>
                                 @if(Auth::user()->isSuperAdmin() || Auth::user()->isAdvisor())
                                     <x-ui.button-small href="{{route('users.edit', ['user'=>$user])}}">
@@ -211,11 +208,16 @@
                                 @endif
                             </x-ui.table-td>
                             <x-ui.table-td class="pr-12">
-                                @if(Auth::user()->isRegionalAdmin() && $user->isAdvisor())
-                                    <x-ui.button-small href="{{route('licenses.list', ['user'=>$user])}}">
-                                        {{__('Licenses')}}
-                                    </x-ui.button-small>
-                                @endif
+                                <x-ui.button-small href="{{url('/user/'.$user->id)}}">
+                                    @if (Auth::user()->isRegionalAdmin()
+                                         && !Auth::user()->isSuperAdmin()
+                                         && !Auth::user()->isAdvisor()
+                                         && !Auth::user()->isClient())
+                                        {{ __('See Advisor') }}
+                                    @else
+                                        {{ __('See user') }}
+                                    @endif
+                                </x-ui.button-small>
                             </x-ui.table-td>
                         </tr>
                     @endforeach
