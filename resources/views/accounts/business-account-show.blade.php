@@ -33,13 +33,13 @@
                         <div class="pb-2 text-lg">{{__('Account Flows')}}</div>
                         @forelse($acc->flows as $flow)
                             <div class="table w-full mb-2">
-                                <div class="table-row hover:bg-gray-100 w-full text-sm">
+                                <div class="table-row w-full text-sm hover:bg-gray-100">
                                     <div
                                         class="table-cell px-2 pb-1 rounded-tl-lg rounded-bl-lg text-{{$flow->isNegative() ? 'red-500' : 'green' }}">
                                         {{ $flow->label }}
                                     </div>
                                     @if(auth()->user()->isAdvisor() || auth()->user()->isClient())
-                                        <div class="table-cell px-2 pb-1 w-10">
+                                        <div class="table-cell w-10 px-2 pb-1">
                                             <div class="flex">
                                                 @php
                                                     $recurringTransactionsCount = count($flow->recurringTransactions);
@@ -59,7 +59,7 @@
                                             </div>
                                         </div>
                                     @endif
-                                    <div class="table-cell px-2 pb-1 w-10">
+                                    <div class="table-cell w-10 px-2 pb-1">
                                         <x-ui.button-small title="Edit"
                                                            class="w-auto h-6 text-light_purple hover:text-purple-700"
                                                            background="bg-transparent hover:bg-transparent border-transparent border-transparent"
@@ -67,7 +67,7 @@
                                             <x-icons.edit class="w-3 h-auto"/>
                                         </x-ui.button-small>
                                     </div>
-                                    <div class="table-cell px-2 pb-1 rounded-tr-lg rounded-br-lg w-10">
+                                    <div class="table-cell w-10 px-2 pb-1 rounded-tr-lg rounded-br-lg">
                                         <form class="inline-block"
                                               action="{{url('/accounts/'.$acc->id.'/flow/'.$flow->id)}}"
                                               method="POST">
@@ -114,7 +114,7 @@
                                                     type="button"
                                                     wire:click="deleteAccount({{$acc->id}})">
                                                     <x-icons.confirm class="w-3 h-auto mr-2"/>
-                                                    {{__('Confirm&nbsp;Delete?')}}
+                                                    {{__('Confirm Delete?')}}
                                                 </x-ui.button-small>
                                             @else
                                                 <x-ui.button-small
