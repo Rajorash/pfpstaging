@@ -38,7 +38,6 @@ class UserController extends Controller
 
         abort_if($filtered == null, 403, 'Access denied');
 
-
         return view('user.list',
             [
                 'users' => $filtered,
