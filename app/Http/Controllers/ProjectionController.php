@@ -65,12 +65,12 @@ class ProjectionController extends Controller
         }
 
         $entries_to_show = 14;
-        $start_date = $today = Timezone::convertToLocal(Carbon::now(),'Y-m-d');
+        $start_date = $today = Carbon::parse(Timezone::convertToLocal(Carbon::now(),'Y-m-d'));
         // start date is shown, so adjust end_date -1 to compensate
         $end_date = Carbon::now()->$addDateStep($entries_to_show - 1);
 
         if ($request->recalculateAll == '1') {
-            $startDate = session()->get('startDate_'.$businessId, Timezone::convertToLocal(Carbon::now(),'Y-m-d'));
+            $startDate = session()->get('startDate_'.$businessId, Carbon::parse(Timezone::convertToLocal(Carbon::now(),'Y-m-d')));
             $AllocationsCalendarController = new AllocationsCalendar();
             $AllocationsCalendarController->pushRecurringTransactionData($businessId, $startDate, $end_date, false);
         }
