@@ -14,7 +14,7 @@
            class="bg-white block rounded box-border p-3 flex mr-4 h-12
         @if($active) text-blue @else text-gray-700 @endif
                ">
-            <x-icons.gear :class="'h-4 w-auto my-0.5 inline-block'"/>
+            <x-icons.gear :class="'h-6 w-auto inline-block'"/>
             <span class="ml-2 text-lg inline-block @if($active) text-blue @else hidden @endif">{{__('Maintenance')}}</span>
         </a>
     @endif
@@ -48,7 +48,7 @@
        class="bg-white block rounded box-border p-3 flex text-gray-700 mr-4 h-12
         @if($active) text-blue @else text-gray-700 @endif
            ">
-        <x-icons.percent :class="'h-5 w-auto mt-1 inline-block'"/>
+        <x-icons.percent :class="'h-6 w-auto inline-block'"/>
         <span class="ml-2 text-lg inline-block @if($active) text-blue @else hidden @endif">{{__('Percentages')}}</span>
     </a>
 
@@ -81,7 +81,7 @@
        class="bg-white block rounded box-border p-3 flex text-gray-700 h-12
         @if($active) text-blue @else text-gray-700 @endif
            ">
-        <x-icons.presentation-chart :class="'h-5 w-auto mt-1 inline-block'"/>
+        <x-icons.presentation-chart :class="'h-6 w-auto inline-block'"/>
         <span class="ml-2 text-lg inline-block @if($active) text-blue @else hidden @endif">{{__('Projection Forecast')}}</span>
     </a>
 </div>

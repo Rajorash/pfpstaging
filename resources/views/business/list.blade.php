@@ -151,7 +151,7 @@
                                 || !is_object($business->collaboration))
                                     <x-ui.button-small title="Maintenance"
                                                        href="{{route('maintenance.business', ['business' => $business])}}">
-                                        <x-icons.gear :class="'h-4 w-auto my-0.5 inline-block'"/>
+                                        <x-icons.gear :class="'h-5 w-auto inline-block'"/>
                                     </x-ui.button-small>
                                 @endif
                             </x-ui.table-td>
@@ -202,7 +202,7 @@
                         <x-ui.table-td padding="pl-2 pr-12 py-4">
                             <x-ui.button-small title="{{__('Projection Forecast')}}"
                                                href="{{route('projections', ['business' => $business])}}">
-                                <x-icons.presentation-chart :class="'h-4 w-auto my-0.5 inline-block'"/>
+                                <x-icons.presentation-chart :class="'h-5 w-auto inline-block'"/>
                             </x-ui.button-small>
                         </x-ui.table-td>
                     </tr>
