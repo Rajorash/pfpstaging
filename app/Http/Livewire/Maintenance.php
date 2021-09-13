@@ -115,7 +115,7 @@ class Maintenance extends Component
 
     public function render()
     {
-        return view('livewire.maintenance', [
+        return view('maintenance.maintenance-livewire', [
             'artisanResult' => $this->artisanResult,
             'artisanCommands' => $this->artisanCommands,
             'previousCommandId' => $this->previousCommandId,
