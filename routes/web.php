@@ -7,6 +7,7 @@ use App\Http\Controllers\BankAccountController;
 use App\Http\Controllers\BankAccountEntryController;
 use App\Http\Controllers\BusinessController;
 use App\Http\Controllers\LicenseController;
+use App\Http\Controllers\PipelineController;
 use App\Http\Controllers\ProjectionController;
 use App\Http\Controllers\RecurringTransactionsController;
 use App\Http\Controllers\UserController;
@@ -236,6 +237,32 @@ Route::group(['middleware' => 'auth'], function () {
         '/businesslicense/{business}',
         [LicenseController::class, 'business']
     )->name('licenses.business');
+
+    //pipelines
+    Route::get(
+        '/business/{business}/pipelines',
+        [PipelineController::class, 'list']
+    )->name('pipelines.list');
+
+    Route::get(
+        '/business/{business}/pipelines/add',
+        [PipelineController::class, 'create']
+    )->name('pipelines.create');
+
+    Route::get(
+        '/business/{business}/pipelines/{pipeline}/edit',
+        [PipelineController::class, 'edit']
+    )->name('pipelines.edit');
+
+    Route::post(
+        '/business/{business}/pipelines/{pipeline}/delete',
+        [PipelineController::class, 'edit']
+    )->name('pipelines.delete');
+
+    Route::delete(
+        '/business/{business}/pipelines/{pipeline}/delete',
+        [PipelineController::class, 'delete']
+    );
 });
 
 Route::middleware(

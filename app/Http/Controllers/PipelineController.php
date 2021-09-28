@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\AccountFlow;
 use App\Models\BankAccount;
-use App\Models\RecurringTransactions;
+use App\Models\Pipeline;
 use Illuminate\Database\Eloquent\Collection;
 
-class RecurringTransactionsController extends Controller
+class PipelineController extends Controller
 {
     protected RecurringPipelineController $recurringPipelineController;
 
@@ -18,29 +17,41 @@ class RecurringTransactionsController extends Controller
 
     /**
      * @param  int  $bankAccountId
-     * @param  int  $accountFlowId
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
      */
-    public function list(int $bankAccountId, int $accountFlowId)
+    public function list(int $bankAccountId)
     {
         $bankAccount = BankAccount::findOrfail($bankAccountId);
-        $accountFlow = AccountFlow::findOrfail($accountFlowId);
 
-        $recurringTransactions = RecurringTransactions::where('account_id', $accountFlow->id)
+        $pipelines = Pipeline::where('business_id', $bankAccount->id)
             ->orderBy('title')
             ->get();
 
         return view(
-            'recurring.list',
+            'pipelines.list',
             [
                 'bankAccount' => $bankAccount,
-                'accountFlow' => $accountFlow,
-                'recurringTransactions' => $recurringTransactions
+                'pipelines' => $pipelines
             ]
         );
     }
 
-    /** Get compiled forecast for Flow
+    public function create(int $bankAccountId)
+    {
+        $bankAccount = BankAccount::findOrfail($bankAccountId);
+
+        $pipeline = null;
+
+        return view(
+            'pipelines.create',
+            [
+                'bankAccount' => $bankAccount,
+                'pipeline' => $pipeline
+            ]
+        );
+    }
+
+    /** Get compiled forecast for pipeline
      * @param  Collection  $recurringTransactionsArray
      * @param  string|null  $dateStart
      * @param  string|null  $dateEnd
@@ -59,18 +70,18 @@ class RecurringTransactionsController extends Controller
     }
 
     /**
-     * @param  RecurringTransactions  $recurringTransactions
+     * @param  Pipeline  $pipeline
      * @param  string|null  $periodDateStart
      * @param  string|null  $periodDateEnd
      * @return array
      */
     public function getForecast(
-        RecurringTransactions $recurringTransactions,
+        Pipeline $pipeline,
         string $periodDateStart = null,
         string $periodDateEnd = null
     ): array {
         return $this->recurringPipelineController->getForecast(
-            $recurringTransactions,
+            $pipeline,
             $periodDateStart,
             $periodDateEnd
         );
@@ -78,75 +89,44 @@ class RecurringTransactionsController extends Controller
 
     /**
      * @param  int  $bankAccountId
-     * @param  int  $accountFlowId
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
-     */
-    public function create(
-        int $bankAccountId,
-        int $accountFlowId
-    ) {
-        $bankAccount = BankAccount::findOrfail($bankAccountId);
-        $accountFlow = AccountFlow::findOrfail($accountFlowId);
-        $recurringTransactions = null;
-
-        return view(
-            'recurring.create',
-            [
-                'bankAccount' => $bankAccount,
-                'accountFlow' => $accountFlow,
-                'recurringTransactions' => $recurringTransactions
-            ]
-        );
-    }
-
-    /**
-     * @param  int  $bankAccountId
-     * @param  int  $accountFlowId
-     * @param  int  $recurringId
+     * @param  int  $pipelineId
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
      */
     public function edit(
         int $bankAccountId,
-        int $accountFlowId,
-        int $recurringId
+        int $pipelineId
     ) {
         $bankAccount = BankAccount::findOrfail($bankAccountId);
-        $accountFlow = AccountFlow::findOrfail($accountFlowId);
-        $recurringTransactions = RecurringTransactions::findOrfail($recurringId);
+        $pipeline = Pipeline::findOrfail($pipelineId);
 
         return view(
-            'recurring.create',
+            'pipelines.create',
             [
                 'bankAccount' => $bankAccount,
-                'accountFlow' => $accountFlow,
-                'recurringTransactions' => $recurringTransactions
+                'pipeline' => $pipeline
             ]
         );
     }
 
     /**
      * @param  int  $bankAccountId
-     * @param  int  $accountFlowId
-     * @param  int  $recurringId
+     * @param  int  $pipelineId
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
     public function delete(
         int $bankAccountId,
-        int $accountFlowId,
-        int $recurringId
+        int $pipelineId
     ) {
         $bankAccount = BankAccount::findOrfail($bankAccountId);
-        $accountFlow = AccountFlow::findOrfail($accountFlowId);
-        $recurringTransactions = RecurringTransactions::findOrfail($recurringId);
+        $pipeline = Pipeline::findOrfail($pipelineId);
 
-        $recurringTransactions->delete();
+        $pipeline->delete();
 
         return redirect(
             route(
-                'recurring-list',
+                'pipelines.list',
                 [
-                    'account' => $bankAccount,
-                    'flow' => $accountFlow
+                    'business' => $bankAccount,
                 ]
             )
         );

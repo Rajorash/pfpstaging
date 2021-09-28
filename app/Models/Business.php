@@ -43,6 +43,8 @@ use Illuminate\Support\Facades\Cache;
  * @method static \Illuminate\Database\Query\Builder|Business withTrashed()
  * @method static \Illuminate\Database\Query\Builder|Business withoutTrashed()
  * @mixin Eloquent
+ * @property-read Collection|\App\Models\Pipeline[] $pipelines
+ * @property-read int|null $pipelines_count
  */
 class Business extends Model
 {
@@ -200,5 +202,10 @@ class Business extends Model
         }
 
         return $accountIds;
+    }
+
+    public function pipelines(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Pipeline::class);
     }
 }

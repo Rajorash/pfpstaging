@@ -108,12 +108,12 @@ use Laravel\Sanctum\PersonalAccessToken;
 class User extends Authenticatable implements RoleInterface, MustVerifyEmail
 {
     use HasApiTokens;
-    use HasFactory;
     use HasProfilePhoto;
     use HasTeams;
     use HasUserRoles;
     use UserLicenseFunctions;
     use Notifiable;
+    use HasFactory;
     use TwoFactorAuthenticatable;
 
     /**

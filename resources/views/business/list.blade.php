@@ -53,6 +53,8 @@
                 {{-- Data Entry column header row --}}
                 <x-ui.table-th></x-ui.table-th>
                 {{-- Forecast column header row --}}
+                <x-ui.table-th></x-ui.table-th>
+                {{-- Pipelines column header row --}}
                 <x-ui.table-th padding="pl-2 pr-12 py-4"></x-ui.table-th>
             </tr>
             </thead>
@@ -199,10 +201,18 @@
                         </x-ui.table-td>
 
                         {{-- Forecast column --}}
-                        <x-ui.table-td padding="pl-2 pr-12 py-4">
+                        <x-ui.table-td>
                             <x-ui.button-small title="{{__('Projection Forecast')}}"
                                                href="{{route('projections', ['business' => $business])}}">
                                 <x-icons.presentation-chart :class="'h-5 w-auto inline-block'"/>
+                            </x-ui.button-small>
+                        </x-ui.table-td>
+
+                        {{-- Pipeline column --}}
+                        <x-ui.table-td padding="pl-2 pr-12 py-4">
+                            <x-ui.button-small title="{{__('Pipelines')}}"
+                                               href="{{route('pipelines.list', ['business' => $business])}}">
+                                <x-icons.chart :class="'h-5 w-auto inline-block'"/>
                             </x-ui.button-small>
                         </x-ui.table-td>
                     </tr>
@@ -213,6 +223,5 @@
         </x-ui.table-table>
 
     </x-ui.main>
-
 
 </x-app-layout>

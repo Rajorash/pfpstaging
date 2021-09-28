@@ -2,7 +2,7 @@
 'href' => '#',
 'type' => 'a',
 'background' => 'bg-blue hover:bg-dark_gray2',
-'padding' => 'py-1 px-3',
+'padding' => 'py-1 px-2',
 'attr' => ''
 ])
 

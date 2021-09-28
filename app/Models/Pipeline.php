@@ -47,8 +47,15 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Query\Builder|RecurringTransactions withTrashed()
  * @method static \Illuminate\Database\Query\Builder|RecurringTransactions withoutTrashed()
  * @mixin Eloquent
+ * @property int $business_id
+ * @property string|null $notes
+ * @property int $certainly
+ * @method static Builder|Pipeline whereBusinessId($value)
+ * @method static Builder|Pipeline whereCertainly($value)
+ * @method static Builder|Pipeline whereNotes($value)
+ * @property-read \App\Models\BankAccount $account
  */
-class RecurringTransactions extends Model
+class Pipeline extends Model
 {
     use HasFactory, SoftDeletes, RecurringAndPipeline;
 
@@ -58,10 +65,14 @@ class RecurringTransactions extends Model
     public const REPEAT_YEAR = 'year';
     public const REPEAT_DEFAULT = self::REPEAT_WEEK;
 
-    protected $table = 'recurring';
+    public const DEFAULT_CERTAINLY = 70;
+
+    protected $table = 'pipeline';
 
     protected $fillable = [
         'title',
+        'notes',
+        'certainly',
         'description',
         'value',
         'date_start',
@@ -71,20 +82,18 @@ class RecurringTransactions extends Model
         'repeat_rules'
     ];
 
-    protected $guarded = [
-        'account_id'
-    ];
-
     protected $casts = [
         'date_start' => 'date',
         'date_end' => 'date',
         'repeat_every_number' => 'integer',
         'repeat_rules' => 'json',
-        'value' => 'float'
+        'value' => 'float',
+        'certainly' => 'integer'
     ];
 
-    public function accountFlow()
+    public function account()
     {
-        return $this->belongsTo(AccountFlow::class, 'account_id', 'id');
+        return $this->belongsTo(BankAccount::class, 'business_id', 'id');
     }
+
 }
