@@ -34,10 +34,9 @@
                     </div>
                 </div>
 
-
                 <div class="table-row">
                     <div class="table-cell w-1/4 pb-4 text-left">
-                        {{ __('Certainly') }}
+                        {{ __('Certainty') }}
                     </div>
                     <div class="table-cell w-3/4 pb-4">
                         <x-jet-input
@@ -48,6 +47,24 @@
                             wire:model.lazy="certainty"
                         />
                         <x-jet-input-error for="certainty" class="mt-2 text-left"/>
+                    </div>
+                </div>
+
+                <div class="table-row">
+                    <div class="table-cell w-1/4 pb-4 text-left">
+                        {{ __('Recurring') }}
+                    </div>
+                    <div class="table-cell w-3/4 pb-4 text-left inline-flex">
+                        <x-jet-input
+                            id="recurring"
+                            type="checkbox"
+                            name="recurring"
+                            class="inline-block align-middle"
+                            wire:model.lazy="recurring"
+                        />
+                        <x-jet-label for="recurring"
+                                     class="ml-2 inline-block align-middle">{{__('Set Pipeline as Recurring')}}</x-jet-label>
+                        <x-jet-input-error for="recurring" class="mt-2 text-left"/>
                     </div>
                 </div>
 

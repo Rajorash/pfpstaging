@@ -26,6 +26,7 @@ class PipelineLivewire extends Component
     public $notes;
     public $certainty;
     public $value;
+    public $recurring;
     public $date_start;
     public $date_end;
     public $repeat_every_number;
@@ -49,6 +50,7 @@ class PipelineLivewire extends Component
             $this->title = $this->pipeline->title;
             $this->notes = $this->pipeline->notes;
             $this->certainty = $this->pipeline->certainty;
+            $this->recurring = $this->pipeline->recurring;
             $this->description = $this->pipeline->description;
             $this->value = $this->pipeline->value;
             $this->date_start = Carbon::parse($this->pipeline->date_start)->format('Y-m-d');
@@ -66,6 +68,7 @@ class PipelineLivewire extends Component
 
         } else {
             $this->value = 0;
+            $this->recurring = false;
             $this->date_start = Timezone::convertToLocal(Carbon::now(),'Y-m-d');
             $this->certainty = Pipeline::DEFAULT_CERTAINTY;
             $this->repeat_every_number = 1;
@@ -202,6 +205,7 @@ class PipelineLivewire extends Component
         $pipeline->description = $this->description;
 
         $pipeline->value = $this->value;
+        $pipeline->recurring = $this->recurring;
 
         $pipeline->date_start = $this->date_start;
         $pipeline->date_end = $this->date_end ? $this->date_end : null;

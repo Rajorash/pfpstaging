@@ -44,7 +44,10 @@
                 <x-ui.table-th padding="pl-12 pr-2 py-4">{{__('Title of pipeline')}}</x-ui.table-th>
                 <x-ui.table-th>{{__('Date of start')}}</x-ui.table-th>
                 <x-ui.table-th>{{__('Date of end')}}</x-ui.table-th>
+                <x-ui.table-th>{{__('Certainty')}}</x-ui.table-th>
+                <x-ui.table-th>{{__('Recurring')}}</x-ui.table-th>
                 <x-ui.table-th>{{__('Notes')}}</x-ui.table-th>
+                <x-ui.table-th>{{__('Description')}}</x-ui.table-th>
                 <x-ui.table-th></x-ui.table-th>
                 <x-ui.table-th padding="pl-2 pr-12 py-4"></x-ui.table-th>
             </tr>
@@ -65,7 +68,16 @@
                             @endif
                         </x-ui.table-td>
                         <x-ui.table-td padding="pl-2 pr-2 py-4">
+                            {{$row->certainty}}%
+                        </x-ui.table-td>
+                        <x-ui.table-td padding="pl-2 pr-2 py-4">
+                            {{($row->recurring ? 'yes' : 'no')}}
+                        </x-ui.table-td>
+                        <x-ui.table-td padding="pl-2 pr-2 py-4">
                             {{$row->notes}}
+                        </x-ui.table-td>
+                        <x-ui.table-td padding="pl-2 pr-2 py-4">
+                            {{$row->description}}
                         </x-ui.table-td>
 
                         <x-ui.table-td padding="pl-2 pr-2 py-4">

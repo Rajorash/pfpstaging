@@ -50,10 +50,12 @@ use Illuminate\Support\Carbon;
  * @property int $business_id
  * @property string|null $notes
  * @property int $certainty
+ * @property boolean $recurring
  * @method static Builder|Pipeline whereBusinessId($value)
  * @method static Builder|Pipeline whereCertainty($value)
  * @method static Builder|Pipeline whereNotes($value)
  * @property-read \App\Models\BankAccount $account
+ * @method static Builder|Pipeline whereRecurring($value)
  */
 class Pipeline extends Model
 {
@@ -79,7 +81,8 @@ class Pipeline extends Model
         'date_end',
         'repeat_every_number',
         'repeat_every_type',
-        'repeat_rules'
+        'repeat_rules',
+        'recurring'
     ];
 
     protected $casts = [
@@ -88,7 +91,8 @@ class Pipeline extends Model
         'repeat_every_number' => 'integer',
         'repeat_rules' => 'json',
         'value' => 'float',
-        'certainty' => 'integer'
+        'certainty' => 'integer',
+        'recurring' => 'boolean'
     ];
 
     public function account()
