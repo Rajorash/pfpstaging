@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\HasTags;
 use App\Traits\RecurringAndPipeline;
 use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
@@ -56,10 +57,12 @@ use Illuminate\Support\Carbon;
  * @method static Builder|Pipeline whereNotes($value)
  * @property-read \App\Models\BankAccount $account
  * @method static Builder|Pipeline whereRecurring($value)
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Tag[] $tags
+ * @property-read int|null $tags_count
  */
 class Pipeline extends Model
 {
-    use HasFactory, SoftDeletes, RecurringAndPipeline;
+    use HasFactory, SoftDeletes, RecurringAndPipeline, HasTags;
 
     public const REPEAT_DAY = 'day';
     public const REPEAT_WEEK = 'week';

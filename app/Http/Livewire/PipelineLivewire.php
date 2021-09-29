@@ -33,6 +33,8 @@ class PipelineLivewire extends Component
     public $repeat_every_type;
     public $repeat_rules_week_days = [];
 
+    public $tags;
+
     public function __construct($id = null)
     {
         parent::__construct($id);
@@ -48,6 +50,7 @@ class PipelineLivewire extends Component
         if (is_object($this->pipeline)
             && is_a($this->pipeline, 'App\Models\Pipeline')) {
             $this->title = $this->pipeline->title;
+            $this->tags = $this->pipeline->tagsAsString();
             $this->notes = $this->pipeline->notes;
             $this->certainty = $this->pipeline->certainty;
             $this->recurring = $this->pipeline->recurring;
@@ -69,7 +72,7 @@ class PipelineLivewire extends Component
         } else {
             $this->value = 0;
             $this->recurring = false;
-            $this->date_start = Timezone::convertToLocal(Carbon::now(),'Y-m-d');
+            $this->date_start = Timezone::convertToLocal(Carbon::now(), 'Y-m-d');
             $this->certainty = Pipeline::DEFAULT_CERTAINTY;
             $this->repeat_every_number = 1;
             $this->repeat_every_type = Pipeline::REPEAT_DEFAULT;
@@ -230,6 +233,8 @@ class PipelineLivewire extends Component
         $pipeline->account()->associate($this->bankAccount);
 
         $pipeline->save();
+
+        $pipeline->syncTags($this->tags);
 
         $this->redirect(route('pipelines.list',
             [

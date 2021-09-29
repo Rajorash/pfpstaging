@@ -47,7 +47,6 @@
                 <x-ui.table-th>{{__('Certainty')}}</x-ui.table-th>
                 <x-ui.table-th>{{__('Recurring')}}</x-ui.table-th>
                 <x-ui.table-th>{{__('Notes')}}</x-ui.table-th>
-                <x-ui.table-th>{{__('Description')}}</x-ui.table-th>
                 <x-ui.table-th></x-ui.table-th>
                 <x-ui.table-th padding="pl-2 pr-12 py-4"></x-ui.table-th>
             </tr>
@@ -76,11 +75,8 @@
                         <x-ui.table-td padding="pl-2 pr-2 py-4">
                             {{$row->notes}}
                         </x-ui.table-td>
-                        <x-ui.table-td padding="pl-2 pr-2 py-4">
-                            {{$row->description}}
-                        </x-ui.table-td>
 
-                        <x-ui.table-td padding="pl-2 pr-2 py-4">
+                        <x-ui.table-td padding="pl-2 pr-2 py-4" attr="rowspan=2">
                             <x-ui.button-small
                                 href="{{route('pipelines.edit', ['business' => $bankAccount, 'pipeline' => $row])}}">
                                 <x-icons.edit class="w-3 h-auto mr-2"/>
@@ -88,7 +84,7 @@
                             </x-ui.button-small>
                         </x-ui.table-td>
 
-                        <x-ui.table-td padding="pl-2 pr-12 py-4">
+                        <x-ui.table-td padding="pl-2 pr-2 py-4" attr="rowspan=2">
                             <form class="inline-block"
                                   action="{{route('pipelines.delete', ['business' => $bankAccount, 'pipeline' => $row])}}"
                                   method="POST">
@@ -101,6 +97,14 @@
                                     {{__('Delete')}}
                                 </x-ui.button-small>
                             </form>
+                        </x-ui.table-td>
+                    </tr>
+                    <tr>
+                        <x-ui.table-td padding="pl-12 pr-2 py-4" attr="colspan=3">
+                            {{$row->description}}
+                        </x-ui.table-td>
+                        <x-ui.table-td padding="pl-12 pr-2 py-4" attr="colspan=3">
+                            {{$row->tagsAsString()}}
                         </x-ui.table-td>
                     </tr>
                 @endforeach

@@ -20,6 +20,23 @@
                 </div>
 
                 <div class="table-row">
+                    <div class="table-cell w-1/4 pb-4 text-left">
+                        {{ __('Tags') }}
+                        <span class="text-xs">{{__('separate by coma')}}</span>
+                    </div>
+                    <div class="table-cell w-3/4 pb-4">
+                        <x-jet-input
+                            id="tags"
+                            class="w-full"
+                            type="text"
+                            name="tags"
+                            wire:model.lazy="tags"
+                        />
+                        <x-jet-input-error for="tags" class="mt-2 text-left"/>
+                    </div>
+                </div>
+
+                <div class="table-row">
                     <div class="table-cell w-1/4 pb-4 text-left align-top">
                         {{ __('Notes') }}
                     </div>
