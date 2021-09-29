@@ -421,7 +421,10 @@ class AllocationsCalendar extends Controller
 
                         case BankAccount::ACCOUNT_TYPE_POSTREAL:
                             $prereal = $this->getPrePrereal($income, $percents);
-                            $prereal_percents = array_sum($percents[BankAccount::ACCOUNT_TYPE_PREREAL]);
+
+                            $prereal_percents = key_exists( BankAccount::ACCOUNT_TYPE_PREREAL, $percents )
+                                              ? array_sum($percents[BankAccount::ACCOUNT_TYPE_PREREAL])
+                                              : 0;
 
                             // Real Revenue = $prereal - $prereal * ($prereal_percents / 100)
                             $response[BankAccount::ACCOUNT_TYPE_POSTREAL][$id]['transfer'][$date_ymd]
