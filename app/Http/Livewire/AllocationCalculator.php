@@ -143,7 +143,16 @@ class AllocationCalculator extends Component
     public function calculateRealRevenue()
     {
         // $prerealSum = collect($this->mappedAccounts['prereal'])->sum('value');
-        $prerealSum = array_sum(data_get($this->mappedAccounts, 'prereal.*.value'));
+        $prerealSum = 0;
+
+        // make sure to account for NULL if no prereal accounts exist, array_sum
+        // will throw an error.
+        $prerealData = data_get($this->mappedAccounts, 'prereal.*.value');
+
+        if($prerealData) {
+            $prerealSum = array_sum($prerealData);
+        }
+
         $result = $this->netCashReceipts - $prerealSum;
 
         return round($result, 4);
