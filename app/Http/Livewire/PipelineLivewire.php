@@ -24,7 +24,7 @@ class PipelineLivewire extends Component
 
     public $title;
     public $notes;
-    public $certainly;
+    public $certainty;
     public $value;
     public $date_start;
     public $date_end;
@@ -48,7 +48,7 @@ class PipelineLivewire extends Component
             && is_a($this->pipeline, 'App\Models\Pipeline')) {
             $this->title = $this->pipeline->title;
             $this->notes = $this->pipeline->notes;
-            $this->certainly = $this->pipeline->certainly;
+            $this->certainty = $this->pipeline->certainty;
             $this->description = $this->pipeline->description;
             $this->value = $this->pipeline->value;
             $this->date_start = Carbon::parse($this->pipeline->date_start)->format('Y-m-d');
@@ -67,7 +67,7 @@ class PipelineLivewire extends Component
         } else {
             $this->value = 0;
             $this->date_start = Timezone::convertToLocal(Carbon::now(),'Y-m-d');
-            $this->certainly = Pipeline::DEFAULT_CERTAINLY;
+            $this->certainty = Pipeline::DEFAULT_CERTAINTY;
             $this->repeat_every_number = 1;
             $this->repeat_every_type = Pipeline::REPEAT_DEFAULT;
             $this->repeat_rules_week_days = [
@@ -88,7 +88,7 @@ class PipelineLivewire extends Component
     {
         return [
             'title' => 'required',
-            'certainly' => 'required|integer|between:1,100',
+            'certainty' => 'required|integer|between:1,100',
             'value' => 'required|numeric|gt:0',
             'date_start' => 'required|date',
             'date_end' => 'nullable|date|after:date_start',
@@ -198,7 +198,7 @@ class PipelineLivewire extends Component
 
         $pipeline->title = $this->title;
         $pipeline->notes = $this->notes;
-        $pipeline->certainly = $this->certainly;
+        $pipeline->certainty = $this->certainty;
         $pipeline->description = $this->description;
 
         $pipeline->value = $this->value;

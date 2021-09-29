@@ -49,9 +49,9 @@ use Illuminate\Support\Carbon;
  * @mixin Eloquent
  * @property int $business_id
  * @property string|null $notes
- * @property int $certainly
+ * @property int $certainty
  * @method static Builder|Pipeline whereBusinessId($value)
- * @method static Builder|Pipeline whereCertainly($value)
+ * @method static Builder|Pipeline whereCertainty($value)
  * @method static Builder|Pipeline whereNotes($value)
  * @property-read \App\Models\BankAccount $account
  */
@@ -65,14 +65,14 @@ class Pipeline extends Model
     public const REPEAT_YEAR = 'year';
     public const REPEAT_DEFAULT = self::REPEAT_WEEK;
 
-    public const DEFAULT_CERTAINLY = 70;
+    public const DEFAULT_CERTAINTY = 70;
 
     protected $table = 'pipeline';
 
     protected $fillable = [
         'title',
         'notes',
-        'certainly',
+        'certainty',
         'description',
         'value',
         'date_start',
@@ -88,7 +88,7 @@ class Pipeline extends Model
         'repeat_every_number' => 'integer',
         'repeat_rules' => 'json',
         'value' => 'float',
-        'certainly' => 'integer'
+        'certainty' => 'integer'
     ];
 
     public function account()

@@ -41,13 +41,13 @@
                     </div>
                     <div class="table-cell w-3/4 pb-4">
                         <x-jet-input
-                            id="certainly"
+                            id="certainty"
                             class="w-full"
                             type="number" min="1" max="100" step="1"
-                            name="certainly"
-                            wire:model.lazy="certainly"
+                            name="certainty"
+                            wire:model.lazy="certainty"
                         />
-                        <x-jet-input-error for="certainly" class="mt-2 text-left"/>
+                        <x-jet-input-error for="certainty" class="mt-2 text-left"/>
                     </div>
                 </div>
 
