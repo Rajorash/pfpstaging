@@ -17,6 +17,11 @@ class ProjectionController extends Controller
 {
     protected $defaultProjectionsRangeValue = 7;
 
+    public const RANGE_DAILY = 1;
+    public const RANGE_WEEKLY = 7;
+    public const RANGE_MONTHLY = 31;
+    public const RANGE_QUARTERLY = 93;
+
     /**
      * Display a listing of the the accounts with projection.
      *
@@ -38,7 +43,11 @@ class ProjectionController extends Controller
         );
     }
 
-    public function updateData(Request $request)
+    /**
+     * @param  Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function updateData(Request $request): \Illuminate\Http\JsonResponse
     {
         $response = [
             'error' => [],
@@ -57,27 +66,38 @@ class ProjectionController extends Controller
         $business = Business::find($businessId);
 
         $addDateStep = 'addDay';
-        if ($rangeValue == 7) {
+        if ($rangeValue == self::RANGE_WEEKLY) {
             $addDateStep = 'addWeek';
         }
-        if ($rangeValue == 31) {
+        if ($rangeValue == self::RANGE_MONTHLY) {
             $addDateStep = 'addMonth';
         }
 
         $entries_to_show = 14;
-        $start_date = $today = Carbon::parse(Timezone::convertToLocal(Carbon::now(),'Y-m-d'));
+        $start_date = $today = Carbon::parse(Timezone::convertToLocal(Carbon::now(), 'Y-m-d'));
         // start date is shown, so adjust end_date -1 to compensate
         $end_date = Carbon::now()->$addDateStep($entries_to_show - 1);
 
+        if ($rangeValue == self::RANGE_QUARTERLY) {
+            $end_date = Carbon::now()->addMonth(($entries_to_show - 1) * 3);
+        }
+
         if ($request->recalculateAll == '1') {
-            $startDate = session()->get('startDate_'.$businessId, Carbon::parse(Timezone::convertToLocal(Carbon::now(),'Y-m-d')));
+            $startDate = session()->get('startDate_'.$businessId,
+                Carbon::parse(Timezone::convertToLocal(Carbon::now(), 'Y-m-d')));
             $AllocationsCalendarController = new AllocationsCalendar();
             $AllocationsCalendarController->pushRecurringTransactionData($businessId, $startDate, $end_date, false);
         }
 
         $dates = array();
-        for ($date = $start_date; $date < $end_date; $date->$addDateStep()) {
-            $dates[] = $date->format('Y-m-d');
+        if ($rangeValue == self::RANGE_QUARTERLY) {
+            for ($date = $start_date; $date < $end_date; $date->addMonth(3)) {
+                $dates[] = $date->format('Y-m-d');
+            }
+        } else {
+            for ($date = $start_date; $date < $end_date; $date->$addDateStep()) {
+                $dates[] = $date->format('Y-m-d');
+            }
         }
         $rangeArray = $this->getRangeArray();
         $allocations = self::allocationsByDate($business);
@@ -98,15 +118,23 @@ class ProjectionController extends Controller
         return response()->json($response);
     }
 
-    private function getRangeArray()
+    /**
+     * @return string[]
+     */
+    private function getRangeArray(): array
     {
         return [
-            1 => 'Daily',
-            7 => 'Weekly',
-            31 => 'Monthly'
+            self::RANGE_DAILY => 'Daily',
+            self::RANGE_WEEKLY => 'Weekly',
+            self::RANGE_MONTHLY => 'Monthly',
+            self::RANGE_QUARTERLY => 'Quarterly'
         ];
     }
 
+    /**
+     * @param  Business  $business
+     * @return BankAccount[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Support\Collection
+     */
     public function allocationsByDate(Business $business)
     {
         /**
@@ -148,6 +176,4 @@ class ProjectionController extends Controller
     {
         return $account->allocations->sortBy('allocation_date')->last();
     }
-
-
 }
