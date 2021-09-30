@@ -19,6 +19,10 @@ $(function () {
                 ? parseInt($.cookie('percentage_autoSubmitDataDelay'))
                 : this.autoSubmitDataDelayDefault;
 
+            this.autoSubmitDataAllow = $.cookie('percentage_autoSubmitDataAllow') !== undefined
+                ? $.cookie('percentage_autoSubmitDataAllow')
+                : this.autoSubmitDataAllowDefault;
+
             this.timeOutSeconds = 1000 * parseInt(this.autoSubmitDataDelay);
         }
 
@@ -77,6 +81,13 @@ $(function () {
 
             $.cookie('percentage_autoSubmitDataDelay', $this.autoSubmitDataDelay, {expires: 14});
         }
+
+        updateAutoSubmitDataStatus() {
+            let $this = this;
+
+            $.cookie('percentage_autoSubmitDataAllow', $this.autoSubmitDataAllow, {expires: 14});
+        }
+
     }
 
     if ($('#percentagesTablePlace').length) {

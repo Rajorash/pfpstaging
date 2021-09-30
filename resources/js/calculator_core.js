@@ -21,6 +21,9 @@ export class calculatorCore {
         this.delayProgressInterval = undefined;
         this.delayProgressTimeIntervalMiliseconds = 20;
 
+        this.autoSubmitDataAllowId = 'allow_auto_submit_data';
+        this.autoSubmitDataAllow = false;
+        this.autoSubmitDataAllowDefault = false;
         this.autoSubmitDataDelayId = 'delay_submit_data';
         this.autoSubmitDataDelayDefault = 2;
         this.autoSubmitDataDelay = this.autoSubmitDataDelayDefault;
@@ -57,6 +60,11 @@ export class calculatorCore {
             $this.timeOutSeconds = 1000 * parseInt($this.autoSubmitDataDelay);
         });
 
+        $(document).on('change', '#' + $this.autoSubmitDataAllowId, function (event) {
+            $this.autoSubmitDataAllow = $(this).is(':checked');
+            $this.updateAutoSubmitDataStatus();
+        });
+
         $(document).on('change', $this.heightModeDefaultSelector, function (event) {
             $this.heightMode = $(this).val();
             $this.updateHeightMode();
@@ -68,6 +76,12 @@ export class calculatorCore {
 
             if ($targetElement.hasClass($this.copyMoveClassName)) {
                 $targetElement.val($sourceElement.val()).change();
+            }
+        });
+
+        $(document).keyup(function (event) {
+            if (event.which === 13 && !$this.autoSubmitDataAllow) {
+                $this.manualSubmitData();
             }
         });
 
@@ -128,32 +142,54 @@ export class calculatorCore {
 
         $this.collectData(event);
 
-        clearTimeout($this.timedOut);
+        if ($this.debug) {
+            console.log('Auto-submit data is: ' + $this.autoSubmitDataAllow);
+        }
 
-        $this.timedOut = setTimeout(function () {
-            $this.ajaxLoadWorker();
-        }, $this.timeOutSeconds);
+        if ($this.autoSubmitDataAllow) {
+            //auto-submit data
+
+            clearTimeout($this.timedOut);
+
+            $this.timedOut = setTimeout(function () {
+                $this.ajaxLoadWorker();
+            }, $this.timeOutSeconds);
+        } else {
+            //manual submit data
+        }
+    }
+
+    manualSubmitData() {
+        let $this = this;
+
+        if ($this.debug) {
+            console.log('manualSubmitData');
+        }
+
+        $this.ajaxLoadWorker();
     }
 
     progressBar() {
         let $this = this;
 
-        if ($this.debug) {
-            console.log('progressBar');
-        }
-
-        clearInterval($this.delayProgressInterval);
-
-        $('#' + $this.delayProgressId).width($('#' + $this.delayProgressId).parent().width());
-
-        $this.delayProgressInterval = setInterval(function () {
-            let width = $('#' + $this.delayProgressId).width()
-                - $('#' + $this.delayProgressId).parent().width() / $this.timeOutSeconds * $this.delayProgressTimeIntervalMiliseconds;
-            $('#' + $this.delayProgressId).width(width);
+        if ($this.autoSubmitDataAllow) {
             if ($this.debug) {
-                console.log('progressBar after SetInterval');
+                console.log('progressBar');
             }
-        }, $this.delayProgressTimeIntervalMiliseconds);
+
+            clearInterval($this.delayProgressInterval);
+
+            $('#' + $this.delayProgressId).width($('#' + $this.delayProgressId).parent().width());
+
+            $this.delayProgressInterval = setInterval(function () {
+                let width = $('#' + $this.delayProgressId).width()
+                    - $('#' + $this.delayProgressId).parent().width() / $this.timeOutSeconds * $this.delayProgressTimeIntervalMiliseconds;
+                $('#' + $this.delayProgressId).width(width);
+                if ($this.debug) {
+                    console.log('progressBar after SetInterval');
+                }
+            }, $this.delayProgressTimeIntervalMiliseconds);
+        }
     }
 
     firstLoadData() {
@@ -162,6 +198,7 @@ export class calculatorCore {
         $this.collectData();
         $this.ajaxLoadWorker();
         $this.autoSubmitDataLoadData();
+        $this.autoSubmitDataLoadState();
         $this.heightModeDataLoadData();
     }
 
@@ -311,6 +348,12 @@ export class calculatorCore {
         $('#' + $this.autoSubmitDataDelayId).val(($this.autoSubmitDataDelay > 0 ? $this.autoSubmitDataDelay : 2));
     }
 
+    autoSubmitDataLoadState() {
+        let $this = this;
+
+        $('#' + $this.autoSubmitDataAllowId).prop('checked', $this.autoSubmitDataAllow);
+    }
+
     heightModeDataLoadData() {
         let $this = this;
 
@@ -323,6 +366,12 @@ export class calculatorCore {
     }
 
     updateHeightMode() {
+    }
+
+    updateAutoSubmitDataStatus() {
+    }
+
+    collectData() {
     }
 
     scrollToLatestPoint() {

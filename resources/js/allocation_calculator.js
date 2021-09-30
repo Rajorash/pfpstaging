@@ -18,6 +18,10 @@ $(function () {
                 ? parseInt($.cookie('allocation_autoSubmitDataDelay'))
                 : this.autoSubmitDataDelayDefault;
 
+            this.autoSubmitDataAllow = $.cookie('allocation_autoSubmitDataAllow') !== undefined
+                ? $.cookie('allocation_autoSubmitDataAllow')
+                : this.autoSubmitDataAllowDefault;
+
             this.timeOutSeconds = 1000 * this.autoSubmitDataDelay;
 
             this.heightMode = $.cookie('allocation_heightMode') !== undefined
@@ -88,6 +92,12 @@ $(function () {
             let $this = this;
 
             $.cookie('allocation_autoSubmitDataDelay', $this.autoSubmitDataDelay, {expires: 14});
+        }
+
+        updateAutoSubmitDataStatus() {
+            let $this = this;
+
+            $.cookie('allocation_autoSubmitDataAllow', $this.autoSubmitDataAllow, {expires: 14});
         }
 
         heightModeDataLoadData() {
