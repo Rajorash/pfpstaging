@@ -22,6 +22,8 @@ class ProjectionController extends Controller
     public const RANGE_MONTHLY = 31;
     public const RANGE_QUARTERLY = 93;
 
+    protected int $showEntries = 14;
+
     /**
      * Display a listing of the the accounts with projection.
      *
@@ -37,9 +39,13 @@ class ProjectionController extends Controller
             $this->defaultProjectionsRangeValue
         );
 
+        $minDate = Carbon::now()->addWeek()->format('Y-m-d');
+        $maxDate = Carbon::now()->addMonth(($this->showEntries - 1) * 3)->format('Y-m-d');
+
         return view(
             'business.projections',
-            compact('business', 'rangeArray', 'currentProjectionsRange')
+            compact('business', 'rangeArray',
+                'currentProjectionsRange', 'minDate', 'maxDate')
         );
     }
 
@@ -56,6 +62,7 @@ class ProjectionController extends Controller
 
         $rangeValue = $request->rangeValue;
         $businessId = $request->businessId;
+        $endData = $request->endDate;
 
         if (!$rangeValue) {
             $response['error'][] = 'Range value not set';
@@ -65,6 +72,7 @@ class ProjectionController extends Controller
 
         $business = Business::find($businessId);
 
+        $start_date = $today = Carbon::parse(Timezone::convertToLocal(Carbon::now(), 'Y-m-d'));
         $addDateStep = 'addDay';
         if ($rangeValue == self::RANGE_WEEKLY) {
             $addDateStep = 'addWeek';
@@ -73,13 +81,18 @@ class ProjectionController extends Controller
             $addDateStep = 'addMonth';
         }
 
-        $entries_to_show = 14;
-        $start_date = $today = Carbon::parse(Timezone::convertToLocal(Carbon::now(), 'Y-m-d'));
-        // start date is shown, so adjust end_date -1 to compensate
-        $end_date = Carbon::now()->$addDateStep($entries_to_show - 1);
+        if ($endData) {
+            //set end date by user
+            $end_date = Carbon::parse($endData);
+        } else {
+            //default behaviour
 
-        if ($rangeValue == self::RANGE_QUARTERLY) {
-            $end_date = Carbon::now()->addMonth(($entries_to_show - 1) * 3);
+            // start date is shown, so adjust end_date -1 to compensate
+            $end_date = Carbon::now()->$addDateStep($this->showEntries - 1);
+
+            if ($rangeValue == self::RANGE_QUARTERLY) {
+                $end_date = Carbon::now()->addMonth(($this->showEntries - 1) * 3);
+            }
         }
 
         if ($request->recalculateAll == '1') {
@@ -102,6 +115,7 @@ class ProjectionController extends Controller
         $rangeArray = $this->getRangeArray();
         $allocations = self::allocationsByDate($business);
 
+        $response['end_date'] = $end_date->format('Y-m-d');
         $response['html'] = view('business.projections-table')
             ->with(
                 compact(

@@ -13,14 +13,14 @@
         <div class="flex items-center content-between">
             <input type="hidden" id="businessId" name="businessId" value="{{$business->id}}"/>
             <div class="p-2">
-                <label class="mr-2" for="startdate">Start date</label>
+                <label class="mr-2" for="startdate">{{__('Start date')}}</label>
                 <input name="startdate" id="startDate"
                        min="{{$minDate}}" max="{{$maxDate}}"
                        class="py-1 my-0 rounded form-input" type="date"
                        value="{{$startDate}}">
             </div>
             <div class="p-2">
-                <label class="mr-2" for="range">Range</label>
+                <label class="mr-2" for="range">{{__('Range')}}</label>
                 <select name="range" id="currentRangeValue" class="py-1 my-0 rounded form-select">
                     @foreach ($rangeArray as $key => $value)
                         <option value="{{$key}}" @if($key == $currentRangeValue) selected @endif>{{$value}}</option>

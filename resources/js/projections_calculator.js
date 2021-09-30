@@ -28,7 +28,7 @@ $(function () {
             let $this = this;
             super.events();
 
-            $(document).on('change', '#currentProjectionsRange', function (event) {
+            $(document).on('change', '#currentProjectionsRange, #endDate', function (event) {
                 $this.loadData(event);
             });
 
@@ -46,6 +46,20 @@ $(function () {
             $this.recalculateAllDataState = false;
         }
 
+
+        renderData(data) {
+            let $this = this;
+
+            super.renderData(data);
+
+            if (data.error.length === 0) {
+
+                $('#endDate').val(data.end_date);
+
+            }
+            console.log(data);
+        }
+
         collectData(event) {
             let $this = this;
 
@@ -58,6 +72,7 @@ $(function () {
 
             $this.data.businessId = $('#businessId').val();
             $this.data.rangeValue = $('#currentProjectionsRange').val();
+            $this.data.endDate = $('#endDate').val();
             $this.data.recalculateAll = $this.recalculateAllDataState ? 1 : 0;
 
             if ($this.debug) {
