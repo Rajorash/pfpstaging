@@ -154,8 +154,6 @@ export class calculatorCore {
             $this.timedOut = setTimeout(function () {
                 $this.ajaxLoadWorker();
             }, $this.timeOutSeconds);
-        } else {
-            //manual submit data
         }
     }
 

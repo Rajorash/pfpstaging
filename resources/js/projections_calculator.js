@@ -20,6 +20,8 @@ $(function () {
 
             this.hideTableDuringRecalculate = true;
             this.timeOutSeconds = 0;
+
+            this.autoSubmitDataAllow = true;
         }
 
         events() {
