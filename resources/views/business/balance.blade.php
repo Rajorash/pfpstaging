@@ -12,7 +12,7 @@
     <x-ui.main>
         <x-ui.table-table>
             <x-ui.table-caption class="pt-12 pb-6 px-48 lg:px-52 xl:px-60 2xl:px-72 relative relative">
-                {{$business->name}}, {{__('change balance for')}} {{$today}}
+                {{$business->name}}, {{__('change balance for')}}: {{ \Carbon\Carbon::parse($today)->format('l, d F Y')}}
 
                 <x-slot name="left">
                     <div class="absolute left-12 top-12">
