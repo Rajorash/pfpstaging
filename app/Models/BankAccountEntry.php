@@ -37,7 +37,7 @@ class BankAccountEntry extends Model
 
     protected $fillable = ['date_entered', 'amount_entered', 'bank_account_id'];
 
-    public function account()
+    public function account(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(BankAccount::class);
     }

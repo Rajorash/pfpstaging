@@ -40,12 +40,12 @@ class LicensesForAdvisors extends Model
         'licenses',
     ];
 
-    public function advisor()
+    public function advisor(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(User::class, 'advisor_id');
     }
 
-    public function regionalAdmin()
+    public function regionalAdmin(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(User::class, 'regional_admin_id');
     }

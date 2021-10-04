@@ -31,7 +31,7 @@ class Tag extends Model
         'name'
     ];
 
-    public function pipelines()
+    public function pipelines(): \Illuminate\Database\Eloquent\Relations\MorphToMany
     {
         return $this->morphedByMany(Pipeline::class, 'taggable');
     }

@@ -171,12 +171,12 @@ class User extends Authenticatable implements RoleInterface, MustVerifyEmail
     /**
      * Return all businesses related to the user
      */
-    public function businesses()
+    public function businesses(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(Business::class, 'owner_id');
     }
 
-    public function collaborations()
+    public function collaborations(): \Illuminate\Database\Eloquent\Relations\HasManyThrough
     {
         return $this->hasManyThrough(Collaboration::class, Advisor::class, 'user_id', 'advisor_id');
     }
@@ -190,12 +190,12 @@ class User extends Authenticatable implements RoleInterface, MustVerifyEmail
             });
     }
 
-    public function advisor()
+    public function advisor(): \Illuminate\Database\Eloquent\Relations\HasOne
     {
         return $this->hasOne(Advisor::class, 'user_id');
     }
 
-    public function isActive()
+    public function isActive(): int
     {
         if ($this->isSuperAdmin() || $this->isRegionalAdmin()) {
             return $this->active;
@@ -205,5 +205,4 @@ class User extends Authenticatable implements RoleInterface, MustVerifyEmail
 
         return $this->active;
     }
-
 }

@@ -65,12 +65,12 @@ class License extends Model
         'expires_ts' => 'datetime',
     ];
 
-    public function advisor()
+    public function advisor(): \Illuminate\Database\Eloquent\Relations\HasOne
     {
         return $this->hasOne(User::class, 'id', 'advisor_id');
     }
 
-    public function business()
+    public function business(): \Illuminate\Database\Eloquent\Relations\HasOne
     {
         return $this->hasOne(Business::class, 'id', 'business_id');
     }
@@ -145,12 +145,12 @@ class License extends Model
      * @param  integer  $monthsToAdd
      * @return void
      */
-    public function extend($monthsToAdd = 3)
+    public function extend(int $monthsToAdd = 3)
     {
         $this->expires_ts = Carbon::createFromTimestamp($this->expires_ts)->addMonths($monthsToAdd);
     }
 
-    public function getCheckLicenseAttribute()
+    public function getCheckLicenseAttribute(): bool
     {
         if (
             Carbon::parse($this->expires_ts)->timestamp - Carbon::now()->timestamp > 0

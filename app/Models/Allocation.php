@@ -63,7 +63,7 @@ class Allocation extends Model
         return $this->morphTo();
     }
 
-    public function phase()
+    public function phase(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Phase::class);
     }

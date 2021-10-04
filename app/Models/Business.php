@@ -52,27 +52,27 @@ class Business extends Model
 
     protected $fillable = [];
 
-    public function owner()
+    public function owner(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function collaboration()
+    public function collaboration(): \Illuminate\Database\Eloquent\Relations\HasOne
     {
         return $this->hasOne(Collaboration::class);
     }
 
-    public function license()
+    public function license(): \Illuminate\Database\Eloquent\Relations\HasOne
     {
         return $this->hasOne(License::class);
     }
 
-    public function accounts()
+    public function accounts(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(BankAccount::class);
     }
 
-    public function rollout()
+    public function rollout(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(Phase::class);
     }

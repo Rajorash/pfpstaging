@@ -25,12 +25,12 @@ class AdvisorAdmin extends Model
 {
     use HasFactory;
 
-    public function advisors()
+    public function advisors(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(User::class, 'advisor_id');
     }
 
-    public function regionalAdmin()
+    public function regionalAdmin(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(User::class, 'admin_id');
     }

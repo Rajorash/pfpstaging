@@ -83,7 +83,7 @@ class RecurringTransactions extends Model
         'value' => 'float'
     ];
 
-    public function accountFlow()
+    public function accountFlow(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(AccountFlow::class, 'account_id', 'id');
     }

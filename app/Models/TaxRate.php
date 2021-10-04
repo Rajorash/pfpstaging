@@ -43,7 +43,7 @@ class TaxRate extends Model
     /**
      * Return the bank account for the tax rate
      */
-    public function account()
+    public function account(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(BankAccount::class, 'bank_account_id');
     }

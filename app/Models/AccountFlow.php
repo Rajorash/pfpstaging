@@ -44,17 +44,17 @@ class AccountFlow extends Model
         'negative_flow' => 'boolean'
     ];
 
-    public function account()
+    public function account(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(BankAccount::class, 'account_id', 'id');
     }
 
-    public function isNegative()
+    public function isNegative(): bool
     {
         return $this->negative_flow;
     }
 
-    public function recurringTransactions()
+    public function recurringTransactions(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(RecurringTransactions::class, 'account_id', 'id');
     }

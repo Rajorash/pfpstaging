@@ -51,15 +51,18 @@ class Phase extends Model
      */
     protected $casts = ['end_date' => 'date', 'start_date' => 'date'];
 
-    public function business() {
+    public function business(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
         return $this->belongsTo(Business::class);
     }
 
-    public function allocations() {
+    public function allocations(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
         return $this->hasMany(Allocation::class);
     }
 
-    public function percentages() {
+    public function percentages(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
         return $this->hasMany(AllocationPercentage::class);
     }
 

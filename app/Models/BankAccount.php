@@ -53,22 +53,22 @@ class BankAccount extends Model
     protected $fillable = ['name', 'type'];
     protected $with = ['flows'];
 
-    public function business()
+    public function business(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Business::class);
     }
 
-    public function flows()
+    public function flows(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(AccountFlow::class, 'account_id');
     }
 
-    public function percentages()
+    public function percentages(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(AllocationPercentage::class, 'bank_account_id');
     }
 
-    public static function type_list()
+    public static function type_list(): array
     {
         return [
             1 => self::ACCOUNT_TYPE_REVENUE,
@@ -111,15 +111,8 @@ class BankAccount extends Model
                 Cache::put($key, $getAllocationPercentages);
             }
         }
+
         return $getAllocationPercentages;
-
-//        if($phase_id)
-//        {
-//            return AllocationPercentage::where('bank_account_id', '=', $this->id)->where('phase_id', '=', $phase_id)->get();
-//        }
-//
-//        return AllocationPercentage::where('bank_account_id', '=', $this->id)->get();
-
     }
 
     /**
@@ -133,7 +126,7 @@ class BankAccount extends Model
      *      ]
      *  ]
      */
-    public function getAllAllocationPercentages($phaseId)
+    public function getAllAllocationPercentages(int $phaseId): ?array
     {
         $key = 'getAllAllocationPercentages_'.$phaseId.'_'.$this->business_id;
 
@@ -209,7 +202,7 @@ class BankAccount extends Model
      * @param $date       string
      * @return mixed
      */
-    public function getRevenueByDate($businessId, $date)
+    public function getRevenueByDate(int $businessId, string $date)
     {
         $key = 'getRevenueByDate_'.$businessId.'_'.$date;
         $getRevenueByDate = Cache::get($key);
@@ -246,7 +239,7 @@ class BankAccount extends Model
      * @param $phase_id integer
      * @return float|int
      */
-    public function getTransferAmount($date, $phase_id)
+    public function getTransferAmount(string $date, int $phase_id)
     {
         $percents = $this->getAllAllocationPercentages($phase_id);
         $income = $this->getRevenueByDate($this->business_id, $date);
@@ -255,14 +248,14 @@ class BankAccount extends Model
         // NSP = $income / ($percents['salestax'][<account id>] / 100 + 1)
         // Tax amount = $income - NSP
         switch ($this->type) {
-            case 'salestax': // Tax amt
+            case self::ACCOUNT_TYPE_SALESTAX: // Tax amt
                 $amount = ($income > 0)
                     ? round($income - $income / ($percents[$this->type][$this->id] / 100 + 1), 4)
                     : 0;
                 break;
 
-            case 'pretotal':
-                $salestax = data_get($percents, 'salestax');
+            case self::ACCOUNT_TYPE_PRETOTAL:
+                $salestax = data_get($percents, self::ACCOUNT_TYPE_SALESTAX);
                 $salestax = count($salestax) > 0 ? $salestax[key($salestax)] : null;
                 $nsp = ($income > 0 && is_numeric($salestax)) ? $income / ($salestax / 100 + 1) : 0;
                 $amount = (is_numeric($percents[$this->type][$this->id]))
@@ -270,7 +263,7 @@ class BankAccount extends Model
                     : 0;
                 break;
 
-            case 'prereal':
+            case self::ACCOUNT_TYPE_PREREAL:
                 $prereal = $this->getPrePrereal($income, $percents);
 
                 $amount = (is_numeric($percents[$this->type][$this->id]))
@@ -278,9 +271,9 @@ class BankAccount extends Model
                     : 0;
                 break;
 
-            case 'postreal':
+            case self::ACCOUNT_TYPE_POSTREAL:
                 $prereal = $this->getPrePrereal($income, $percents);
-                $prereal_percents = array_sum($percents['prereal']);
+                $prereal_percents = array_sum($percents[self::ACCOUNT_TYPE_PREREAL]);
 
                 // Real Revenue = $prereal - $prereal * ($prereal_percents / 100)
                 $amount = (is_numeric($percents[$this->type][$this->id]))
@@ -302,11 +295,11 @@ class BankAccount extends Model
      */
     private function getPrePrereal($income, $percents)
     {
-        $salestax = data_get($percents, 'salestax');
+        $salestax = data_get($percents, self::ACCOUNT_TYPE_SALESTAX);
         $salestax = count($salestax) > 0 ? $salestax[key($salestax)] : null;
         $nsp = ($income > 0 && is_numeric($salestax)) ? $income / ($salestax / 100 + 1) : 0;
 
-        $pretotal = data_get($percents, 'pretotal');
+        $pretotal = data_get($percents, self::ACCOUNT_TYPE_PRETOTAL);
         $pretotal = count($pretotal) > 0 ? $pretotal[key($pretotal)] : null;
         $pretotal_amt = (is_numeric($pretotal))
             ? round($nsp * ($pretotal / 100), 4)
@@ -318,7 +311,7 @@ class BankAccount extends Model
     /**
      * Return the tax rate for the account (if it has one)
      */
-    public function taxRate()
+    public function taxRate(): \Illuminate\Database\Eloquent\Relations\HasOne
     {
         return $this->hasOne(TaxRate::class);
     }
@@ -328,7 +321,7 @@ class BankAccount extends Model
      *
      * @return boolean
      */
-    public function isDeletable()
+    public function isDeletable(): bool
     {
         $undeletable_types = [
             self::ACCOUNT_TYPE_REVENUE,

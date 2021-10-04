@@ -5,20 +5,27 @@ namespace App\Http\Controllers;
 use App\Models\Business;
 use App\Traits\GettersTrait;
 use Carbon\Carbon;
+use Config;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Models\BankAccount;
 use Carbon\CarbonPeriod;
 use Illuminate\Support\Facades\Cache;
 use JamesMills\LaravelTimezone\Facades\Timezone;
-use function PHPUnit\Framework\containsIdentical;
+
+//use function PHPUnit\Framework\containsIdentical;
 
 class AllocationsCalendar extends Controller
 {
     use GettersTrait;
 
-    protected $defaultCurrentRangeValue = 14;
-    protected $business;
+    protected int $defaultCurrentRangeValue = 14;
+    protected Business $business;
 
+    /**
+     * @throws AuthorizationException
+     */
     public function calendar(Request $request)
     {
         $this->business = Business::where('id', $request->business)->with('rollout')->first();
@@ -46,7 +53,7 @@ class AllocationsCalendar extends Controller
         return view('business.allocations-calculator', $data);
     }
 
-    private function getRangeArray()
+    private function getRangeArray(): array
     {
         return [
             7 => 'Weekly',
@@ -106,16 +113,19 @@ class AllocationsCalendar extends Controller
         $account->allocate($amount, $date, $phaseId, $manual_entry, $checkIsValuePresent);
     }
 
-    public function updateData(Request $request)
+    /**
+     * @throws AuthorizationException
+     */
+    public function updateData(Request $request): JsonResponse
     {
         $response = [
             'error' => [],
             'html' => [],
         ];
 
-        $startDate = $request->startDate;
-        $rangeValue = $request->rangeValue;
-        $businessId = $request->businessId;
+        $startDate = $request->startDate ?? null;
+        $rangeValue = $request->rangeValue ?? null;
+        $businessId = $request->businessId ?? null;
         $business = Business::find($businessId);
         $phase = $business->getPhaseIdByDate($startDate);
 
@@ -178,7 +188,10 @@ class AllocationsCalendar extends Controller
         return response()->json($response);
     }
 
-    public function getGridData($rangeValue, $dateFrom, $dateTo, $businessId)
+    /**
+     * @throws AuthorizationException
+     */
+    public function getGridData($rangeValue, $dateFrom, $dateTo, $businessId): array
     {
         $this->business = Business::where('id', $businessId)->first();
 
@@ -204,6 +217,8 @@ class AllocationsCalendar extends Controller
             }
         }
 
+//        dd($response);
+
         $period = CarbonPeriod::create($dateFrom, $dateTo);
         $complete = $rangeValue + 1;
 
@@ -216,7 +231,9 @@ class AllocationsCalendar extends Controller
                 if (!array_key_exists($id, $acc_id)) {
                     continue;
                 }
+
                 $flows = [];
+
                 foreach ($period as $date) {
 
                     $date_ymd = $date->format('Y-m-d');
@@ -248,11 +265,12 @@ class AllocationsCalendar extends Controller
                                 $response[BankAccount::ACCOUNT_TYPE_REVENUE][$id][$date_ymd] = $totalRevenue;
                                 $this->storeSingle('account', $id, $totalRevenue, $date_ymd);
                                 $key = 'getIncomeByDate_'.$businessId.'_'.$date_ymd;
-                                if (\Config::get('app.pfp_cache')) {
+                                if (Config::get('app.pfp_cache')) {
                                     Cache::forget($key);
                                 }
                             }
                             break;
+
                         case BankAccount::ACCOUNT_TYPE_SALESTAX: // Tax amt
                             $response[BankAccount::ACCOUNT_TYPE_SALESTAX][$id]['transfer'][$date_ymd] =
                                 $this->calculateSalestaxTransfer($id, $income, $percents);
@@ -422,9 +440,9 @@ class AllocationsCalendar extends Controller
                         case BankAccount::ACCOUNT_TYPE_POSTREAL:
                             $prereal = $this->getPrePrereal($income, $percents);
 
-                            $prereal_percents = key_exists( BankAccount::ACCOUNT_TYPE_PREREAL, $percents )
-                                              ? array_sum($percents[BankAccount::ACCOUNT_TYPE_PREREAL])
-                                              : 0;
+                            $prereal_percents = key_exists(BankAccount::ACCOUNT_TYPE_PREREAL, $percents)
+                                ? array_sum($percents[BankAccount::ACCOUNT_TYPE_PREREAL])
+                                : 0;
 
                             // Real Revenue = $prereal - $prereal * ($prereal_percents / 100)
                             $response[BankAccount::ACCOUNT_TYPE_POSTREAL][$id]['transfer'][$date_ymd]
@@ -512,13 +530,13 @@ class AllocationsCalendar extends Controller
      * Returns true if a manual entry exists for the given account
      * type, id and date
      *
-     * @param [type] $type
-     * @param [type] $id
-     * @param [type] $date_ymd
+     * @param $response
+     * @param $type
+     * @param $id
+     * @param $date_ymd
      * @return boolean
-     *
      */
-    private function hasManualEntry($response, $type, $id, $date_ymd)
+    private function hasManualEntry($response, $type, $id, $date_ymd): bool
     {
         if (isset($response[$type][$id]['manual'][$date_ymd])) {
             return true;
@@ -527,7 +545,7 @@ class AllocationsCalendar extends Controller
         return false;
     }
 
-    private function getRawData($businessId, $dateFrom, $dateTo)
+    private function getRawData($businessId, $dateFrom, $dateTo): array
     {
         return BankAccount::where('business_id', $businessId)
             ->with('flows.allocations', function ($query) use ($dateFrom, $dateTo) {
@@ -580,7 +598,7 @@ class AllocationsCalendar extends Controller
                         ? $a_item['allocations'][0]['amount']
                         : 0;
                 })->sum();
-            if (\Config::get('app.pfp_cache')) {
+            if (Config::get('app.pfp_cache')) {
                 Cache::put($key, $getIncomeByDate, now()->addMinutes(10));
             }
         }
@@ -630,7 +648,7 @@ class AllocationsCalendar extends Controller
     {
         $key = 'phasePercentValues_'.$phaseId.'_'.$businessId;
 
-        $phasePercentValues = \Config::get('app.pfp_cache') ? Cache::get($key) : null;
+        $phasePercentValues = Config::get('app.pfp_cache') ? Cache::get($key) : null;
 
         if ($phasePercentValues === null) {
 
@@ -650,7 +668,7 @@ class AllocationsCalendar extends Controller
                     return array_column(collect($a_item)->toArray(), 'val', 'id');
                 })->toArray();
 
-            if (\Config::get('app.pfp_cache')) {
+            if (Config::get('app.pfp_cache')) {
                 Cache::put($key, $phasePercentValues);
             }
         }
@@ -663,6 +681,7 @@ class AllocationsCalendar extends Controller
      * @param  string  $startDate
      * @param  string  $endDate
      * @param  bool  $ifThisAllocationsPage
+     * @throws AuthorizationException
      */
     public function pushRecurringTransactionData(
         int $businessId,

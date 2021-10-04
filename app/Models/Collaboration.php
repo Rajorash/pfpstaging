@@ -35,12 +35,12 @@ class Collaboration extends Model
 {
     protected $fillable = ['advisor_id', 'business_id'];
 
-    public function advisor()
+    public function advisor(): \Illuminate\Database\Eloquent\Relations\HasOne
     {
         return $this->hasOne(Advisor::class, 'id', 'advisor_id');
     }
 
-    public function business()
+    public function business(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Business::class);
     }

@@ -25,12 +25,12 @@ class ClientAdvisor extends Model
 {
     use HasFactory;
 
-    public function client()
+    public function client(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(User::class, 'client_id');
     }
 
-    public function advisors()
+    public function advisors(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(User::class, 'advisor_id');
     }

@@ -71,7 +71,6 @@
                                 @php
                                     $rowIndex++;
                                     $columnIndex = 0;
-
                                 @endphp
                                 <tr class="bg-white hover:bg-yellow-100 border-light_blue divide-x">
                                     <x-ui.table-td padding="p-1 pr-2 pl-6"
@@ -87,8 +86,10 @@
                                                 class="px-2 py-1 w-full text-right bg-transparent border-0
                                             border-transparent outline-none
                                             focus:outline-none focus:ring-1 focus:shadow-none disabled:opacity-90
-                                            @if(!$business->license->checkLicense) focus:bg-gray-100
-                                            @else pfp_copy_move_element hover:bg-yellow-50 focus:bg-yellow-50
+                                            @if(!$business->license->checkLicense)
+                                                    focus:bg-gray-100
+                                            @else
+                                                    pfp_copy_move_element hover:bg-yellow-50 focus:bg-yellow-50
                                             @endif "
                                                 @if($business->license->checkLicense) draggable="true" @endif
                                                 id="flow_{{$key}}_{{$date->format('Y-m-d')}}"
@@ -109,7 +110,8 @@
                                             <x-ui.table-td padding="p-1 pr-2 pl-6"
                                                            baseClass="text-dark_gray whitespace-nowrap sticky left-0 bg-white z-10">
                                                 <x-icons.recurring class="w-3 h-auto inline mr-1"/>
-                                                <span title="{{$recurringData['description']}}">{{$recurringTitle}}</span>
+                                                <span
+                                                    title="{{$recurringData['description']}}">{{$recurringTitle}}</span>
                                             </x-ui.table-td>
                                             @foreach($period as $date)
                                                 @php
@@ -152,14 +154,28 @@
                             @foreach($period as $date)
                                 @php
                                     $columnIndex++;
+                                    $manual = $data['manual'][$date->format('Y-m-d')] ?? null;
                                 @endphp
                                 <x-ui.table-td class="text-right" padding="p-0">
                                     <input
                                         class="px-2 py-1 w-full text-right bg-transparent border-none disabled:opacity-90
-                                        @if(!$business->license->checkLicense) focus:bg-gray-100
-                                        @else pfp_copy_move_element hover:bg-yellow-50 focus:bg-yellow-50
-                                        @endif "
-                                        @if($business->license->checkLicense) draggable="true" @endif
+                                        @if ($manual)
+                                            bg-yellow-300 hover:bg-yellow-300 focus:bg-yellow-300
+                                            @if(!$business->license->checkLicense)
+                                                focus:bg-gray-100
+                                            @else
+                                                __pfp_copy_move_element hover:bg-yellow-50 focus:bg-yellow-50
+                                            @endif
+                                        @endif
+                                            "
+{{--                                        @if($business->license->checkLicense && !$manual)--}}
+{{--                                        draggable="true"--}}
+{{--                                        @endif--}}
+
+                                        @if ($manual)
+                                        title="Balance overridden"
+                                        @endif
+
                                         type="text"
                                         id="account_{{$id}}_{{$date->format('Y-m-d')}}"
                                         value="{{is_array($data[$date->format('Y-m-d')])
@@ -167,7 +183,10 @@
                                                 : number_format($data[$date->format('Y-m-d')], 0, '.', '')}}"
                                         data-row="{{$rowIndex}}"
                                         data-column="{{$columnIndex}}"
-                                        @if(!$business->license->checkLicense) disabled @endif/>
+{{--                                        @if($manual) disabled @endif--}}
+{{--                                        @if(!$business->license->checkLicense) disabled @endif--}}
+                                        disabled
+                                        />
                                 </x-ui.table-td>
                             @endforeach
                         </tr>
@@ -277,9 +296,9 @@
                                                         @if($value)
                                                             <input
                                                                 class="px-2 py-1 w-full text-right bg-transparent border-0
-                                            border-transparent outline-none cursor-copy pfp_forecast_value select-none
-                                            focus:outline-none focus:ring-1 focus:shadow-none disabled:opacity-90
-                                            text-xs"
+                                                                        border-transparent outline-none cursor-copy pfp_forecast_value select-none
+                                                                        focus:outline-none focus:ring-1 focus:shadow-none disabled:opacity-90
+                                                                        text-xs"
                                                                 draggable="true"
                                                                 data-for_row="{{$rowIndex}}"
                                                                 data-for_column="{{$columnIndex}}"

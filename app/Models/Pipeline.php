@@ -98,7 +98,7 @@ class Pipeline extends Model
         'recurring' => 'boolean'
     ];
 
-    public function account()
+    public function account(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(BankAccount::class, 'business_id', 'id');
     }
