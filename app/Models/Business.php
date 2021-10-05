@@ -69,7 +69,7 @@ class Business extends Model
 
     public function accounts(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
-        return $this->hasMany(BankAccount::class);
+        return $this->hasMany(BankAccount::class)->with(['allocations']);
     }
 
     public function rollout(): \Illuminate\Database\Eloquent\Relations\HasMany

@@ -93,14 +93,15 @@ class BusinessObserver
 
             foreach ($acc['flows'] as $flow) {
                 $new_flow = factory(AccountFlow::class)->create([
-                    'label' => $flow['label'], 'negative_flow' => $flow['negative']
+                    'label' => $flow['label'],
+                    'negative_flow' => $flow['negative']
                 ]);
                 $account->flows()->save($new_flow);
             }
         }
     }
 
-    private function getDefaultAccounts()
+    private function getDefaultAccounts(): array
     {
         return array(
             [

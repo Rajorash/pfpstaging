@@ -14,13 +14,13 @@ use Livewire\Component;
 
 class BusinessMaintenance extends Component
 {
-    public $email;
-    public $emailCollaborate;
-    public $userId;
+    public string $email = '';
+    public string $emailCollaborate = '';
+    public string $userId = '';
     public $advisorsClients = null;
     public $availableLicenses = 0;
     public $iWouldLikeToDelete = false;
-    public $businessName = '';
+    public string $businessName = '';
     public $iWouldLikeToChangeStartDate = false;
     public $businessStartDate;
 
@@ -38,6 +38,7 @@ class BusinessMaintenance extends Component
 
         $this->advisorsClients = User::whereIn('id', Auth::user()->clientsByAdvisor->pluck('id'))
             ->orderBy('name')
+            ->with('roles')
             ->get();
 
         $this->UserController = new UserController();
@@ -81,7 +82,6 @@ class BusinessMaintenance extends Component
 
     public function store()
     {
-
         $this->failure = false;
         $this->failureMessage = '';
 
@@ -179,7 +179,6 @@ class BusinessMaintenance extends Component
                 $this->freshData();
                 event(new BusinessProcessed('collaboration', $this->business, Auth::user()));
             } elseif (empty($this->emailCollaborate) && is_object($this->business->collaboration)) {
-
                 event(new BusinessProcessed('collaborationDelete', $this->business, Auth::user()));
                 Collaboration::where('business_id', '=', $this->business->id)->delete();
                 event(new BusinessProcessed('collaborationRevoke', $this->business, Auth::user()));

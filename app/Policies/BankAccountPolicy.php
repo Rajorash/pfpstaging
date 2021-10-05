@@ -5,6 +5,7 @@ namespace App\Policies;
 use App\Models\BankAccount;
 use App\Models\Business;
 use App\Models\User;
+use Auth;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class BankAccountPolicy
@@ -19,8 +20,7 @@ class BankAccountPolicy
      */
     public function viewAny(Business $business)
     {
-        if (!$user)
-        {
+        if (!$user) {
             $user = Auth::user();
         }
 
@@ -53,12 +53,11 @@ class BankAccountPolicy
      */
     public function view(User $user, BankAccount $bankAccount)
     {
-        if (!$user)
-        {
+        if (!$user) {
             $user = Auth::user();
         }
 
-        return self::userHasBusinessAccess( $user, $bankAccount->business );
+        return self::userHasBusinessAccess($user, $bankAccount->business);
     }
 
     /**
@@ -81,7 +80,7 @@ class BankAccountPolicy
      */
     public function update(User $user, BankAccount $bankAccount)
     {
-        return self::userHasBusinessAccess( $user, $bankAccount->business );
+        return self::userHasBusinessAccess($user, $bankAccount->business);
     }
 
     /**
@@ -93,7 +92,7 @@ class BankAccountPolicy
      */
     public function delete(User $user, BankAccount $bankAccount)
     {
-        return self::userHasBusinessAccess( $user, $bankAccount->business );
+        return self::userHasBusinessAccess($user, $bankAccount->business);
     }
 
     /**
@@ -105,7 +104,7 @@ class BankAccountPolicy
      */
     public function restore(User $user, BankAccount $bankAccount)
     {
-        return self::userHasBusinessAccess( $user, $bankAccount->business );
+        return self::userHasBusinessAccess($user, $bankAccount->business);
     }
 
     /**
@@ -128,7 +127,8 @@ class BankAccountPolicy
      * @param  \App\Models\Business  $business
      * @return mixed
      */
-    public function userHasBusinessAccess(User $user, Business $business) {
+    public function userHasBusinessAccess(User $user, Business $business)
+    {
         // owners can view their own business
         if ($business->owner && $user->id === $business->owner->id) {
             return true;

@@ -15,7 +15,7 @@ class BankAccountController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function index(Business $business)
     {
@@ -29,7 +29,7 @@ class BankAccountController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function create(Business $business)
     {
@@ -40,10 +40,10 @@ class BankAccountController extends Controller
         return view('accounts.create', ['business' => $business]);
     }
 
-        /**
+    /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function createFlow(BankAccount $account)
     {
@@ -56,7 +56,6 @@ class BankAccountController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
      */
     public function store(Request $request, Business $business)
     {
@@ -87,7 +86,7 @@ class BankAccountController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function storeFlow(Request $request, BankAccount $account)
     {
@@ -123,13 +122,13 @@ class BankAccountController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  \App\Models\BankAccount  $account
-     * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function edit(Business $business, BankAccount $account)
     {
         $this->authorize('update', $account);
 
-        return view('accounts.edit', ['business' => $business, 'account' => $account, 'curr_type' => $account->type ]);
+        return view('accounts.edit', ['business' => $business, 'account' => $account, 'curr_type' => $account->type]);
     }
 
     /**
@@ -137,15 +136,15 @@ class BankAccountController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\BankAccount  $account
-     * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Business $business, BankAccount $account)
     {
         // authorise
 
         $data = request()->validate([
-            'name' => 'required',
-            'type' => 'required']
+                'name' => 'required',
+                'type' => 'required'
+            ]
         );
 
         $account->name = $data['name'];
@@ -159,13 +158,14 @@ class BankAccountController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  \App\Models\BankAccount  $account
-     * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function editFlow(BankAccount $account, AccountFlow $flow)
     {
         $this->authorize('update', $account);
 
-        return view('accounts.editflow', ['flow' => $flow, 'account' => $account, 'curr_type' => $account->type, 'business' => $account->business ]);
+        return view('accounts.editflow',
+            ['flow' => $flow, 'account' => $account, 'curr_type' => $account->type, 'business' => $account->business]);
     }
 
     /**
@@ -173,15 +173,16 @@ class BankAccountController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\BankAccount  $account
-     * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function updateFlow(Request $request, BankAccount $account, AccountFlow $flow)
     {
         $this->authorize('update', $account);
 
         $data = request()->validate([
-            'label' => 'required',
-            'flow-direction' => 'required']
+                'label' => 'required',
+                'flow-direction' => 'required'
+            ]
         );
 
         $flow->label = $data['label'];
@@ -195,7 +196,7 @@ class BankAccountController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  \App\Models\BankAccount  $account
-     * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function destroy(Business $business, BankAccount $account)
     {
@@ -205,11 +206,12 @@ class BankAccountController extends Controller
 
         return redirect("/business/{$business->id}/accounts");
     }
+
     /**
      * Remove the specified resource from storage.
      *
      * @param  \App\Models\BankAccount  $account
-     * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function destroyFlow(BankAccount $account, AccountFlow $flow)
     {

@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire;
 
+use App\Models\BankAccount;
 use App\Models\Business;
 use App\Models\AllocationPercentage;
 use Carbon\Carbon;
@@ -39,6 +40,9 @@ class AllocationCalculator extends Component
         }
     }
 
+    /**
+     * @param $businessId
+     */
     public function updatedSelectedBusinessId($businessId)
     {
         return redirect()->route('allocation-calculator-with-id', ['business' => $businessId]);
@@ -52,15 +56,7 @@ class AllocationCalculator extends Component
 
     private function getBusiness($selectedBusinessId)
     {
-        // $key = 'getBusiness_'.$selectedBusinessId;
-        // $getBusiness = Cache::get($key);
-
-        // if ($getBusiness === null) {
-        $getBusiness = Business::find($selectedBusinessId);
-        //     Cache::put($key, $getBusiness);
-        // }
-
-        return $getBusiness;
+        return Business::find($selectedBusinessId);
     }
 
     public function render()
@@ -86,15 +82,13 @@ class AllocationCalculator extends Component
 
     private function getAllocationPercentage($current_phase, $account_id)
     {
-
         return AllocationPercentage::where([
             ['phase_id', $current_phase],
             ['bank_account_id', $account_id]
         ])->value('percent');
-
     }
 
-    public function mapBusinessAccounts()
+    public function mapBusinessAccounts(): array
     {
         $current_phase = $this->business->current_phase;
 
@@ -130,17 +124,16 @@ class AllocationCalculator extends Component
         );
     }
 
-    public function calculateNetCashReceipts()
+    public function calculateNetCashReceipts(): float
     {
         // assumes only a single salestax account, will cause issues with multiple
         // advised by client that this should not happen
         $salestaxPercent = ($this->mappedAccounts['salestax'][0]['percent'] / 100);
 
         return round($this->revenue / ($salestaxPercent + 1), 4);
-
     }
 
-    public function calculateRealRevenue()
+    public function calculateRealRevenue(): float
     {
         // $prerealSum = collect($this->mappedAccounts['prereal'])->sum('value');
         $prerealSum = 0;
@@ -149,33 +142,32 @@ class AllocationCalculator extends Component
         // will throw an error.
         $prerealData = data_get($this->mappedAccounts, 'prereal.*.value');
 
-        if($prerealData) {
+        if ($prerealData) {
             $prerealSum = array_sum($prerealData);
         }
 
         $result = $this->netCashReceipts - $prerealSum;
 
         return round($result, 4);
-
     }
 
-    public function calculateAllocation($type, $percent)
+    public function calculateAllocation($type, $percent): float
     {
         $allocationValue = 0;
 
-        if ($type == 'salestax') {
+        if ($type == BankAccount::ACCOUNT_TYPE_SALESTAX) {
             $allocationValue = ($this->revenue - $this->netCashReceipts);
         }
 
-        if ($type == 'pretotal') {
+        if ($type == BankAccount::ACCOUNT_TYPE_PRETOTAL) {
             $allocationValue = $this->netCashReceipts * ($percent / 100);
         }
 
-        if ($type == 'prereal') {
+        if ($type == BankAccount::ACCOUNT_TYPE_PREREAL) {
             $allocationValue = $this->netCashReceipts * ($percent / 100);
         }
 
-        if ($type == 'postreal') {
+        if ($type == BankAccount::ACCOUNT_TYPE_POSTREAL) {
             $allocationValue = $this->realRevenue * ($percent / 100);
         }
 

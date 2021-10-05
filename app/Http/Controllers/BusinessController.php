@@ -41,6 +41,7 @@ class BusinessController extends Controller
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function create()
     {
@@ -52,6 +53,7 @@ class BusinessController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function store(Request $request)
     {
@@ -63,6 +65,7 @@ class BusinessController extends Controller
      *
      * @param  \App\Models\Business  $business
      * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function show(Business $business)
     {
@@ -76,6 +79,7 @@ class BusinessController extends Controller
      *
      * @param  \App\Models\Business  $business
      * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function edit(Business $business)
     {
@@ -88,6 +92,7 @@ class BusinessController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\Business  $business
      * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function update(Request $request, Business $business)
     {
@@ -99,12 +104,16 @@ class BusinessController extends Controller
      *
      * @param  \App\Models\Business  $business
      * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function destroy(Business $business)
     {
         $this->authorize('delete', $business);
     }
 
+    /**
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     */
     public function maintenance(Business $business)
     {
         $this->authorize('update', $business);
@@ -112,6 +121,9 @@ class BusinessController extends Controller
         return view('business.maintenance', ['business' => $business]);
     }
 
+    /**
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     */
     public function balance(Business $business)
     {
         $this->authorize('update', $business);
@@ -150,7 +162,10 @@ class BusinessController extends Controller
         ]);
     }
 
-    public function balanceStore(Business $business, Request $request)
+    /**
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     */
+    public function balanceStore(Business $business, Request $request): \Illuminate\Http\RedirectResponse
     {
         $today = Timezone::convertToLocal(Carbon::now(),'Y-m-d');
         $phaseId = $business->getPhaseIdByDate($today);

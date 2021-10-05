@@ -16,7 +16,7 @@ class AccountSeeder extends Seeder
      */
     public function run()
     {
-        $businesses = Business::all()->each( function ($business) {
+        $businesses = Business::all()->each(function ($business) {
 
             // generate specific accounts for demo
             $predefined_accounts = [
@@ -24,15 +24,15 @@ class AccountSeeder extends Seeder
                     'name' => 'Core',
                     'type' => 'revenue',
                     'flows' => [
-                        [ 'label' => "Accounts Receivable", 'negative' => false ],
-                        [ 'label' => "Estimated Activity", 'negative' => false ],
+                        ['label' => "Accounts Receivable", 'negative' => false],
+                        ['label' => "Estimated Activity", 'negative' => false],
                     ]
                 ],
                 [
                     'name' => 'Drip Account',
                     'type' => 'pretotal',
                     'flows' => [
-                        [ 'label' => "Transfer to revenue", 'negative' => true ],
+                        ['label' => "Transfer to revenue", 'negative' => true],
                     ]
                 ],
                 [
@@ -40,7 +40,7 @@ class AccountSeeder extends Seeder
                     'type' => 'prereal',
                     'flows' => [
                         // [ 'label' => "Transfer in", 'negative' => false ],
-                        [ 'label' => "Purchases", 'negative' => true ],
+                        ['label' => "Purchases", 'negative' => true],
                     ]
                 ],
                 [
@@ -48,7 +48,7 @@ class AccountSeeder extends Seeder
                     'type' => 'prereal',
                     'flows' => [
                         // [ 'label' => "Transfer in", 'negative' => false ],
-                        [ 'label' => "Payments", 'negative' => true ],
+                        ['label' => "Payments", 'negative' => true],
                     ]
                 ],
                 [
@@ -56,8 +56,8 @@ class AccountSeeder extends Seeder
                     'type' => 'postreal',
                     'flows' => [
                         // [ 'label' => "Transfer in", 'negative' => false ],
-                        [ 'label' => "Distributions", 'negative' => true ],
-                        [ 'label' => "Debt pay down", 'negative' => true ],
+                        ['label' => "Distributions", 'negative' => true],
+                        ['label' => "Debt pay down", 'negative' => true],
                     ]
 
                 ],
@@ -66,8 +66,8 @@ class AccountSeeder extends Seeder
                     'type' => 'postreal',
                     'flows' => [
                         // [ 'label' => "Transfer in", 'negative' => false ],
-                        [ 'label' => "Wages", 'negative' => true ],
-                        [ 'label' => "Downturn", 'negative' => true ],
+                        ['label' => "Wages", 'negative' => true],
+                        ['label' => "Downturn", 'negative' => true],
                     ]
 
                 ],
@@ -76,8 +76,8 @@ class AccountSeeder extends Seeder
                     'type' => 'postreal',
                     'flows' => [
                         // [ 'label' => "Transfer in", 'negative' => false ],
-                        [ 'label' => "Payroll", 'negative' => true ],
-                        [ 'label' => "Downturn", 'negative' => true ],
+                        ['label' => "Payroll", 'negative' => true],
+                        ['label' => "Downturn", 'negative' => true],
                     ]
                 ],
                 [
@@ -85,16 +85,16 @@ class AccountSeeder extends Seeder
                     'type' => 'postreal',
                     'flows' => [
                         // [ 'label' => "Transfer in", 'negative' => false ],
-                        [ 'label' => "Rent", 'negative' => true ],
-                        [ 'label' => "Education & Training", 'negative' => true ],
-                        [ 'label' => "Promotions", 'negative' => true ],
-                        [ 'label' => "Software Expenses", 'negative' => true ],
-                        [ 'label' => "Website", 'negative' => true ],
-                        [ 'label' => "Consulting/Accounting", 'negative' => true ],
-                        [ 'label' => "Interest Expenses", 'negative' => true ],
-                        [ 'label' => "Bank Fees", 'negative' => true ],
-                        [ 'label' => "Insurance", 'negative' => true ],
-                        [ 'label' => "General Monthly Costs", 'negative' => true ],
+                        ['label' => "Rent", 'negative' => true],
+                        ['label' => "Education & Training", 'negative' => true],
+                        ['label' => "Promotions", 'negative' => true],
+                        ['label' => "Software Expenses", 'negative' => true],
+                        ['label' => "Website", 'negative' => true],
+                        ['label' => "Consulting/Accounting", 'negative' => true],
+                        ['label' => "Interest Expenses", 'negative' => true],
+                        ['label' => "Bank Fees", 'negative' => true],
+                        ['label' => "Insurance", 'negative' => true],
+                        ['label' => "General Monthly Costs", 'negative' => true],
                     ]
                 ],
                 [
@@ -102,9 +102,9 @@ class AccountSeeder extends Seeder
                     'type' => 'postreal',
                     'flows' => [
                         // [ 'label' => "Transfer in", 'negative' => false ],
-                        [ 'label' => "BAS - Current", 'negative' => true ],
-                        [ 'label' => "Super Payments", 'negative' => true ],
-                        [ 'label' => "Payment Plans", 'negative' => true ],
+                        ['label' => "BAS - Current", 'negative' => true],
+                        ['label' => "Super Payments", 'negative' => true],
+                        ['label' => "Payment Plans", 'negative' => true],
                     ]
                 ],
                 [
@@ -112,33 +112,33 @@ class AccountSeeder extends Seeder
                     'type' => 'salestax',
                     'flows' => [
                         // [ 'label' => "Transfer in", 'negative' => false ],
-                        [ 'label' => "BAS - Payment", 'negative' => true ],
+                        ['label' => "BAS - Payment", 'negative' => true],
                     ]
                 ],
                 [
                     'name' => 'Vault',
                     'type' => 'postreal',
                     'flows' => [
-                        [ 'label' => "Transfer in", 'negative' => false ],
+                        ['label' => "Transfer in", 'negative' => false],
                     ]
                 ],
                 [
                     'name' => 'Other',
                     'type' => 'postreal',
                     'flows' => [
-                        [ 'label' => "Transfer in", 'negative' => false ],
+                        ['label' => "Transfer in", 'negative' => false],
                     ]
                 ],
                 [
                     'name' => 'Charity',
                     'type' => 'postreal',
                     'flows' => [
-                        [ 'label' => "Transfer in", 'negative' => false ],
+                        ['label' => "Transfer in", 'negative' => false],
                     ]
                 ],
             ];
 
-            foreach($predefined_accounts as $acc) {
+            foreach ($predefined_accounts as $acc) {
                 $account = factory(BankAccount::class)->create([
                     'name' => $acc['name'],
                     'type' => $acc['type'],
@@ -146,8 +146,11 @@ class AccountSeeder extends Seeder
                 ]);
                 $business->accounts()->save($account);
 
-                foreach($acc['flows'] as $flow) {
-                    $new_flow = factory(AccountFlow::class)->create(['label' => $flow['label'], 'negative_flow' => $flow['negative']]);
+                foreach ($acc['flows'] as $flow) {
+                    $new_flow = factory(AccountFlow::class)->create([
+                        'label' => $flow['label'],
+                        'negative_flow' => $flow['negative']
+                    ]);
                     $account->flows()->save($new_flow);
                 }
             }

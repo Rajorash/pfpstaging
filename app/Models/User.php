@@ -113,7 +113,7 @@ class User extends Authenticatable implements RoleInterface, MustVerifyEmail
     use HasUserRoles;
     use UserLicenseFunctions;
     use Notifiable;
-    use HasFactory;
+//    use HasFactory; //uncomment when you catch some errors. Commented only for correct work command `php artisan ide-helper:models`
     use TwoFactorAuthenticatable;
 
     /**
@@ -167,6 +167,14 @@ class User extends Authenticatable implements RoleInterface, MustVerifyEmail
         'tier',
         'niche',
     ];
+
+    /**
+     * @return \Database\Factories\UserFactory
+     */
+    protected static function newFactory(): \Database\Factories\UserFactory
+    {
+        return \Database\factories\UserFactory::new();
+    }
 
     /**
      * Return all businesses related to the user

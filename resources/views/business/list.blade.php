@@ -149,7 +149,7 @@
                                 @if(
                                 (is_object($business->collaboration)
                                 && is_object($business->collaboration->advisor)
-                                && $business->collaboration->advisor->user_id  != auth()->user()->id)
+                                && ($business->collaboration->advisor->user_id != auth()->user()->id))
                                 || !is_object($business->collaboration))
                                     <x-ui.button-small title="Maintenance"
                                                        href="{{route('maintenance.business', ['business' => $business])}}">

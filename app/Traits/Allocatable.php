@@ -4,17 +4,16 @@ namespace App\Traits;
 
 use App\Models\Allocation as Allocation;
 use Carbon\Carbon as Carbon;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Facades\Cache;
 use JamesMills\LaravelTimezone\Facades\Timezone;
 
 trait Allocatable
 {
     /**
-     * Returns a collection of all associated allocations.
-     *
-     * @return Collection
+     * @return MorphMany
      */
-    public function allocations()
+    public function allocations(): MorphMany
     {
         return $this->morphMany('App\Models\Allocation', 'allocatable');
     }
@@ -36,7 +35,7 @@ trait Allocatable
         int $phase_id = 1,
         bool $manual_entry = false,
         bool $checkIsValuePresent = false
-    ) {
+    ): ?Allocation {
         // check input
         $date = $date ?? Timezone::convertToLocal(Carbon::now(),'Y-m-d');
         $allocation = null;
