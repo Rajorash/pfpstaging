@@ -21,7 +21,7 @@ class AllocationsCalendar extends Controller
     use GettersTrait;
 
     protected int $defaultCurrentRangeValue = 14;
-    protected Business $business;
+    protected ?Business $business = null;
 
     /**
      * @throws AuthorizationException
