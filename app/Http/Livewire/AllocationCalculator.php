@@ -21,7 +21,7 @@ class AllocationCalculator extends Component
 
     public $selectOptions;
     public $selectedBusinessId;
-    public Business $business;
+    public ?Business $business = null;
     public $businesses;
     public $businessId;
 
