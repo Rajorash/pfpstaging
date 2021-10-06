@@ -128,7 +128,9 @@ class Business extends Model
             // if the final phase has already expired, default back to phase
             // with the latest end date
             if (empty($phase)) {
-                $phase = $this->rollout()->sortBy('end_date')->last();
+                $phase = $this->rollout()
+                    ->orderByDesc('end_date')
+                    ->first();
             }
 
             if (\Config::get('app.pfp_cache')) {
