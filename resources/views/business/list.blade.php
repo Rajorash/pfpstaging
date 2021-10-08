@@ -42,19 +42,19 @@
                     {{-- Maintenance column header row --}}
                     <x-ui.table-th></x-ui.table-th>
                 @endif
-                {{-- Account balance change manually --}}
-                <x-ui.table-th></x-ui.table-th>
                 {{-- Accounts --}}
                 <x-ui.table-th></x-ui.table-th>
-                {{-- Percentages column header row --}}
-                <x-ui.table-th></x-ui.table-th>
+                {{-- Pipelines column header row --}}
+                <x-ui.table-th padding="pl-2 pr-6"></x-ui.table-th>
                 {{-- Allocations Calculator column header row --}}
                 <x-ui.table-th></x-ui.table-th>
                 {{-- Data Entry column header row --}}
                 <x-ui.table-th></x-ui.table-th>
+                {{-- Account balance change manually --}}
+                <x-ui.table-th></x-ui.table-th>
                 {{-- Forecast column header row --}}
                 <x-ui.table-th></x-ui.table-th>
-                {{-- Pipelines column header row --}}
+                {{-- Percentages column header row --}}
                 <x-ui.table-th padding="pl-2 pr-12 py-4"></x-ui.table-th>
             </tr>
             </thead>
@@ -159,14 +159,6 @@
                             </x-ui.table-td>
                         @endif
 
-                        {{-- Manually change balances --}}
-                        <x-ui.table-td>
-                            <x-ui.button-small title="{{__('Manually change balances')}}"
-                                               href="{{url('/business/'.$business->id.'/balance')}}">
-                                <x-icons.balance :class="'h-5 w-auto inline-block'"/>
-                            </x-ui.button-small>
-                        </x-ui.table-td>
-
                         {{-- Accounts --}}
                         <x-ui.table-td>
                             <x-ui.button-small title="{{__('Accounts')}}"
@@ -175,11 +167,11 @@
                             </x-ui.button-small>
                         </x-ui.table-td>
 
-                        {{-- Percentages column --}}
-                        <x-ui.table-td>
-                            <x-ui.button-small title="{{__('Rollout Percentages')}}"
-                                               href="{{route('allocations-percentages', ['business' => $business])}}">
-                                <x-icons.percent :class="'h-5 w-auto inline-block'"/>
+                        {{-- Pipeline column --}}
+                        <x-ui.table-td padding="pl-2 pr-6">
+                            <x-ui.button-small title="{{__('Pipelines')}}"
+                                               href="{{route('pipelines.list', ['business' => $business])}}">
+                                <x-icons.chart :class="'h-5 w-auto inline-block'"/>
                             </x-ui.button-small>
                         </x-ui.table-td>
 
@@ -200,6 +192,14 @@
                             </x-ui.button-small>
                         </x-ui.table-td>
 
+                        {{-- Manually change balances --}}
+                        <x-ui.table-td>
+                            <x-ui.button-small title="{{__('Manually change balances')}}"
+                                               href="{{url('/business/'.$business->id.'/balance')}}">
+                                <x-icons.balance :class="'h-5 w-auto inline-block'"/>
+                            </x-ui.button-small>
+                        </x-ui.table-td>
+
                         {{-- Forecast column --}}
                         <x-ui.table-td>
                             <x-ui.button-small title="{{__('Projection Forecast')}}"
@@ -208,11 +208,11 @@
                             </x-ui.button-small>
                         </x-ui.table-td>
 
-                        {{-- Pipeline column --}}
+                        {{-- Percentages column --}}
                         <x-ui.table-td padding="pl-2 pr-12 py-4">
-                            <x-ui.button-small title="{{__('Pipelines')}}"
-                                               href="{{route('pipelines.list', ['business' => $business])}}">
-                                <x-icons.chart :class="'h-5 w-auto inline-block'"/>
+                            <x-ui.button-small title="{{__('Rollout Percentages')}}"
+                                               href="{{route('allocations-percentages', ['business' => $business])}}">
+                                <x-icons.percent :class="'h-5 w-auto inline-block'"/>
                             </x-ui.button-small>
                         </x-ui.table-td>
                     </tr>

@@ -4,6 +4,10 @@
         {{ __('Pipelines') }}
     </x-slot>
 
+    <x-slot name="subMenu">
+        <x-business-nav businessId="{{$bankAccount->id}}" :business="$bankAccount"/>
+    </x-slot>
+
     <x-ui.main>
 
         @if (session('status'))

@@ -15,20 +15,10 @@
         @if($active) text-blue @else text-gray-700 @endif
                ">
             <x-icons.gear :class="'h-6 w-auto inline-block'"/>
-            <span class="ml-2 text-lg inline-block @if($active) text-blue @else hidden @endif">{{__('Maintenance')}}</span>
+            <span
+                class="ml-2 text-lg inline-block @if($active) text-blue @else hidden @endif">{{__('Maintenance')}}</span>
         </a>
     @endif
-
-    @php
-        $active = request()->routeIs('balance.business');
-    @endphp
-    <a href="{{url('/business/'.$businessId.'/balance')}}" title="{{__('Manually change balances')}}"
-       class="bg-white block rounded box-border p-3 flex mr-4 h-12
-        @if($active) text-blue @else text-gray-700 @endif
-           ">
-        <x-icons.balance :class="'h-6 w-auto inline-block'"/>
-        <span class="ml-2 text-lg inline-block @if($active) text-blue @else hidden @endif">{{__('Balances')}}</span>
-    </a>
 
     @php
         $active = request()->is('*business/*/accounts');
@@ -42,26 +32,29 @@
     </a>
 
     @php
-        $active = request()->routeIs('allocations-percentages');
+        $active = request()->is('*business/*/pipelines');
     @endphp
-    <a href="{{route('allocations-percentages', ['business' => $business])}}" title="{{__('Rollout Percentages')}}"
-       class="bg-white block rounded box-border p-3 flex text-gray-700 mr-4 h-12
+    <a href="{{route('pipelines.list', ['business' => $business])}}" title="{{__('Pipelines')}}"
+       class="bg-white block rounded box-border p-3 flex mr-8 h-12
         @if($active) text-blue @else text-gray-700 @endif
            ">
-        <x-icons.percent :class="'h-6 w-auto inline-block'"/>
-        <span class="ml-2 text-lg inline-block @if($active) text-blue @else hidden @endif">{{__('Percentages')}}</span>
+        <x-icons.chart :class="'h-6 w-auto inline-block'"/>
+        <span class="ml-2 text-lg inline-block @if($active) text-blue @else hidden @endif">{{__('Pipelines')}}</span>
     </a>
+
 
     @php
         $active = request()->routeIs('allocation-calculator-with-id');
     @endphp
-    <a href="{{route('allocation-calculator-with-id', ['business' => $business])}}" title="{{__('Allocation Calculator')}}"
+    <a href="{{route('allocation-calculator-with-id', ['business' => $business])}}"
+       title="{{__('Allocation Calculator')}}"
        class="bg-white block rounded box-border p-3 flex text-gray-700 mr-4 h-12
         @if($active) text-blue @else text-gray-700 @endif
            ">
         <x-icons.calculator :class="'h-6 w-auto inline-block'"/>
         <span class="ml-2 text-lg inline-block @if($active) text-blue @else hidden @endif">{{__('Calculator')}}</span>
     </a>
+
 
     @php
         $active = request()->routeIs('allocations-calendar');
@@ -75,13 +68,37 @@
     </a>
 
     @php
+        $active = request()->routeIs('balance.business');
+    @endphp
+    <a href="{{url('/business/'.$businessId.'/balance')}}" title="{{__('Manually change balances')}}"
+       class="bg-white block rounded box-border p-3 flex mr-4 h-12
+        @if($active) text-blue @else text-gray-700 @endif
+           ">
+        <x-icons.balance :class="'h-6 w-auto inline-block'"/>
+        <span class="ml-2 text-lg inline-block @if($active) text-blue @else hidden @endif">{{__('Balances')}}</span>
+    </a>
+
+    @php
         $active = request()->routeIs('projections');
     @endphp
     <a href="{{route('projections', ['business' => $business])}}" title="{{__('Projection Forecast')}}"
-       class="bg-white block rounded box-border p-3 flex text-gray-700 h-12
+       class="bg-white block rounded box-border p-3 flex text-gray-700 mr-4 h-12
         @if($active) text-blue @else text-gray-700 @endif
            ">
         <x-icons.presentation-chart :class="'h-6 w-auto inline-block'"/>
-        <span class="ml-2 text-lg inline-block @if($active) text-blue @else hidden @endif">{{__('Projection Forecast')}}</span>
+        <span
+            class="ml-2 text-lg inline-block @if($active) text-blue @else hidden @endif">{{__('Projection Forecast')}}</span>
     </a>
+
+    @php
+        $active = request()->routeIs('allocations-percentages');
+    @endphp
+    <a href="{{route('allocations-percentages', ['business' => $business])}}" title="{{__('Rollout Percentages')}}"
+       class="bg-white block rounded box-border p-3 flex text-gray-700 h-12
+        @if($active) text-blue @else text-gray-700 @endif
+           ">
+        <x-icons.percent :class="'h-6 w-auto inline-block'"/>
+        <span class="ml-2 text-lg inline-block @if($active) text-blue @else hidden @endif">{{__('Percentages')}}</span>
+    </a>
+
 </div>
