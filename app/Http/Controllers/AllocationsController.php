@@ -291,7 +291,7 @@ class AllocationsController extends Controller
                 ], [
                     'phase_id' => $cell['phaseId'],
                     'bank_account_id' => $cell['accountId'],
-                    'percent' => $cell['cellValue']
+                    'percent' => $cell['cellValue'] ?? 0
                 ]);
                 $key = 'phasePercentValues_'.$cell['phaseId'].'_'.$businessId;
                 if (\Config::get('app.pfp_cache')) {

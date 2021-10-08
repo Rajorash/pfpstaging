@@ -78,7 +78,8 @@ $(function () {
             }
 
             if ($this.changesCounter) {
-                $('#' + $this.changesCounterId).html('...changes ready for calculation <b>' + $this.changesCounter + '</b>').show();
+                $('#' + $this.changesCounterId).html('...changes ready for calculation: <b>' + $this.changesCounter + '</b>'
+                    + '<br/>' + $this.renderButtonForManualSubmit()).show();
             } else {
                 $('#' + $this.changesCounterId).html('').hide();
             }
@@ -95,6 +96,7 @@ $(function () {
         }
 
         updateAutoSubmitDataStatus() {
+            super.updateAutoSubmitDataStatus();
             let $this = this;
 
             $.cookie('allocation_autoSubmitDataAllow', $this.autoSubmitDataAllow, {expires: 14});

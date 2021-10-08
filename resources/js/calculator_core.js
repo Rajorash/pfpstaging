@@ -28,6 +28,8 @@ export class calculatorCore {
         this.autoSubmitDataDelayDefault = 2;
         this.autoSubmitDataDelay = this.autoSubmitDataDelayDefault;
 
+        this.manualSubmitDataId = 'manualSubmitData';
+
         this.timeOutSeconds = 1000 * parseInt(this.autoSubmitDataDelay);  //default delay before send data to server
 
         this.heightModeDefaultSelector = '[name="block_different_height"]';
@@ -70,6 +72,14 @@ export class calculatorCore {
             $this.updateHeightMode();
         });
 
+        $(document).on('click', '#' + $this.manualSubmitDataId, function () {
+            $this.collectData();
+            $this.ajaxLoadWorker();
+            $this.hideTableDuringRender();
+
+            return false;
+        });
+
         $(document).on('dragend', '.' + $this.copyMoveClassName, function (event) {
             let $sourceElement = $(this);
             let $targetElement = $(document.elementFromPoint(event.clientX, event.clientY));
@@ -85,10 +95,32 @@ export class calculatorCore {
             }
         });
 
-        $(window).bind('beforeunload', function () {
+        $(window).bind('unload', function () {
+            if ($this.debug) {
+                console.log('unload');
+            }
+
             $this.hideTableDuringRecalculate = true;
             $this.hideTableDuringRender();
         });
+
+        window.onbeforeunload = function (e) {
+            if ($this.changesCounter) {
+                if ($this.debug) {
+                    console.log('onbeforeunload');
+                }
+
+                //highlight manual submit button
+                $('#' + $this.changesCounterId)
+                    .removeClass('opacity-50')
+                    .parent()
+                    .removeClass('text-dark_gray')
+                    .addClass('bg-red-400 text-white');
+
+                e.returnValue = '';
+                e.preventDefault();
+            }
+        };
     }
 
     resetData() {
@@ -188,6 +220,17 @@ export class calculatorCore {
                 }
             }, $this.delayProgressTimeIntervalMiliseconds);
         }
+    }
+
+    hideProgressBar() {
+        let $this = this;
+
+        if ($this.debug) {
+            console.log('hideProgressBar');
+        }
+
+        clearInterval($this.delayProgressInterval);
+        $('#' + $this.delayProgressId).hide();
     }
 
     firstLoadData() {
@@ -367,6 +410,9 @@ export class calculatorCore {
     }
 
     updateAutoSubmitDataStatus() {
+        let $this = this;
+
+        $this.hideProgressBar();
     }
 
     collectData() {
@@ -400,4 +446,7 @@ export class calculatorCore {
 
     }
 
+    renderButtonForManualSubmit() {
+        return '<a href="#" id="manualSubmitData" class="bg-white hover:bg-gray-100 font-bold p-2 rounded text-red-700">Submit data</a>';
+    }
 }
