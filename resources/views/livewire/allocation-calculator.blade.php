@@ -1,6 +1,6 @@
 <div class="p-6 sm:px-20">
     <div class="text-lg text-center mb-4">{{__('Allocation Calculator For')}} {{$this->business->name}}
-        <select class="form-select rounded px-3 py-1 ml-4" name="" id="" wire:model="selectedBusinessId">
+        <select class="form-select rounded px-3 py-1 ml-4 pr-8" name="" id="" wire:model="selectedBusinessId">
             @foreach ($selectOptions as $business_id => $business_name)
                 <option value="{{$business_id}}">{{$business_name}}</option>
             @endforeach

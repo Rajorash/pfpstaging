@@ -38,6 +38,7 @@
     </x-slot>
 
     <x-ui.main width="w-full">
+        <x-cta-workflow :business="$business" :step="'projections'" />
         <div id="projectionsTablePlace" class="global_nice_scroll return_coordinates_table">
             <div class="p-8 text-center opacity-50">...loading</div>
         </div>

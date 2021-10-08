@@ -18,6 +18,7 @@
     @endif
 
     <x-ui.main>
+        <x-cta-workflow :business="$business" :step="'percentages'" />
         <div id="percentagesTablePlace" class="global_nice_scroll return_coordinates_table">
             <div class="p-8 text-center opacity-50">...loading</div>
         </div>

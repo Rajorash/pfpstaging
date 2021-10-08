@@ -10,6 +10,7 @@
     </x-slot>
 
     <x-ui.main>
+        <x-cta-workflow :business="$business" :step="'balance'" />
         <x-ui.table-table>
             <x-ui.table-caption class="pt-12 pb-6 px-48 lg:px-52 xl:px-60 2xl:px-72 relative relative">
                 {{$business->name}}, {{__('change balance for')}}: {{ \Carbon\Carbon::parse($today)->format('l, d F Y')}}

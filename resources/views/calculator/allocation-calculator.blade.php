@@ -14,6 +14,7 @@
     @endif
 
     <x-ui.main>
+        <x-cta-workflow :business="$business" :step="'allocation-calculator'" />
         <livewire:allocation-calculator :businesses="$businesses" :businessId="$businessId"/>
     </x-ui.main>
 
