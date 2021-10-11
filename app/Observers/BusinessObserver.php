@@ -105,36 +105,36 @@ class BusinessObserver
     {
         return array(
             [
-                'name' => 'Core',
+                'name' => 'Revenue',
                 'type' => 'revenue',
                 'flows' => [
                     ['label' => "Accounts Receivable", 'negative' => false],
                     ['label' => "Estimated Activity", 'negative' => false],
                 ]
             ],
-            [
-                'name' => 'Drip Account',
-                'type' => 'pretotal',
-                'flows' => [
-                    ['label' => "Transfer to revenue", 'negative' => true],
-                ]
-            ],
-            [
-                'name' => 'Materials',
-                'type' => 'prereal',
-                'flows' => [
-                    // [ 'label' => "Transfer in", 'negative' => false ],
-                    ['label' => "Purchases", 'negative' => true],
-                ]
-            ],
-            [
-                'name' => 'Subcontractors',
-                'type' => 'prereal',
-                'flows' => [
-                    // [ 'label' => "Transfer in", 'negative' => false ],
-                    ['label' => "Payments", 'negative' => true],
-                ]
-            ],
+            // [
+            //     'name' => 'Drip Account',
+            //     'type' => 'pretotal',
+            //     'flows' => [
+            //         ['label' => "Transfer to revenue", 'negative' => true],
+            //     ]
+            // ],
+            // [
+            //     'name' => 'Materials',
+            //     'type' => 'prereal',
+            //     'flows' => [
+            //         // [ 'label' => "Transfer in", 'negative' => false ],
+            //         ['label' => "Purchases", 'negative' => true],
+            //     ]
+            // ],
+            // [
+            //     'name' => 'Subcontractors',
+            //     'type' => 'prereal',
+            //     'flows' => [
+            //         // [ 'label' => "Transfer in", 'negative' => false ],
+            //         ['label' => "Payments", 'negative' => true],
+            //     ]
+            // ],
             [
                 'name' => 'Profit',
                 'type' => 'postreal',
@@ -156,7 +156,7 @@ class BusinessObserver
 
             ],
             [
-                'name' => 'Staff Related',
+                'name' => 'People',
                 'type' => 'postreal',
                 'flows' => [
                     // [ 'label' => "Transfer in", 'negative' => false ],
@@ -199,27 +199,27 @@ class BusinessObserver
                     ['label' => "BAS - Payment", 'negative' => true],
                 ]
             ],
-            [
-                'name' => 'Vault',
-                'type' => 'postreal',
-                'flows' => [
-                    ['label' => "Transfer in", 'negative' => false],
-                ]
-            ],
-            [
-                'name' => 'Other',
-                'type' => 'postreal',
-                'flows' => [
-                    ['label' => "Transfer in", 'negative' => false],
-                ]
-            ],
-            [
-                'name' => 'Charity',
-                'type' => 'postreal',
-                'flows' => [
-                    ['label' => "Transfer in", 'negative' => false],
-                ]
-            ],
+            // [
+            //     'name' => 'Vault',
+            //     'type' => 'postreal',
+            //     'flows' => [
+            //         ['label' => "Transfer in", 'negative' => false],
+            //     ]
+            // ],
+            // [
+            //     'name' => 'Other',
+            //     'type' => 'postreal',
+            //     'flows' => [
+            //         ['label' => "Transfer in", 'negative' => false],
+            //     ]
+            // ],
+            // [
+            //     'name' => 'Charity',
+            //     'type' => 'postreal',
+            //     'flows' => [
+            //         ['label' => "Transfer in", 'negative' => false],
+            //     ]
+            // ],
         );
     }
 }
