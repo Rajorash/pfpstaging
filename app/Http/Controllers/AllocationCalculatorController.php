@@ -8,6 +8,7 @@ use Carbon\Carbon;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\View\View;
@@ -42,16 +43,27 @@ class AllocationCalculatorController extends Controller
      */
     public function getView(Business $business = null): View
     {
-        $businesses = $this->getBusinessAll();
-
-        $filtered = $businesses->filter(function ($business) {
-            return Auth::user()->can('view', $business);
-        })->values();
+        $viewable = $this->getViewableBusinesses();
 
         return view('calculator.allocation-calculator', [
-            'businesses' => $filtered,
-            'business' => $business,
-            'businessId' => optional($business)->id,
+            'businesses' => $viewable,
+            'business' => $business ?? $viewable->first(),
+            'businessId' => optional($business)->id ?? $viewable->first()->id,
         ]);
+    }
+
+    /**
+     * returns a collection of viewable businesses based on the authorised
+     * logged in user.
+     *
+     * @return Collection
+     */
+    private function getViewableBusinesses(): Collection
+    {
+        $businesses = $this->getBusinessAll();
+
+        return $businesses->filter(function ($business) {
+            return Auth::user()->can('view', $business);
+        })->values();
     }
 }
