@@ -37,6 +37,7 @@ export class calculatorCore {
         this.heightMode = this.heightModeDefault;
 
         this.copyMoveClassName = 'pfp_copy_move_element';
+        this.copyMoveCtrlKeyEnabled = false;
 
         this.windowCoordinates = {};
 
@@ -85,8 +86,28 @@ export class calculatorCore {
             let $targetElement = $(document.elementFromPoint(event.clientX, event.clientY));
 
             if ($targetElement.hasClass($this.copyMoveClassName)) {
-                $targetElement.val($sourceElement.val()).change();
+
+                let value = parseFloat($sourceElement.val());
+                if ($this.copyMoveCtrlKeyEnabled) {
+                    //add
+                    value += parseFloat($targetElement.val());
+                } else {
+                    //replace
+                }
+
+                $targetElement.val(value).change();
             }
+        });
+
+        //check and save state of Control key
+        $(window).on("keydown", function (event) {
+            if (event.which === 17) {
+                $this.copyMoveCtrlKeyEnabled = true;
+                $('.'+$this.copyMoveClassName).addClass('cursor-copy bg-yellow-300').removeClass('cursor-move');
+            }
+        }).on("keyup", function (event) {
+            $this.copyMoveCtrlKeyEnabled = false;
+            $('.'+$this.copyMoveClassName).removeClass('cursor-copy bg-yellow-300').addClass('cursor-move');
         });
 
         $(document).keyup(function (event) {
