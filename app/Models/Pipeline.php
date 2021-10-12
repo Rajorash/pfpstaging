@@ -4,61 +4,55 @@ namespace App\Models;
 
 use App\Traits\HasTags;
 use App\Traits\RecurringAndPipeline;
-use Eloquent;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Carbon;
 
 /**
- * App\Models\RecurringTransactions
+ * App\Models\Pipeline
  *
- * @property integer $id
- * @property AccountFlow $account_id
- * @property string $title
- * @property string $description
- * @property float $value
- * @property Carbon $date_start
- * @property Carbon|null $date_end
- * @property integer $repeat_every_number
- * @property string $repeat_every_type
- * @property array $repeat_rules
- * @property Carbon|null $created_at
- * @property Carbon|null $updated_at
- * @property Carbon|null $deleted_at
- * @property-read AccountFlow $accountFlow
- * @method static Builder|RecurringTransactions newModelQuery()
- * @method static Builder|RecurringTransactions newQuery()
- * @method static \Illuminate\Database\Query\Builder|RecurringTransactions onlyTrashed()
- * @method static Builder|RecurringTransactions query()
- * @method static Builder|RecurringTransactions whereAccountId($value)
- * @method static Builder|RecurringTransactions whereCreatedAt($value)
- * @method static Builder|RecurringTransactions whereDateEnd($value)
- * @method static Builder|RecurringTransactions whereDateStart($value)
- * @method static Builder|RecurringTransactions whereDeletedAt($value)
- * @method static Builder|RecurringTransactions whereDescription($value)
- * @method static Builder|RecurringTransactions whereId($value)
- * @method static Builder|RecurringTransactions whereRepeatEveryNumber($value)
- * @method static Builder|RecurringTransactions whereRepeatEveryType($value)
- * @method static Builder|RecurringTransactions whereRepeatRules($value)
- * @method static Builder|RecurringTransactions whereTitle($value)
- * @method static Builder|RecurringTransactions whereUpdatedAt($value)
- * @method static Builder|RecurringTransactions whereValue($value)
- * @method static \Illuminate\Database\Query\Builder|RecurringTransactions withTrashed()
- * @method static \Illuminate\Database\Query\Builder|RecurringTransactions withoutTrashed()
- * @mixin Eloquent
+ * @property int $id
  * @property int $business_id
+ * @property string $title
  * @property string|null $notes
  * @property int $certainty
- * @property boolean $recurring
- * @method static Builder|Pipeline whereBusinessId($value)
- * @method static Builder|Pipeline whereCertainty($value)
- * @method static Builder|Pipeline whereNotes($value)
+ * @property string|null $description
+ * @property float $value
+ * @property \Illuminate\Support\Carbon $date_start
+ * @property \Illuminate\Support\Carbon|null $date_end
+ * @property int $repeat_every_number
+ * @property string $repeat_every_type
+ * @property array|null $repeat_rules
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property bool $recurring
  * @property-read \App\Models\BankAccount $account
- * @method static Builder|Pipeline whereRecurring($value)
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Tag[] $tags
  * @property-read int|null $tags_count
+ * @method static \Illuminate\Database\Eloquent\Builder|Pipeline newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Pipeline newQuery()
+ * @method static \Illuminate\Database\Query\Builder|Pipeline onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|Pipeline query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Pipeline whereBusinessId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Pipeline whereCertainty($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Pipeline whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Pipeline whereDateEnd($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Pipeline whereDateStart($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Pipeline whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Pipeline whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Pipeline whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Pipeline whereNotes($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Pipeline whereRecurring($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Pipeline whereRepeatEveryNumber($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Pipeline whereRepeatEveryType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Pipeline whereRepeatRules($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Pipeline whereTitle($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Pipeline whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Pipeline whereValue($value)
+ * @method static \Illuminate\Database\Query\Builder|Pipeline withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|Pipeline withoutTrashed()
+ * @mixin \Eloquent
  */
 class Pipeline extends Model
 {

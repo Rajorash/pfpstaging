@@ -20,3 +20,4 @@ _ide_helper.php
 _ide_helper_*.php
 /clear.cmd
 /.php-error.log
+/.phpstorm.meta.php

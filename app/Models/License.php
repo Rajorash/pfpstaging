@@ -3,8 +3,6 @@
 namespace App\Models;
 
 use Carbon\Carbon;
-use Eloquent;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -24,23 +22,23 @@ use Illuminate\Database\Eloquent\Model;
  * @property string|null $revoked_ts
  * @property-read \App\Models\User|null $advisor
  * @property-read \App\Models\Business|null $business
- * @property-read mixed $check_license
- * @method static Builder|License newModelQuery()
- * @method static Builder|License newQuery()
- * @method static Builder|License query()
- * @method static Builder|License whereAccountNumber($value)
- * @method static Builder|License whereActive($value)
- * @method static Builder|License whereAdvisorId($value)
- * @method static Builder|License whereAssignedTs($value)
- * @method static Builder|License whereBusinessId($value)
- * @method static Builder|License whereCreatedAt($value)
- * @method static Builder|License whereExpiresTs($value)
- * @method static Builder|License whereId($value)
- * @method static Builder|License whereIssuedTs($value)
- * @method static Builder|License whereRegionaladminId($value)
- * @method static Builder|License whereRevokedTs($value)
- * @method static Builder|License whereUpdatedAt($value)
- * @mixin Eloquent
+ * @property-read bool $check_license
+ * @method static \Illuminate\Database\Eloquent\Builder|License newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|License newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|License query()
+ * @method static \Illuminate\Database\Eloquent\Builder|License whereAccountNumber($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|License whereActive($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|License whereAdvisorId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|License whereAssignedTs($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|License whereBusinessId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|License whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|License whereExpiresTs($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|License whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|License whereIssuedTs($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|License whereRegionaladminId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|License whereRevokedTs($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|License whereUpdatedAt($value)
+ * @mixin \Eloquent
  */
 class License extends Model
 {

@@ -2,10 +2,7 @@
 
 namespace App\Models;
 
-use Eloquent;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Carbon;
 
 /**
  * App\Models\Allocation
@@ -17,23 +14,23 @@ use Illuminate\Support\Carbon;
  * @property string $amount
  * @property mixed $allocation_date
  * @property int|null $manual_entry
- * @property Carbon|null $created_at
- * @property Carbon|null $updated_at
- * @property-read Model|Eloquent $allocatable
- * @property-read Phase $phase
- * @method static Builder|Allocation newModelQuery()
- * @method static Builder|Allocation newQuery()
- * @method static Builder|Allocation query()
- * @method static Builder|Allocation whereAllocatableId($value)
- * @method static Builder|Allocation whereAllocatableType($value)
- * @method static Builder|Allocation whereAllocationDate($value)
- * @method static Builder|Allocation whereAmount($value)
- * @method static Builder|Allocation whereCreatedAt($value)
- * @method static Builder|Allocation whereId($value)
- * @method static Builder|Allocation whereManualEntry($value)
- * @method static Builder|Allocation wherePhaseId($value)
- * @method static Builder|Allocation whereUpdatedAt($value)
- * @mixin Eloquent
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read Model|\Eloquent $allocatable
+ * @property-read \App\Models\Phase $phase
+ * @method static \Illuminate\Database\Eloquent\Builder|Allocation newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Allocation newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Allocation query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Allocation whereAllocatableId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Allocation whereAllocatableType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Allocation whereAllocationDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Allocation whereAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Allocation whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Allocation whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Allocation whereManualEntry($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Allocation wherePhaseId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Allocation whereUpdatedAt($value)
+ * @mixin \Eloquent
  */
 class Allocation extends Model
 {

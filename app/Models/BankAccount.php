@@ -2,14 +2,8 @@
 
 namespace App\Models;
 
-use App\Models\Allocation as Allocation;
-use App\Models\AllocationPercentage;
 use App\Traits\Allocatable;
-use Eloquent;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 
 /**
@@ -19,26 +13,26 @@ use Illuminate\Support\Facades\Cache;
  * @property string $name
  * @property string $type
  * @property int $business_id
- * @property Carbon|null $created_at
- * @property Carbon|null $updated_at
- * @property-read Collection|Allocation[] $allocations
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Allocation[] $allocations
  * @property-read int|null $allocations_count
- * @property-read Business $business
- * @property-read Collection|AccountFlow[] $flows
+ * @property-read \App\Models\Business $business
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\AccountFlow[] $flows
  * @property-read int|null $flows_count
- * @property-read Collection|AllocationPercentage[] $percentages
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\AllocationPercentage[] $percentages
  * @property-read int|null $percentages_count
- * @property-read TaxRate|null $taxRate
- * @method static Builder|BankAccount newModelQuery()
- * @method static Builder|BankAccount newQuery()
- * @method static Builder|BankAccount query()
- * @method static Builder|BankAccount whereBusinessId($value)
- * @method static Builder|BankAccount whereCreatedAt($value)
- * @method static Builder|BankAccount whereId($value)
- * @method static Builder|BankAccount whereName($value)
- * @method static Builder|BankAccount whereType($value)
- * @method static Builder|BankAccount whereUpdatedAt($value)
- * @mixin Eloquent
+ * @property-read \App\Models\TaxRate|null $taxRate
+ * @method static \Illuminate\Database\Eloquent\Builder|BankAccount newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|BankAccount newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|BankAccount query()
+ * @method static \Illuminate\Database\Eloquent\Builder|BankAccount whereBusinessId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|BankAccount whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|BankAccount whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|BankAccount whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|BankAccount whereType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|BankAccount whereUpdatedAt($value)
+ * @mixin \Eloquent
  */
 class BankAccount extends Model
 {

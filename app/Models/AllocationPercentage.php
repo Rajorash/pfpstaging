@@ -2,10 +2,8 @@
 
 namespace App\Models;
 
-use Eloquent;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Carbon;
+
 
 /**
  * App\Models\AllocationPercentage
@@ -14,18 +12,18 @@ use Illuminate\Support\Carbon;
  * @property int $phase_id
  * @property int $bank_account_id
  * @property mixed $percent
- * @property Carbon|null $created_at
- * @property Carbon|null $updated_at
- * @method static Builder|AllocationPercentage newModelQuery()
- * @method static Builder|AllocationPercentage newQuery()
- * @method static Builder|AllocationPercentage query()
- * @method static Builder|AllocationPercentage whereBankAccountId($value)
- * @method static Builder|AllocationPercentage whereCreatedAt($value)
- * @method static Builder|AllocationPercentage whereId($value)
- * @method static Builder|AllocationPercentage wherePercent($value)
- * @method static Builder|AllocationPercentage wherePhaseId($value)
- * @method static Builder|AllocationPercentage whereUpdatedAt($value)
- * @mixin Eloquent
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder|AllocationPercentage newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|AllocationPercentage newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|AllocationPercentage query()
+ * @method static \Illuminate\Database\Eloquent\Builder|AllocationPercentage whereBankAccountId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AllocationPercentage whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AllocationPercentage whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AllocationPercentage wherePercent($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AllocationPercentage wherePhaseId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AllocationPercentage whereUpdatedAt($value)
+ * @mixin \Eloquent
  */
 class AllocationPercentage extends Model
 {

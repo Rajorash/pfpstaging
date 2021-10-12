@@ -2,12 +2,8 @@
 
 namespace App\Models;
 
-use Database\Factories\TaxRateFactory;
-use Eloquent;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Carbon;
 
 /**
  * App\Models\TaxRate
@@ -15,19 +11,19 @@ use Illuminate\Support\Carbon;
  * @property int $id
  * @property string $rate
  * @property int $bank_account_id
- * @property Carbon|null $created_at
- * @property Carbon|null $updated_at
- * @property-read BankAccount $account
- * @method static TaxRateFactory factory(...$parameters)
- * @method static Builder|TaxRate newModelQuery()
- * @method static Builder|TaxRate newQuery()
- * @method static Builder|TaxRate query()
- * @method static Builder|TaxRate whereBankAccountId($value)
- * @method static Builder|TaxRate whereCreatedAt($value)
- * @method static Builder|TaxRate whereId($value)
- * @method static Builder|TaxRate whereRate($value)
- * @method static Builder|TaxRate whereUpdatedAt($value)
- * @mixin Eloquent
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\BankAccount $account
+ * @method static \Database\Factories\TaxRateFactory factory(...$parameters)
+ * @method static \Illuminate\Database\Eloquent\Builder|TaxRate newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|TaxRate newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|TaxRate query()
+ * @method static \Illuminate\Database\Eloquent\Builder|TaxRate whereBankAccountId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|TaxRate whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|TaxRate whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|TaxRate whereRate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|TaxRate whereUpdatedAt($value)
+ * @mixin \Eloquent
  */
 class TaxRate extends Model
 {
