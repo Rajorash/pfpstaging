@@ -25,8 +25,10 @@ class LicensesAvailableCount extends Migration
      */
     public function down()
     {
-        Schema::table('licenses', function (Blueprint $table) {
-            $table->dropColumn('available_count');
-        });
+        if (Schema::hasColumn('licenses', 'available_count')) {
+            Schema::table('licenses', function (Blueprint $table) {
+                $table->dropColumn('available_count');
+            });
+        }
     }
 }

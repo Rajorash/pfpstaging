@@ -13,6 +13,7 @@ class UpdateLicenseFields2 extends Migration
      */
     public function up()
     {
+
         Schema::table('licenses', function (Blueprint $table) {
             $table->unsignedBigInteger('advisor_id')->default(null)->nullable()->change();
             $table->unsignedBigInteger('business_id')->default(null)->nullable()->change();
@@ -51,12 +52,18 @@ class UpdateLicenseFields2 extends Migration
      */
     public function down()
     {
+        if (Schema::hasColumn('licenses', 'regionaladmin_id')) {
+            Schema::table('licenses', function (Blueprint $table) {
+                $table->dropForeign('licenses_regionaladmin_id_foreign');
+                $table->dropColumn(['regionaladmin_id']);
+            });
+        }
+
         Schema::table('licenses', function (Blueprint $table) {
             $table->unsignedBigInteger('advisor_id')->change();
             $table->unsignedBigInteger('business_id')->change();
 
             $table->dropColumn([
-                'regionaladmin_id',
                 'issued_ts',
                 'assigned_ts',
                 'expires_ts',

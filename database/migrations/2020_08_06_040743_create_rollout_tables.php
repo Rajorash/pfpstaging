@@ -53,8 +53,8 @@ class CreateRolloutTables extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('phases');
-        Schema::dropIfExists('allocations');
         Schema::dropIfExists('allocation_percentages');
+        Schema::dropIfExists('allocations');
+        Schema::dropIfExists('phases');
     }
 }
