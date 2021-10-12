@@ -86,7 +86,7 @@
                                placeholder="0"
                                autocomplete="off"
                                name="percentage"
-                               type="number" pattern="[0-9]{10}"
+                               type="text" pattern="[0-9]{10}"
                                id="{{$acc->type}}_{{$phase->id}}_{{$acc->id}}"
                                value="{{$percentage}}"
                                @if(!$business->license->checkLicense) disabled @endif

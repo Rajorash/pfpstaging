@@ -58,7 +58,7 @@
                                         class="px-2 py-1 text-right bg-transparent border-none w-full
                                     focus:bg-gray-100 disabled:opacity-90"
                                         id="account_{{$id}}_{{$date->format('Y-m-d')}}"
-                                        type="number" pattern="[0-9]{10}"
+                                        type="text" pattern="[0-9]{10}"
                                         value="{{number_format($data[$date->format('Y-m-d')], 0, '.', '')}}"
                                         data-row="{{$rowIndex}}"
                                         data-column="{{$columnIndex}}"
@@ -95,7 +95,7 @@
                                                 id="flow_{{$key}}_{{$date->format('Y-m-d')}}"
                                                 data-row="{{$rowIndex}}"
                                                 data-column="{{$columnIndex}}"
-                                                type="number" pattern="[0-9]{10}"
+                                                type="text" pattern="[0-9]{10}"
                                                 value="{{number_format($ext_data[$date->format('Y-m-d')], 0, '.', '')}}"
                                                 @if(!$business->license->checkLicense) disabled @endif/>
                                         </x-ui.table-td>
@@ -128,7 +128,7 @@
                                                             disabled
                                                             data-for_row="{{$rowIndex}}"
                                                             data-for_column="{{$columnIndex}}"
-                                                            type="number" pattern="[0-9]{10}"
+                                                            type="text" pattern="[0-9]{10}"
                                                             value="{{number_format($value, 0, '.', '')}}"
                                                         />
                                                     @endif
@@ -176,7 +176,7 @@
                                         title="Balance overridden"
                                         @endif
 
-                                        type="number" pattern="[0-9]{10}"
+                                        type="text" pattern="[0-9]{10}"
                                         id="account_{{$id}}_{{$date->format('Y-m-d')}}"
                                         value="{{is_array($data[$date->format('Y-m-d')])
                                                 ? number_format($data[$date->format('Y-m-d')][0], 0, '.', '')
@@ -210,7 +210,7 @@
                                                 <input
                                                     class="px-2 py-1 w-full text-right bg-transparent border-none
                                                     focus:bg-gray-100 disabled:opacity-90"
-                                                    type="number" pattern="[0-9]{10}"
+                                                    type="text" pattern="[0-9]{10}"
                                                     value="{{number_format($ext_data[$date->format('Y-m-d')], 0, '.', '')}}"
                                                     data-row="{{$rowIndex}}"
                                                     data-column="{{$columnIndex}}"
@@ -236,7 +236,7 @@
                                                 <input
                                                     class="px-2 py-1 w-full text-right bg-transparent border-none
                                                     focus:bg-gray-100 disabled:opacity-90"
-                                                    type="number" pattern="[0-9]{10}"
+                                                    type="text" pattern="[0-9]{10}"
                                                     value="{{number_format($ext_data[$date->format('Y-m-d')], 0, '.', '')}}"
                                                     data-row="{{$rowIndex}}"
                                                     data-column="{{$columnIndex}}"
@@ -268,7 +268,7 @@
                                                        @if($business->license->checkLicense) draggable="true" @endif
 
                                                        id="flow_{{$key}}_{{$date->format('Y-m-d')}}"
-                                                       type="number" pattern="[0-9]{10}"
+                                                       type="text" pattern="[0-9]{10}"
                                                        data-row="{{$rowIndex}}"
                                                        data-column="{{$columnIndex}}"
                                                        value="{{number_format($ext_data[$date->format('Y-m-d')], 0, '.', '')}}"
@@ -302,7 +302,7 @@
                                                                 draggable="true"
                                                                 data-for_row="{{$rowIndex}}"
                                                                 data-for_column="{{$columnIndex}}"
-                                                                type="number" pattern="[0-9]{10}"
+                                                                type="text" pattern="[0-9]{10}"
                                                                 value="{{number_format($value, 0, '.', '')}}"
                                                             />
                                                         @endif
