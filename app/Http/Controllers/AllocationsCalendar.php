@@ -407,7 +407,11 @@ class AllocationsCalendar extends Controller
                                 }
                             }
                             $response[BankAccount::ACCOUNT_TYPE_PREREAL][$id]['total'][$date_ymd] = $flow_total;
-                            if (array_key_exists($key, $flows[$id]) && count($flows[$id][$key]) == $complete) {
+
+                            if ( array_key_exists($id, $flows)
+                                && array_key_exists($key, $flows[$id])
+                                && count($flows[$id][$key]) == $complete)
+                            {
                                 $response[BankAccount::ACCOUNT_TYPE_PREREAL][$id] += $flows[$id];
                             }
 
@@ -468,7 +472,10 @@ class AllocationsCalendar extends Controller
                                 }
                             }
                             $response[BankAccount::ACCOUNT_TYPE_POSTREAL][$id]['total'][$date_ymd] = $flow_total;
-                            if (array_key_exists($key, $flows[$id]) && count($flows[$id][$key]) == $complete) {
+                            if ( array_key_exists($id, $flows)
+                                && array_key_exists($key, $flows[$id])
+                                && count($flows[$id][$key]) == $complete)
+                            {
                                 $response[BankAccount::ACCOUNT_TYPE_POSTREAL][$id] += $flows[$id];
                             }
 
