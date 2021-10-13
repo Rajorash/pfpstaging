@@ -25,6 +25,8 @@ class UpdateLicenseFields extends Migration
      */
     public function down()
     {
-        //
+        Schema::table('licenses', function (Blueprint $table) {
+            $table->dropColumn('active');
+        });
     }
 }

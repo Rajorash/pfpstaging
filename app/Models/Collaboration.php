@@ -2,10 +2,7 @@
 
 namespace App\Models;
 
-use Eloquent;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Carbon;
 
 /**
  * App\Models\Collaboration
@@ -14,22 +11,22 @@ use Illuminate\Support\Carbon;
  * @property int $advisor_id
  * @property int $business_id
  * @property string|null $expires_at
- * @property Carbon|null $created_at
- * @property Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
  * @property string|null $deleted_at
- * @property-read Advisor $advisor
- * @property-read Business $business
- * @method static Builder|Collaboration newModelQuery()
- * @method static Builder|Collaboration newQuery()
- * @method static Builder|Collaboration query()
- * @method static Builder|Collaboration whereAdvisorId($value)
- * @method static Builder|Collaboration whereBusinessId($value)
- * @method static Builder|Collaboration whereCreatedAt($value)
- * @method static Builder|Collaboration whereDeletedAt($value)
- * @method static Builder|Collaboration whereExpiresAt($value)
- * @method static Builder|Collaboration whereId($value)
- * @method static Builder|Collaboration whereUpdatedAt($value)
- * @mixin Eloquent
+ * @property-read \App\Models\Advisor|null $advisor
+ * @property-read \App\Models\Business $business
+ * @method static \Illuminate\Database\Eloquent\Builder|Collaboration newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Collaboration newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Collaboration query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Collaboration whereAdvisorId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Collaboration whereBusinessId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Collaboration whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Collaboration whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Collaboration whereExpiresAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Collaboration whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Collaboration whereUpdatedAt($value)
+ * @mixin \Eloquent
  */
 class Collaboration extends Model
 {

@@ -25,6 +25,8 @@ class AlterAllocationsTable extends Migration
      */
     public function down()
     {
-        //
+        Schema::table('allocations', function (Blueprint $table) {
+            $table->dropColumn('manual_entry');
+        });
     }
 }

@@ -35,7 +35,7 @@
                                     focus:outline-none focus:ring-1 focus:shadow-none focus:bg-white
                                     m-0 outline-none postreal text-right w-full {{$isNegative ? "text-red-500" : ""}}"
                                placeholder=0
-                               type="number"
+                               type="text"
                                value="{{number_format($value, 0)}}"
                                disabled
                         >

@@ -14,9 +14,7 @@ class LicensesRemoveConstrain extends Migration
     public function up()
     {
         Schema::table('licenses', function (Blueprint $table) {
-
             $table->dropForeign('licenses_advisor_id_foreign');
-
         });
     }
 
