@@ -1,5 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
+        <x-cta-workflow :business="$business" :step="'balance'" />
+
         {{$business->name }}
         <x-icons.chevron-right :class="'h-4 w-auto inline-block px-2'"/>
         {{ __('Change balance')}}
@@ -10,7 +12,6 @@
     </x-slot>
 
     <x-ui.main>
-        <x-cta-workflow :business="$business" :step="'balance'" />
         <x-ui.table-table>
             <x-ui.table-caption class="pt-12 pb-6 px-48 lg:px-52 xl:px-60 2xl:px-72 relative relative">
                 {{$business->name}}, {{__('change balance for')}}: {{ \Carbon\Carbon::parse($today)->format('l, d F Y')}}

@@ -1,5 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
+        <x-cta-workflow :business="$business" :step="'percentages'" />
+
         {{$business->name}}
         <x-icons.chevron-right :class="'h-4 w-auto inline-block px-2'"/>
         {{__('Percentages')}}
@@ -18,7 +20,6 @@
     @endif
 
     <x-ui.main>
-        <x-cta-workflow :business="$business" :step="'percentages'" />
         <div id="percentagesTablePlace" class="global_nice_scroll return_coordinates_table">
             <div class="p-8 text-center opacity-50">...loading</div>
         </div>

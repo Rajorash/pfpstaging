@@ -1,5 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
+        <x-cta-workflow :business="$business" :step="'projections'" />
+
         {{$business->name}}
         <x-icons.chevron-right :class="'h-4 w-auto inline-block px-2'"/>
         {{__('Projections')}}
@@ -38,7 +40,6 @@
     </x-slot>
 
     <x-ui.main width="w-full">
-        <x-cta-workflow :business="$business" :step="'projections'" />
         <div id="projectionsTablePlace" class="global_nice_scroll return_coordinates_table">
             <div class="p-8 text-center opacity-50">...loading</div>
         </div>

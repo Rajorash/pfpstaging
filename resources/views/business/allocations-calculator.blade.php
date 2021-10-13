@@ -1,5 +1,8 @@
 <x-app-layout>
     <x-slot name="header">
+
+        <x-cta-workflow :business="$business" :step="'allocations'" />
+
         {{$business->name}}
         <x-icons.chevron-right :class="'h-4 w-auto inline-block px-2'"/>
         {{__('Allocations')}}
@@ -39,7 +42,6 @@
 
 
     <x-ui.main width="w-full">
-        <x-cta-workflow :business="$business" :step="'allocations'" />
         <div id="allocationTablePlace"
              class="relative overflow-scroll global_nice_scroll block_different_height return_coordinates_table">
             <div class="p-8 text-center opacity-50">...loading</div>
