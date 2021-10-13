@@ -1,6 +1,6 @@
 <div class="p-6 sm:px-20">
-    <div class="text-lg text-center mb-4">{{__('Allocation Calculator For')}} {{$this->business->name}}
-        <select class="form-select rounded px-3 py-1 ml-4 pr-8" name="" id="" wire:model="selectedBusinessId">
+    <div class="mb-4 text-lg text-center">{{__('Allocation Calculator For')}} {{$this->business->name}}
+        <select class="px-3 py-1 pr-8 ml-4 rounded form-select" name="" id="" wire:model="selectedBusinessId">
             @foreach ($selectOptions as $business_id => $business_name)
                 <option value="{{$business_id}}">{{$business_name}}</option>
             @endforeach
@@ -14,69 +14,82 @@
             <x-ui.th>{{__('Roll Out %')}}</x-ui.th>
             <x-ui.th>{{__('Allocation $')}}</x-ui.th>
         </tr>
-        {{-- Revenue account/s - should only be one? --}}
-        @foreach ($mappedAccounts['revenue'] as $account)
+        {{-- Revenue account/s - should only && always be one? --}}
+        @if (array_key_exists('revenue', $mappedAccounts))
+            @foreach ($mappedAccounts['revenue'] as $account)
             <tr>
                 <td class="px-2 py-1 border border-gray-300">{{__('Top line revenue - Account')}} "{{$account['name']}}"</td>
                 <td class="px-2 py-1 border border-gray-300"></td>
-                <td class="px-2 py-1 border border-gray-300 bg-yellow-100 w-32">
+                <td class="w-32 px-2 py-1 bg-yellow-100 border border-gray-300">
                     <x-ui.input type="text" wire:model="revenue"/>
                 </td>
-                <td class="bg-gray-200 px-2 py-1 border border-gray-300"></td>
-                <td class="bg-gray-200 px-2 py-1 border border-gray-300"></td>
+                <td class="px-2 py-1 bg-gray-200 border border-gray-300"></td>
+                <td class="px-2 py-1 bg-gray-200 border border-gray-300"></td>
             </tr>
-        @endforeach
+            @endforeach
+        @endif
         {{-- Sales tax account/s --}}
-        @foreach ($mappedAccounts['salestax'] as $account)
+        @if (array_key_exists('salestax', $mappedAccounts))
+            @foreach ($mappedAccounts['salestax'] as $account)
             <tr>
                 <td class="px-2 py-1 border border-gray-300">{{$account['name']}}</td>
-                <td class="px-2 py-1 border border-gray-300 bg-indigo-200 text-right">{{$account['percent']}}%</td>
-                <td class="text-right px-2 py-1 border border-gray-300 bg-green-300">
+                <td class="px-2 py-1 text-right bg-indigo-200 border border-gray-300">{{$account['percent']}}%</td>
+                <td class="px-2 py-1 text-right bg-green-300 border border-gray-300">
                     ${{number_format($account['value'], 0)}}</td>
-                <td class="bg-gray-200 px-2 py-1 border border-gray-300"></td>
-                <td class="bg-gray-200 px-2 py-1 border border-gray-300"></td>
+                <td class="px-2 py-1 bg-gray-200 border border-gray-300"></td>
+                <td class="px-2 py-1 bg-gray-200 border border-gray-300"></td>
             </tr>
-        @endforeach
+            @endforeach
+        @endif
+
         <tr class="">
             <td class="px-2 py-1 border border-gray-300">{{__('Net Cash Receipts')}}</td>
             <td class="px-2 py-1 border border-gray-300"></td>
-            <td class="text-right px-2 py-1 border border-gray-300">${{number_format($netCashReceipts, 0)}}</td>
-            <td class="bg-gray-200 px-2 py-1 border border-gray-300"></td>
-            <td class="bg-gray-200 px-2 py-1 border border-gray-300"></td>
+            <td class="px-2 py-1 text-right border border-gray-300">${{number_format($netCashReceipts, 0)}}</td>
+            <td class="px-2 py-1 bg-gray-200 border border-gray-300"></td>
+            <td class="px-2 py-1 bg-gray-200 border border-gray-300"></td>
         </tr>
+
         {{-- Pre-real account/s --}}
-        @foreach ($mappedAccounts['prereal'] as $account)
+        @if (array_key_exists('prereal', $mappedAccounts))
+            @foreach ($mappedAccounts['prereal'] as $account)
             <tr>
                 <td class="px-2 py-1 border border-gray-300">{{$account['name']}}</td>
-                <td class="px-2 py-1 border border-gray-300 bg-indigo-200 text-right">{{$account['percent']}}%</td>
-                <td class="text-right px-2 py-1 border border-gray-300 bg-green-100">
+                <td class="px-2 py-1 text-right bg-indigo-200 border border-gray-300">{{$account['percent']}}%</td>
+                <td class="px-2 py-1 text-right bg-green-100 border border-gray-300">
                     ${{number_format($account['value'], 0)}}</td>
-                <td class="bg-gray-200 px-2 py-1 border border-gray-300"></td>
-                <td class="bg-gray-200 px-2 py-1 border border-gray-300"></td>
+                <td class="px-2 py-1 bg-gray-200 border border-gray-300"></td>
+                <td class="px-2 py-1 bg-gray-200 border border-gray-300"></td>
             </tr>
-        @endforeach
+            @endforeach
+        @endif
+
         {{-- Net Cash Receipts --}}
         <tr class="bg-gray-200">
             <td class="px-2 py-1 border border-gray-300">{{__('Real Revenue')}}</td>
             <td class="px-2 py-1 border border-gray-300"></td>
-            <td class="text-right px-2 py-1 border border-gray-300 bg-green-100">
+            <td class="px-2 py-1 text-right bg-green-100 border border-gray-300">
                 ${{number_format($realRevenue, 0)}}</td>
             <td class="text-right px-2 py-1 border border-gray-300 {!! ($postrealPercentageSum > 100 || $postrealPercentageSum < 100) ? 'text-red-500' : '';!!}">{{$postrealPercentageSum}}
                 %
             </td>
             <td class="px-2 py-1 border border-gray-300"></td>
         </tr>
+
         {{-- Post-real accounts --}}
-        @foreach ($mappedAccounts['postreal'] as $account)
+        @if (array_key_exists('postreal', $mappedAccounts))
+            @foreach ($mappedAccounts['postreal'] as $account)
             <tr>
                 <td class="px-2 py-1 border border-gray-300">{{$account['name']}}</td>
                 <td class="px-2 py-1 border border-gray-300"></td>
-                <td class="bg-green-100px-2 py-1 border border-gray-300"></td>
-                <td class="text-right px-2 py-1 border border-gray-300 bg-gray-400">{{$account['percent']}}%</td>
-                <td class="text-right px-2 py-1 border border-gray-300 bg-green-200">
+                <td class="py-1 border border-gray-300 bg-green-100px-2"></td>
+                <td class="px-2 py-1 text-right bg-gray-400 border border-gray-300">{{$account['percent']}}%</td>
+                <td class="px-2 py-1 text-right bg-green-200 border border-gray-300">
                     ${{number_format($account['value'], 0)}}</td>
             </tr>
-        @endforeach
+            @endforeach
+        @endif
+
         {{-- Check sum --}}
         <tr class="bg-gray-200">
             <td class="px-2 py-1 border border-gray-300">
@@ -85,7 +98,7 @@
             <td class="px-2 py-1 border border-gray-300"></td>
             <td class="px-2 py-1 border border-gray-300"></td>
             <td class="px-2 py-1 border border-gray-300"></td>
-            <td class="text-right px-2 py-1 border border-gray-300">
+            <td class="px-2 py-1 text-right border border-gray-300">
                 ${{number_format($allocationSum, 2)}}
         </tr>
         <tr class="bg-gray-200">
@@ -95,7 +108,7 @@
             <td class="px-2 py-1 border border-gray-300"></td>
             <td class="px-2 py-1 border border-gray-300"></td>
             <td class="px-2 py-1 border border-gray-300"></td>
-            <td class="text-right px-2 py-1 border border-gray-300">
+            <td class="px-2 py-1 text-right border border-gray-300">
                 <span
                     class="{!! round($checksum, 2) == 0 ? '' : 'text-red-500';!!}">${{number_format($checksum, 2)}}</span>
         </tr>
