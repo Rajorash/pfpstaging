@@ -21,3 +21,4 @@ _ide_helper_*.php
 /clear.cmd
 /.php-error.log
 /.phpstorm.meta.php
+/.htaccess
