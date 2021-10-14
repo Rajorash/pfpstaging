@@ -16,9 +16,12 @@
     </thead>
     <x-ui.table-tbody>
         @foreach($allocations as $allocation)
-            <tr class="hover:bg-yellow-100 border-light_blue divide-x {{$loop->odd ? 'bg-indigo-100' : 'bg-white' }}">
+            @php
+                $border = "border-{$allocation['account']->type}";
+            @endphp
+            <tr class="hover:bg-yellow-100 border-light_blue divide-x {{$loop->odd ? 'bg-indigo-100' : 'bg-white' }} border-l-16 {{$border}}">
                 <x-ui.table-td padding="p-1 pr-2 pl-4"
-                               class="text-left sticky-column sticky left-0 {{$loop->odd ? 'bg-indigo-100' : 'bg-white' }}">
+                               class="text-left sticky-column sticky left-0 {{$loop->odd ? 'bg-indigo-100' : 'bg-white' }}border-l-16 {{$border}}">
                     {{ $allocation['account']->name }}
                 </x-ui.table-td>
 

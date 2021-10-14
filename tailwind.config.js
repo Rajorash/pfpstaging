@@ -23,6 +23,11 @@ module.exports = {
             'bg-salestax',
             'bg-prereal',
             'bg-postreal',
+            'border-revenue',
+            'border-pretotal',
+            'border-salestax',
+            'border-prereal',
+            'border-postreal',
 
 
             'text-light_blue',
@@ -46,6 +51,11 @@ module.exports = {
         extend: {
             fontFamily: {
                 sans: ['Questrial', ...defaultTheme.fontFamily.sans],
+            },
+            borderWidth: {
+               '12': '12px',
+               '16': '16px',
+               '20': '20px',
             },
             colors: {
                 light_blue: '#CED0E5',
