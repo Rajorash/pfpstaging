@@ -6,6 +6,11 @@
             @endforeach
         </select>
     </div>
+    @if ($this->checkPercentagesSet() == false)
+        <div class="p-4 text-red-600 bg-red-100 border border-red-700 rounded-sm">
+            It appears that the percentage values have not been set yet for this phase. You may go to the <a class="underline transition duration-500 ease-in-out hover:text-red-900" href="{{route('allocations-percentages', ['business' => $this->business])}}">percentages page</a> to set them.
+        </div>
+    @endif
     <x-ui.table>
         <tr>
             <x-ui.th></x-ui.th>

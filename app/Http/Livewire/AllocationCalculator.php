@@ -217,4 +217,14 @@ class AllocationCalculator extends Component
 
         return false;
     }
+
+
+    public function checkPercentagesSet():bool
+    {
+
+        $totalPercentagesValue = array_sum(data_get($this->mappedAccounts, '*.*.percent', 0));
+
+        return $totalPercentagesValue > 0;
+
+    }
 }
