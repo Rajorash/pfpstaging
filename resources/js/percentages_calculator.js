@@ -19,6 +19,10 @@ $(function () {
                 ? parseInt($.cookie('percentage_autoSubmitDataDelay'))
                 : this.autoSubmitDataDelayDefault;
 
+            this.autoSubmitDataAllow = $.cookie('percentage_autoSubmitDataAllow') !== undefined
+                ? $.cookie('percentage_autoSubmitDataAllow')
+                : this.autoSubmitDataAllowDefault;
+
             this.timeOutSeconds = 1000 * parseInt(this.autoSubmitDataDelay);
         }
 
@@ -56,7 +60,8 @@ $(function () {
             }
 
             if ($this.changesCounter) {
-                $('#' + $this.changesCounterId).html('...changes ready for calculation <b>' + $this.changesCounter + '</b>').show();
+                $('#' + $this.changesCounterId).html('...changes ready for calculation: <b>' + $this.changesCounter + '</b>'
+                    + '<br/>' + $this.renderButtonForManualSubmit()).show();
             } else {
                 $('#' + $this.changesCounterId).html('').hide();
             }
@@ -77,6 +82,15 @@ $(function () {
 
             $.cookie('percentage_autoSubmitDataDelay', $this.autoSubmitDataDelay, {expires: 14});
         }
+
+        updateAutoSubmitDataStatus() {
+            super.updateAutoSubmitDataStatus();
+
+            let $this = this;
+
+            $.cookie('percentage_autoSubmitDataAllow', $this.autoSubmitDataAllow, {expires: 14});
+        }
+
     }
 
     if ($('#percentagesTablePlace').length) {

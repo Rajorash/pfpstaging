@@ -19,7 +19,7 @@ class CreateRolesTables extends Migration
             $table->string('label')->nullable();
             $table->timestamps();
         });
-        
+
         Schema::create('role_user', function (Blueprint $table) {
             $table->primary(['user_id', 'role_id']);
             $table->bigInteger('user_id')->unsigned();
@@ -34,14 +34,14 @@ class CreateRolesTables extends Migration
             ->onDelete('cascade'); // If a role is deleted, cascade to delete their pivot table rows
             $table->timestamps();
         });
-        
+
         Schema::create('permissions', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name')->unique();
             $table->string('label')->nullable();
             $table->timestamps();
         });
-        
+
         Schema::create('permission_role', function (Blueprint $table) {
             $table->primary(['permission_id', 'role_id']);
             $table->bigInteger('permission_id')->unsigned();
@@ -65,8 +65,9 @@ class CreateRolesTables extends Migration
      */
     public function down()
     {
-        Schema::table('roles', function (Blueprint $table) {
-            
-        });
+        Schema::dropIfExists('permission_role');
+        Schema::dropIfExists('permissions');
+        Schema::dropIfExists('role_user');
+        Schema::dropIfExists('roles');
     }
 }

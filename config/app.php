@@ -123,6 +123,9 @@ return [
 
     'cipher' => 'AES-256-CBC',
 
+    //Enable or Disable using Cache
+    'pfp_cache' => env('APP_PFP_CACHE_ENABLE', false),
+
     /*
     |--------------------------------------------------------------------------
     | Autoloaded Service Providers

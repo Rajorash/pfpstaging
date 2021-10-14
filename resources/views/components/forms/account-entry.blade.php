@@ -15,8 +15,8 @@
 >
     <thead>
     <tr class="border-light_blue border-t border-b">
-        <x-ui.table-th padding="pl-12 pr-2 py-4 text-right">Account</x-ui.table-th>
-        <x-ui.table-th>Current Balance</x-ui.table-th>
+        <x-ui.table-th padding="pl-12 pr-2 py-4 text-right">{{__('Account')}}</x-ui.table-th>
+        <x-ui.table-th>{{__('Current Balance')}}</x-ui.table-th>
     </tr>
     </thead>
     <x-ui.table-tbody>
@@ -33,14 +33,14 @@
                 </td>
             </tr>
         @empty
-            No accounts currently created.
+            {{__('No accounts currently created.')}}
         @endforelse
         <tr class="border-transparent border-0">
             <td class="pt-1"></td>
             <td class="pt-1">
                 <button type="submit" class='text-center select-none border font-normal whitespace-no-wrap
                rounded-lg py-2 px-6 leading-normal no-underline bg-blue text-white hover:bg-dark_gray2'>
-                    Submit Balances
+                    {{__('Submit Balances')}}
                 </button>
             </td>
         </tr>

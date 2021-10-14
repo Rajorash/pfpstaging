@@ -1,5 +1,5 @@
 @if (!$phase)
-    <x-ui.error class="p-12 block">Date is to fare or late. Set another date.</x-ui.error>
+    <x-ui.error class="p-12 block">{{__('Date is to fare or late. Set another date.')}}</x-ui.error>
 @else
     <x-ui.table-table class="cursor-fill-data relative mb-2">
         <thead>
@@ -11,7 +11,7 @@
 
             @foreach($period as $date)
                 @php
-                    $date = Carbon\Carbon::parse($date);
+                    $date = Carbon\Carbon::parse($date, 'Y-m-d H:i:s');
                 @endphp
                 <x-ui.table-th class="text-center {{ $date->isToday() ? 'text-blue': 'text-dark_gray' }} sticky top-0"
                                baseClass="min-w-24 font-normal bg-white z-20">
@@ -45,7 +45,9 @@
                         @endphp
                         <tr class="bg-indigo-100 hover:bg-yellow-100 border-light_blue divide-x">
                             <x-ui.table-td padding="p-1 pl-2"
-                                           baseClass="text-dark_gray sticky left-0 bg-indigo-100 z-10">{{$data['name']}}</x-ui.table-td>
+                                           baseClass="text-dark_gray sticky left-0 bg-indigo-100 z-10">
+                                {{$data['name']}}
+                            </x-ui.table-td>
                             {{--                        <td class="border border-gray-300 whitespace-nowrap pl-2">{{$data['name']}}</td>--}}
                             @foreach($period as $date)
                                 @php
@@ -56,7 +58,7 @@
                                         class="px-2 py-1 text-right bg-transparent border-none w-full
                                     focus:bg-gray-100 disabled:opacity-90"
                                         id="account_{{$id}}_{{$date->format('Y-m-d')}}"
-                                        type="text"
+                                        type="text" pattern="[0-9]{10}"
                                         value="{{number_format($data[$date->format('Y-m-d')], 0, '.', '')}}"
                                         data-row="{{$rowIndex}}"
                                         data-column="{{$columnIndex}}"
@@ -72,30 +74,69 @@
                                 @endphp
                                 <tr class="bg-white hover:bg-yellow-100 border-light_blue divide-x">
                                     <x-ui.table-td padding="p-1 pr-2 pl-6"
-                                                   baseClass="text-dark_gray whitespace-nowrap sticky left-0 bg-white z-10">{{$ext_data['name']}}</x-ui.table-td>
+                                                   baseClass="text-dark_gray whitespace-nowrap sticky left-0 bg-white z-10">
+                                        {{$ext_data['name']}}
+                                    </x-ui.table-td>
                                     @foreach($period as $date)
                                         @php
                                             $columnIndex++;
                                         @endphp
-                                        <x-ui.table-td class="text-right hover:bg-yellow-100" padding="p-0"
-                                                       attr="disabled">
+                                        <x-ui.table-td class="text-right hover:bg-yellow-100" padding="p-0">
                                             <input
                                                 class="px-2 py-1 w-full text-right bg-transparent border-0
                                             border-transparent outline-none
                                             focus:outline-none focus:ring-1 focus:shadow-none disabled:opacity-90
-                                            @if(!$business->license->checkLicense) focus:bg-gray-100
-                                            @else pfp_copy_move_element hover:bg-yellow-50 focus:bg-yellow-50
+                                            @if(!$business->license->checkLicense)
+                                                    focus:bg-gray-100
+                                            @else
+                                                    pfp_copy_move_element hover:bg-yellow-50 focus:bg-yellow-50
                                             @endif "
                                                 @if($business->license->checkLicense) draggable="true" @endif
                                                 id="flow_{{$key}}_{{$date->format('Y-m-d')}}"
                                                 data-row="{{$rowIndex}}"
                                                 data-column="{{$columnIndex}}"
-                                                type="text"
+                                                type="text" pattern="[0-9]{10}"
                                                 value="{{number_format($ext_data[$date->format('Y-m-d')], 0, '.', '')}}"
                                                 @if(!$business->license->checkLicense) disabled @endif/>
                                         </x-ui.table-td>
                                     @endforeach
                                 </tr>
+                                @if (isset($recurring[$key]))
+                                    @foreach($recurring[$key] as $recurringTitle => $recurringData)
+                                        @php
+                                            $columnIndex = 0;
+                                        @endphp
+                                        <tr class="bg-white hover:bg-yellow-100 border-light_blue divide-x text-xs">
+                                            <x-ui.table-td padding="p-1 pr-2 pl-6"
+                                                           baseClass="text-dark_gray whitespace-nowrap sticky left-0 bg-white z-10">
+                                                <x-icons.recurring class="w-3 h-auto inline mr-1"/>
+                                                <span
+                                                    title="{{$recurringData['description']}}">{{$recurringTitle}}</span>
+                                            </x-ui.table-td>
+                                            @foreach($period as $date)
+                                                @php
+                                                    $columnIndex++;
+                                                    $value = $recurringData['forecast'][$date->format('Y-m-d')] ?? 0;
+                                                @endphp
+                                                <x-ui.table-td class="text-right hover:bg-yellow-100" padding="p-0">
+                                                    @if($value)
+                                                        <input
+                                                            class="px-2 py-1 w-full text-right bg-transparent border-0
+                                            border-transparent outline-none cursor-copy pfp_forecast_value select-none
+                                            focus:outline-none focus:ring-1 focus:shadow-none disabled:opacity-90
+                                            text-xs"
+                                                            disabled
+                                                            data-for_row="{{$rowIndex}}"
+                                                            data-for_column="{{$columnIndex}}"
+                                                            type="text" pattern="[0-9]{10}"
+                                                            value="{{number_format($value, 0, '.', '')}}"
+                                                        />
+                                                    @endif
+                                                </x-ui.table-td>
+                                            @endforeach
+                                        </tr>
+                                    @endforeach
+                                @endif
                             @endif
                         @endforeach
                     @endforeach
@@ -113,22 +154,39 @@
                             @foreach($period as $date)
                                 @php
                                     $columnIndex++;
+                                    $manual = $data['manual'][$date->format('Y-m-d')] ?? null;
                                 @endphp
                                 <x-ui.table-td class="text-right" padding="p-0">
                                     <input
                                         class="px-2 py-1 w-full text-right bg-transparent border-none disabled:opacity-90
-                                        @if(!$business->license->checkLicense) focus:bg-gray-100
-                                        @else pfp_copy_move_element hover:bg-yellow-50 focus:bg-yellow-50
-                                        @endif "
-                                        @if($business->license->checkLicense) draggable="true" @endif
-                                        type="text"
+                                        @if ($manual)
+                                            bg-yellow-300 hover:bg-yellow-300 focus:bg-yellow-300
+                                            @if(!$business->license->checkLicense)
+                                            focus:bg-gray-100
+@else
+                                            __pfp_copy_move_element hover:bg-yellow-50 focus:bg-yellow-50
+@endif
+                                        @endif
+                                            "
+                                        {{--                                        @if($business->license->checkLicense && !$manual)--}}
+                                        {{--                                        draggable="true"--}}
+                                        {{--                                        @endif--}}
+
+                                        @if ($manual)
+                                        title="Balance overridden"
+                                        @endif
+
+                                        type="text" pattern="[0-9]{10}"
                                         id="account_{{$id}}_{{$date->format('Y-m-d')}}"
                                         value="{{is_array($data[$date->format('Y-m-d')])
                                                 ? number_format($data[$date->format('Y-m-d')][0], 0, '.', '')
                                                 : number_format($data[$date->format('Y-m-d')], 0, '.', '')}}"
                                         data-row="{{$rowIndex}}"
                                         data-column="{{$columnIndex}}"
-                                        @if(!$business->license->checkLicense) disabled @endif/>
+                                        {{--                                        @if($manual) disabled @endif--}}
+                                        {{--                                        @if(!$business->license->checkLicense) disabled @endif--}}
+                                        disabled
+                                    />
                                 </x-ui.table-td>
                             @endforeach
                         </tr>
@@ -142,7 +200,7 @@
                                     <tr class="bg-white hover:bg-yellow-100 border-light_blue divide-x">
                                         <x-ui.table-td padding="p-1 pr-2 pl-6"
                                                        class="text-left whitespace-nowrap sticky left-0 bg-white z-10">
-                                            Transfer In
+                                            {{__('Transfer In')}}
                                         </x-ui.table-td>
                                         @foreach($period as $date)
                                             @php
@@ -152,7 +210,7 @@
                                                 <input
                                                     class="px-2 py-1 w-full text-right bg-transparent border-none
                                                     focus:bg-gray-100 disabled:opacity-90"
-                                                    type="text"
+                                                    type="text" pattern="[0-9]{10}"
                                                     value="{{number_format($ext_data[$date->format('Y-m-d')], 0, '.', '')}}"
                                                     data-row="{{$rowIndex}}"
                                                     data-column="{{$columnIndex}}"
@@ -178,7 +236,7 @@
                                                 <input
                                                     class="px-2 py-1 w-full text-right bg-transparent border-none
                                                     focus:bg-gray-100 disabled:opacity-90"
-                                                    type="text"
+                                                    type="text" pattern="[0-9]{10}"
                                                     value="{{number_format($ext_data[$date->format('Y-m-d')], 0, '.', '')}}"
                                                     data-row="{{$rowIndex}}"
                                                     data-column="{{$columnIndex}}"
@@ -210,7 +268,7 @@
                                                        @if($business->license->checkLicense) draggable="true" @endif
 
                                                        id="flow_{{$key}}_{{$date->format('Y-m-d')}}"
-                                                       type="text"
+                                                       type="text" pattern="[0-9]{10}"
                                                        data-row="{{$rowIndex}}"
                                                        data-column="{{$columnIndex}}"
                                                        value="{{number_format($ext_data[$date->format('Y-m-d')], 0, '.', '')}}"
@@ -218,6 +276,41 @@
                                             </x-ui.table-td>
                                         @endforeach
                                     </tr>
+                                    @if (isset($recurring[$key]))
+                                        @foreach($recurring[$key] as $recurringTitle => $recurringData)
+                                            @php
+                                                $columnIndex = 0;
+                                            @endphp
+                                            <tr class="bg-white hover:bg-yellow-100 border-light_blue divide-x text-xs">
+                                                <x-ui.table-td padding="p-1 pr-2 pl-6"
+                                                               baseClass="text-dark_gray whitespace-nowrap sticky left-0 bg-white z-10">
+                                                    <x-icons.recurring class="w-3 h-auto inline mr-1"/>
+                                                    {{$recurringTitle}}
+                                                </x-ui.table-td>
+                                                @foreach($period as $date)
+                                                    @php
+                                                        $columnIndex++;
+                                                        $value = $recurringData['forecast'][$date->format('Y-m-d')] ?? 0;
+                                                    @endphp
+                                                    <x-ui.table-td class="text-right hover:bg-yellow-100" padding="p-0">
+                                                        @if($value)
+                                                            <input
+                                                                class="px-2 py-1 w-full text-right bg-transparent border-0
+                                                                        border-transparent outline-none cursor-copy pfp_forecast_value select-none
+                                                                        focus:outline-none focus:ring-1 focus:shadow-none disabled:opacity-90
+                                                                        text-xs"
+                                                                draggable="true"
+                                                                data-for_row="{{$rowIndex}}"
+                                                                data-for_column="{{$columnIndex}}"
+                                                                type="text" pattern="[0-9]{10}"
+                                                                value="{{number_format($value, 0, '.', '')}}"
+                                                            />
+                                                        @endif
+                                                    </x-ui.table-td>
+                                                @endforeach
+                                            </tr>
+                                        @endforeach
+                                    @endif
                                 @endif
                             @endif
                         @endforeach

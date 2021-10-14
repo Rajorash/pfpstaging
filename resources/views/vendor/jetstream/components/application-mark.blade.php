@@ -1,1 +1,1 @@
-<img src="{{asset('/images/logo.png')}}" class="h-16"/>
+<img src="{{mix('/images/logo.png')}}" class="h-16"/>

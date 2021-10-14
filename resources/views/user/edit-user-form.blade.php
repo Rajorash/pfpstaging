@@ -1,7 +1,7 @@
 <div class="livewire-wrapper">
     @if ($saved)
         <div class="mt-4 px-4 py-2 bg-white rounded-lg border border-green  text-left" x-data="{}">
-            User {{$this->user->name}} saved successfully.
+            {{__('User')}} {{$this->user->name}} {{__('saved successfully.')}}
         </div>
     @endif
     <form wire:submit.prevent="save">
@@ -74,7 +74,7 @@
             <div class="table-row">
                 <div class="table-cell w-full pb-4 text-right">
                     <x-ui.button-normal class="uppercase" type="button" wire:loading.attr="disabled">
-                        Save User
+                        {{__('Save User')}}
                     </x-ui.button-normal>
                 </div>
             </div>

@@ -2,12 +2,8 @@
 
 namespace App\Models;
 
-use Eloquent;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 
 /**
@@ -16,33 +12,35 @@ use Illuminate\Support\Facades\Cache;
  * @property int $id
  * @property string $name
  * @property int|null $owner_id
- * @property Carbon|null $created_at
- * @property Carbon|null $updated_at
- * @property Carbon|null $deleted_at
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property string|null $start_date
- * @property-read Collection|BankAccount[] $accounts
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\BankAccount[] $accounts
  * @property-read int|null $accounts_count
- * @property-read Collaboration|null $collaboration
- * @property-read User|\App\Models\null; $advisor
+ * @property-read \App\Models\Collaboration|null $collaboration
+ * @property-read \App\Models\User|\App\Models\null; $advisor
  * @property-read null|int $current_phase
- * @property-read License|null $license
- * @property-read User|null $owner
- * @property-read Collection|Phase[] $rollout
+ * @property-read \App\Models\License|null $license
+ * @property-read \App\Models\User|null $owner
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Pipeline[] $pipelines
+ * @property-read int|null $pipelines_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Phase[] $rollout
  * @property-read int|null $rollout_count
- * @method static Builder|Business newModelQuery()
- * @method static Builder|Business newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Business newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Business newQuery()
  * @method static \Illuminate\Database\Query\Builder|Business onlyTrashed()
- * @method static Builder|Business query()
- * @method static Builder|Business whereCreatedAt($value)
- * @method static Builder|Business whereDeletedAt($value)
- * @method static Builder|Business whereId($value)
- * @method static Builder|Business whereName($value)
- * @method static Builder|Business whereOwnerId($value)
- * @method static Builder|Business whereStartDate($value)
- * @method static Builder|Business whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Business query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Business whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Business whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Business whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Business whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Business whereOwnerId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Business whereStartDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Business whereUpdatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|Business withTrashed()
  * @method static \Illuminate\Database\Query\Builder|Business withoutTrashed()
- * @mixin Eloquent
+ * @mixin \Eloquent
  */
 class Business extends Model
 {
@@ -50,27 +48,27 @@ class Business extends Model
 
     protected $fillable = [];
 
-    public function owner()
+    public function owner(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function collaboration()
+    public function collaboration(): \Illuminate\Database\Eloquent\Relations\HasOne
     {
         return $this->hasOne(Collaboration::class);
     }
 
-    public function license()
+    public function license(): \Illuminate\Database\Eloquent\Relations\HasOne
     {
         return $this->hasOne(License::class);
     }
 
-    public function accounts()
+    public function accounts(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
-        return $this->hasMany(BankAccount::class);
+        return $this->hasMany(BankAccount::class)->with(['allocations']);
     }
 
-    public function rollout()
+    public function rollout(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(Phase::class);
     }
@@ -94,11 +92,13 @@ class Business extends Model
         $phaseIds = $this->rollout()->pluck('id');
 
         $key = 'allocations_'.$phaseIds->implode('_');
-        $allocations = Cache::get($key);
+        $allocations = \Config::get('app.pfp_cache') ? Cache::get($key) : null;
 
         if ($allocations === null) {
             $allocations = Allocation::whereIn('phase_id', $phaseIds)->get();
-            Cache::put($key, $allocations);
+            if (\Config::get('app.pfp_cache')) {
+                Cache::put($key, $allocations);
+            }
         }
 
         return $allocations;
@@ -113,18 +113,25 @@ class Business extends Model
     public function getPhaseIdByDate($date)
     {
         $key = 'getPhaseIdByDate_'.$this->id.'_'.$date;
-        $phase = Cache::get($key);
+        $phase = \Config::get('app.pfp_cache') ? Cache::get($key) : null;
 
         if ($phase === null) {
-            $phase = $this->rollout()->where('end_date', '>=', $date)->first();
+            $phase = $this
+                ->rollout()
+                ->where('end_date', '>=', $date)
+                ->first();
 
             // if the final phase has already expired, default back to phase
             // with the latest end date
             if (empty($phase)) {
-                $phase = $this->rollout()->sortBy('end_date')->last();
+                $phase = $this->rollout()
+                    ->orderByDesc('end_date')
+                    ->first();
             }
 
-            Cache::put($key, $phase, now()->addHours(1));
+            if (\Config::get('app.pfp_cache')) {
+                Cache::put($key, $phase, now()->addHours(1));
+            }
         }
 
         return $phase ? $phase->id : null;
@@ -156,11 +163,14 @@ class Business extends Model
     {
         $key = 'getAccountIdByType_'.$accountType;
 
-        $account = Cache::get($key);
+        $account = \Config::get('app.pfp_cache') ? Cache::get($key) : null;
 
         if ($account === null) {
             $account = $this->accounts()->where('type', '=', $accountType)->first();
-            Cache::put($key, $account, now()->addMinutes(10));
+
+            if (\Config::get('app.pfp_cache')) {
+                Cache::put($key, $account, now()->addMinutes(10));
+            }
         }
 
         return $account->id;
@@ -176,13 +186,24 @@ class Business extends Model
     {
         $key = 'getAllAccountIdsByType_'.$accountType;
 
-        $accountIds = Cache::get($key);
+        $accountIds = \Config::get('app.pfp_cache') ? Cache::get($key) : null;
 
         if ($accountIds === null) {
-            $accountIds = $this->accounts()->where('type', '=', $accountType)->pluck('id')->toArray();
-            Cache::put($key, $accountIds, now()->addMinutes(10));
+            $accountIds = $this->accounts()
+                ->where('type', '=', $accountType)
+                ->pluck('id')
+                ->toArray();
+
+            if (\Config::get('app.pfp_cache')) {
+                Cache::put($key, $accountIds, now()->addMinutes(10));
+            }
         }
 
         return $accountIds;
+    }
+
+    public function pipelines(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Pipeline::class);
     }
 }

@@ -6,6 +6,7 @@ export class calculatorCore {
         this.changesCounter = 0;
         this.changesCounterId = 'processCounter';
         this.lastCoordinatesElementId = '';
+        this.elementTablePlace = '';
 
         this.elementLoadingSpinner = $('#loadingSpinner');
 
@@ -20,9 +21,14 @@ export class calculatorCore {
         this.delayProgressInterval = undefined;
         this.delayProgressTimeIntervalMiliseconds = 20;
 
+        this.autoSubmitDataAllowId = 'allow_auto_submit_data';
+        this.autoSubmitDataAllow = false;
+        this.autoSubmitDataAllowDefault = false;
         this.autoSubmitDataDelayId = 'delay_submit_data';
         this.autoSubmitDataDelayDefault = 2;
         this.autoSubmitDataDelay = this.autoSubmitDataDelayDefault;
+
+        this.manualSubmitDataId = 'manualSubmitData';
 
         this.timeOutSeconds = 1000 * parseInt(this.autoSubmitDataDelay);  //default delay before send data to server
 
@@ -31,8 +37,11 @@ export class calculatorCore {
         this.heightMode = this.heightModeDefault;
 
         this.copyMoveClassName = 'pfp_copy_move_element';
+        this.copyMoveCtrlKeyEnabled = false;
 
         this.windowCoordinates = {};
+
+        this.hideTableDuringRecalculate = false;
     }
 
     init() {
@@ -54,9 +63,22 @@ export class calculatorCore {
             $this.timeOutSeconds = 1000 * parseInt($this.autoSubmitDataDelay);
         });
 
+        $(document).on('change', '#' + $this.autoSubmitDataAllowId, function (event) {
+            $this.autoSubmitDataAllow = $(this).is(':checked');
+            $this.updateAutoSubmitDataStatus();
+        });
+
         $(document).on('change', $this.heightModeDefaultSelector, function (event) {
             $this.heightMode = $(this).val();
             $this.updateHeightMode();
+        });
+
+        $(document).on('click', '#' + $this.manualSubmitDataId, function () {
+            $this.collectData();
+            $this.ajaxLoadWorker();
+            $this.hideTableDuringRender();
+
+            return false;
         });
 
         $(document).on('dragend', '.' + $this.copyMoveClassName, function (event) {
@@ -64,9 +86,62 @@ export class calculatorCore {
             let $targetElement = $(document.elementFromPoint(event.clientX, event.clientY));
 
             if ($targetElement.hasClass($this.copyMoveClassName)) {
-                $targetElement.val($sourceElement.val()).change();
+
+                let value = parseFloat($sourceElement.val());
+                if ($this.copyMoveCtrlKeyEnabled) {
+                    //add
+                    value += parseFloat($targetElement.val());
+                } else {
+                    //replace
+                }
+
+                $targetElement.val(value).change();
             }
         });
+
+        //check and save state of Control key
+        $(window).on("keydown", function (event) {
+            if (event.which === 17) {
+                $this.copyMoveCtrlKeyEnabled = true;
+                $('.'+$this.copyMoveClassName).addClass('cursor-copy bg-yellow-300').removeClass('cursor-move');
+            }
+        }).on("keyup", function (event) {
+            $this.copyMoveCtrlKeyEnabled = false;
+            $('.'+$this.copyMoveClassName).removeClass('cursor-copy bg-yellow-300').addClass('cursor-move');
+        });
+
+        $(document).keyup(function (event) {
+            if (event.which === 13 && !$this.autoSubmitDataAllow) {
+                $this.manualSubmitData();
+            }
+        });
+
+        $(window).bind('unload', function () {
+            if ($this.debug) {
+                console.log('unload');
+            }
+
+            $this.hideTableDuringRecalculate = true;
+            $this.hideTableDuringRender();
+        });
+
+        window.onbeforeunload = function (e) {
+            if ($this.changesCounter) {
+                if ($this.debug) {
+                    console.log('onbeforeunload');
+                }
+
+                //highlight manual submit button
+                $('#' + $this.changesCounterId)
+                    .removeClass('opacity-50')
+                    .parent()
+                    .removeClass('text-dark_gray')
+                    .addClass('bg-red-400 text-white');
+
+                e.returnValue = '';
+                e.preventDefault();
+            }
+        };
     }
 
     resetData() {
@@ -120,32 +195,63 @@ export class calculatorCore {
 
         $this.collectData(event);
 
-        clearTimeout($this.timedOut);
+        if ($this.debug) {
+            console.log('Auto-submit data is: ' + $this.autoSubmitDataAllow);
+        }
 
-        $this.timedOut = setTimeout(function () {
-            $this.ajaxLoadWorker();
-        }, $this.timeOutSeconds);
+        if ($this.autoSubmitDataAllow) {
+            //auto-submit data
+
+            clearTimeout($this.timedOut);
+
+            $this.timedOut = setTimeout(function () {
+                $this.ajaxLoadWorker();
+            }, $this.timeOutSeconds);
+        }
+    }
+
+    manualSubmitData() {
+        let $this = this;
+
+        if ($this.debug) {
+            console.log('manualSubmitData');
+        }
+
+        $this.ajaxLoadWorker();
     }
 
     progressBar() {
         let $this = this;
 
+        if ($this.autoSubmitDataAllow) {
+            if ($this.debug) {
+                console.log('progressBar');
+            }
+
+            clearInterval($this.delayProgressInterval);
+
+            $('#' + $this.delayProgressId).width($('#' + $this.delayProgressId).parent().width());
+
+            $this.delayProgressInterval = setInterval(function () {
+                let width = $('#' + $this.delayProgressId).width()
+                    - $('#' + $this.delayProgressId).parent().width() / $this.timeOutSeconds * $this.delayProgressTimeIntervalMiliseconds;
+                $('#' + $this.delayProgressId).width(width);
+                if ($this.debug) {
+                    console.log('progressBar after SetInterval');
+                }
+            }, $this.delayProgressTimeIntervalMiliseconds);
+        }
+    }
+
+    hideProgressBar() {
+        let $this = this;
+
         if ($this.debug) {
-            console.log('progressBar');
+            console.log('hideProgressBar');
         }
 
         clearInterval($this.delayProgressInterval);
-
-        $('#' + $this.delayProgressId).width($('#' + $this.delayProgressId).parent().width());
-
-        $this.delayProgressInterval = setInterval(function () {
-            let width = $('#' + $this.delayProgressId).width()
-                - $('#' + $this.delayProgressId).parent().width() / $this.timeOutSeconds * $this.delayProgressTimeIntervalMiliseconds;
-            $('#' + $this.delayProgressId).width(width);
-            if ($this.debug) {
-                console.log('progressBar after SetInterval');
-            }
-        }, $this.delayProgressTimeIntervalMiliseconds);
+        $('#' + $this.delayProgressId).hide();
     }
 
     firstLoadData() {
@@ -154,6 +260,7 @@ export class calculatorCore {
         $this.collectData();
         $this.ajaxLoadWorker();
         $this.autoSubmitDataLoadData();
+        $this.autoSubmitDataLoadState();
         $this.heightModeDataLoadData();
     }
 
@@ -166,6 +273,7 @@ export class calculatorCore {
             data: $this.data,
             async: true,
             beforeSend: function () {
+                $this.hideTableDuringRender();
                 $this.showSpinner();
             },
             success: function (data) {
@@ -179,8 +287,25 @@ export class calculatorCore {
                 $this.hideSpinner();
                 $this.resetData();
                 $this.scrollToLatestPoint();
+                //only for Allocations table
+                $this.forecastAutoFillValues();
             }
         });
+    }
+
+    hideTableDuringRender() {
+        let $this = this;
+
+        if ($this.hideTableDuringRecalculate) {
+            $this.elementTablePlace.html('<div class="p-8 text-center opacity-50">...loading <span id="loading_timer_place"></span></div>');
+
+            let secondsTimer = 0;
+            let secondTimerPlace = $('#loading_timer_place');
+            setInterval(function () {
+                secondsTimer++;
+                secondTimerPlace.html('...' + secondsTimer);
+            }, 1000);
+        }
     }
 
     readLastIndexes() {
@@ -285,6 +410,12 @@ export class calculatorCore {
         $('#' + $this.autoSubmitDataDelayId).val(($this.autoSubmitDataDelay > 0 ? $this.autoSubmitDataDelay : 2));
     }
 
+    autoSubmitDataLoadState() {
+        let $this = this;
+
+        $('#' + $this.autoSubmitDataAllowId).prop('checked', $this.autoSubmitDataAllow);
+    }
+
     heightModeDataLoadData() {
         let $this = this;
 
@@ -297,6 +428,15 @@ export class calculatorCore {
     }
 
     updateHeightMode() {
+    }
+
+    updateAutoSubmitDataStatus() {
+        let $this = this;
+
+        $this.hideProgressBar();
+    }
+
+    collectData() {
     }
 
     scrollToLatestPoint() {
@@ -323,4 +463,11 @@ export class calculatorCore {
         }
     }
 
+    forecastAutoFillValues() {
+
+    }
+
+    renderButtonForManualSubmit() {
+        return '<a href="#" id="manualSubmitData" class="bg-white hover:bg-gray-100 font-bold p-2 rounded text-red-700">Submit data</a>';
+    }
 }

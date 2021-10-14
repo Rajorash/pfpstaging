@@ -21,7 +21,7 @@
                         <x-ui.button-normal
                             href="{{url('business/'.$bankAccount->business->id.'/accounts')}}">
                             <x-icons.chevron-left :class="'h-3 w-auto'"/>
-                            <span class="ml-2">Go back</span>
+                            <span class="ml-2">{{__('Go back')}}</span>
                         </x-ui.button-normal>
                     </div>
                 </x-slot>
@@ -35,16 +35,16 @@
                     <x-ui.button-normal
                         href="{{route('recurring-create', ['account'=>$bankAccount, 'flow'=> $accountFlow])}}">
                         <x-icons.add/>
-                        <span class="ml-2">Add new</span>
+                        <span class="ml-2">{{__('Add new')}}</span>
                     </x-ui.button-normal>
                 </x-slot>
             </x-ui.table-caption>
             <thead>
             <tr class="border-t border-b border-light_blue">
-                <x-ui.table-th padding="pl-12 pr-2 py-4">Title of recurring</x-ui.table-th>
-                <x-ui.table-th>Date of start</x-ui.table-th>
-                <x-ui.table-th>Date of end</x-ui.table-th>
-                <x-ui.table-th>Description of Transactions</x-ui.table-th>
+                <x-ui.table-th padding="pl-12 pr-2 py-4">{{__('Title of recurring')}}</x-ui.table-th>
+                <x-ui.table-th>{{__('Date of start')}}</x-ui.table-th>
+                <x-ui.table-th>{{__('Date of end')}}</x-ui.table-th>
+                <x-ui.table-th>{{__('Description of Transactions')}}</x-ui.table-th>
                 <x-ui.table-th></x-ui.table-th>
                 <x-ui.table-th padding="pl-2 pr-12 py-4"></x-ui.table-th>
             </tr>
@@ -72,7 +72,7 @@
                             <x-ui.button-small
                                 href="{{route('recurring-edit', ['account' => $bankAccount, 'flow' => $accountFlow, 'recurring' => $row])}}">
                                 <x-icons.edit class="w-3 h-auto mr-2"/>
-                                Edit
+                                {{__('Edit')}}
                             </x-ui.button-small>
                         </x-ui.table-td>
 
@@ -86,7 +86,7 @@
                                                    class="w-auto h-6 text-white border-transparent hover:text-white"
                                                    attr="title=Delete" type="button">
                                     <x-icons.delete class="w-3 h-auto mr-2"/>
-                                    Delete
+                                    {{__('Delete')}}
                                 </x-ui.button-small>
                             </form>
                         </x-ui.table-td>

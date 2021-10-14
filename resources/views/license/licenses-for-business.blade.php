@@ -68,7 +68,7 @@
 
                         @if(!$allowToSetLicense)
                             <p class="text-red-700">
-                                You must revoke some licenses from another business before set License here
+                                {{__('You must revoke some licenses from another business before set License here')}}
                             </p>
                         @endif
                     </div>
@@ -133,13 +133,13 @@
                 <div class="table-row">
                     <div class="table-cell w-full pb-4 text-right">
                         <x-ui.button-normal class="uppercase" type="button" wire:loading.attr="disabled">
-                            Update Licenses
+                            {{__('Update Licenses')}}
                         </x-ui.button-normal>
                     </div>
                 </div>
             </div>
         </form>
     @else
-        Access denied
+        {{__('Access denied')}}
     @endif
 </div>

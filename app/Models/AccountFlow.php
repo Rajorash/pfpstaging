@@ -3,11 +3,7 @@
 namespace App\Models;
 
 use App\Traits\Allocatable;
-use Eloquent;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Carbon;
 
 /**
  * App\Models\AccountFlow
@@ -16,23 +12,23 @@ use Illuminate\Support\Carbon;
  * @property string $label
  * @property bool $negative_flow
  * @property int $account_id
- * @property Carbon|null $created_at
- * @property Carbon|null $updated_at
- * @property-read BankAccount $account
- * @property-read Collection|Allocation[] $allocations
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\BankAccount $account
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Allocation[] $allocations
  * @property-read int|null $allocations_count
- * @property-read Collection|RecurringTransactions[] $recurringTransactions
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\RecurringTransactions[] $recurringTransactions
  * @property-read int|null $recurring_transactions_count
- * @method static Builder|AccountFlow newModelQuery()
- * @method static Builder|AccountFlow newQuery()
- * @method static Builder|AccountFlow query()
- * @method static Builder|AccountFlow whereAccountId($value)
- * @method static Builder|AccountFlow whereCreatedAt($value)
- * @method static Builder|AccountFlow whereId($value)
- * @method static Builder|AccountFlow whereLabel($value)
- * @method static Builder|AccountFlow whereNegativeFlow($value)
- * @method static Builder|AccountFlow whereUpdatedAt($value)
- * @mixin Eloquent
+ * @method static \Illuminate\Database\Eloquent\Builder|AccountFlow newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|AccountFlow newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|AccountFlow query()
+ * @method static \Illuminate\Database\Eloquent\Builder|AccountFlow whereAccountId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AccountFlow whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AccountFlow whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AccountFlow whereLabel($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AccountFlow whereNegativeFlow($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AccountFlow whereUpdatedAt($value)
+ * @mixin \Eloquent
  */
 class AccountFlow extends Model
 {
@@ -44,17 +40,17 @@ class AccountFlow extends Model
         'negative_flow' => 'boolean'
     ];
 
-    public function account()
+    public function account(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(BankAccount::class, 'account_id', 'id');
     }
 
-    public function isNegative()
+    public function isNegative(): bool
     {
         return $this->negative_flow;
     }
 
-    public function recurringTransactions()
+    public function recurringTransactions(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(RecurringTransactions::class, 'account_id', 'id');
     }

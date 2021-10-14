@@ -8,7 +8,7 @@ use App\Models\User;
 trait HasUserRoles
 {
 
-    public function roles()
+    public function roles(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
         return $this->belongsToMany(Role::class)->withTimestamps();
     }
@@ -22,7 +22,7 @@ trait HasUserRoles
         }
     }
 
-    public function advisorsByRegionalAdmin()
+    public function advisorsByRegionalAdmin(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
         return $this->belongsToMany(
             User::class,
@@ -32,7 +32,7 @@ trait HasUserRoles
         );
     }
 
-    public function regionalAdminByAdvisor()
+    public function regionalAdminByAdvisor(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
         return $this->belongsToMany(
             User::class,
@@ -42,7 +42,7 @@ trait HasUserRoles
         );
     }
 
-    public function advisorByClient()
+    public function advisorByClient(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
         return $this->belongsToMany(
             User::class,
@@ -52,7 +52,7 @@ trait HasUserRoles
         );
     }
 
-    public function clientsByAdvisor()
+    public function clientsByAdvisor(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
         return $this->belongsToMany(
             User::class,
@@ -85,7 +85,7 @@ trait HasUserRoles
      *
      * @return boolean
      */
-    public function isSuperAdmin()
+    public function isSuperAdmin(): bool
     {
         if (is_null($this->roles->firstWhere('name', self::ROLE_SUPERADMIN))) {
             return false;
@@ -99,7 +99,7 @@ trait HasUserRoles
      *
      * @return boolean
      */
-    public function isRegionalAdmin()
+    public function isRegionalAdmin(): bool
     {
         if (is_null($this->roles->firstWhere('name', self::ROLE_ADMIN))) {
             return false;
@@ -113,7 +113,7 @@ trait HasUserRoles
      *
      * @return boolean
      */
-    public function isAdvisor()
+    public function isAdvisor(): bool
     {
         if (is_null($this->roles->firstWhere('name', self::ROLE_ADVISOR))) {
             return false;
@@ -127,9 +127,24 @@ trait HasUserRoles
      *
      * @return boolean
      */
-    public function isClient()
+    public function isClient(): bool
     {
         if (is_null($this->roles->firstWhere('name', self::ROLE_CLIENT))) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Returns true if the user has the passed role name
+     *
+     * @param [type] $role_name
+     * @return boolean
+     */
+    public function hasRole($role_name): bool
+    {
+        if (is_null($this->roles->firstWhere('name', $role_name))) {
             return false;
         }
 

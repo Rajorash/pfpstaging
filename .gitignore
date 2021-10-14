@@ -16,5 +16,9 @@ php-error.log
 .idea/workspace.xml
 .idea/pfp.iml
 .idea/php.xml
+_ide_helper.php
+_ide_helper_*.php
 /clear.cmd
 /.php-error.log
+/.phpstorm.meta.php
+/.htaccess

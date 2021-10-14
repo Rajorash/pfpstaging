@@ -1,8 +1,8 @@
 <x-app-layout>
     <x-slot name="header">
-        Users
+        {{__('Users')}}
         <x-icons.chevron-right :class="'h-4 w-auto inline-block px-2'"/>
-        Edit User
+        {{__('Edit User')}}
     </x-slot>
 
 
@@ -10,13 +10,13 @@
 
         <x-ui.table-table>
             <x-ui.table-caption class="pt-12 pb-6 px-48 lg:px-52 xl:px-60 2xl:px-72 relative relative">
-                Edit User {{$user->name}}
+                {{__('Edit User')}} {{$user->name}}
 
                 <x-slot name="left">
                     <div class="absolute left-12 top-12">
                         <x-ui.button-normal href="{{route('users')}}">
                             <x-icons.chevron-left :class="'h-3 w-auto'"/>
-                            <span class="ml-2">Go back</span>
+                            <span class="ml-2">{{__('Go back')}}</span>
                         </x-ui.button-normal>
                     </div>
                 </x-slot>

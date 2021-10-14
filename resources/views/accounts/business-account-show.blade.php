@@ -1,12 +1,12 @@
 <div class="livewire-wrapper">
     <x-ui.table-table>
         <x-ui.table-caption>
-            <span>{{$business->name}} Bank Accounts</span>
+            <span>{{$business->name}} {{__('Bank Accounts')}}</span>
 
             <x-slot name="right">
                 <x-ui.button-normal href="{{url(Request::path().'/create')}}">
                     <x-icons.document-add/>
-                    <span class="ml-2">New Account</span>
+                    <span class="ml-2">{{__('New Account')}}</span>
                 </x-ui.button-normal>
             </x-slot>
 
@@ -14,9 +14,9 @@
 
         <thead>
         <tr class="border-t border-b border-light_blue">
-            <x-ui.table-th padding="pl-12 pr-2 py-4">Account</x-ui.table-th>
-            <x-ui.table-th>Flows</x-ui.table-th>
-            <x-ui.table-th>Edit Account</x-ui.table-th>
+            <x-ui.table-th padding="pl-12 pr-2 py-4">{{__('Account')}}</x-ui.table-th>
+            <x-ui.table-th>{{__('Flows')}}</x-ui.table-th>
+            <x-ui.table-th>{{__('Edit Account')}}</x-ui.table-th>
         </tr>
         </thead>
 
@@ -30,16 +30,16 @@
                     </x-ui.table-td>
 
                     <x-ui.table-td class="align-top">
-                        <div class="pb-2 text-lg">Account Flows</div>
+                        <div class="pb-2 text-lg">{{__('Account Flows')}}</div>
                         @forelse($acc->flows as $flow)
                             <div class="table w-full mb-2">
-                                <div class="table-row hover:bg-gray-100 w-full text-sm">
+                                <div class="table-row w-full text-sm hover:bg-gray-100">
                                     <div
                                         class="table-cell px-2 pb-1 rounded-tl-lg rounded-bl-lg text-{{$flow->isNegative() ? 'red-500' : 'green' }}">
                                         {{ $flow->label }}
                                     </div>
                                     @if(auth()->user()->isAdvisor() || auth()->user()->isClient())
-                                        <div class="table-cell px-2 pb-1 w-10">
+                                        <div class="table-cell w-10 px-2 pb-1">
                                             <div class="flex">
                                                 @php
                                                     $recurringTransactionsCount = count($flow->recurringTransactions);
@@ -59,7 +59,7 @@
                                             </div>
                                         </div>
                                     @endif
-                                    <div class="table-cell px-2 pb-1 w-10">
+                                    <div class="table-cell w-10 px-2 pb-1">
                                         <x-ui.button-small title="Edit"
                                                            class="w-auto h-6 text-light_purple hover:text-purple-700"
                                                            background="bg-transparent hover:bg-transparent border-transparent border-transparent"
@@ -67,7 +67,7 @@
                                             <x-icons.edit class="w-3 h-auto"/>
                                         </x-ui.button-small>
                                     </div>
-                                    <div class="table-cell px-2 pb-1 rounded-tr-lg rounded-br-lg w-10">
+                                    <div class="table-cell w-10 px-2 pb-1 rounded-tr-lg rounded-br-lg">
                                         <form class="inline-block"
                                               action="{{url('/accounts/'.$acc->id.'/flow/'.$flow->id)}}"
                                               method="POST">
@@ -83,7 +83,7 @@
                                 </div>
                             </div>
                         @empty
-                            <div class="">No flows added.</div>
+                            <div>{{__('No flows added.')}}</div>
                         @endforelse
                     </x-ui.table-td>
 
@@ -94,14 +94,14 @@
                                     <x-ui.button-small background="bg-green hover:bg-dark_gray2"
                                                        href="{{url('/accounts/'.$acc->id.'/create-flow')}}">
                                         <x-icons.add class="w-3 h-auto mr-2"/>
-                                        Add Flow
+                                        {{__('Add Flow')}}
                                     </x-ui.button-small>
                                 </div>
                                 <div class="table-cell w-16 pb-2 pr-4">
                                     <x-ui.button-small
                                         href="{{url(Request::path().'/'.$acc->id.'/edit')}}">
                                         <x-icons.edit class="w-3 h-auto mr-2"/>
-                                        Edit
+                                        {{__('Edit')}}
                                     </x-ui.button-small>
                                 </div>
                                 <div class="table-cell w-16 pb-2">
@@ -114,7 +114,7 @@
                                                     type="button"
                                                     wire:click="deleteAccount({{$acc->id}})">
                                                     <x-icons.confirm class="w-3 h-auto mr-2"/>
-                                                    Confirm&nbsp;Delete?
+                                                    {{__('Confirm Delete?')}}
                                                 </x-ui.button-small>
                                             @else
                                                 <x-ui.button-small
@@ -122,7 +122,7 @@
                                                     type="button"
                                                     wire:click="confirmDeleteAccount({{$acc->id}})">
                                                     <x-icons.delete class="w-3 h-auto mr-2"/>
-                                                    Delete
+                                                    {{__('Delete')}}
                                                 </x-ui.button-small>
                                             @endif
                                         </div>
@@ -136,7 +136,7 @@
             @empty
                 <tr>
                     <x-ui.table-td attr="colspan=3" class="text-center">
-                        No accounts created.
+                        {{__('No accounts created.')}}
                     </x-ui.table-td>
                 </tr>
             @endforelse

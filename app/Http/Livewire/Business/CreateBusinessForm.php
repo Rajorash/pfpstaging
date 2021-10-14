@@ -3,10 +3,14 @@
 namespace App\Http\Livewire\Business;
 
 use App\Events\BusinessProcessed;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Models\Business;
 use App\Models\License;
+use Illuminate\View\View;
 use Livewire\Component;
 use Carbon\Carbon;
 
@@ -19,13 +23,13 @@ class CreateBusinessForm extends Component
      *
      * @var boolean
      */
-    public $isOpen = false;
+    public bool $isOpen = false;
 
     /**
      * Boolean flag to mark the form failed due to
      * limitations or missing requirements
      */
-    public $failure = false;
+    public bool $failure = false;
 
     /**
      * A message to be displayed explaining the failure
@@ -38,23 +42,23 @@ class CreateBusinessForm extends Component
      *
      * @var string
      */
-    public $businessname;
+    public string $businessname = '';
 
     /**
      * The email of the user to attach the business to
      * after creation. Must exist in the system already
      * for validation.
      *
-     * @var [type]
+     * @var string
      */
-    public $email;
+    public string $email = '';
 
     /**
      * Validation rules for form fields.
      *
      * @var array
      */
-    protected $rules = [
+    protected array $rules = [
         'businessname' => 'required|string|min:4|unique:businesses,name',
         'email' => [
             'nullable',
@@ -72,12 +76,12 @@ class CreateBusinessForm extends Component
      *
      * @var array
      */
-    protected $messages = [
+    protected array $messages = [
         'email.exists' => "That email is not registered."
     ];
 
-    public $phaseStart;
-    public $phaseStartMin;
+    public string $phaseStart;
+    public string $phaseStartMin;
 
     /**
      * Function fires on initial load and check
@@ -118,19 +122,17 @@ class CreateBusinessForm extends Component
         $this->dispatchBrowserEvent('creating-business');
     }
 
-
     /**
-     * Validates the fields submitted and upon success will attempt
-     * to create and assign the business.
-     *
-     * @return void
+     * @return Application|RedirectResponse|Redirector
      */
-    public function submitForm()
+    public function submitForm(): Redirector
     {
         // validate the form fields, using rules set under $rules
         $data = $this->validate();
 
         $this->dispatchBrowserEvent('processing-business');
+
+        $owner = null;
 
         if ($data['email']) {
             $owner = User::firstWhere('email', $data['email']);
@@ -167,10 +169,12 @@ class CreateBusinessForm extends Component
         $this->isOpen = false;
 
         return redirect("/business");
-
     }
 
-    public function render()
+    /**
+     * @return View
+     */
+    public function render(): View
     {
         return view('business.create-business-form');
     }
@@ -181,18 +185,15 @@ class CreateBusinessForm extends Component
      * @param  User  $user
      * @return void
      */
-    private function validateAdvisorRole(User $user)
+    private function validateAdvisorRole(User $user): void
     {
         // validate that the user is an advisor and so can create businesses
         if ($user->isAdvisor()) {
-            return true;
+            return;
         }
 
         $this->failure = true;
         $this->failureMessage = 'Only advisors can create new businesses and assign them to users.';
-
-        return false;
-
     }
 
     /**
@@ -201,7 +202,7 @@ class CreateBusinessForm extends Component
      * @param  User  $user
      * @return void
      */
-    private function validateClientRole(User $user)
+    private function validateClientRole(User $user): bool
     {
         // validate that the user is an advisor and so can create businesses
         if ($user->isClient()) {
@@ -212,10 +213,13 @@ class CreateBusinessForm extends Component
         $this->failureMessage = 'Only clients can be added to Business.';
 
         return false;
-
     }
 
-    private function checkLicenses(User $user)
+    /**
+     * @param  User  $user
+     * @return bool
+     */
+    private function checkLicenses(User $user): bool
     {
         // check that the advisor has sufficent free licenses to create a new business
         if ($user->licenses->available() < 1) {

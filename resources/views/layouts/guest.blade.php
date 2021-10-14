@@ -18,7 +18,7 @@
 </head>
 <body class="font-sans antialiased relative text-light_gray">
 <div class="min-h-screen bg-light_purple2 bg-right-bottom bg-no-repeat"
-     style="background-image: url({{asset('images/bg.svg')}})">
+     style="background-image: url({{mix('images/bg.svg')}})">
     {{ $slot }}
 </div>
 </body>

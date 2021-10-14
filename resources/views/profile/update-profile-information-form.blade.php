@@ -65,6 +65,23 @@
             <x-jet-label for="email" value="{{ __('Email') }}"/>
             <x-jet-input id="email" type="email" class="mt-1 block w-full" wire:model.defer="state.email"/>
             <x-jet-input-error for="email" class="mt-2"/>
+
+            <div class="h-4"></div>
+
+            <!-- Timezone -->
+            <div class="col-span-6 sm:col-span-4">
+                <x-jet-label for="timezone" value="{{ __('Timezone') }}" />
+                <select name="timezone" id="timezone" wire:model.defer="state.timezone"
+                        class="w-full form-input border-light_blue
+                                    focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50
+                                    rounded-md shadow-sm">
+                    <option>{{__('Select your timezone')}}</option>
+                    @foreach (timezone_identifiers_list(64) as $timezone)
+                        <option value="{{ $timezone }}">{{ $timezone }}</option>
+                    @endforeach
+                </select>
+                <x-jet-input-error for="timezone" class="mt-2"/>
+            </div>
         </div>
     </x-slot>
 

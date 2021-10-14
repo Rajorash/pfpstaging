@@ -21,3 +21,8 @@ html {
 .radio_as_switcher:last-of-type + label {
     @apply rounded-r-lg border-r;
 }
+
+.pfp_forecast_already_added {
+    cursor: not-allowed;
+    @apply bg-gray-200;
+}

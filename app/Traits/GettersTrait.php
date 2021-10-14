@@ -14,11 +14,14 @@ trait GettersTrait
     {
         $key = 'BankAccount_'.$accountId;
 
-        $bankAccount = Cache::get($key);
+        $bankAccount = \Config::get('app.pfp_cache') ? Cache::get($key) : null;
 
         if ($bankAccount === null) {
             $bankAccount = BankAccount::find($accountId);
-            Cache::put($key, $bankAccount, now()->addMinutes(10));
+
+            if (\Config::get('app.pfp_cache')) {
+                Cache::put($key, $bankAccount, now()->addMinutes(10));
+            }
         }
 
         return $bankAccount;
@@ -28,11 +31,14 @@ trait GettersTrait
     {
         $key = 'FlowAccount_'.$accountId;
 
-        $flowAccount = Cache::get($key);
+        $flowAccount = \Config::get('app.pfp_cache') ? Cache::get($key) : null;
 
         if ($flowAccount === null) {
             $flowAccount = AccountFlow::find($accountId);
-            Cache::put($key, $flowAccount, now()->addMinutes(10));
+
+            if (\Config::get('app.pfp_cache')) {
+                Cache::put($key, $flowAccount, now()->addMinutes(10));
+            }
         }
 
         return $flowAccount;
@@ -41,11 +47,24 @@ trait GettersTrait
     public function getBusinessAll()
     {
         $key = 'Business_all';
-        $businesses = Cache::get($key);
+        $businesses = \Config::get('app.pfp_cache') ? Cache::get($key) : null;
 
         if ($businesses === null) {
-            $businesses = Business::all();
-            Cache::put($key, $businesses, now()->addMinutes(10));
+            $businesses = Business::with(
+                'owner',
+                'license',
+                'collaboration',
+                'license.advisor',
+                'accounts',
+                'accounts.flows',
+                'rollout'
+            )
+                ->withCount('accounts')
+                ->get();
+
+            if (\Config::get('app.pfp_cache')) {
+                Cache::put($key, $businesses, now()->addMinutes(10));
+            }
         }
 
         return $businesses;

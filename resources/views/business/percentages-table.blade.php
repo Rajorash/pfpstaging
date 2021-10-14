@@ -3,7 +3,7 @@
     <tr class="border-b divide-x border-light_blue">
         <x-ui.table-th class="text-left sticky top-0 left-0 z-40"
                        baseClass="w-24 pr-2 pl-4 text-dark_gray font-normal bg-white">
-            Account
+            {{__('Account')}}
         </x-ui.table-th>
         @forelse($rollout as $phase)
             @php $isCurrent = $phase->id == $business->current_phase; @endphp
@@ -20,8 +20,8 @@
                 </span>
             </x-ui.table-th>
         @empty
-            <x-ui.table-th class="text-center sticky top-0 z-10 min-w-20" baseClass="w-24 text-dark_gray font-normal">No
-                phases exist...
+            <x-ui.table-th class="text-center sticky top-0 z-10 min-w-20" baseClass="w-24 text-dark_gray font-normal">
+                {{__('No phases exist...')}}
             </x-ui.table-th>
         @endforelse
     </tr>
@@ -86,7 +86,7 @@
                                placeholder="0"
                                autocomplete="off"
                                name="percentage"
-                               type="text"
+                               type="text" pattern="[0-9]{10}"
                                id="{{$acc->type}}_{{$phase->id}}_{{$acc->id}}"
                                value="{{$percentage}}"
                                @if(!$business->license->checkLicense) disabled @endif
@@ -116,14 +116,14 @@
             <span id="processCounter" class="hidden text-xs font-normal opacity-50"></span>
         </x-ui.table-td>
         @forelse($rollout as $phase)
-            <x-ui.table-td padding="p-2 pr-2 pl-6"
+            <x-ui.table-td padding="p-2 pr-4 pl-6"
                            class="text-right percentage-total {{ $phase->total != '100' ? 'bg-red-500' : '' }}"
                            baseClass="text-white">
                 {{$phase->total}}%
             </x-ui.table-td>
         @empty
             <x-ui.table-td padding="p-2 pr-2 pl-6" class="text-center percentage-total" baseClass="text-white">
-                No phases exist...
+                {{__('No phases exist...')}}
             </x-ui.table-td>
         @endforelse
     </tr>

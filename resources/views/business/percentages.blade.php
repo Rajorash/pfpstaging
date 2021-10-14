@@ -1,19 +1,23 @@
 <x-app-layout>
     <x-slot name="header">
+        <x-cta-workflow :business="$business" :step="'percentages'" />
+
         {{$business->name}}
         <x-icons.chevron-right :class="'h-4 w-auto inline-block px-2'"/>
-        Percentages
+        {{__('Percentages')}}
     </x-slot>
 
     <x-slot name="subMenu">
         <x-business-nav businessId="{{$business->id}}" :business="$business"/>
     </x-slot>
 
-    @if(!optional($business->license)->checkLicense)
-        <div class="text-center text-red-500 font-bold">{{__('License is inactive. Edit data forbidden.')}}</div>
-    @endif
+    <x-slot name="subHeader">
+        <x-ui.data-submit-controls/>
+    </x-slot>
 
-    <x-ui.data-submit-controls/>
+    @if(!optional($business->license)->checkLicense)
+        <div class="font-bold text-center text-red-500">{{__('License is inactive. Edit data forbidden.')}}</div>
+    @endif
 
     <x-ui.main>
         <div id="percentagesTablePlace" class="global_nice_scroll return_coordinates_table">

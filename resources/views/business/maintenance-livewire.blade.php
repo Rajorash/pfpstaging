@@ -2,8 +2,6 @@
 
     @if(Auth::user()->isAdvisor())
         <form wire:submit.prevent="store">
-
-
             <div class="table w-full mt-10">
 
                 <div class="table-row">
@@ -38,16 +36,17 @@
                     <div class="table-cell w-3/4 pb-4">
                         <select name="" id="" wire:model="userId"
                                 class="w-full form-input border-light_blue
-                                    focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50
-                                    rounded-md shadow-sm"
+                                focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50
+                                rounded-md shadow-sm"
                             {{--                                @if ($business->owner_id)--}}
                             {{--                                disabled--}}
                             {{--                            @endif--}}
 
                         >
-                            <option value="0">:: Invite by email or leave as is</option>
+                            <option value="0">{{__(':: Invite by email or leave as is')}}</option>
                             @foreach ($advisorsClients as $client)
-                                <option value="{{$client->id}}">{{$client->name}} ({{$client->email}})
+                                <option value="{{$client->id}}">
+                                    {{$client->name}} ({{$client->email}})
                                 </option>
                             @endforeach
                         </select>
@@ -58,7 +57,7 @@
                 </div>
 
                 <div class="table-row
-                @if($userId) hidden @endif
+            @if($userId) hidden @endif
                     ">
                     <div class="table-cell w-1/4 pb-4 text-left">
                         {{ __('Type Email of Existing Client') }}
@@ -174,11 +173,11 @@
         <div class="table-cell w-full pb-4 text-right">
             @if($iWouldLikeToDelete)
                 <x-ui.button-normal class="uppercase" type="button" wire:loading.attr="disabled">
-                    Delete Business
+                    {{__('Delete Business')}}
                 </x-ui.button-normal>
             @else
                 <x-ui.button-normal class="uppercase" type="button" wire:loading.attr="disabled">
-                    Update Business
+                    {{__('Update Business')}}
                 </x-ui.button-normal>
             @endif
         </div>
@@ -186,6 +185,6 @@
 </div>
 </form>
 @else
-    Access denied
-    @endif
-    </div>
+{{__('Access denied')}}
+@endif
+</div>

@@ -5,31 +5,46 @@ namespace App\Http\Controllers;
 use App\Models\Business;
 use App\Traits\GettersTrait;
 use Carbon\Carbon;
+use Config;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Models\BankAccount;
 use Carbon\CarbonPeriod;
 use Illuminate\Support\Facades\Cache;
-use function PHPUnit\Framework\containsIdentical;
+use JamesMills\LaravelTimezone\Facades\Timezone;
+
+//use function PHPUnit\Framework\containsIdentical;
 
 class AllocationsCalendar extends Controller
 {
     use GettersTrait;
 
-    protected $defaultCurrentRangeValue = 14;
-    protected $business;
+    protected int $defaultCurrentRangeValue = 14;
+    protected ?Business $business = null;
 
+    /**
+     * @throws AuthorizationException
+     */
     public function calendar(Request $request)
     {
-        $this->business = Business::where('id', $request->business)->first();
+        $this->business = Business::where('id', $request->business)->with('rollout')->first();
 
         $maxDate = $this->business->rollout()->max('end_date');
         $minDate = $this->business->rollout()->min('end_date');
+        $startDate = session()->get('startDate_'.$this->business->id, Timezone::convertToLocal(Carbon::now(), 'Y-m-d'));
 
+        $this->pushRecurringTransactionData(
+            $this->business->id,
+            $startDate,
+            Carbon::now()->addMonths(13)->format('Y-m-d'),
+            true
+        );
 
         $data = [
             'rangeArray' => $this->getRangeArray(),
             'business' => $this->business,
-            'startDate' => session()->get('startDate_'.$this->business->id, Carbon::now()->format('Y-m-d')),
+            'startDate' => $startDate,
             'currentRangeValue' => session()->get('rangeValue_'.$this->business->id, $this->defaultCurrentRangeValue),
             'minDate' => Carbon::parse($minDate)->subMonths(3)->format('Y-m-d'),
             'maxDate' => Carbon::parse($maxDate)->subDays(31)->format('Y-m-d'),
@@ -38,7 +53,7 @@ class AllocationsCalendar extends Controller
         return view('business.allocations-calculator', $data);
     }
 
-    private function getRangeArray()
+    private function getRangeArray(): array
     {
         return [
             7 => 'Weekly',
@@ -47,7 +62,7 @@ class AllocationsCalendar extends Controller
         ];
     }
 
-    public function store($cells)
+    public function store($cells, bool $checkIsValuePresent = false)
     {
         if (is_array($cells) && count($cells) > 0) {
             foreach ($cells as $singleCell) {
@@ -56,7 +71,14 @@ class AllocationsCalendar extends Controller
                 $date = $matches[3];
                 $value = (float) $singleCell['cellValue'];
 
-                $this->storeSingle($matches[1], $allocation_id, $value, $date, ($matches[1] == 'account'));
+                $this->storeSingle(
+                    $matches[1],
+                    $allocation_id,
+                    $value,
+                    $date,
+                    ($matches[1] == 'account'),
+                    $checkIsValuePresent
+                );
             }
         }
 
@@ -65,16 +87,22 @@ class AllocationsCalendar extends Controller
 
     /**
      * Validate and store the Allocation
-     *
-     * @return void
+     * @param  string  $type
+     * @param  int  $allocation_id
+     * @param $amount
+     * @param  string  $date
+     * @param  bool  $manual_entry
+     * @param  bool  $checkIsValuePresent
      */
-    public function storeSingle($type, $allocation_id, $amount, $date, $manual_entry = false)
-    {
-
+    public function storeSingle(
+        string $type,
+        int $allocation_id,
+        $amount,
+        string $date,
+        bool $manual_entry = false,
+        bool $checkIsValuePresent = false
+    ) {
         $phaseId = $this->business->getPhaseIdByDate($date);
-        $values = [
-
-        ];
 
         if ($type == 'flow') {
             $account = $this->getFlowAccount($allocation_id);
@@ -82,25 +110,37 @@ class AllocationsCalendar extends Controller
             $account = $this->getBankAccount($allocation_id);
         }
 
-        $account->allocate($amount, $date, $phaseId, $manual_entry);
-
+        $account->allocate($amount, $date, $phaseId, $manual_entry, $checkIsValuePresent);
     }
 
-    public function updateData(Request $request)
+    /**
+     * @throws AuthorizationException
+     */
+    public function updateData(Request $request): JsonResponse
     {
         $response = [
             'error' => [],
             'html' => [],
         ];
 
-        $startDate = $request->startDate;
-        $rangeValue = $request->rangeValue;
-        $businessId = $request->businessId;
+        $startDate = $request->startDate ?? null;
+        $rangeValue = $request->rangeValue ?? null;
+        $businessId = $request->businessId ?? null;
         $business = Business::find($businessId);
         $phase = $business->getPhaseIdByDate($startDate);
 
         $cells = $request->cells;
-        $this->business = Business::where('id', $businessId)->first();
+        $this->business = Business::where('id', $businessId)
+            ->with([
+                'owner',
+                'license',
+                'collaboration',
+                'license.advisor',
+                'accounts',
+                'accounts.flows',
+                'rollout'
+            ])
+            ->first();
 
         if (!$startDate) {
             $response['error'][] = 'Start date not set';
@@ -119,6 +159,19 @@ class AllocationsCalendar extends Controller
 
         $this->store($cells);
 
+        $RecurringTransactionsController = new RecurringTransactionsController();
+        $recurring = [];
+        $rawData = $this->getRawData($businessId, $startDate, $endDate);
+        foreach ($rawData as $account_item) {
+            foreach ($account_item->flows as $key => $value) {
+                $recurring[$value->id] = null;
+                if ($value->recurringTransactions->count()) {
+                    $recurring[$value->id] = $RecurringTransactionsController
+                        ->getAllFlowsForecasts($value->recurringTransactions, $startDate, $endDate);
+                }
+            }
+        }
+
         $tableData = $this->getGridData($rangeValue, $startDate, $endDate, $businessId);
 
         $response['html'] = view('business.allocation-table')
@@ -128,13 +181,17 @@ class AllocationsCalendar extends Controller
                 'period' => $period,
                 'startDate' => Carbon::parse($startDate),
                 'range' => $rangeValue,
-                'business' => $business
+                'business' => $business,
+                'recurring' => $recurring
             ])->render();
 
         return response()->json($response);
     }
 
-    private function getGridData($rangeValue, $dateFrom, $dateTo, $businessId)
+    /**
+     * @throws AuthorizationException
+     */
+    public function getGridData($rangeValue, $dateFrom, $dateTo, $businessId): array
     {
         $this->business = Business::where('id', $businessId)->first();
 
@@ -160,6 +217,8 @@ class AllocationsCalendar extends Controller
             }
         }
 
+//        dd($response);
+
         $period = CarbonPeriod::create($dateFrom, $dateTo);
         $complete = $rangeValue + 1;
 
@@ -172,7 +231,9 @@ class AllocationsCalendar extends Controller
                 if (!array_key_exists($id, $acc_id)) {
                     continue;
                 }
+
                 $flows = [];
+
                 foreach ($period as $date) {
 
                     $date_ymd = $date->format('Y-m-d');
@@ -204,12 +265,15 @@ class AllocationsCalendar extends Controller
                                 $response[BankAccount::ACCOUNT_TYPE_REVENUE][$id][$date_ymd] = $totalRevenue;
                                 $this->storeSingle('account', $id, $totalRevenue, $date_ymd);
                                 $key = 'getIncomeByDate_'.$businessId.'_'.$date_ymd;
-                                Cache::forget($key);
+                                if (Config::get('app.pfp_cache')) {
+                                    Cache::forget($key);
+                                }
                             }
                             break;
+
                         case BankAccount::ACCOUNT_TYPE_SALESTAX: // Tax amt
-                            $response[BankAccount::ACCOUNT_TYPE_SALESTAX][$id]['transfer'][$date_ymd] = $this->calculateSalestaxTransfer($id,
-                                $income, $percents);
+                            $response[BankAccount::ACCOUNT_TYPE_SALESTAX][$id]['transfer'][$date_ymd] =
+                                $this->calculateSalestaxTransfer($id, $income, $percents);
 
                             $flow_total = 0;
 
@@ -343,7 +407,11 @@ class AllocationsCalendar extends Controller
                                 }
                             }
                             $response[BankAccount::ACCOUNT_TYPE_PREREAL][$id]['total'][$date_ymd] = $flow_total;
-                            if (array_key_exists($key, $flows[$id]) && count($flows[$id][$key]) == $complete) {
+
+                            if ( array_key_exists($id, $flows)
+                                && array_key_exists($key, $flows[$id])
+                                && count($flows[$id][$key]) == $complete)
+                            {
                                 $response[BankAccount::ACCOUNT_TYPE_PREREAL][$id] += $flows[$id];
                             }
 
@@ -375,7 +443,10 @@ class AllocationsCalendar extends Controller
 
                         case BankAccount::ACCOUNT_TYPE_POSTREAL:
                             $prereal = $this->getPrePrereal($income, $percents);
-                            $prereal_percents = array_sum($percents[BankAccount::ACCOUNT_TYPE_PREREAL]);
+
+                            $prereal_percents = key_exists(BankAccount::ACCOUNT_TYPE_PREREAL, $percents)
+                                ? array_sum($percents[BankAccount::ACCOUNT_TYPE_PREREAL])
+                                : 0;
 
                             // Real Revenue = $prereal - $prereal * ($prereal_percents / 100)
                             $response[BankAccount::ACCOUNT_TYPE_POSTREAL][$id]['transfer'][$date_ymd]
@@ -401,7 +472,10 @@ class AllocationsCalendar extends Controller
                                 }
                             }
                             $response[BankAccount::ACCOUNT_TYPE_POSTREAL][$id]['total'][$date_ymd] = $flow_total;
-                            if (array_key_exists($key, $flows[$id]) && count($flows[$id][$key]) == $complete) {
+                            if ( array_key_exists($id, $flows)
+                                && array_key_exists($key, $flows[$id])
+                                && count($flows[$id][$key]) == $complete)
+                            {
                                 $response[BankAccount::ACCOUNT_TYPE_POSTREAL][$id] += $flows[$id];
                             }
 
@@ -463,13 +537,13 @@ class AllocationsCalendar extends Controller
      * Returns true if a manual entry exists for the given account
      * type, id and date
      *
-     * @param [type] $type
-     * @param [type] $id
-     * @param [type] $date_ymd
+     * @param $response
+     * @param $type
+     * @param $id
+     * @param $date_ymd
      * @return boolean
-     *
      */
-    private function hasManualEntry($response, $type, $id, $date_ymd)
+    private function hasManualEntry($response, $type, $id, $date_ymd): bool
     {
         if (isset($response[$type][$id]['manual'][$date_ymd])) {
             return true;
@@ -478,7 +552,7 @@ class AllocationsCalendar extends Controller
         return false;
     }
 
-    private function getRawData($businessId, $dateFrom, $dateTo)
+    private function getRawData($businessId, $dateFrom, $dateTo): array
     {
         return BankAccount::where('business_id', $businessId)
             ->with('flows.allocations', function ($query) use ($dateFrom, $dateTo) {
@@ -531,7 +605,9 @@ class AllocationsCalendar extends Controller
                         ? $a_item['allocations'][0]['amount']
                         : 0;
                 })->sum();
-            Cache::put($key, $getIncomeByDate, now()->addMinutes(10));
+            if (Config::get('app.pfp_cache')) {
+                Cache::put($key, $getIncomeByDate, now()->addMinutes(10));
+            }
         }
 
         return $getIncomeByDate;
@@ -579,7 +655,7 @@ class AllocationsCalendar extends Controller
     {
         $key = 'phasePercentValues_'.$phaseId.'_'.$businessId;
 
-        $phasePercentValues = Cache::get($key);
+        $phasePercentValues = Config::get('app.pfp_cache') ? Cache::get($key) : null;
 
         if ($phasePercentValues === null) {
 
@@ -599,10 +675,87 @@ class AllocationsCalendar extends Controller
                     return array_column(collect($a_item)->toArray(), 'val', 'id');
                 })->toArray();
 
-            // Cache::put($key, $phasePercentValues, now()->addMinutes(10));
-            Cache::put($key, $phasePercentValues);
+            if (Config::get('app.pfp_cache')) {
+                Cache::put($key, $phasePercentValues);
+            }
         }
 
         return $phasePercentValues;
+    }
+
+    /** Put data from RecurringTasks into allocation table
+     * @param  int  $businessId
+     * @param  string  $startDate
+     * @param  string  $endDate
+     * @param  bool  $ifThisAllocationsPage
+     * @throws AuthorizationException
+     */
+    public function pushRecurringTransactionData(
+        int $businessId,
+        string $startDate,
+        string $endDate,
+        bool $ifThisAllocationsPage
+    ) {
+        $RecurringTransactionsController = new RecurringTransactionsController();
+        $recurring = [];
+        $rawData = $this->getRawData($businessId, $startDate, $endDate);
+        foreach ($rawData as $account_item) {
+            foreach ($account_item->flows as $key => $value) {
+                $recurring[$value->id] = null;
+                if ($value->recurringTransactions->count()) {
+                    $recurring[$value->id] = $RecurringTransactionsController
+                        ->getAllFlowsForecasts($value->recurringTransactions, $startDate, $endDate);
+                }
+            }
+        }
+
+        if (!empty($recurring)) {
+
+            $rtEntryData = [];
+
+            foreach ($recurring as $flowId => $flowData) {
+                if ($flowData) {
+                    $keySuffix = 'flow_'.$flowId.'_';
+                    foreach ($flowData as $flowDataTitle => $flowDataRecords) {
+                        if (isset($flowDataRecords['forecast'])) {
+                            foreach ($flowDataRecords['forecast'] as $date => $value) {
+                                if (!isset($rtEntryData[$keySuffix.$date])) {
+                                    $rtEntryData[$keySuffix.$date] = 0;
+                                }
+                                $rtEntryData[$keySuffix.$date] += $value;
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (!empty($rtEntryData)) {
+                $push2Table = [
+                    'businessId' => $businessId,
+                    'startDate' => $startDate,
+                    'rangeValue' => 31,
+                    'cells' => []
+                ];
+                foreach ($rtEntryData as $cellId => $cellValue) {
+                    $push2Table['cells'][] = ['cellId' => $cellId, 'cellValue' => $cellValue];
+                }
+
+                //if we call this method from ProjectionController::class
+                if (!$this->business) {
+                    $this->business = Business::findOrFail($businessId);
+                }
+
+                //all period - long process
+                //$rangeValue = count(CarbonPeriod::create($startDate, $endDate)->toArray());
+                $rangeValue = 31;
+
+                $this->store($push2Table['cells'], true);
+
+                if (!$ifThisAllocationsPage) {
+                    //Allocations page has this functionality, and haven't a reason to call it again
+                    $this->getGridData($rangeValue, $startDate, $endDate, $businessId);
+                }
+            }
+        }
     }
 }

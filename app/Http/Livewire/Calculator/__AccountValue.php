@@ -45,11 +45,13 @@ class __AccountValue extends Component
     private function getAllocation($date)
     {
         $key = 'BankAccount_'.$date;
-        $allocation = Cache::get($key);
+        $allocation = \Config::get('app.pfp_cache') ? Cache::get($key) : null;
 
         if ($allocation === null) {
             $allocation = $this->account->getAllocationByDate($date);
-            Cache::put($key, $allocation);
+            if (\Config::get('app.pfp_cache')) {
+                Cache::put($key, $allocation);
+            };
         }
 
         return $allocation ?? null;

@@ -1,12 +1,12 @@
 @component('mail::message')
-    # New Business for you
+# New Business for you
 
-    Business <b>&quot;{{$businessName}}&quot;</b> linked to you, {{$ownerName}}
+Business <b>&quot;{{$businessName}}&quot;</b> linked to you, {{$ownerName}}
 
-    @component('mail::button', ['url' => route('businesses')])
-        Goto Business
-    @endcomponent
+@component('mail::button', ['url' => route('businesses')])
+Goto Business
+@endcomponent
 
-    Thanks,<br>
-    {{ config('app.name') }}
+Thanks,<br>
+{{ config('app.name') }}
 @endcomponent

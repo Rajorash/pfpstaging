@@ -14,7 +14,7 @@
     <x-ui.main>
         <x-ui.table-table>
             <x-ui.table-caption class="pt-12 pb-6 px-48 lg:px-52 xl:px-60 2xl:px-72 relative relative">
-                Update Account For {{$business->name}}
+                {{__('Update Account For')}} {{$business->name}}
 
                 <x-slot name="left">
                     <div class="absolute left-12 top-12">
@@ -73,7 +73,7 @@
                                 <div class="table-row">
                                     <div class="table-cell w-full pb-4 text-right">
                                         <x-ui.button-normal class="uppercase" type="button">
-                                            Update Account
+                                            {{__('Update Account')}}
                                         </x-ui.button-normal>
                                     </div>
                                 </div>

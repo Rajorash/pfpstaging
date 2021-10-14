@@ -5,11 +5,17 @@ namespace App\Http\Controllers;
 use App\Models\AccountFlow;
 use App\Models\BankAccount;
 use App\Models\RecurringTransactions;
-use Carbon\Carbon;
-use Illuminate\Http\Request;
+use Illuminate\Database\Eloquent\Collection;
 
 class RecurringTransactionsController extends Controller
 {
+    protected RecurringPipelineController $recurringPipelineController;
+
+    public function __construct()
+    {
+        $this->recurringPipelineController = new RecurringPipelineController();
+    }
+
     /**
      * @param  int  $bankAccountId
      * @param  int  $accountFlowId
@@ -34,95 +40,40 @@ class RecurringTransactionsController extends Controller
         );
     }
 
-    /**
-     * @param  RecurringTransactions  $recurringTransactions
+    /** Get compiled forecast for Flow
+     * @param  Collection  $recurringTransactionsArray
+     * @param  string|null  $dateStart
+     * @param  string|null  $dateEnd
      * @return array
      */
-    public function getForecast(RecurringTransactions $recurringTransactions): array
-    {
-        $startDate = Carbon::parse($recurringTransactions->date_start);
-        $endDate = $recurringTransactions->date_end
-            ? Carbon::parse($recurringTransactions->date_end)
-            : (
-            $recurringTransactions->repeat_every_type
-                ? Carbon::now()->addYears(3)
-                : Carbon::now()->addMonths(3));
-
-        $days = [];
-        if (isset($recurringTransactions->repeat_rules['days'])) {
-            foreach ($recurringTransactions->repeat_rules['days'] as $dayName) {
-                $this->_getDaysByName($days,
-                    $dayName,
-                    $recurringTransactions->repeat_every_number,
-                    $recurringTransactions->repeat_every_type,
-                    $startDate,
-                    $endDate,
-                    $recurringTransactions->value
-                );
-            }
-        } else {
-            $this->_getDaysByName($days,
-                null,
-                $recurringTransactions->repeat_every_number,
-                $recurringTransactions->repeat_every_type,
-                $startDate,
-                $endDate,
-                $recurringTransactions->value
-            );
-        }
-
-        ksort($days);
-
-        return $days;
+    public function getAllFlowsForecasts(
+        Collection $recurringTransactionsArray,
+        string $dateStart = null,
+        string $dateEnd = null
+    ): array {
+        return $this->recurringPipelineController->getAllFlowsForecasts(
+            $recurringTransactionsArray,
+            $dateStart,
+            $dateEnd
+        );
     }
 
     /**
-     * @param  array  $days
-     * @param  ?string  $dayName
-     * @param  int  $intervalValue
-     * @param  string  $intervalType
-     * @param  Carbon  $startDate
-     * @param  Carbon  $endDate
-     * @param  float  $value
-     * @return void
+     * @param  RecurringTransactions  $recurringTransactions
+     * @param  string|null  $periodDateStart
+     * @param  string|null  $periodDateEnd
+     * @return array
      */
-    private function _getDaysByName(
-        array &$days,
-        ?string $dayName,
-        int $intervalValue,
-        string $intervalType,
-        Carbon $startDate,
-        Carbon $endDate,
-        float $value
-    ) {
-        if ($value) {
-            $startDate = Carbon::parse($startDate);
-
-            if ($intervalType == RecurringTransactions::REPEAT_DAY) {
-                for ($date = $startDate; $date->lte($endDate); $date->addDays($intervalValue)) {
-                    $days[$date->format('Y-m-d')] = $value;
-                }
-            }
-
-            if ($intervalType == RecurringTransactions::REPEAT_WEEK) {
-                $startDate = $startDate->modify('this '.$dayName);
-                for ($date = $startDate; $date->lte($endDate); $date->addWeeks($intervalValue)) {
-                    $days[$date->format('Y-m-d')] = $value;
-                }
-            }
-
-            if ($intervalType == RecurringTransactions::REPEAT_MONTH) {
-                for ($date = $startDate; $date->lte($endDate); $date->addMonths($intervalValue)) {
-                    $days[$date->format('Y-m-d')] = $value;
-                }
-            }
-
-            if ($intervalType == RecurringTransactions::REPEAT_YEAR) {
-                for ($date = $startDate; $date->lte($endDate); $date->addYears($intervalValue)) {
-                    $days[$date->format('Y-m-d')] = $value;
-                }
-            }
-        }
+    public function getForecast(
+        RecurringTransactions $recurringTransactions,
+        string $periodDateStart = null,
+        string $periodDateEnd = null
+    ): array {
+        return $this->recurringPipelineController->getForecast(
+            $recurringTransactions,
+            $periodDateStart,
+            $periodDateEnd
+        );
     }
 
     /**
@@ -130,8 +81,10 @@ class RecurringTransactionsController extends Controller
      * @param  int  $accountFlowId
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
      */
-    public function create(int $bankAccountId, int $accountFlowId)
-    {
+    public function create(
+        int $bankAccountId,
+        int $accountFlowId
+    ) {
         $bankAccount = BankAccount::findOrfail($bankAccountId);
         $accountFlow = AccountFlow::findOrfail($accountFlowId);
         $recurringTransactions = null;
@@ -152,8 +105,11 @@ class RecurringTransactionsController extends Controller
      * @param  int  $recurringId
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
      */
-    public function edit(int $bankAccountId, int $accountFlowId, int $recurringId)
-    {
+    public function edit(
+        int $bankAccountId,
+        int $accountFlowId,
+        int $recurringId
+    ) {
         $bankAccount = BankAccount::findOrfail($bankAccountId);
         $accountFlow = AccountFlow::findOrfail($accountFlowId);
         $recurringTransactions = RecurringTransactions::findOrfail($recurringId);
@@ -174,8 +130,11 @@ class RecurringTransactionsController extends Controller
      * @param  int  $recurringId
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function delete(int $bankAccountId, int $accountFlowId, int $recurringId)
-    {
+    public function delete(
+        int $bankAccountId,
+        int $accountFlowId,
+        int $recurringId
+    ) {
         $bankAccount = BankAccount::findOrfail($bankAccountId);
         $accountFlow = AccountFlow::findOrfail($accountFlowId);
         $recurringTransactions = RecurringTransactions::findOrfail($recurringId);

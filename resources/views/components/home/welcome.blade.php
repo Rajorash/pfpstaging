@@ -4,11 +4,11 @@
     </div>
 
     <div class="mt-4 text-2xl mt-2 text-blue">
-        Welcome to the PF Prophet!
+        {{__('Welcome to the PF Prophet!')}}
     </div>
 
     <div class="mt-2 mb-2">
-        This is a predictive financial tool to help you proactively plan your businesses financial needs.
+        {{__('This is a predictive financial tool to help you proactively plan your businesses financial needs.')}}
     </div>
 </div>
 
@@ -31,10 +31,8 @@
                 >
                     <x-slot name="icon">
                         <x-icons.calculator :class="'w-auto h-6 text-blue'"/>
-                    </x-slot>
-                    Use the Allocations Calculator to determine how much you should put into each of your accounts based
-                    on
-                    revenue.
+                    </x-slot>{{__('Use the Allocations Calculator to determine how much you should put into each of your accounts based on revenue.')}}
+
                 </x-ui.dashboard-card>
             </div>
         </div>
@@ -49,9 +47,7 @@
                     <x-slot name="icon">
                         <x-icons.case :class="'w-auto h-6 text-blue'"/>
                     </x-slot>
-                    View all businesses you own, advise or are collaborating on. From here you can adjust accounts,
-                    rollout
-                    percentages and allocations.
+                    {{__('View all businesses you own, advise or are collaborating on. From here you can adjust accounts, rollout percentages and allocations.')}}
                 </x-ui.dashboard-card>
             </div>
         </div>
@@ -82,7 +78,7 @@
                     <x-slot name="icon">
                         <x-icons.users :class="'w-auto h-5 text-blue'"/>
                     </x-slot>
-                    See an overview of all the users visible to you. Clients will only be able to see themselves.
+                    {{__('See an overview of all the users visible to you. Clients will only be able to see themselves.')}}
                 </x-ui.dashboard-card>
             </div>
         </div>
@@ -105,8 +101,7 @@
                 <x-slot name="icon">
                     <x-icons.lock :class="'w-auto h-6 text-blue'"/>
                 </x-slot>
-                Set up your profile, add a picture, log out of other sessions and set extra
-                security via 2 factor authentication.
+                {{__('Set up your profile, add a picture, log out of other sessions and set extra security via 2 factor authentication.')}}
             </x-ui.dashboard-card>
 
         </div>

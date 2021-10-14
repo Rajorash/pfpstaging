@@ -48,7 +48,7 @@ class RouteServiceProvider extends ServiceProvider
 
         $this->mapWebRoutes();
 
-        //
+        $this->mapDevRoutes();
     }
 
     /**
@@ -66,6 +66,24 @@ class RouteServiceProvider extends ServiceProvider
     }
 
     /**
+     * Define the "dev" routes for the application.
+     *
+     * These routes will only be mapped in a local environment.
+     * They should be used for development related tasks,
+     * eg. rendering emails without sending for testing
+     *
+     * @return void
+     */
+    protected function mapDevRoutes()
+    {
+        if (app()->environment('local')) {
+            Route::middleware('web')
+                 ->namespace($this->namespace)
+                 ->group(base_path('routes/dev.php'));
+        }
+    }
+
+    /**
      * Define the "api" routes for the application.
      *
      * These routes are typically stateless.
@@ -79,4 +97,6 @@ class RouteServiceProvider extends ServiceProvider
              ->namespace($this->namespace)
              ->group(base_path('routes/api.php'));
     }
+
+
 }

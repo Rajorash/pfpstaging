@@ -17,34 +17,29 @@
     <meta name="msapplication-config" content="{{url('/favicons/browserconfig.xml')}}">
     <meta name="theme-color" content="#ffffff">
 
-    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.gstatic.com">
-    {{--    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap">--}}
     <link href="https://fonts.googleapis.com/css2?family=Questrial&display=swap" rel="stylesheet">
 
-    <!-- Styles -->
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/all.css') }}">
+    <link rel="stylesheet" href="{{ mix('css/app.css') }}">
+    <link rel="stylesheet" href="{{ mix('css/all.css') }}">
 
 @livewireStyles
 
-<!-- Scripts -->
     <script src="{{ mix('js/app.js') }}" defer></script>
 </head>
-<body class="font-sans antialiased relative text-light_gray">
-{{--<x-jet-banner/>--}}
+<body class="relative font-sans antialiased text-light_gray">
 
-<div class="min-h-screen bg-light_purple2 bg-right-bottom bg-no-repeat"
-     style="background-image: url({{asset('images/bg.svg')}})">
+<div class="min-h-screen bg-right-bottom bg-no-repeat bg-light_purple2"
+     style="background-image: url({{mix('images/bg.svg')}})">
     <div class="bg-white shadow-shadow4">
         <livewire:navigation-menu/>
     </div>
 
     <!-- Page Heading -->
     @if(isset($header))
-        <header class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+        <header class="px-4 py-2 mx-auto max-w-7xl sm:px-6 lg:px-8 relative">
             <div class="flex content-between">
-                <h2 class="font-normal text-4xl text-dark_gray2 leading-tight mt-8">
+                <h2 class="mt-8 text-4xl font-normal leading-tight text-dark_gray2">
                     {{ $header }}
                 </h2>
                 @if(isset($subMenu))
@@ -52,21 +47,23 @@
                 @endif
             </div>
             @if(isset($subHeader))
-                {{$subHeader}}
+                <div class="py-2">
+                    {{$subHeader}}
+                </div>
             @endif
         </header>
     @endif
 
-<!-- Page Content -->
     {{ $slot }}
 
 </div>
 
-<div id="delay_progress" class="fixed rounded bg-blue h-1 bottom-2 right-4 sm:right-6 lg:right-8 z-50"></div>
+<div id="delay_progress" class="fixed z-50 h-1 rounded bg-blue bottom-2 right-4 sm:right-6 lg:right-8"></div>
 
 @stack('modals')
 
 @livewireScripts
-<div id="ddd" class="absolute z-50 w-2 h-2 bg-red-600"></div>
+{{-- commented below line, removes small box at bottom of layout. --}}
+{{-- <div id="ddd" class="absolute z-50 w-2 h-2 bg-red-600"></div> --}}
 </body>
 </html>

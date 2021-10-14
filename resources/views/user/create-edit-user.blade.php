@@ -2,9 +2,8 @@
 
     @if(!$user && Auth::user()->isAdvisor())
         <div class="px-4 py-2 border border-gray-300 rounded-lg bg-white text-left text-red-700">
-            Please note: You will not be able to see a newly created client until they have a business licensed to you
-            created. You will be redirected to the business view to create a business once you have finished creating a
-            client user.
+            {{__('Please note: You will not be able to see a newly created client until they have a business licensed to you created. You will be redirected to the business view to create a business once you have finished creating a client user.')}}
+
         </div>
     @endif
 
@@ -117,7 +116,7 @@
                                 <input type="checkbox" wire:model="selectedRegionalAdminIdAllowEdit"
                                        id="allowEditRegionalAdminRelation"/>
                                 <label for="allowEditRegionalAdminRelation" class="pl-2">
-                                    Check it to allow edit Regional Admin for Advisor
+                                    {{__('Check it to allow edit Regional Admin for Advisor')}}
                                 </label>
                             </div>
                             <select name="" id="" wire:model="selectedRegionalAdminId"
@@ -127,7 +126,7 @@
                                     class="w-full form-input border-light_blue
                                     focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50
                                                         rounded-md shadow-sm">
-                                <option>Select Regional Admin for Advisor</option>
+                                <option>{{__('Select Regional Admin for Advisor')}}</option>
                                 @foreach ($adminsUsersArray as $admin_row)
                                     <option value="{{$admin_row->id}}">{{$admin_row->name}} ({{$admin_row->email}})
                                     </option>
@@ -149,7 +148,7 @@
                                 <input type="checkbox" wire:model="selectedAdvisorIdAllowEdit"
                                        id="allowEditAdvisorRelation"/>
                                 <label for="allowEditAdvisorRelation" class="pl-2">
-                                    Check it to allow edit Advisor for Client
+                                    {{__('Check it to allow edit Advisor for Client')}}
                                 </label>
                             </div>
                             <select name="" id="" wire:model="selectedAdvisorId"
@@ -159,7 +158,7 @@
                                     class="w-full form-input border-light_blue
                                     focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50
                                                         rounded-md shadow-sm">
-                                <option>Select Advisor for Client</option>
+                                <option>{{__('Select Advisor for Client')}}</option>
                                 @foreach ($advisorsUsersArray as $advisor_row)
                                     <option value="{{$advisor_row->id}}">{{$advisor_row->name}} ({{$advisor_row->email}}
                                         )
@@ -223,7 +222,7 @@
                             class="w-full form-input border-light_blue
                                     focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50
                                     rounded-md shadow-sm">
-                        <option>Select your timezone</option>
+                        <option>{{__('Select your timezone')}}</option>
                         @foreach (timezone_identifiers_list(64) as $timezone)
                             <option value="{{ $timezone }}">{{ $timezone }}</option>
                         @endforeach
@@ -238,9 +237,23 @@
                 <div class="table-cell w-full pb-4 text-right">
                     <x-ui.button-normal class="uppercase" type="button" wire:loading.attr="disabled">
                         @if($user)
-                            Save User
+                            @if (Auth::user()->isRegionalAdmin()
+                                 && !Auth::user()->isSuperAdmin()
+                                 && !Auth::user()->isAdvisor()
+                                 && !Auth::user()->isClient())
+                                {{__('Save Advisor')}}
+                            @else
+                                {{__('Save User')}}
+                            @endif
                         @else
-                            Create User
+                            @if (Auth::user()->isRegionalAdmin()
+                                 && !Auth::user()->isSuperAdmin()
+                                 && !Auth::user()->isAdvisor()
+                                 && !Auth::user()->isClient())
+                                {{__('Create Advisor')}}
+                            @else
+                                {{__('Create User')}}
+                            @endif
                         @endif
                     </x-ui.button-normal>
                 </div>

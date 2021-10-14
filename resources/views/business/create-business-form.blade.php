@@ -27,7 +27,7 @@
                         <x-jet-input type="text" class="mt-1 block w-3/4"
                                      placeholder="{{ __('Business Name') }}"
                                      x-ref="businessname"
-                                     wire:model="businessname"
+                                     wire:model.lazy="businessname"
                                      wire:keydown.enter="submitForm"
                         />
                         <x-jet-input-error for="businessname" class="mt-2 text-left"/>
@@ -35,7 +35,7 @@
                         <x-jet-input type="text" class="mt-1 block w-3/4"
                                      placeholder="{{ __('Owner Email') }}"
                                      x-ref="email"
-                                     wire:model="email"
+                                     wire:model.lazy="email"
                                      wire:keydown.enter="submitForm"
                         />
                         <x-jet-input-error for="email" class="mt-2 text-left"/>
@@ -45,7 +45,7 @@
                                 <x-jet-input type="date" class="mt-1 block w-full"
                                              x-ref="phaseStart"
                                              min="{{$phaseStartMin}}"
-                                             wire:model="phaseStart"
+                                             wire:model.lazy="phaseStart"
                                 />
                             </div>
                             <div class="w-1/2 pt-3 text-left pl-2">{{__('Date of start a phase')}}</div>
