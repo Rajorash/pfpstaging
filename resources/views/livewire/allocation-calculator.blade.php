@@ -29,9 +29,9 @@
             @endforeach
         @endif
         {{-- Sales tax account/s --}}
-        @if (array_key_exists('salestax', $mappedAccounts))
+        @if (!$this->hideSalesTaxRows())
             @foreach ($mappedAccounts['salestax'] as $account)
-            <tr class="@if($account['percent'] <= 0) {{'hidden'}} @endif">
+            <tr>
                 <td class="px-2 py-1 border border-gray-300">{{$account['name']}}</td>
                 <td class="px-2 py-1 text-right bg-indigo-200 border border-gray-300">{{$account['percent']}}%</td>
                 <td class="px-2 py-1 text-right bg-green-300 border border-gray-300">
@@ -40,19 +40,15 @@
                 <td class="px-2 py-1 bg-gray-200 border border-gray-300"></td>
             </tr>
             @endforeach
-        @endif
 
-        {{-- Net Cash Receipts --}}
-        @if (!array_key_exists('salestax', $mappedAccounts)
-            || !$mappedAccounts['salestax'][0]['percent']
-            || $mappedAccounts['salestax'][0]['percent'] > 0)
-        <tr class="">
-            <td class="px-2 py-1 border border-gray-300">{{__('Net Cash Receipts')}}</td>
-            <td class="px-2 py-1 border border-gray-300"></td>
-            <td class="px-2 py-1 text-right border border-gray-300">${{number_format($netCashReceipts, 0)}}</td>
-            <td class="px-2 py-1 bg-gray-200 border border-gray-300"></td>
-            <td class="px-2 py-1 bg-gray-200 border border-gray-300"></td>
-        </tr>
+            {{-- Net Cash Receipts --}}
+            <tr class="">
+                <td class="px-2 py-1 border border-gray-300">{{__('Net Cash Receipts')}}</td>
+                <td class="px-2 py-1 border border-gray-300"></td>
+                <td class="px-2 py-1 text-right border border-gray-300">${{number_format($netCashReceipts, 0)}}</td>
+                <td class="px-2 py-1 bg-gray-200 border border-gray-300"></td>
+                <td class="px-2 py-1 bg-gray-200 border border-gray-300"></td>
+            </tr>
         @endif
 
         {{-- Pre-real account/s --}}

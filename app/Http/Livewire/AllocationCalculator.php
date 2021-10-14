@@ -199,4 +199,22 @@ class AllocationCalculator extends Component
 //            : Business::find($this->selectedBusinessId);
     }
 
+    /**
+     * utility function to hide the sales tax and net cash receipts rows if no
+     * salestax values are set or they are <= 0
+     *
+     * @return bool
+     */
+    public function hideSalesTaxRows(): bool
+    {
+        if (empty(data_get($this->mappedAccounts, 'salestax'))) {
+            return true;
+        }
+
+        if (array_sum(data_get($this->mappedAccounts, 'salestax.*.percent')) <= 0) {
+            return true;
+        }
+
+        return false;
+    }
 }
