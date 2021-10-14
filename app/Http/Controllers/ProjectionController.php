@@ -160,7 +160,10 @@ class ProjectionController extends Controller
          *      }, ...
          *  }, ...
          */
-        return $business->accounts->filter(
+
+        $accounts = $this->sortAccountsByType($business->accounts);
+
+        return $accounts->filter(
             function ($account) {
                 return $account->type != BankAccount::ACCOUNT_TYPE_REVENUE;
             }
@@ -170,6 +173,7 @@ class ProjectionController extends Controller
                 return [
                     $account->id => collect([
                         'account' => $account,
+                        'type' => $account->type,
                         'dates' => $account->allocations->mapWithKeys(function ($allocation) {
                             // return key mapped allocations
                             return [$allocation->allocation_date->format('Y-m-d') => $allocation];
@@ -189,5 +193,15 @@ class ProjectionController extends Controller
     private function getLatestValueByAccount(BankAccount $account)
     {
         return $account->allocations->sortBy('allocation_date')->last();
+    }
+
+    private function sortAccountsByType($accounts)
+    {
+        // returns ['revenue', 'pretotal', 'salestax', 'prereal', 'postreal']
+        $order =  BankAccount::type_list();
+
+        return $accounts->sortBy( function($account) use ($order) {
+            return array_search($account->type, $order);
+        });
     }
 }
