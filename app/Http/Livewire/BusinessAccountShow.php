@@ -32,7 +32,8 @@ class BusinessAccountShow extends Component
 
             $this->confirmingId = null;
 
-            $refresh;
+            $this->mount();
+            $this->render();
         }
     }
 
