@@ -7,6 +7,7 @@ use App\Models\AccountFlow;
 use App\Models\BankAccount;
 use App\Models\Business;
 use App\Models\Phase;
+use Arr;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 
@@ -36,8 +37,25 @@ class BankAccountController extends Controller
         $this->authorize('createBankAccount', $business);
 
         $accounts = $business->accounts;
+        $account_types = $this->creatableAccountTypes();
 
-        return view('accounts.create', ['business' => $business]);
+        return view('accounts.create', compact('business','account_types'));
+    }
+
+    /**
+     * Returns a list of createable account types. Unsure if this should be moved to BankAccount Model
+     *
+     * Simply filters out an array of account types to prevent them being created.
+     *
+     * @return array
+     */
+    private function creatableAccountTypes(): array
+    {
+        return Arr::where(BankAccount::type_list(), function ($value) {
+            $filter_out = [BankAccount::ACCOUNT_TYPE_REVENUE, BankAccount::ACCOUNT_TYPE_SALESTAX];
+
+            return !in_array($value, $filter_out);
+        });
     }
 
     /**
