@@ -22,20 +22,29 @@ class BusinessAccountShow extends Component
         $this->accounts = $this->business->accounts->load('flows');
     }
 
-    public function deleteAccount($accountId)
+    public function deleteAccount()
     {
-        $account = BankAccount::find($accountId);
+        $account = BankAccount::find($this->confirmingId);
 
         if ($account) {
+
             $account->delete();
-            $this->mount();
-            $this->render();
+
+            $this->confirmingId = null;
+
+            $refresh;
         }
     }
 
     public function confirmDeleteAccount($accountId)
     {
         $this->confirmingId = $accountId;
+    }
+
+    public function closeModal()
+    {
+        $this->confirmingId = null;
+        $refresh;
     }
 
     public function render()

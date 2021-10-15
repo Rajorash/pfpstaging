@@ -4,7 +4,7 @@
             <span>{{$business->name}} {{__('Bank Accounts')}}</span>
 
             <x-slot name="right">
-                <x-ui.button-normal href="{{url(Request::path().'/create')}}">
+                <x-ui.button-normal href="{{route('accounts.create', ['business' => $business])}}">
                     <x-icons.document-add/>
                     <span class="ml-2">{{__('New Account')}}</span>
                 </x-ui.button-normal>
@@ -99,7 +99,10 @@
                                 </div>
                                 <div class="table-cell w-16 pb-2 pr-4">
                                     <x-ui.button-small
-                                        href="{{url(Request::path().'/'.$acc->id.'/edit')}}">
+                                        href="{{route('accounts.edit', [
+                                            'business' => $business,
+                                            'account' => $acc
+                                            ])}}">
                                         <x-icons.edit class="w-3 h-auto mr-2"/>
                                         {{__('Edit')}}
                                     </x-ui.button-small>
@@ -108,23 +111,13 @@
                                     @if( $acc->isDeletable() )
 
                                         <div class="flex flex-inline">
-                                            @if($confirmingId === $acc->id)
-                                                <x-ui.button-small
-                                                    background="bg-red-500 hover:bg-dark_gray2"
-                                                    type="button"
-                                                    wire:click="deleteAccount({{$acc->id}})">
-                                                    <x-icons.confirm class="w-3 h-auto mr-2"/>
-                                                    {{__('Confirm Delete?')}}
-                                                </x-ui.button-small>
-                                            @else
-                                                <x-ui.button-small
-                                                    background="bg-red-900 hover:bg-dark_gray2"
-                                                    type="button"
-                                                    wire:click="confirmDeleteAccount({{$acc->id}})">
-                                                    <x-icons.delete class="w-3 h-auto mr-2"/>
-                                                    {{__('Delete')}}
-                                                </x-ui.button-small>
-                                            @endif
+                                            <x-ui.button-small
+                                                background="bg-red-900 hover:bg-dark_gray2"
+                                                type="button"
+                                                wire:click="confirmDeleteAccount({{$acc->id}})">
+                                                <x-icons.delete class="w-3 h-auto mr-2"/>
+                                                {{__('Delete')}}
+                                            </x-ui.button-small>
                                         </div>
 
                                     @endif
@@ -142,4 +135,31 @@
             @endforelse
         </x-ui.table-tbody>
     </x-ui.table-table>
+    @if ($confirmingId)
+    <x-jet-confirmation-modal wire:model="confirmingId">
+        <x-slot name="title">
+            {{__('Confirm Account Deletion?')}}
+        </x-slot>
+        <x-slot name="content">
+            {{__('Are you certain you wish to delete this account, all flows and data will also be removed.')}}
+        </x-slot>
+        <x-slot name="footer">
+            <div class="inline-flex space-x-4">
+                <x-ui.button-secondary
+                    type="button"
+                    background="bg-gray-500 hover:bg-gray-800"
+                    wire:click="closeModal()">
+                    {{__('Cancel')}}
+                </x-ui.button-secondary>
+                <x-ui.button-danger
+                    type="button"
+                    background="bg-red-500 hover:bg-red-800"
+                    wire:click="deleteAccount()">
+                    <x-icons.delete class="w-3 h-auto mr-2"/>
+                    {{__('Confirm Delete?')}}
+                </x-ui.button-danger>
+            </div>
+        </x-slot>
+    </x-jet-confirmation-modal>
+    @endif
 </div>

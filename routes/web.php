@@ -154,7 +154,14 @@ Route::group(['middleware' => 'auth'], function () {
 
     // Bankaccount routing
     Route::resource(
-        'business.accounts', 'BankAccountController'
+        'business.accounts', 'BankAccountController', [
+            'names' => [
+                'index' => 'accounts',
+                'create' => 'accounts.create',
+                'store' => 'accounts.store',
+                'edit' => 'accounts.edit',
+            ]
+        ]
     );
     Route::get(
         '/accounts/{account}/create-flow',
