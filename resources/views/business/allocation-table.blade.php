@@ -5,7 +5,7 @@
         <thead>
         <tr class="border-b divide-x border-light_blue">
             <x-ui.table-th class="sticky top-0 left-0 text-center"
-                           baseClass="min-w-24 w-32 text-dark_gray font-normal bg-white z-30">
+                           baseClass="min-w-24 w-32 text-dark_gray font-normal bg-data-entry z-30">
                 <span id="processCounter" class="hidden text-xs font-normal opacity-50"></span>
             </x-ui.table-th>
 
@@ -14,7 +14,7 @@
                     $date = Carbon\Carbon::parse($date, 'Y-m-d H:i:s');
                 @endphp
                 <x-ui.table-th class="text-center {{ $date->isToday() ? 'text-blue': 'text-dark_gray' }} sticky top-0"
-                               baseClass="min-w-24 font-normal bg-white z-20">
+                               baseClass="min-w-24 font-normal bg-data-entry z-20">
                     <span class="block text-xs font-normal">{{$date->format('M Y')}}</span>
                     <span class="block text-xl">{{$date->format('j')}}</span>
                     <span class="block text-xs font-normal">{{$date->format('D')}}</span>
@@ -43,9 +43,9 @@
                         @php
                             $rowIndex = 1;
                         @endphp
-                        <tr class="bg-indigo-100 divide-x hover:bg-yellow-100 border-light_blue">
+                        <tr class="divide-x bg-readonly hover:bg-yellow-100 border-light_blue">
                             <x-ui.table-td padding="p-1 pl-2"
-                                           baseClass="text-dark_gray sticky left-0 bg-indigo-100 z-10">
+                                           baseClass="text-dark_gray sticky left-0 bg-readonly z-10">
                                 {{$data['name']}}
                             </x-ui.table-td>
                             {{--                        <td class="pl-2 border border-gray-300 whitespace-nowrap">{{$data['name']}}</td>--}}
@@ -71,9 +71,9 @@
                                     $rowIndex++;
                                     $columnIndex = 0;
                                 @endphp
-                                <tr class="bg-white divide-x hover:bg-yellow-100 border-light_blue">
+                                <tr class="divide-x bg-data-entry hover:bg-yellow-100 border-light_blue">
                                     <x-ui.table-td padding="p-1 pr-2 pl-6"
-                                                   baseClass="text-dark_gray whitespace-nowrap sticky left-0 bg-white z-10">
+                                                   baseClass="text-dark_gray whitespace-nowrap sticky left-0 bg-data-entry z-10">
                                         {{$ext_data['name']}}
                                     </x-ui.table-td>
                                     @foreach($period as $date)
@@ -142,8 +142,8 @@
                             $rowIndex++;
                             $columnIndex = 0;
                         @endphp
-                        <tr class="bg-indigo-100 divide-x hover:bg-yellow-100 border-light_blue">
-                            <x-ui.table-td class="sticky left-0 z-10 text-left bg-indigo-100 whitespace-nowrap"
+                        <tr class="divide-x bg-readonly hover:bg-yellow-100 border-light_blue">
+                            <x-ui.table-td class="sticky left-0 z-10 text-left bg-readonly whitespace-nowrap"
                                            padding="p-1 pr-2 pl-4">
                                 {{$data['name']}}
                             </x-ui.table-td>
@@ -193,9 +193,9 @@
                                         $rowIndex++;
                                         $columnIndex = 0;
                                     @endphp
-                                    <tr class="bg-indigo-100 divide-x hover:bg-yellow-100 border-light_blue">
+                                    <tr class="divide-x bg-readonly hover:bg-yellow-100 border-light_blue">
                                         <x-ui.table-td padding="p-1 pr-2 pl-6"
-                                                       class="sticky left-0 z-10 text-left bg-indigo-100 whitespace-nowrap">
+                                                       class="sticky left-0 z-10 text-left bg-readonly whitespace-nowrap">
                                             {{__('Transfer In')}}
                                         </x-ui.table-td>
                                         @foreach($period as $date)
@@ -218,9 +218,9 @@
                                         $rowIndex++;
                                         $columnIndex = 0;
                                     @endphp
-                                    <tr class="bg-indigo-100 divide-x hover:bg-yellow-100 border-light_blue">
+                                    <tr class="divide-x bg-readonly hover:bg-yellow-100 border-light_blue">
                                         <x-ui.table-td padding="p-1 pr-2 pl-6"
-                                                       class="sticky left-0 z-10 text-left bg-indigo-100 whitespace-nowrap">
+                                                       class="sticky left-0 z-10 text-left bg-readonly whitespace-nowrap">
                                             {{__('Flow Total')}}
                                         </x-ui.table-td>
                                         @foreach($period as $date)
@@ -243,9 +243,9 @@
                                         $rowIndex++;
                                         $columnIndex = 0;
                                     @endphp
-                                    <tr class="bg-white divide-x hover:bg-yellow-100 border-light_blue">
+                                    <tr class="divide-x bg-data-entry hover:bg-yellow-100 border-light_blue">
                                         <x-ui.table-td padding="p-1 pr-2 pl-4"
-                                                       class="sticky left-0 z-10 text-left bg-white whitespace-nowrap">
+                                                       class="sticky left-0 z-10 text-left bg-data-entry whitespace-nowrap">
                                             {{$ext_data['name']}}
                                         </x-ui.table-td>
                                         @foreach($period as $date)
