@@ -56,6 +56,17 @@
     </a>
 
 
+        @php
+            $active = request()->routeIs('balance.business');
+        @endphp
+        <a href="{{url('/business/'.$businessId.'/balance')}}" title="{{__('Manually change balances')}}"
+           class="bg-white block rounded box-border p-3 flex mr-4 h-12 hover:bg-dark_gray2 hover:text-white transition-all
+            @if($active) text-blue @else text-gray-700 @endif
+               ">
+            <x-icons.balance :class="'h-6 w-auto inline-block'"/>
+            <span class="ml-2 text-lg inline-block @if(!$active) hidden @endif">{{__('Balances')}}</span>
+        </a>
+
     @php
         $active = request()->routeIs('allocations-calendar');
     @endphp
@@ -65,17 +76,6 @@
            ">
         <x-icons.table :class="'h-6 w-auto inline-block'"/>
         <span class="ml-2 text-lg inline-block @if(!$active) hidden @endif">{{__('Data Entry')}}</span>
-    </a>
-
-    @php
-        $active = request()->routeIs('balance.business');
-    @endphp
-    <a href="{{url('/business/'.$businessId.'/balance')}}" title="{{__('Manually change balances')}}"
-       class="bg-white block rounded box-border p-3 flex mr-4 h-12 hover:bg-dark_gray2 hover:text-white transition-all
-        @if($active) text-blue @else text-gray-700 @endif
-           ">
-        <x-icons.balance :class="'h-6 w-auto inline-block'"/>
-        <span class="ml-2 text-lg inline-block @if(!$active) hidden @endif">{{__('Balances')}}</span>
     </a>
 
     @php
