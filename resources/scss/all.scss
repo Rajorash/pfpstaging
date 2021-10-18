@@ -29,6 +29,9 @@ html {
 
 
 /* Rules for data entry tables ( Revenue entry and Billings Entry */
+.bg-account {
+    @apply bg-purple-200;
+}
 .bg-recurring {
     @apply bg-indigo-200;
 }

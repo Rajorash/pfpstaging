@@ -43,9 +43,9 @@
                         @php
                             $rowIndex = 1;
                         @endphp
-                        <tr class="divide-x bg-readonly hover:bg-yellow-100 border-light_blue">
+                        <tr class="divide-x bg-account hover:bg-yellow-100 border-light_blue">
                             <x-ui.table-td padding="p-1 pl-2"
-                                           baseClass="text-dark_gray sticky left-0 bg-readonly z-10">
+                                           baseClass="text-dark_gray sticky left-0 bg-account z-10">
                                 {{$data['name']}}
                             </x-ui.table-td>
                             {{--                        <td class="pl-2 border border-gray-300 whitespace-nowrap">{{$data['name']}}</td>--}}
@@ -142,8 +142,8 @@
                             $rowIndex++;
                             $columnIndex = 0;
                         @endphp
-                        <tr class="divide-x bg-readonly hover:bg-yellow-100 border-light_blue">
-                            <x-ui.table-td class="sticky left-0 z-10 text-left bg-readonly whitespace-nowrap"
+                        <tr class="divide-x bg-account hover:bg-yellow-100 border-light_blue">
+                            <x-ui.table-td class="sticky left-0 z-10 text-left bg-account whitespace-nowrap"
                                            padding="p-1 pr-2 pl-4">
                                 {{$data['name']}}
                             </x-ui.table-td>
@@ -152,7 +152,7 @@
                                     $columnIndex++;
                                     $manual = $data['manual'][$date->format('Y-m-d')] ?? null;
                                 @endphp
-                                <x-ui.table-td class="text-right" padding="p-0">
+                                <x-ui.table-td class="text-right bg-account" padding="p-0">
                                     <input
                                         class="px-2 py-1 w-full text-right bg-transparent border-none disabled:opacity-90
                                         @if ($manual)
