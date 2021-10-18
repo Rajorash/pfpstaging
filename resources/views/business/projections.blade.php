@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <x-cta-workflow :business="$business" :step="'projections'" />
+        <x-cta-workflow :business="$business" :step="'projections'"/>
 
         {{$business->name}}
         <x-icons.chevron-right :class="'h-4 w-auto inline-block px-2'"/>
@@ -35,6 +35,20 @@
             <div class="mr-4 py-2">
                 <button id="recalculate_pf" class="text-center select-none border font-normal whitespace-no-wrap
            rounded-lg py-1 px-6 leading-normal no-underline bg-blue text-white hover:bg-dark_gray2">{{__('Recalculate data for current period')}}</button>
+            </div>
+
+            <div class="py-2" style="display: none">
+                <button id="prev_page" class="text-center select-none border font-normal whitespace-no-wrap
+           rounded-lg py-1 px-6 leading-normal no-underline bg-blue text-white hover:bg-dark_gray2">
+                    <x-icons.chevron-left :class="'h-3 w-auto inline-block'"/>{{__('prev')}}</button>
+            </div>
+
+            <div class="py-2" style="display: none">
+                <button id="next_page" class="text-center select-none border font-normal whitespace-no-wrap
+           rounded-lg py-1 px-6 leading-normal no-underline bg-blue text-white hover:bg-dark_gray2">
+                    {{__('next')}}
+                    <x-icons.chevron-right :class="'h-3 w-auto inline-block'"/>
+                </button>
             </div>
         </div>
     </x-slot>
