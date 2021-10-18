@@ -1,12 +1,12 @@
 @if (!$phase)
-    <x-ui.error class="p-12 block">{{__('Date is to fare or late. Set another date.')}}</x-ui.error>
+    <x-ui.error class="block p-12">{{__('Date is to fare or late. Set another date.')}}</x-ui.error>
 @else
-    <x-ui.table-table class="cursor-fill-data relative mb-2">
+    <x-ui.table-table class="relative mb-2 cursor-fill-data">
         <thead>
-        <tr class="border-light_blue divide-x border-b">
-            <x-ui.table-th class="text-center sticky top-0 left-0"
+        <tr class="border-b divide-x border-light_blue">
+            <x-ui.table-th class="sticky top-0 left-0 text-center"
                            baseClass="min-w-24 w-32 text-dark_gray font-normal bg-white z-30">
-                <span id="processCounter" class="hidden opacity-50 font-normal text-xs"></span>
+                <span id="processCounter" class="hidden text-xs font-normal opacity-50"></span>
             </x-ui.table-th>
 
             @foreach($period as $date)
@@ -30,33 +30,32 @@
             @endphp
 
             @foreach($tableData as $type => $accounts)
-                <tr class="bg-{{strtolower($type)}} text-white uppercase">
+                {{-- <tr class="bg-{{strtolower($type)}} text-white uppercase">
                     <x-ui.table-td padding="py-1 pr-2 pl-4"
                                    baseClass="text-white whitespace-nowrap bg-{{strtolower($type)}} sticky left-0 z-10">
                         {{ucfirst($type)}} Accounts
                     </x-ui.table-td>
                     <x-ui.table-td attr="colspan={{$range}}">
                     </x-ui.table-td>
-                </tr>
+                </tr> --}}
                 @if($type == 'revenue')
                     @foreach($accounts as $id => $data)
                         @php
                             $rowIndex = 1;
                         @endphp
-                        <tr class="bg-indigo-100 hover:bg-yellow-100 border-light_blue divide-x">
+                        <tr class="bg-indigo-100 divide-x hover:bg-yellow-100 border-light_blue">
                             <x-ui.table-td padding="p-1 pl-2"
                                            baseClass="text-dark_gray sticky left-0 bg-indigo-100 z-10">
                                 {{$data['name']}}
                             </x-ui.table-td>
-                            {{--                        <td class="border border-gray-300 whitespace-nowrap pl-2">{{$data['name']}}</td>--}}
+                            {{--                        <td class="pl-2 border border-gray-300 whitespace-nowrap">{{$data['name']}}</td>--}}
                             @foreach($period as $date)
                                 @php
                                     $columnIndex++;
                                 @endphp
                                 <x-ui.table-td class="text-right" padding="p-0" attr="disabled">
                                     <input
-                                        class="px-2 py-1 text-right bg-transparent border-none w-full
-                                    focus:bg-gray-100 disabled:opacity-90"
+                                        class="w-full px-2 py-1 text-right bg-transparent border-none focus:bg-gray-100 disabled:opacity-90"
                                         id="account_{{$id}}_{{$date->format('Y-m-d')}}"
                                         type="text" pattern="[0-9]{10}"
                                         value="{{number_format($data[$date->format('Y-m-d')], 0, '.', '')}}"
@@ -72,7 +71,7 @@
                                     $rowIndex++;
                                     $columnIndex = 0;
                                 @endphp
-                                <tr class="bg-white hover:bg-yellow-100 border-light_blue divide-x">
+                                <tr class="bg-white divide-x hover:bg-yellow-100 border-light_blue">
                                     <x-ui.table-td padding="p-1 pr-2 pl-6"
                                                    baseClass="text-dark_gray whitespace-nowrap sticky left-0 bg-white z-10">
                                         {{$ext_data['name']}}
@@ -106,10 +105,10 @@
                                         @php
                                             $columnIndex = 0;
                                         @endphp
-                                        <tr class="bg-white hover:bg-yellow-100 border-light_blue divide-x text-xs">
+                                        <tr class="text-xs divide-x bg-recurring hover:bg-yellow-100 border-light_blue">
                                             <x-ui.table-td padding="p-1 pr-2 pl-6"
-                                                           baseClass="text-dark_gray whitespace-nowrap sticky left-0 bg-white z-10">
-                                                <x-icons.recurring class="w-3 h-auto inline mr-1"/>
+                                                           baseClass="text-dark_gray whitespace-nowrap sticky left-0 bg-recurring z-10">
+                                                <x-icons.recurring class="inline w-3 h-auto mr-1"/>
                                                 <span
                                                     title="{{$recurringData['description']}}">{{$recurringTitle}}</span>
                                             </x-ui.table-td>
@@ -118,13 +117,10 @@
                                                     $columnIndex++;
                                                     $value = $recurringData['forecast'][$date->format('Y-m-d')] ?? 0;
                                                 @endphp
-                                                <x-ui.table-td class="text-right hover:bg-yellow-100" padding="p-0">
+                                                <x-ui.table-td class="text-right bg-recurring hover:bg-yellow-100" padding="p-0">
                                                     @if($value)
                                                         <input
-                                                            class="px-2 py-1 w-full text-right bg-transparent border-0
-                                            border-transparent outline-none cursor-copy pfp_forecast_value select-none
-                                            focus:outline-none focus:ring-1 focus:shadow-none disabled:opacity-90
-                                            text-xs"
+                                                            class="w-full px-2 py-1 text-xs text-right bg-transparent border-0 border-transparent outline-none select-none cursor-copy pfp_forecast_value focus:outline-none focus:ring-1 focus:shadow-none disabled:opacity-90"
                                                             disabled
                                                             data-for_row="{{$rowIndex}}"
                                                             data-for_column="{{$columnIndex}}"
@@ -146,8 +142,8 @@
                             $rowIndex++;
                             $columnIndex = 0;
                         @endphp
-                        <tr class="bg-indigo-100 hover:bg-yellow-100 border-light_blue divide-x">
-                            <x-ui.table-td class="text-left whitespace-nowrap bg-indigo-100 z-10 sticky left-0"
+                        <tr class="bg-indigo-100 divide-x hover:bg-yellow-100 border-light_blue">
+                            <x-ui.table-td class="sticky left-0 z-10 text-left bg-indigo-100 whitespace-nowrap"
                                            padding="p-1 pr-2 pl-4">
                                 {{$data['name']}}
                             </x-ui.table-td>
@@ -197,9 +193,9 @@
                                         $rowIndex++;
                                         $columnIndex = 0;
                                     @endphp
-                                    <tr class="bg-white hover:bg-yellow-100 border-light_blue divide-x">
+                                    <tr class="bg-indigo-100 divide-x hover:bg-yellow-100 border-light_blue">
                                         <x-ui.table-td padding="p-1 pr-2 pl-6"
-                                                       class="text-left whitespace-nowrap sticky left-0 bg-white z-10">
+                                                       class="sticky left-0 z-10 text-left bg-indigo-100 whitespace-nowrap">
                                             {{__('Transfer In')}}
                                         </x-ui.table-td>
                                         @foreach($period as $date)
@@ -208,8 +204,7 @@
                                             @endphp
                                             <x-ui.table-td padding="p-0" class="text-right">
                                                 <input
-                                                    class="px-2 py-1 w-full text-right bg-transparent border-none
-                                                    focus:bg-gray-100 disabled:opacity-90"
+                                                    class="w-full px-2 py-1 text-right bg-transparent border-none focus:bg-gray-100 disabled:opacity-90"
                                                     type="text" pattern="[0-9]{10}"
                                                     value="{{number_format($ext_data[$date->format('Y-m-d')], 0, '.', '')}}"
                                                     data-row="{{$rowIndex}}"
@@ -223,10 +218,10 @@
                                         $rowIndex++;
                                         $columnIndex = 0;
                                     @endphp
-                                    <tr class="bg-white hover:bg-yellow-100 border-light_blue divide-x">
+                                    <tr class="bg-indigo-100 divide-x hover:bg-yellow-100 border-light_blue">
                                         <x-ui.table-td padding="p-1 pr-2 pl-6"
-                                                       class="text-left whitespace-nowrap sticky bg-white left-0 z-10">
-                                            Flow Total
+                                                       class="sticky left-0 z-10 text-left bg-indigo-100 whitespace-nowrap">
+                                            {{__('Flow Total')}}
                                         </x-ui.table-td>
                                         @foreach($period as $date)
                                             @php
@@ -234,8 +229,7 @@
                                             @endphp
                                             <x-ui.table-td padding="p-0" class="text-right">
                                                 <input
-                                                    class="px-2 py-1 w-full text-right bg-transparent border-none
-                                                    focus:bg-gray-100 disabled:opacity-90"
+                                                    class="w-full px-2 py-1 text-right bg-transparent border-none focus:bg-gray-100 disabled:opacity-90"
                                                     type="text" pattern="[0-9]{10}"
                                                     value="{{number_format($ext_data[$date->format('Y-m-d')], 0, '.', '')}}"
                                                     data-row="{{$rowIndex}}"
@@ -249,9 +243,9 @@
                                         $rowIndex++;
                                         $columnIndex = 0;
                                     @endphp
-                                    <tr class="bg-indigo-100 hover:bg-yellow-100 border-light_blue divide-x">
+                                    <tr class="bg-white divide-x hover:bg-yellow-100 border-light_blue">
                                         <x-ui.table-td padding="p-1 pr-2 pl-4"
-                                                       class="text-left whitespace-nowrap sticky bg-indigo-100 left-0 z-10">
+                                                       class="sticky left-0 z-10 text-left bg-white whitespace-nowrap">
                                             {{$ext_data['name']}}
                                         </x-ui.table-td>
                                         @foreach($period as $date)
@@ -281,10 +275,10 @@
                                             @php
                                                 $columnIndex = 0;
                                             @endphp
-                                            <tr class="bg-white hover:bg-yellow-100 border-light_blue divide-x text-xs">
+                                            <tr class="text-xs divide-x bg-recurring hover:bg-yellow-100 border-light_blue">
                                                 <x-ui.table-td padding="p-1 pr-2 pl-6"
-                                                               baseClass="text-dark_gray whitespace-nowrap sticky left-0 bg-white z-10">
-                                                    <x-icons.recurring class="w-3 h-auto inline mr-1"/>
+                                                               baseClass="text-dark_gray whitespace-nowrap sticky left-0 bg-recurring z-10">
+                                                    <x-icons.recurring class="inline w-3 h-auto mr-1"/>
                                                     {{$recurringTitle}}
                                                 </x-ui.table-td>
                                                 @foreach($period as $date)
@@ -292,13 +286,10 @@
                                                         $columnIndex++;
                                                         $value = $recurringData['forecast'][$date->format('Y-m-d')] ?? 0;
                                                     @endphp
-                                                    <x-ui.table-td class="text-right hover:bg-yellow-100" padding="p-0">
+                                                    <x-ui.table-td class="text-right bg-recurring hover:bg-yellow-100" padding="p-0">
                                                         @if($value)
                                                             <input
-                                                                class="px-2 py-1 w-full text-right bg-transparent border-0
-                                                                        border-transparent outline-none cursor-copy pfp_forecast_value select-none
-                                                                        focus:outline-none focus:ring-1 focus:shadow-none disabled:opacity-90
-                                                                        text-xs"
+                                                                class="w-full px-2 py-1 text-xs text-right bg-transparent border-0 border-transparent outline-none select-none cursor-copy pfp_forecast_value focus:outline-none focus:ring-1 focus:shadow-none disabled:opacity-90"
                                                                 draggable="true"
                                                                 data-for_row="{{$rowIndex}}"
                                                                 data-for_column="{{$columnIndex}}"
@@ -315,7 +306,7 @@
                             @endif
                         @endforeach
                         <tr class="bg-light_blue">
-                            <x-ui.table-td class="text-center h-1" padding="p-0"
+                            <x-ui.table-td class="h-1 text-center" padding="p-0"
                                            attr="colspan={{$range+1}}"></x-ui.table-td>
                         </tr>
                     @endforeach
