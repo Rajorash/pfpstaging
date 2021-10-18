@@ -13,7 +13,7 @@
 
     <x-ui.main>
         <x-ui.table-table>
-            <x-ui.table-caption class="pt-12 pb-6 px-48 lg:px-52 xl:px-60 2xl:px-72 relative relative">
+            <x-ui.table-caption class="relative px-48 pt-12 pb-6 lg:px-52 xl:px-60 2xl:px-72">
                 {{$business->name}}, {{__('change balance for')}}: {{ \Carbon\Carbon::parse($today)->format('l, d F Y')}}
 
                 <x-slot name="left">
@@ -35,7 +35,7 @@
                 @endif
 
                 @if (session('status'))
-                    <div class="text-indigo-500 status text-sm mt-2">
+                    <div class="mt-2 text-sm text-indigo-500 status">
                         {{ session('status') }}
                     </div>
                 @endif
@@ -48,16 +48,21 @@
                               action="{{route('balanceStore.business', ['business' => $business])}}">
                             @csrf
                             <div class="table w-full mt-10">
+                                <div class="table-row">
+                                    <div class="table-cell w-1/5 pb-4 font-semibold text-left uppercase">Account</div>
+                                    <div class="table-cell w-1/5 px-4 pb-4 font-semibold text-right text-gray-600 uppercase">Projected</div>
+                                    <div class="table-cell w-3/5 pb-4 font-semibold uppercase">Input Actual Balance</div>
+                                </div>
                                 @foreach ($balances as $balance)
                                     <div class="table-row">
-                                        <div class="table-cell w-1/4 pb-4 text-left">{{$balance['title']}}</div>
-                                        <div class="table-cell w-3/4 pb-4">
+                                        <div class="table-cell w-1/5 pb-4 text-left">{{$balance['title']}}</div>
+                                        <div class="table-cell w-1/5 px-4 pb-4 text-right text-gray-600">{{$balance['amount']}}</div>
+                                        <div class="table-cell w-3/5 pb-4">
                                             <x-jet-input
                                                 name="balance[{{$balance['id']}}]"
                                                 type="text"
-                                                class="text-right w-full"
+                                                class="w-full text-right"
                                                 autocomplete="off"
-                                                value="{{$balance['amount']}}"
                                             />
                                         </div>
                                     </div>
@@ -65,8 +70,9 @@
                                 @endforeach
                                 <div class="table-row">
                                     @if($checkLicense)
-                                        <div class="table-cell w-1/4 pb-4 text-left"></div>
-                                        <div class="table-cell w-3/4 pb-4 text-left">
+                                        <div class="table-cell w-1/5 pb-4 text-left"></div>
+                                        <div class="table-cell w-1/5 px-4 pb-4 text-left"></div>
+                                        <div class="table-cell w-3/5 pb-4 text-left">
                                             <x-ui.button-normal class="uppercase" type="button"
                                                                 onclick="this.disabled=true;this.form.submit();this.innerText='...calculating';">
                                                 {{__('Save changes and recalculate flow')}}
