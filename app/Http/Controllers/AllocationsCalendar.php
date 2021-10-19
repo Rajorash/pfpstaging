@@ -217,8 +217,6 @@ class AllocationsCalendar extends Controller
             }
         }
 
-//        dd($response);
-
         $period = CarbonPeriod::create($dateFrom, $dateTo);
         $complete = $rangeValue + 1;
 

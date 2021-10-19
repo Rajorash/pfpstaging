@@ -270,6 +270,14 @@ Route::group(['middleware' => 'auth'], function () {
         '/business/{business}/pipelines/{pipeline}/delete',
         [PipelineController::class, 'delete']
     );
+
+    Route::get('/business/{business}/revenue-entry',
+        [\App\Http\Controllers\RevenueController::class, 'table'])
+        ->name('revenue-entry.table');
+    Route::post(
+        '/business/revenue-entry/ajax/update',
+        [\App\Http\Controllers\RevenueController::class, 'updateData']
+    )->name('revenue-entry.updateData');
 });
 
 Route::middleware(

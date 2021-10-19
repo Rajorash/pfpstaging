@@ -1,7 +1,8 @@
 @props([
 'width' => 'max-w-7xl',
 'heightController' => false,
-'forecastController' => false
+'forecastController' => false,
+'autoSubmit' => true
 ])
 <div class="{{$width}} mx-auto py-2 text-sm flex justify-end items-center">
 
@@ -28,21 +29,23 @@
         </div>
     @endif
 
-    <div class="flex items-center"
-         title="{{__('The amount of seconds that will pass before the form will automatically recalculate after updating values')}}">
-        <input type="number" min="1" max="30" id="delay_submit_data"
-               class="w-16 h-9 my-0 ml-3 mr-0 text-center rounded form-input text-right">
-        <label class="ml-3" for="delay_submit_data">{{__('Auto submit delay (sec)')}}
-            <x-icons.question/>
-        </label>
-    </div>
 
-    <div title="{{__('Enabling auto-submit data. If not - use Enter for submit')}}"
-         class="flex items-center mr-4 flex-nowrap">
-        <input type="checkbox" id="allow_auto_submit_data" class="pr-2 py-2 mx-3 my-3 rounded form-input"/>
-        <label for="allow_auto_submit_data">{{__('Auto-submit')}}
-            <x-icons.question/>
-        </label>
-    </div>
+    @if($autoSubmit)
+        <div class="flex items-center"
+             title="{{__('The amount of seconds that will pass before the form will automatically recalculate after updating values')}}">
+            <input type="number" min="1" max="30" id="delay_submit_data"
+                   class="w-16 h-9 my-0 ml-3 mr-0 text-center rounded form-input text-right">
+            <label class="ml-3" for="delay_submit_data">{{__('Auto submit delay (sec)')}}
+                <x-icons.question/>
+            </label>
+        </div>
 
+        <div title="{{__('Enabling auto-submit data. If not - use Enter for submit')}}"
+             class="flex items-center mr-4 flex-nowrap">
+            <input type="checkbox" id="allow_auto_submit_data" class="pr-2 py-2 mx-3 my-3 rounded form-input"/>
+            <label for="allow_auto_submit_data">{{__('Auto-submit')}}
+                <x-icons.question/>
+            </label>
+        </div>
+    @endif
 </div>

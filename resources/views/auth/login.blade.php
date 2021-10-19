@@ -15,7 +15,7 @@
         <form method="POST" action="{{ route('login') }}">
             @csrf
 
-            @if (env('APP_ENV') == 'local')
+            @if (Config::get('app.env') == 'local')
                 <div class="flex pb-2">
                     <a class="px-2 py-1 mr-2 border rounded border-gray-400 hover:bg-gray-100 cursor-pointer text-sm"
                        onclick="(function(){$('#email').val('superadmin@pfp.com');$('#password').val('#j$dZW|bdYO+`CW`~,y|');})();return false;">

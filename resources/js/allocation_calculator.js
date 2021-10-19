@@ -109,26 +109,26 @@ $(function () {
             $this.switchHeightMode();
         }
 
-        switchHeightMode() {
-            let $this = this;
-
-            if ($this.heightMode === 'full') {
-                $('.block_different_height').height('auto');
-            } else {
-                let height = $(window).height() - 50;
-                let blockDifferentHeight = $('.block_different_height');
-
-                if (blockDifferentHeight.offset()) {
-                    height -= blockDifferentHeight.offset().top;
-                }
-
-                blockDifferentHeight.height(height);
-            }
-
-            setTimeout(function () {
-                $(".global_nice_scroll").getNiceScroll().resize();
-            }, 500);
-        }
+        // switchHeightMode() {
+        //     let $this = this;
+        //
+        //     if ($this.heightMode === 'full') {
+        //         $('.block_different_height').height('auto');
+        //     } else {
+        //         let height = $(window).height() - 50;
+        //         let blockDifferentHeight = $('.block_different_height');
+        //
+        //         if (blockDifferentHeight.offset()) {
+        //             height -= blockDifferentHeight.offset().top;
+        //         }
+        //
+        //         blockDifferentHeight.height(height);
+        //     }
+        //
+        //     setTimeout(function () {
+        //         $(".global_nice_scroll").getNiceScroll().resize();
+        //     }, 500);
+        // }
 
         updateHeightMode() {
             let $this = this;

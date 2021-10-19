@@ -39,7 +39,10 @@ class Allocation extends Model
      *
      * @var array
      */
-    protected $casts = ['allocation_date' => 'date:Y-m-j'];
+    protected $casts = [
+        'allocation_date' => 'date:Y-m-j',
+        'amount' => 'float'
+    ];
 
     /**
      * The attributes that are mass assignable.
