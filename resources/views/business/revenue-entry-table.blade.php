@@ -29,13 +29,13 @@
             </x-ui.table-td>
             @foreach($period as $i => $date)
                 <x-ui.table-td baseClass="bg-atlantis-200" padding="p-0">
-                    <input class="px-2 py-1 w-full text-right bg-transparent border-0
+                    <input class="revenue_total px-2 py-1 w-full text-right bg-transparent border-0
                                             border-transparent outline-none
                                             focus:outline-none focus:ring-1 focus:shadow-none disabled:opacity-90
                                             hover:bg-yellow-50 focus:bg-yellow-50"
                            id="revenue_{{$date->format('Y-m-d')}}"
                            data-row="revenue"
-                           data-column="{{$i}}"
+                           data-column="{{$i+1}}"
                            type="text" pattern="[0-9]{10}"
                            value="0"/>
                 </x-ui.table-td>
@@ -48,13 +48,13 @@
             </x-ui.table-td>
             @foreach($period as $i => $date)
                 <x-ui.table-td baseClass="bg-atlantis-100" padding="p-0">
-                    <input class="px-2 py-1 w-full text-right bg-transparent border-0
+                    <input class="flow_total px-2 py-1 w-full text-right bg-transparent border-0
                                             border-transparent outline-none
                                             focus:outline-none focus:ring-1 focus:shadow-none disabled:opacity-90
                                             hover:bg-yellow-50 focus:bg-yellow-50"
                            id="flow_total_{{$date->format('Y-m-d')}}"
                            data-row="flow_total"
-                           data-column="{{$i}}"
+                           data-column="{{$i+1}}"
                            type="text" pattern="[0-9]{10}"
                            value="0"/>
                 </x-ui.table-td>
@@ -89,7 +89,7 @@
                                 $columnIndex++;
                             @endphp
                             <x-ui.table-td class="text-right " padding="p-0">
-                                <input class="px-2 py-1 w-full text-right bg-transparent border-0
+                                <input class="flow_cell px-2 py-1 w-full text-right bg-transparent border-0
                                             border-transparent outline-none
                                             focus:outline-none focus:ring-1 focus:shadow-none disabled:opacity-90
                                             @if(!$business->license->checkLicense)
@@ -114,6 +114,10 @@
                     @if (isset($flowData['recurring']) && !empty($flowData['recurring']))
 
                         @foreach ($flowData['recurring'] as $recurringData)
+                            @php
+                                $rowIndex++;
+                                $columnIndex = 0;
+                            @endphp
                             <tr class="divide-x border-light_blue">
                                 <x-ui.table-td padding="p-1 pr-2 pl-6 "
                                                baseClass="text-dark_gray whitespace-nowrap sticky left-0 bg-recurring z-10 text-left">
@@ -121,6 +125,9 @@
                                         class="inline w-3 h-auto mr-1"/> {{$recurringData['title']}}
                                 </x-ui.table-td>
                                 @foreach($period as $date)
+                                    @php
+                                        $columnIndex++;
+                                    @endphp
                                     <x-ui.table-td class="text-right bg-recurring" padding="p-0">
                                         <input class="px-2 py-1 w-full text-right bg-transparent border-0
                                                     border-transparent outline-none
@@ -158,13 +165,13 @@
                 </x-ui.table-td>
                 @foreach($period as $i => $date)
                     <x-ui.table-td baseClass="bg-atlantis-100" padding="p-0">
-                        <input class="px-2 py-1 w-full text-right bg-transparent border-0
+                        <input class="pipeline_total px-2 py-1 w-full text-right bg-transparent border-0
                                             border-transparent outline-none
                                             focus:outline-none focus:ring-1 focus:shadow-none disabled:opacity-90
                                             hover:bg-yellow-50 focus:bg-yellow-50"
                                id="pipeline_total_{{$date->format('Y-m-d')}}"
                                data-row="pipeline_total"
-                               data-column="{{$i}}"
+                               data-column="{{$i + 1}}"
                                type="text" pattern="[0-9]{10}"
                                value="0"/>
                     </x-ui.table-td>
@@ -175,43 +182,40 @@
                     $rowIndex++;
                     $columnIndex = 0;
                 @endphp
+                <tr class="divide-x border-light_blue">
+                    <x-ui.table-td padding="p-1 pr-2 pl-6 "
+                                   baseClass="text-dark_gray whitespace-nowrap sticky left-0 bg-recurring z-10 text-left">
+                        <x-icons.chart
+                            class="inline w-3 h-auto mr-1"/> {{$pipelineData['title']}}
+                        ({{$pipelineData['certainty']}}%)
+                    </x-ui.table-td>
                     @foreach($period as $date)
                         @php
                             $columnIndex++;
                         @endphp
-                    <tr class="divide-x border-light_blue">
-                        <x-ui.table-td padding="p-1 pr-2 pl-6 "
-                                       baseClass="text-dark_gray whitespace-nowrap sticky left-0 bg-recurring z-10 text-left">
-                            <x-icons.chart
-                                class="inline w-3 h-auto mr-1"/> {{$pipelineData['title']}}
-                            ({{$pipelineData['certainty']}}%)
-                        </x-ui.table-td>
-                        @foreach($period as $date)
-                            <x-ui.table-td class="text-right bg-recurring" padding="p-0">
-                                <input class="px-2 py-1 w-full text-right bg-transparent border-0
-                                                    border-transparent outline-none
-                                                    focus:outline-none focus:ring-1 focus:shadow-none disabled:opacity-90
-                                                    @if(!$business->license->checkLicense)
-                                    focus:bg-gray-100
-@else
-                                    hover:bg-yellow-50 focus:bg-yellow-50
+                        <x-ui.table-td class="text-right bg-recurring" padding="p-0">
+                            <input class="pipeline_cell px-2 py-1 w-full text-right bg-transparent border-0
+                                        border-transparent outline-none
+                                        focus:outline-none focus:ring-1 focus:shadow-none disabled:opacity-90
+                                @if(!$business->license->checkLicense)
+                                focus:bg-gray-100
+                                @else
+                                hover:bg-yellow-50 focus:bg-yellow-50
 @endif "
-                                       id="pipeline_{{$pipelineId}}_{{$date->format('Y-m-d')}}"
-                                       data-row="{{$rowIndex}}"
-                                       data-column="{{$columnIndex}}"
-                                       data-certainty="{{$pipelineData['certainty']}}"
-                                       type="text" pattern="[0-9]{10}"
-                                       @if(isset($pipelineData['forecast'][$date->format('Y-m-d')]))
-                                       value="{{$pipelineData['forecast'][$date->format('Y-m-d')]}}"
-                                       @else
-                                       value="0"
-                                       @endif
-                                       @if(!$business->license->checkLicense) disabled @endif/>
-                            </x-ui.table-td>
-                        @endforeach
-                    </tr>
+                                   id="pipeline_{{$pipelineId}}_{{$date->format('Y-m-d')}}"
+                                   data-row="{{$rowIndex}}"
+                                   data-column="{{$columnIndex}}"
+                                   data-certainty="{{$pipelineData['certainty']}}"
+                                   type="text" pattern="[0-9]{10}"
+                                   @if(isset($pipelineData['forecast'][$date->format('Y-m-d')]))
+                                   value="{{$pipelineData['forecast'][$date->format('Y-m-d')]}}"
+                                   @else
+                                   value="0"
+                                   @endif
+                                   @if(!$business->license->checkLicense) disabled @endif/>
+                        </x-ui.table-td>
                     @endforeach
-
+                </tr>
             @endforeach
         @endif
 

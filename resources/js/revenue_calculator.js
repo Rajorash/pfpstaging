@@ -61,13 +61,57 @@ $(function () {
             //     $('#' + $this.changesCounterId).html('').hide();
             // }
 
-            // if ($this.debug) {
+            if ($this.debug) {
                 console.log('collectData', $this.data);
-            // }
+            }
         }
 
         getTargetSelectorForForecast(row, col) {
             return '[data-row="' + row + '"][data-column="' + col + '"]';
+        }
+
+        recalculateRevenueTable() {
+            let $this = this;
+
+            $.each(['flow', 'pipeline'], function (i, $class) {
+
+                if ($('.' + $class + '_total').length) {
+                    $('.' + $class + '_total').each(function () {
+                        let $result = 0;
+
+                        $('.' + $class + '_cell[data-column="' + $(this).data('column') + '"]').each(function () {
+                            if ($class === 'pipeline') {
+                                $result += parseFloat($(this).data('certainty')) / 100 * parseFloat($(this).val());
+                            } else {
+                                $result += parseFloat($(this).val());
+                            }
+                        });
+
+                        $(this).val($result);
+                    });
+                }
+
+            });
+
+            $('.revenue_total').each(function () {
+                let $revenue = 0;
+                let $column = $(this).data('column');
+
+                $.each(['flow', 'pipeline'], function (i, $class) {
+                    if ($('.' + $class + '_total[data-column="' + $column + '"]')) {
+                        $revenue += parseFloat($('.' + $class + '_total[data-column="' + $column + '"]').val())
+                    }
+                });
+
+                $(this).val($revenue);
+            });
+
+        }
+
+        renderData(data) {
+            super.renderData(data);
+
+            this.recalculateRevenueTable();
         }
 
     }
