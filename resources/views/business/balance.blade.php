@@ -50,7 +50,7 @@
                             <div class="table w-full mt-10">
                                 <div class="table-row">
                                     <div class="table-cell w-1/5 pb-4 font-semibold text-left uppercase">Account</div>
-                                    <div class="table-cell w-1/5 px-4 pb-4 font-semibold text-right text-gray-600 uppercase">Projected</div>
+                                    <div class="table-cell w-1/5 px-4 pb-4 font-semibold text-right text-gray-600 uppercase">Expected</div>
                                     <div class="table-cell w-3/5 pb-4 font-semibold uppercase">Input Actual Balance</div>
                                 </div>
                                 @foreach ($balances as $balance)
