@@ -134,7 +134,6 @@ class BusinessObserver
                 'name' => 'Mats & Subs',
                 'type' => 'prereal',
                 'flows' => [
-                    // [ 'label' => "Transfer in", 'negative' => false ],
                     ['label' => "Purchases", 'negative' => true],
                     ['label' => "Subcontractors", 'negative' => true],
                 ]
