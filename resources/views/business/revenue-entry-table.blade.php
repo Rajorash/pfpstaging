@@ -30,13 +30,11 @@
             @foreach($period as $i => $date)
                 <x-ui.table-td baseClass="bg-atlantis-200" padding="p-0">
                     <input class="revenue_total px-2 py-1 w-full text-right bg-transparent border-0
-                                            border-transparent outline-none
-                                            focus:outline-none focus:ring-1 focus:shadow-none disabled:opacity-90
-                                            hover:bg-yellow-50 focus:bg-yellow-50"
+                            border-transparent outline-none"
                            id="revenue_{{$date->format('Y-m-d')}}"
                            data-row="revenue"
                            data-column="{{$i+1}}"
-                           type="text" pattern="[0-9]{10}"
+                           type="text" pattern="[0-9]{10}" disabled
                            value="0"/>
                 </x-ui.table-td>
             @endforeach
@@ -49,13 +47,11 @@
             @foreach($period as $i => $date)
                 <x-ui.table-td baseClass="bg-atlantis-100" padding="p-0">
                     <input class="flow_total px-2 py-1 w-full text-right bg-transparent border-0
-                                            border-transparent outline-none
-                                            focus:outline-none focus:ring-1 focus:shadow-none disabled:opacity-90
-                                            hover:bg-yellow-50 focus:bg-yellow-50"
+                                            border-transparent outline-none"
                            id="flow_total_{{$date->format('Y-m-d')}}"
                            data-row="flow_total"
                            data-column="{{$i+1}}"
-                           type="text" pattern="[0-9]{10}"
+                           type="text" pattern="[0-9]{10}" disabled
                            value="0"/>
                 </x-ui.table-td>
             @endforeach
@@ -146,7 +142,7 @@
                                                @else
                                                value="0"
                                                @endif
-                                               @if(!$business->license->checkLicense) disabled @endif/>
+                                               disabled/>
                                     </x-ui.table-td>
                                 @endforeach
                             </tr>
@@ -166,13 +162,11 @@
                 @foreach($period as $i => $date)
                     <x-ui.table-td baseClass="bg-atlantis-100" padding="p-0">
                         <input class="pipeline_total px-2 py-1 w-full text-right bg-transparent border-0
-                                            border-transparent outline-none
-                                            focus:outline-none focus:ring-1 focus:shadow-none disabled:opacity-90
-                                            hover:bg-yellow-50 focus:bg-yellow-50"
+                                            border-transparent outline-none"
                                id="pipeline_total_{{$date->format('Y-m-d')}}"
                                data-row="pipeline_total"
                                data-column="{{$i + 1}}"
-                               type="text" pattern="[0-9]{10}"
+                               type="text" pattern="[0-9]{10}" disabled
                                value="0"/>
                     </x-ui.table-td>
                 @endforeach
@@ -212,7 +206,7 @@
                                    @else
                                    value="0"
                                    @endif
-                                   @if(!$business->license->checkLicense) disabled @endif/>
+                                   disabled/>
                         </x-ui.table-td>
                     @endforeach
                 </tr>

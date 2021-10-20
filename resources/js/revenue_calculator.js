@@ -21,9 +21,15 @@ $(function () {
             let $this = this;
             super.events();
 
-            $(document).on('change', '#revenueStartDate, #revenueCurrentRangeValue, #revenueTablePlace input', function (event) {
+            $(document).on('change', '#revenueStartDate, #revenueCurrentRangeValue', function (event) {
+                $this.autoSubmitDataAllow = true;
                 $this.loadData(event);
                 $this.progressBar();
+            });
+
+            $(document).on('change', 'input.flow_cell', function (event) {
+                $this.autoSubmitDataAllow = false;
+                $this.recalculateRevenueTable();
             });
 
         }
