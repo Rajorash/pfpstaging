@@ -112,34 +112,10 @@ class BusinessObserver
                     ['label' => "Estimated Activity", 'negative' => false],
                 ]
             ],
-            // [
-            //     'name' => 'Drip Account',
-            //     'type' => 'pretotal',
-            //     'flows' => [
-            //         ['label' => "Transfer to revenue", 'negative' => true],
-            //     ]
-            // ],
-            // [
-            //     'name' => 'Materials',
-            //     'type' => 'prereal',
-            //     'flows' => [
-            //         // [ 'label' => "Transfer in", 'negative' => false ],
-            //         ['label' => "Purchases", 'negative' => true],
-            //     ]
-            // ],
-            // [
-            //     'name' => 'Subcontractors',
-            //     'type' => 'prereal',
-            //     'flows' => [
-            //         // [ 'label' => "Transfer in", 'negative' => false ],
-            //         ['label' => "Payments", 'negative' => true],
-            //     ]
-            // ],
             [
                 'name' => 'Profit',
                 'type' => 'postreal',
                 'flows' => [
-                    // [ 'label' => "Transfer in", 'negative' => false ],
                     ['label' => "Distributions", 'negative' => true],
                     ['label' => "Debt pay down", 'negative' => true],
                 ]
@@ -149,7 +125,6 @@ class BusinessObserver
                 'name' => 'Owners Pay',
                 'type' => 'postreal',
                 'flows' => [
-                    // [ 'label' => "Transfer in", 'negative' => false ],
                     ['label' => "Wages", 'negative' => true],
                     ['label' => "Downturn", 'negative' => true],
                 ]
@@ -168,7 +143,6 @@ class BusinessObserver
                 'name' => 'Opex',
                 'type' => 'postreal',
                 'flows' => [
-                    // [ 'label' => "Transfer in", 'negative' => false ],
                     ['label' => "Rent", 'negative' => true],
                     ['label' => "Education & Training", 'negative' => true],
                     ['label' => "Promotions", 'negative' => true],
@@ -185,7 +159,6 @@ class BusinessObserver
                 'name' => 'Tax',
                 'type' => 'postreal',
                 'flows' => [
-                    // [ 'label' => "Transfer in", 'negative' => false ],
                     ['label' => "BAS - Current", 'negative' => true],
                     ['label' => "Super Payments", 'negative' => true],
                     ['label' => "Payment Plans", 'negative' => true],
@@ -195,31 +168,9 @@ class BusinessObserver
                 'name' => 'G.S.T.',
                 'type' => 'salestax',
                 'flows' => [
-                    // [ 'label' => "Transfer in", 'negative' => false ],
                     ['label' => "BAS - Payment", 'negative' => true],
                 ]
             ],
-            // [
-            //     'name' => 'Vault',
-            //     'type' => 'postreal',
-            //     'flows' => [
-            //         ['label' => "Transfer in", 'negative' => false],
-            //     ]
-            // ],
-            // [
-            //     'name' => 'Other',
-            //     'type' => 'postreal',
-            //     'flows' => [
-            //         ['label' => "Transfer in", 'negative' => false],
-            //     ]
-            // ],
-            // [
-            //     'name' => 'Charity',
-            //     'type' => 'postreal',
-            //     'flows' => [
-            //         ['label' => "Transfer in", 'negative' => false],
-            //     ]
-            // ],
         );
     }
 }
