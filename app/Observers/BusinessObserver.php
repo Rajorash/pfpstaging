@@ -156,12 +156,12 @@ class BusinessObserver
 
             ],
             [
-                'name' => 'People',
-                'type' => 'postreal',
+                'name' => 'Mats & Subs',
+                'type' => 'prereal',
                 'flows' => [
                     // [ 'label' => "Transfer in", 'negative' => false ],
-                    ['label' => "Payroll", 'negative' => true],
-                    ['label' => "Downturn", 'negative' => true],
+                    ['label' => "Purchases", 'negative' => true],
+                    ['label' => "Subcontractors", 'negative' => true],
                 ]
             ],
             [
