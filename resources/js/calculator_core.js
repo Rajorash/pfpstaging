@@ -470,25 +470,4 @@ export class calculatorCore {
     renderButtonForManualSubmit() {
         return '<a href="#" id="manualSubmitData" class="bg-white hover:bg-gray-100 font-bold p-2 rounded text-red-700">Submit data</a>';
     }
-
-    switchHeightMode() {
-        let $this = this;
-
-        if ($this.heightMode === 'full') {
-            $('.block_different_height').height('auto');
-        } else {
-            let height = $(window).height() - 50;
-            let blockDifferentHeight = $('.block_different_height');
-
-            if (blockDifferentHeight.offset()) {
-                height -= blockDifferentHeight.offset().top;
-            }
-
-            blockDifferentHeight.height(height);
-        }
-
-        setTimeout(function () {
-            $(".global_nice_scroll").getNiceScroll().resize();
-        }, 500);
-    }
 }

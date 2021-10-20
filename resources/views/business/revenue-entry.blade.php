@@ -11,25 +11,24 @@
 
     <x-slot name="subHeader">
         <div class="flex items-center content-between">
-            <input type="hidden" id="businessId" name="businessId" value="{{$business->id}}"/>
+            <input type="hidden" id="revenueBusinessId" name="revenueBusinessId" value="{{$business->id}}"/>
             <div class="p-2">
-                <label class="mr-2" for="startdate">{{__('Start date')}}</label>
-                <input name="startdate" id="startDate"
+                <label class="mr-2" for="revenueStartDate">{{__('Start date')}}</label>
+                <input name="revenueStartDate" id="revenueStartDate"
                        min="{{$minDate}}" max="{{$maxDate}}"
                        class="py-1 my-0 rounded form-input" type="date"
                        value="{{$startDate}}">
             </div>
             <div class="p-2">
-                <label class="mr-2" for="range">{{__('Range')}}</label>
-                <select name="range" id="currentRangeValue" class="py-1 my-0 rounded form-select">
+                <label class="mr-2" for="revenueCurrentRangeValue">{{__('Range')}}</label>
+                <select name="revenueCurrentRangeValue" id="revenueCurrentRangeValue" class="py-1 my-0 rounded form-select">
                     @foreach ($rangeArray as $key => $value)
                         <option value="{{$key}}" @if($key == $currentRangeValue) selected @endif>{{$value}}</option>
                     @endforeach
                 </select>
             </div>
 
-            <x-ui.data-submit-controls class="items-center p-2" :heightController="true" :autoSubmit="false"/>
-
+            <x-ui.data-submit-controls class="items-center p-2" :heightController="false" :autoSubmit="false"/>
         </div>
     </x-slot>
 
@@ -39,89 +38,144 @@
 
 
     <x-ui.main width="w-full">
-        {{--        <div id="revenueTablePlace"--}}
-        {{--             class="relative overflow-scroll global_nice_scroll block_different_height return_coordinates_table">--}}
-        {{--            <div class="p-8 text-center opacity-50">...loading</div>--}}
-        {{--        </div>--}}
-        <div id="--revenueTablePlace"
+
+        <div id="revenueTablePlace"
              class="relative overflow-scroll global_nice_scroll block_different_height return_coordinates_table">
 
-            <x-ui.table-table class="relative mb-2 cursor-fill-data">
-                <thead>
-                <tr class="border-b divide-x border-light_blue">
-                    <x-ui.table-th class="sticky top-0 left-0 text-center"
-                                   baseClass="min-w-24 w-32 text-dark_gray font-normal bg-data-entry z-30">
-                        <span id="processCounter" class="hidden text-xs font-normal opacity-50"></span>
-                    </x-ui.table-th>
+{{--            <x-ui.table-table class="relative mb-2 cursor-fill-data">--}}
+{{--                <thead>--}}
+{{--                <tr class="border-b divide-x border-light_blue">--}}
+{{--                    <x-ui.table-th class="sticky top-0 left-0 text-center"--}}
+{{--                                   baseClass="min-w-24 w-32 text-dark_gray font-normal bg-data-entry z-30">--}}
+{{--                        <span id="processCounter" class="hidden text-xs font-normal opacity-50"></span>--}}
+{{--                    </x-ui.table-th>--}}
 
-                    @foreach($period as $date)
-                        @php
-                            $date = Carbon\Carbon::parse($date, 'Y-m-d H:i:s');
-                        @endphp
-                        <x-ui.table-th
-                            class="text-center {{ $date->isToday() ? 'text-blue': 'text-dark_gray' }} sticky top-0"
-                            baseClass="min-w-24 font-normal bg-data-entry z-20">
-                            <span class="block text-xs font-normal">{{$date->format('M Y')}}</span>
-                            <span class="block text-xl">{{$date->format('j')}}</span>
-                            <span class="block text-xs font-normal">{{$date->format('D')}}</span>
-                        </x-ui.table-th>
-                    @endforeach
-                </tr>
-                </thead>
+{{--                    @foreach($period as $date)--}}
+{{--                        @php--}}
+{{--                            $date = Carbon\Carbon::parse($date, 'Y-m-d H:i:s');--}}
+{{--                        @endphp--}}
+{{--                        <x-ui.table-th--}}
+{{--                            class="text-center {{ $date->isToday() ? 'text-blue': 'text-dark_gray' }} sticky top-0"--}}
+{{--                            baseClass="min-w-24 font-normal bg-data-entry z-20">--}}
+{{--                            <span class="block text-xs font-normal">{{$date->format('M Y')}}</span>--}}
+{{--                            <span class="block text-xl">{{$date->format('j')}}</span>--}}
+{{--                            <span class="block text-xs font-normal">{{$date->format('D')}}</span>--}}
+{{--                        </x-ui.table-th>--}}
+{{--                    @endforeach--}}
+{{--                </tr>--}}
+{{--                </thead>--}}
 
-                <x-ui.table-tbody>
-                    @foreach($tableData as $accountId => $accountData)
-                        @if (isset($accountData['flows']) && !empty($accountData['flows']))
-                            <tr class="divide-x bg-account hover:bg-yellow-100 border-light_blue">
-                                <x-ui.table-td padding="p-1 pl-2"
-                                               baseClass="text-dark_gray sticky left-0 bg-account z-10">
-                                    {{$accountData['name']}}
-                                </x-ui.table-td>
-                            </tr>
+{{--                <x-ui.table-tbody>--}}
+{{--                    <tr class="divide-x border-light_blue">--}}
+{{--                        <x-ui.table-td padding="p-1 pl-2"--}}
+{{--                                       baseClass="text-dark_gray sticky left-0 z-10 bg-atlantis-200">--}}
+{{--                            {{__('Revenue')}}--}}
+{{--                        </x-ui.table-td>--}}
+{{--                        @foreach($period as $i => $date)--}}
+{{--                            <x-ui.table-td baseClass="bg-atlantis-200" padding="p-0">--}}
+{{--                                <input class="px-2 py-1 w-full text-right bg-transparent border-0--}}
+{{--                                            border-transparent outline-none--}}
+{{--                                            focus:outline-none focus:ring-1 focus:shadow-none disabled:opacity-90--}}
+{{--                                            hover:bg-yellow-50 focus:bg-yellow-50"--}}
+{{--                                       id="revenue_{{$date->format('Y-m-d')}}"--}}
+{{--                                       data-row="revenue"--}}
+{{--                                       data-column="{{$i}}"--}}
+{{--                                       type="text" pattern="[0-9]{10}"--}}
+{{--                                       value="0"/>--}}
+{{--                            </x-ui.table-td>--}}
+{{--                        @endforeach--}}
+{{--                    </tr>--}}
 
-                            @foreach($accountData['flows'] as $flowId => $flowData)
-                                <tr class="divide-x border-light_blue">
-                                    <x-ui.table-td padding="p-1 pl-2"
-                                                   baseClass="text-dark_gray sticky left-0 bg-account z-10">
-                                        {{$flowData['label']}}
-                                    </x-ui.table-td>
-                                    @foreach($period as $date)
-                                        <x-ui.table-td class="text-right " padding="p-0">
-                                            @if(isset($flowData['allocations'][$date->format('Y-m-d')]))
-                                                {{$flowData['allocations'][$date->format('Y-m-d')]['amount']}}
-                                            @else
-                                                0
-                                            @endif
-                                        </x-ui.table-td>
-                                    @endforeach
-                                </tr>
+{{--                    @foreach($tableData as $accountId => $accountData)--}}
+{{--                        @if (isset($accountData['flows']) && !empty($accountData['flows']))--}}
+{{--                            <tr class="divide-x border-light_blue">--}}
+{{--                                <x-ui.table-td padding="p-1 pl-2"--}}
+{{--                                               baseClass="text-dark_gray sticky left-0 z-10 bg-account">--}}
+{{--                                    {{$accountData['name']}}--}}
+{{--                                </x-ui.table-td>--}}
+{{--                                <x-ui.table-td attr="colspan={{count($period)-1}}" baseClass="bg-account">--}}
+{{--                                </x-ui.table-td>--}}
+{{--                            </tr>--}}
+{{--                            @php--}}
+{{--                                $rowIndex = 0;--}}
+{{--                            @endphp--}}
+{{--                            @foreach($accountData['flows'] as $flowId => $flowData)--}}
+{{--                                @php--}}
+{{--                                    $rowIndex++;--}}
+{{--                                    $columnIndex = 0;--}}
+{{--                                @endphp--}}
+{{--                                <tr class="divide-x border-light_blue">--}}
+{{--                                    <x-ui.table-td padding="p-1 pl-6 pr-2"--}}
+{{--                                                   baseClass="text-dark_gray whitespace-nowrap sticky left-0 bg-data-entry z-10 text-left">--}}
+{{--                                        {{$flowData['label']}}--}}
+{{--                                    </x-ui.table-td>--}}
+{{--                                    @foreach($period as $date)--}}
+{{--                                        @php--}}
+{{--                                            $columnIndex++;--}}
+{{--                                        @endphp--}}
+{{--                                        <x-ui.table-td class="text-right " padding="p-0">--}}
+{{--                                            <input class="px-2 py-1 w-full text-right bg-transparent border-0--}}
+{{--                                            border-transparent outline-none--}}
+{{--                                            focus:outline-none focus:ring-1 focus:shadow-none disabled:opacity-90--}}
+{{--                                            @if(!$business->license->checkLicense)--}}
+{{--                                                focus:bg-gray-100--}}
+{{--                                            @else--}}
+{{--                                                hover:bg-yellow-50 focus:bg-yellow-50--}}
+{{--@endif "--}}
+{{--                                                   id="flow_{{$flowId}}_{{$date->format('Y-m-d')}}"--}}
+{{--                                                   data-row="{{$rowIndex}}"--}}
+{{--                                                   data-column="{{$columnIndex}}"--}}
+{{--                                                   type="text" pattern="[0-9]{10}"--}}
+{{--                                                   @if(isset($flowData['allocations'][$date->format('Y-m-d')]))--}}
+{{--                                                   value="{{$flowData['allocations'][$date->format('Y-m-d')]['amount']}}"--}}
+{{--                                                   @else--}}
+{{--                                                   value="0"--}}
+{{--                                                   @endif--}}
+{{--                                                   @if(!$business->license->checkLicense) disabled @endif/>--}}
+{{--                                        </x-ui.table-td>--}}
+{{--                                    @endforeach--}}
+{{--                                </tr>--}}
 
-                                @if (isset($flowData['recurring']) && !empty($flowData['recurring']))
+{{--                                @if (isset($flowData['recurring']) && !empty($flowData['recurring']))--}}
 
-                                    @foreach ($flowData['recurring'] as $recurringData)
-                                        <tr class="divide-x border-light_blue">
-                                            <x-ui.table-td padding="p-1 pl-2"
-                                                           baseClass="text-dark_gray sticky left-0 bg-account z-10">
-                                                <x-icons.recurring class="inline w-3 h-auto mr-1"/> {{$recurringData['title']}}
-                                            </x-ui.table-td>
-                                            @foreach($period as $date)
-                                                <x-ui.table-td class="text-right " padding="p-0">
-                                                    @if(isset($recurringData['forecast'][$date->format('Y-m-d')]))
-                                                        {{$recurringData['forecast'][$date->format('Y-m-d')]}}
-                                                    @else
-                                                        0
-                                                    @endif
-                                                </x-ui.table-td>
-                                            @endforeach
-                                        </tr>
-                                    @endforeach
+{{--                                    @foreach ($flowData['recurring'] as $recurringData)--}}
+{{--                                        <tr class="divide-x border-light_blue">--}}
+{{--                                            <x-ui.table-td padding="p-1 pr-2 pl-6 "--}}
+{{--                                                           baseClass="text-dark_gray whitespace-nowrap sticky left-0 bg-recurring z-10 text-left">--}}
+{{--                                                <x-icons.recurring--}}
+{{--                                                    class="inline w-3 h-auto mr-1"/> {{$recurringData['title']}}--}}
+{{--                                            </x-ui.table-td>--}}
+{{--                                            @foreach($period as $date)--}}
+{{--                                                <x-ui.table-td class="text-right bg-recurring" padding="p-0">--}}
+{{--                                                    <input class="px-2 py-1 w-full text-right bg-transparent border-0--}}
+{{--                                                    border-transparent outline-none--}}
+{{--                                                    focus:outline-none focus:ring-1 focus:shadow-none disabled:opacity-90--}}
+{{--                                                    @if(!$business->license->checkLicense)--}}
+{{--                                                        focus:bg-gray-100--}}
+{{--                                                    @else--}}
+{{--                                                        hover:bg-yellow-50 focus:bg-yellow-50--}}
+{{--@endif "--}}
+{{--                                                           id="flow_{{$flowId}}_{{$date->format('Y-m-d')}}"--}}
+{{--                                                           data-row="{{$rowIndex}}"--}}
+{{--                                                           data-column="{{$columnIndex}}"--}}
+{{--                                                           type="text" pattern="[0-9]{10}"--}}
+{{--                                                           @if(isset($recurringData['forecast'][$date->format('Y-m-d')]))--}}
+{{--                                                           value="{{$recurringData['forecast'][$date->format('Y-m-d')]}}"--}}
+{{--                                                           @else--}}
+{{--                                                           value="0"--}}
+{{--                                                           @endif--}}
+{{--                                                           @if(!$business->license->checkLicense) disabled @endif/>--}}
+{{--                                                </x-ui.table-td>--}}
+{{--                                            @endforeach--}}
+{{--                                        </tr>--}}
+{{--                                    @endforeach--}}
 
-                                @endif
-                            @endforeach
-                        @endif
-                    @endforeach
-                </x-ui.table-tbody>
-            </x-ui.table-table>
+{{--                                @endif--}}
+{{--                            @endforeach--}}
+{{--                        @endif--}}
+{{--                    @endforeach--}}
+{{--                </x-ui.table-tbody>--}}
+{{--            </x-ui.table-table>--}}
 
 
         </div>
@@ -130,6 +184,6 @@
     <x-spinner-block/>
 
     <script type="text/javascript">
-        window.revenueControllerUpdate = "{{route('revenue-entry.updateData')}}";
+        window.revenueControllerUpdate = "{{route('revenue-entry.loadData')}}";
     </script>
 </x-app-layout>

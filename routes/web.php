@@ -276,8 +276,8 @@ Route::group(['middleware' => 'auth'], function () {
         ->name('revenue-entry.table');
     Route::post(
         '/business/revenue-entry/ajax/update',
-        [\App\Http\Controllers\RevenueController::class, 'updateData']
-    )->name('revenue-entry.updateData');
+        [\App\Http\Controllers\RevenueController::class, 'loadData']
+    )->name('revenue-entry.loadData');
 });
 
 Route::middleware(
