@@ -107,7 +107,7 @@ class PipelineLivewire extends Component
         $this->validate();
 
         if ($this->value > 0) {
-            $this->description = __('Subtraction');
+            $this->description = __('Addition');
 
             $this->description .= ' $'.$this->value.' ';
 
