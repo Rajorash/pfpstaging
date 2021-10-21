@@ -112,7 +112,7 @@ export class calculatorCore {
 
         $(document).keyup(function (event) {
             if (event.which === 13 && !$this.autoSubmitDataAllow) {
-                $this.manualSubmitData();
+                $this.manualSubmitData(event);
             }
         });
 
@@ -210,7 +210,7 @@ export class calculatorCore {
         }
     }
 
-    manualSubmitData() {
+    manualSubmitData(event) {
         let $this = this;
 
         if ($this.debug) {

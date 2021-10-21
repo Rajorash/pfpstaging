@@ -278,6 +278,10 @@ Route::group(['middleware' => 'auth'], function () {
         '/business/revenue-entry/ajax/update',
         [\App\Http\Controllers\RevenueController::class, 'loadData']
     )->name('revenue-entry.loadData');
+    Route::post(
+        '/business/revenue-entry/ajax/save',
+        [\App\Http\Controllers\RevenueController::class, 'saveData']
+    )->name('revenue-entry.saveData');
 });
 
 Route::middleware(

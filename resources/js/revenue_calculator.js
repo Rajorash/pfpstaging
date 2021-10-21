@@ -12,6 +12,7 @@ $(function () {
             super();
 
             this.ajaxUrl = window.revenueControllerUpdate;
+            this.ajaxUrlSave = window.revenueControllerSave;
             this.elementTablePlace = $('#revenueTablePlace');
             this.autoSubmitDataAllow = true;
             this.timeOutSeconds = 2000;
@@ -30,6 +31,7 @@ $(function () {
             $(document).on('change', 'input.flow_cell', function (event) {
                 $this.autoSubmitDataAllow = false;
                 $this.recalculateRevenueTable();
+                $this.saveData(event);
             });
 
         }
@@ -43,22 +45,22 @@ $(function () {
             $this.data.startDate = $('#revenueStartDate').val();
             $this.data.rangeValue = $('#revenueCurrentRangeValue').val();
 
-            // if (event && typeof event.target.id === 'string') {
-            //
-            //     $this.lastCoordinatesElementId = event.target.id;
-            //     $this.windowCoordinates = {
-            //         top: $(window).scrollTop(),
-            //         left: $(window).scrollLeft()
-            //     }
-            //
-            //     if (event.target.id !== 'currentRangeValue'
-            //         && event.target.id !== 'startDate') {
-            //         $this.data.cells.push({
-            //             cellId: event.target.id,
-            //             cellValue: $('#' + event.target.id).val()
-            //         });
-            //     }
-            // }
+            if (event && typeof event.target.id === 'string') {
+
+                $this.lastCoordinatesElementId = event.target.id;
+                // $this.windowCoordinates = {
+                //     top: $(window).scrollTop(),
+                //     left: $(window).scrollLeft()
+                // }
+
+                if (event.target.id !== 'currentRangeValue'
+                    && event.target.id !== 'startDate') {
+                    $this.data.cells.push({
+                        cellId: event.target.id,
+                        cellValue: $('#' + event.target.id).val()
+                    });
+                }
+            }
             //
             // if ($this.changesCounter) {
             //     $('#' + $this.changesCounterId).html('...changes ready for calculation: <b>' + $this.changesCounter + '</b>'
@@ -104,8 +106,9 @@ $(function () {
                 let $column = $(this).data('column');
 
                 $.each(['flow', 'pipeline'], function (i, $class) {
-                    if ($('.' + $class + '_total[data-column="' + $column + '"]')) {
-                        $revenue += parseFloat($('.' + $class + '_total[data-column="' + $column + '"]').val())
+                    let $selector = '.' + $class + '_total[data-column="' + $column + '"]';
+                    if ($($selector).length) {
+                        $revenue += parseFloat($($selector).val())
                     }
                 });
 
@@ -120,6 +123,42 @@ $(function () {
             this.recalculateRevenueTable();
         }
 
+        //rewrite basically usage
+        manualSubmitData(event) {
+            let $this = this;
+
+            if ($this.debug) {
+                console.log('manualSubmitData');
+            }
+
+            $this.saveData(event);
+        }
+
+        saveData(event) {
+            let $this = this;
+
+            $this.collectData(event);
+
+            $.ajax({
+                type: 'POST',
+                url: $this.ajaxUrlSave,
+                data: $this.data,
+                async: true,
+                beforeSend: function () {
+                },
+                success: function (data) {
+                    if ($this.debug) {
+                        console.log('loadDataAfterSave', data);
+                    }
+                },
+                complete: function () {
+                    $this.resetData();
+                }
+            });
+
+
+            $this.resetData();
+        }
     }
 
     if ($('#revenueTablePlace').length) {
