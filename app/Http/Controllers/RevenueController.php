@@ -103,6 +103,7 @@ class RevenueController extends Controller
                     $tableData[$revenueAccountRow->id]['flows'][$flow->id] = [
                         'id' => $flow->id,
                         'label' => $flow->label,
+                        'certainly' => $flow->certainly,
                         'allocations' => $allocationsArray,
                         'recurring' => $flow->recurringTransactions()->count() ?
                             $RecurringTransactionsController

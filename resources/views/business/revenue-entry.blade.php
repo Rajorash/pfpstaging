@@ -50,4 +50,5 @@
         window.revenueControllerUpdate = "{{route('revenue-entry.loadData')}}";
         window.revenueControllerSave = "{{route('revenue-entry.saveData')}}";
     </script>
+
 </x-app-layout>

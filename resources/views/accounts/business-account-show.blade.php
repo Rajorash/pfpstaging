@@ -36,7 +36,7 @@
                                 <div class="table-row w-full text-sm hover:bg-gray-100">
                                     <div
                                         class="table-cell px-2 pb-1 rounded-tl-lg rounded-bl-lg text-{{$flow->isNegative() ? 'red-500' : 'green' }}">
-                                        {{ $flow->label }}
+                                        {{ $flow->label }} ({{ $flow->certainly }}%)
                                     </div>
                                     @if(auth()->user()->isAdvisor() || auth()->user()->isClient())
                                         <div class="table-cell w-10 px-2 pb-1">
@@ -136,30 +136,30 @@
         </x-ui.table-tbody>
     </x-ui.table-table>
     @if ($confirmingId)
-    <x-jet-confirmation-modal wire:model="confirmingId">
-        <x-slot name="title">
-            {{__('Confirm Account Deletion?')}}
-        </x-slot>
-        <x-slot name="content">
-            {{__('Are you certain you wish to delete this account, all flows and data will also be removed.')}}
-        </x-slot>
-        <x-slot name="footer">
-            <div class="inline-flex space-x-4">
-                <x-ui.button-secondary
-                    type="button"
-                    background="bg-gray-500 hover:bg-gray-800"
-                    wire:click="closeModal()">
-                    {{__('Cancel')}}
-                </x-ui.button-secondary>
-                <x-ui.button-danger
-                    type="button"
-                    background="bg-red-500 hover:bg-red-800"
-                    wire:click="deleteAccount()">
-                    <x-icons.delete class="w-3 h-auto mr-2"/>
-                    {{__('Confirm Delete?')}}
-                </x-ui.button-danger>
-            </div>
-        </x-slot>
-    </x-jet-confirmation-modal>
+        <x-jet-confirmation-modal wire:model="confirmingId">
+            <x-slot name="title">
+                {{__('Confirm Account Deletion?')}}
+            </x-slot>
+            <x-slot name="content">
+                {{__('Are you certain you wish to delete this account, all flows and data will also be removed.')}}
+            </x-slot>
+            <x-slot name="footer">
+                <div class="inline-flex space-x-4">
+                    <x-ui.button-secondary
+                        type="button"
+                        background="bg-gray-500 hover:bg-gray-800"
+                        wire:click="closeModal()">
+                        {{__('Cancel')}}
+                    </x-ui.button-secondary>
+                    <x-ui.button-danger
+                        type="button"
+                        background="bg-red-500 hover:bg-red-800"
+                        wire:click="deleteAccount()">
+                        <x-icons.delete class="w-3 h-auto mr-2"/>
+                        {{__('Confirm Delete?')}}
+                    </x-ui.button-danger>
+                </div>
+            </x-slot>
+        </x-jet-confirmation-modal>
     @endif
 </div>

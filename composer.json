@@ -21,6 +21,7 @@
         "laravel/sanctum": "^2.11",
         "laravel/tinker": "^2.6",
         "laravelcollective/html": "^6.2",
+        "livewire-ui/modal": "^1.0",
         "livewire/livewire": "^2.5",
         "olssonm/l5-zxcvbn": "^4.4",
         "predis/predis": "^1.1"

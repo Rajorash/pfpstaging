@@ -186,29 +186,29 @@ class BankAccountController extends Controller
             ['flow' => $flow, 'account' => $account, 'curr_type' => $account->type, 'business' => $account->business]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\BankAccount  $account
-     * @throws \Illuminate\Auth\Access\AuthorizationException
-     */
-    public function updateFlow(Request $request, BankAccount $account, AccountFlow $flow)
-    {
-        $this->authorize('update', $account);
-
-        $data = request()->validate([
-                'label' => 'required',
-                'flow-direction' => 'required'
-            ]
-        );
-
-        $flow->label = $data['label'];
-        $flow->negative_flow = $data['flow-direction'];
-        $flow->save();
-
-        return redirect("business/".$account->business->id."/accounts");
-    }
+//    /**
+//     * Update the specified resource in storage.
+//     *
+//     * @param  \Illuminate\Http\Request  $request
+//     * @param  \App\Models\BankAccount  $account
+//     * @throws \Illuminate\Auth\Access\AuthorizationException
+//     */
+//    public function updateFlow(Request $request, BankAccount $account, AccountFlow $flow)
+//    {
+//        $this->authorize('update', $account);
+//
+//        $data = request()->validate([
+//                'label' => 'required',
+//                'flow-direction' => 'required'
+//            ]
+//        );
+//
+//        $flow->label = $data['label'];
+//        $flow->negative_flow = $data['flow-direction'];
+//        $flow->save();
+//
+//        return redirect("business/".$account->business->id."/accounts");
+//    }
 
     /**
      * Remove the specified resource from storage.

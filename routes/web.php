@@ -179,10 +179,10 @@ Route::group(['middleware' => 'auth'], function () {
         '/accounts/{account}/flow/{flow}/edit',
         [BankAccountController::class, 'editFlow']
     );
-    Route::put(
-        '/accounts/{account}/flow/{flow}',
-        [BankAccountController::class, 'updateFlow']
-    );
+//    Route::put(
+//        '/accounts/{account}/flow/{flow}',
+//        [BankAccountController::class, 'updateFlow']
+//    );
 
     Route::get(
         '/accounts/{account}/flow/{flow}/recurring',

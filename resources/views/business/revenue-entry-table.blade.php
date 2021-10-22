@@ -63,6 +63,8 @@
                     <x-ui.table-td padding="p-1 pl-2"
                                    baseClass="text-dark_gray sticky left-0 z-10 bg-account">
                         {{$accountData['name']}}
+                        <a onclick="Livewire.emit('openModal', 'modal-flow',  {{ json_encode(['accountId' => $accountId]) }})"
+                           title="Create new flow for {{$accountData['name']}}" class="cursor-pointer text-xs ml-2">[add flow]</a>
                     </x-ui.table-td>
                     <x-ui.table-td attr="colspan={{count($period)}}" baseClass="bg-account">
                     </x-ui.table-td>
@@ -78,7 +80,9 @@
                     <tr class="divide-x border-light_blue">
                         <x-ui.table-td padding="p-1 pl-6 pr-2"
                                        baseClass="text-dark_gray whitespace-nowrap sticky left-0 bg-data-entry z-10 text-left">
-                            {{$flowData['label']}}
+                            <a onclick="Livewire.emit('openModal', 'modal-flow',  {{ json_encode(['accountId' => $accountId, 'flowId' => $flowId]) }})"
+                               title="Edit {{$flowData['label']}}" class="cursor-pointer">{{$flowData['label']}}
+                                ({{$flowData['certainly']}}%)</a>
                         </x-ui.table-td>
                         @foreach($period as $date)
                             @php

@@ -61,7 +61,7 @@
 <div id="delay_progress" class="fixed z-50 h-1 rounded bg-blue bottom-2 right-4 sm:right-6 lg:right-8"></div>
 
 @stack('modals')
-
+@livewire('livewire-ui-modal')
 @livewireScripts
 {{-- commented below line, removes small box at bottom of layout. --}}
 {{-- <div id="ddd" class="absolute z-50 w-2 h-2 bg-red-600"></div> --}}
