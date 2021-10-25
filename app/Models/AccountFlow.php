@@ -29,7 +29,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|AccountFlow whereNegativeFlow($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AccountFlow whereUpdatedAt($value)
  * @mixin \Eloquent
- * @property int $certainly
+ * @property int $certainty
  * @method static \Illuminate\Database\Eloquent\Builder|AccountFlow whereCertainly($value)
  */
 class AccountFlow extends Model
@@ -39,12 +39,12 @@ class AccountFlow extends Model
     protected $fillable = [
         'name',
         'negative_flow',
-        'certainly'
+        'certainty'
     ];
 
     protected $casts = [
         'negative_flow' => 'boolean',
-        'certainly' => 'integer'
+        'certainty' => 'integer'
     ];
 
     public function account(): \Illuminate\Database\Eloquent\Relations\BelongsTo

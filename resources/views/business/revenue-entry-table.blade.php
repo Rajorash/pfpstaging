@@ -29,8 +29,7 @@
             </x-ui.table-td>
             @foreach($period as $i => $date)
                 <x-ui.table-td baseClass="bg-atlantis-200" padding="p-0">
-                    <input class="revenue_total px-2 py-1 w-full text-right bg-transparent border-0
-                            border-transparent outline-none"
+                    <input class="w-full px-2 py-1 text-right bg-transparent border-0 border-transparent outline-none revenue_total"
                            id="revenue_{{$date->format('Y-m-d')}}"
                            data-row="revenue"
                            data-column="{{$i+1}}"
@@ -46,8 +45,7 @@
             </x-ui.table-td>
             @foreach($period as $i => $date)
                 <x-ui.table-td baseClass="bg-atlantis-100" padding="p-0">
-                    <input class="flow_total px-2 py-1 w-full text-right bg-transparent border-0
-                                            border-transparent outline-none"
+                    <input class="w-full px-2 py-1 text-right bg-transparent border-0 border-transparent outline-none flow_total"
                            id="flow_total_{{$date->format('Y-m-d')}}"
                            data-row="flow_total"
                            data-column="{{$i+1}}"
@@ -64,7 +62,7 @@
                                    baseClass="text-dark_gray sticky left-0 z-10 bg-account">
                         {{$accountData['name']}}
                         <a onclick="Livewire.emit('openModal', 'modal-flow',  {{ json_encode(['accountId' => $accountId]) }})"
-                           title="Create new flow for {{$accountData['name']}}" class="cursor-pointer text-xs ml-2">[add flow]</a>
+                           title="Create new flow for {{$accountData['name']}}" class="ml-2 text-xs cursor-pointer">[add flow]</a>
                     </x-ui.table-td>
                     <x-ui.table-td attr="colspan={{count($period)}}" baseClass="bg-account">
                     </x-ui.table-td>
@@ -82,7 +80,7 @@
                                        baseClass="text-dark_gray whitespace-nowrap sticky left-0 bg-data-entry z-10 text-left">
                             <a onclick="Livewire.emit('openModal', 'modal-flow',  {{ json_encode(['accountId' => $accountId, 'flowId' => $flowId]) }})"
                                title="Edit {{$flowData['label']}}" class="cursor-pointer">{{$flowData['label']}}
-                                ({{$flowData['certainly']}}%)</a>
+                                ({{$flowData['certainty']}}%)</a>
                         </x-ui.table-td>
                         @foreach($period as $date)
                             @php
@@ -165,8 +163,7 @@
                 </x-ui.table-td>
                 @foreach($period as $i => $date)
                     <x-ui.table-td baseClass="bg-atlantis-100" padding="p-0">
-                        <input class="pipeline_total px-2 py-1 w-full text-right bg-transparent border-0
-                                            border-transparent outline-none"
+                        <input class="w-full px-2 py-1 text-right bg-transparent border-0 border-transparent outline-none pipeline_total"
                                id="pipeline_total_{{$date->format('Y-m-d')}}"
                                data-row="pipeline_total"
                                data-column="{{$i + 1}}"

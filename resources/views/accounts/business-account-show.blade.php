@@ -36,7 +36,7 @@
                                 <div class="table-row w-full text-sm hover:bg-gray-100">
                                     <div
                                         class="table-cell px-2 pb-1 rounded-tl-lg rounded-bl-lg text-{{$flow->isNegative() ? 'red-500' : 'green' }}">
-                                        {{ $flow->label }} ({{ $flow->certainly }}%)
+                                        {{ $flow->label }} ({{ $flow->certainty }}%)
                                     </div>
                                     @if(auth()->user()->isAdvisor() || auth()->user()->isClient())
                                         <div class="table-cell w-10 px-2 pb-1">

@@ -19,10 +19,10 @@
                     {{ __('Certainly') }}
                 </div>
                 <div class="table-cell w-3/4 pb-4">
-                    <x-jet-input id="certainly" class="w-full" type="number"
+                    <x-jet-input id="certainty" class="w-full" type="number"
                                  min="5" max="100" step="5"
-                                 name="certainly"
-                                 wire:model.defer="certainly"
+                                 name="certainty"
+                                 wire:model.defer="certainty"
                                  wire:loading.attr="disabled"
                                  required/>
                     <x-jet-input-error for="label" class="mt-2"/>
