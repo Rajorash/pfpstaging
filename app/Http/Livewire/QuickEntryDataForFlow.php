@@ -5,34 +5,47 @@ namespace App\Http\Livewire;
 use App\Http\Controllers\RecurringTransactionsController;
 use App\Models\AccountFlow;
 use App\Models\BankAccount;
+use App\Models\Business;
 use App\Models\RecurringTransactions;
+use App\Traits\GettersTrait;
+use App\Traits\TablesTrait;
 use Carbon\Carbon;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Routing\Redirector;
 use JamesMills\LaravelTimezone\Facades\Timezone;
 use Livewire\Component;
 use Str;
 
 class QuickEntryDataForFlow extends Component
 {
+    use GettersTrait, TablesTrait;
+
     public AccountFlow $accountFlow;
     public BankAccount $bankAccount;
-    public $recurringTransactions;
-    public $forecast;
+    protected Business $business;
+    public array $forecast = [];
 
     protected RecurringTransactionsController $RecurringTransactionsController;
 
     public array $repeatTimeArray = [];
     public array $weekDaysArray = [];
 
-    public $value;
-    public $date_start;
-    public $date_end;
-    public $repeat_every_number;
-    public $repeat_every_type;
-    public $repeat_rules_week_days = [];
+    public float $value = 0.0;
+    public string $date_start = '';
+    public string $date_end = '';
+    public int $repeat_every_number = 1;
+    public string $repeat_every_type = '';
+    public array $repeat_rules_week_days = [];
 
     public int $flowId = 0;
     public int $accountId = 0;
 
+    /**
+     * @param  null  $id
+     */
     public function __construct($id = null)
     {
         parent::__construct($id);
@@ -40,7 +53,11 @@ class QuickEntryDataForFlow extends Component
         $this->RecurringTransactionsController = new RecurringTransactionsController();
     }
 
-    public function mount($accountId, $flowId = 0)
+    /**
+     * @param  int  $accountId
+     * @param  int  $flowId
+     */
+    public function mount(int $accountId, int $flowId = 0)
     {
         $this->accountId = $accountId;
         $this->flowId = $flowId;
@@ -51,41 +68,22 @@ class QuickEntryDataForFlow extends Component
         $this->repeatTimeArray = RecurringTransactions::getRepeatTimeArray();
         $this->weekDaysArray = RecurringTransactions::getWeekDaysArray();
 
-//        if (is_object($this->recurringTransactions)
-//            && is_a($this->recurringTransactions, 'App\Models\RecurringTransactions')) {
-//            $this->value = $this->recurringTransactions->value;
-//            $this->date_start = Carbon::parse($this->recurringTransactions->date_start)->format('Y-m-d');
-//            $this->date_end = $this->recurringTransactions->date_end
-//                ? Carbon::parse($this->recurringTransactions->date_end)->format('Y-m-d') :
-//                null;
-//
-//            $this->repeat_every_number = $this->recurringTransactions->repeat_every_number;
-//            $this->repeat_every_type = $this->recurringTransactions->repeat_every_type;
-//            if ($this->recurringTransactions->repeat_every_type == RecurringTransactions::REPEAT_WEEK) {
-//                if ($this->recurringTransactions->repeat_rules['days']) {
-//                    $this->repeat_rules_week_days = $this->recurringTransactions->repeat_rules['days'];
-//                }
-//            }
-//
-//        } else {
-            $this->value = 0;
-            $this->date_start = Timezone::convertToLocal(Carbon::now(),'Y-m-d');
-            $this->repeat_every_number = 1;
-            $this->repeat_every_type = RecurringTransactions::REPEAT_DEFAULT;
-            $this->repeat_rules_week_days = [
-                strtolower(Carbon::now()->format('l'))
-            ];
-//        }
+        $this->value = 0;
+        $this->date_start = Timezone::convertToLocal(Carbon::now(), 'Y-m-d');
+        $this->date_end = Timezone::convertToLocal(Carbon::now()->addMonths(3), 'Y-m-d');
+        $this->repeat_every_number = 1;
+        $this->repeat_every_type = RecurringTransactions::REPEAT_DEFAULT;
+        $this->repeat_rules_week_days = [
+            strtolower(Carbon::now()->format('l'))
+        ];
 
-        $recurring = $this->_updateRecurringobject();
+        $recurring = $this->_updateRecurringObject();
         $this->forecast = $this->RecurringTransactionsController->getForecast($recurring);
     }
 
-    public function render()
-    {
-        return view('business.quick-entry-data-for-flow');
-    }
-
+    /**
+     * @return string[]
+     */
     public function rules(): array
     {
         return [
@@ -96,6 +94,9 @@ class QuickEntryDataForFlow extends Component
         ];
     }
 
+    /**
+     *
+     */
     public function updated()
     {
         $this->validate();
@@ -185,23 +186,21 @@ class QuickEntryDataForFlow extends Component
             $this->description = '';
         }
 
-        $recurring = $this->_updateRecurringobject();
+        $recurring = $this->_updateRecurringObject();
         $this->forecast = $this->RecurringTransactionsController->getForecast($recurring);
     }
 
-    private function _updateRecurringobject()
+    /**
+     * @return RecurringTransactions
+     */
+    private function _updateRecurringObject(): RecurringTransactions
     {
-//        if (is_object($this->recurringTransactions)
-//            && is_a($this->recurringTransactions, 'App\Models\RecurringTransactions')) {
-//            $recurring = $this->recurringTransactions;
-//        } else {
-            $recurring = new RecurringTransactions();
-//        }
+        $recurring = new RecurringTransactions();
 
         $recurring->value = $this->value;
 
         $recurring->date_start = $this->date_start;
-        $recurring->date_end = $this->date_end ? $this->date_end : null;
+        $recurring->date_end = $this->date_end ?? null;
 
         $recurring->repeat_every_number = $this->repeat_every_number;
         $recurring->repeat_every_type = $this->repeat_every_type;
@@ -214,21 +213,38 @@ class QuickEntryDataForFlow extends Component
         return $recurring;
     }
 
+    /**
+     * @return Application|RedirectResponse|Redirector
+     */
     public function store()
     {
         $this->validate();
 
-        $recurring = $this->_updateRecurringobject();
+        $recurring = $this->_updateRecurringObject();
 
-        $recurring->accountFlow()->associate($this->accountFlow);
+        $this->forecast = $this->RecurringTransactionsController->getForecast($recurring);
 
-        $recurring->save();
+        $this->business = Business::findOrFail($this->bankAccount->business->id);
 
-        $this->redirect(route('recurring-list',
-            [
-                'account' => $this->bankAccount,
-                'flow' => $this->accountFlow
-            ]
-        ));
+        foreach ($this->forecast as $date => $float) {
+            $this->storeSingle(
+                'flow',
+                $this->flowId,
+                $float,
+                $date,
+                false,
+                false
+            );
+        }
+
+        return redirect("business/".$this->bankAccount->business->id."/revenue-entry");
+    }
+
+    /**
+     * @return Application|Factory|View
+     */
+    public function render()
+    {
+        return view('business.quick-entry-data-for-flow');
     }
 }

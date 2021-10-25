@@ -8,6 +8,8 @@ $(function () {
     });
 
     class RevenueCalculator extends calculatorCore {
+        revenueControllerUpdate;
+        revenueControllerSave;
         constructor() {
             super();
 
@@ -33,7 +35,6 @@ $(function () {
                 $this.recalculateRevenueTable();
                 $this.saveData(event);
             });
-
         }
 
         collectData(event) {
@@ -48,10 +49,6 @@ $(function () {
             if (event && typeof event.target.id === 'string') {
 
                 $this.lastCoordinatesElementId = event.target.id;
-                // $this.windowCoordinates = {
-                //     top: $(window).scrollTop(),
-                //     left: $(window).scrollLeft()
-                // }
 
                 if (event.target.id !== 'currentRangeValue'
                     && event.target.id !== 'startDate') {
@@ -61,13 +58,6 @@ $(function () {
                     });
                 }
             }
-            //
-            // if ($this.changesCounter) {
-            //     $('#' + $this.changesCounterId).html('...changes ready for calculation: <b>' + $this.changesCounter + '</b>'
-            //         + '<br/>' + $this.renderButtonForManualSubmit()).show();
-            // } else {
-            //     $('#' + $this.changesCounterId).html('').hide();
-            // }
 
             if ($this.debug) {
                 console.log('collectData', $this.data);
@@ -89,7 +79,9 @@ $(function () {
                         let $result = 0;
 
                         $('.' + $class + '_cell[data-column="' + $(this).data('column') + '"]').each(function () {
-                            $result += ($(this).data('negative') ? -1 : 1) * parseFloat(($(this).data('certainty') ?? 100)) / 100 * parseFloat($(this).val());
+                            $result += ($(this).data('negative') ? -1 : 1)
+                                * parseFloat(($(this).data('certainty') ?? 100)) / 100
+                                * parseFloat($(this).val());
                         });
 
                         $(this).val($result.toFixed(2));
@@ -109,7 +101,7 @@ $(function () {
                     }
                 });
 
-                $(this).val($revenue);
+                $(this).val($revenue.toFixed(2));
             });
 
         }

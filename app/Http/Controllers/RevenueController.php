@@ -94,7 +94,8 @@ class RevenueController extends Controller
                     $allocationsArray = [];
 
                     foreach ($allocations as $row) {
-                        $allocationsArray[$row['allocation_date']] = $row;
+                        //without Carbon parse toArray() from previous line return 2021-11-2 instead of 2021-11-02
+                        $allocationsArray[Carbon::parse($row['allocation_date'])->format('Y-m-d')] = $row;
                     }
 
                     $tableData[$revenueAccountRow->id]['flows'][$flow->id] = [

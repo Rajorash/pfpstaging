@@ -115,33 +115,36 @@
                     </div>
                     <div class="table-cell w-3/4 pb-4 text-left">
                         @if (!empty($forecast))
-                            @foreach ($forecast as $forecastDate => $forecastValue)
-                                <div>
-                                    <b>{{$accountFlow->isNegative() ? '-' : '+'}}{{$forecastValue}}</b>
-                                    {{__('on')}}
-                                    <b>{{Carbon\Carbon::parse($forecastDate)->format('Y-m-d, l')}}</b>
-                                </div>
-                            @endforeach
+                            <div class="max-h-60 overflow-y-scroll">
+                                @foreach ($forecast as $forecastDate => $forecastValue)
+                                    <div>
+                                        <b>{{$accountFlow->isNegative() ? '-' : '+'}}{{$forecastValue}}</b>
+                                        {{__('on')}}
+                                        <b>{{Carbon\Carbon::parse($forecastDate)->format('Y-m-d, l')}}</b>
+                                    </div>
+                                @endforeach
+                            </div>
                         @else
                             <x-ui.error>{{__('Forecast is empty. This rule will not affect the data')}}</x-ui.error>
                         @endif
                     </div>
                 </div>
+            </div>
 
+            <div class="table w-full mt-4">
                 <div class="table-row">
-                    <div class="table-cell w-1/4 pb-4 text-left">
+                    <div class="table-cell w-full pb-4 text-right">
+                        <x-ui.button-secondary class="mr-4 uppercase" wire:click="$emit('closeModal')" type="button">
+                            {{__('Cancel')}}
+                        </x-ui.button-secondary>
 
-                    </div>
-                    <div class="table-cell w-3/4 pb-4 text-left">
-                        <x-ui.button-primary
-                            class=""
-                            wire:click="store"
-                            wire:loading.attr="disabled">
-                            {{ __('Save') }}
-                        </x-ui.button-primary>
+                        <x-ui.button-normal wire:loading.attr="disabled" class="uppercase" type="button">
+                            {{ __('Fill') }}
+                        </x-ui.button-normal>
                     </div>
                 </div>
             </div>
+
         </form>
 
     @else

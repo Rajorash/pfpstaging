@@ -56,8 +56,8 @@
             <div class="table-row">
                 <div class="table-cell w-full pb-4 text-right">
                     @if ($modalMode)
-                    <x-ui.button-secondary class="mr-4 " wire:click="$emit('closeModal')" type="button">
-                        CANCEL
+                    <x-ui.button-secondary class="mr-4 uppercase" wire:click="$emit('closeModal')" type="button">
+                        {{__('Cancel')}}
                     </x-ui.button-secondary>
                     @endif
 
