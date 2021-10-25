@@ -15,7 +15,7 @@ class AddEditFlow extends Component
 
     public string $label = '';
     public bool $negative_flow = false;
-    public int $certainly = 100;
+    public int $certainty = 100;
 
     public bool $modalMode = false;
 
@@ -28,7 +28,7 @@ class AddEditFlow extends Component
 
             $this->label = $flow->label;
             $this->negative_flow = $flow->negative_flow;
-            $this->certainly = $flow->certainly;
+            $this->certainty = $flow->certainty;
         }
     }
 
@@ -37,7 +37,7 @@ class AddEditFlow extends Component
         return [
             'label' => ['required', 'min:3'],
             'negative_flow' => ['required'],
-            'certainly' => ['required', 'integer', 'min:5', 'max:100']
+            'certainty' => ['required', 'integer', 'min:5', 'max:100']
         ];
     }
 
@@ -48,7 +48,7 @@ class AddEditFlow extends Component
         $flow = $this->flowId ? AccountFlow::find($this->flowId) : new AccountFlow();
         $flow->label = $validateValues['label'];
         $flow->negative_flow = $validateValues['negative_flow'];
-        $flow->certainly = $validateValues['certainly'];
+        $flow->certainty = $validateValues['certainty'];
 
         $account = null;
 
