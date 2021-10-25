@@ -77,10 +77,7 @@ class RevenueController extends Controller
                 ->get();
 
             $tableData = [];
-            $RecurringTransactionsController = new RecurringTransactionsController();
 
-
-            $RecurringPipelineController = new RecurringPipelineController();
             foreach ($revenueAccounts as $revenueAccountRow) {
 
                 $tableData[$revenueAccountRow->id] = [
@@ -104,20 +101,9 @@ class RevenueController extends Controller
                         'id' => $flow->id,
                         'label' => $flow->label,
                         'certainty' => $flow->certainty,
-                        'allocations' => $allocationsArray,
-                        'recurring' => $flow->recurringTransactions()->count() ?
-                            $RecurringTransactionsController
-                                ->getAllFlowsForecasts($flow->recurringTransactions, $startDate, $endDate)
-                            : null
+                        'negative' => boolval($flow->negative_flow),
+                        'allocations' => $allocationsArray
                     ];
-                }
-            }
-
-            if (count($this->business->pipelines)) {
-                $tableData['pipelines'] = [];
-                foreach ($this->business->pipelines as $pipeline) {
-                    $tableData['pipelines'][$pipeline->id] = $pipeline;
-                    $tableData['pipelines'][$pipeline->id]['forecast'] = $RecurringPipelineController->getForecast($pipeline, $startDate, $endDate);
                 }
             }
 

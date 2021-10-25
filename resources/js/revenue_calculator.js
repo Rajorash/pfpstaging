@@ -81,21 +81,18 @@ $(function () {
         recalculateRevenueTable() {
             let $this = this;
 
-            $.each(['flow', 'pipeline'], function (i, $class) {
+            //let array for other types
+            $.each(['flow'], function (i, $class) {
 
                 if ($('.' + $class + '_total').length) {
                     $('.' + $class + '_total').each(function () {
                         let $result = 0;
 
                         $('.' + $class + '_cell[data-column="' + $(this).data('column') + '"]').each(function () {
-                            if ($class === 'pipeline') {
-                                $result += parseFloat($(this).data('certainty')) / 100 * parseFloat($(this).val());
-                            } else {
-                                $result += parseFloat($(this).val());
-                            }
+                            $result += ($(this).data('negative') ? -1 : 1) * parseFloat(($(this).data('certainty') ?? 100)) / 100 * parseFloat($(this).val());
                         });
 
-                        $(this).val($result);
+                        $(this).val($result.toFixed(2));
                     });
                 }
 
@@ -105,7 +102,7 @@ $(function () {
                 let $revenue = 0;
                 let $column = $(this).data('column');
 
-                $.each(['flow', 'pipeline'], function (i, $class) {
+                $.each(['flow'], function (i, $class) {
                     let $selector = '.' + $class + '_total[data-column="' + $column + '"]';
                     if ($($selector).length) {
                         $revenue += parseFloat($($selector).val())
