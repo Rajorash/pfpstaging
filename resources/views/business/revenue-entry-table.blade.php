@@ -78,9 +78,12 @@
                     <tr class="divide-x border-light_blue">
                         <x-ui.table-td padding="p-1 pl-6 pr-2"
                                        baseClass="text-dark_gray whitespace-nowrap sticky left-0 bg-data-entry z-10 text-left">
-                            <div class="flex justify-between space-x-4">
-                                <div class="inline-flex">
-                                    {{$flowData['label']}} ({{$flowData['certainty']}}%)
+                            <div class="flex mr-auto">
+                                <div class="inline-flex flex-grow">
+                                    {{$flowData['label']}}
+                                </div>
+                                <div class="inline-flex px-4 text-right">
+                                    ({{$flowData['certainty']}}%)
                                 </div>
                                 <a onclick="Livewire.emit('openModal', 'modal-flow',  {{ json_encode(['accountId' => $accountId, 'flowId' => $flowId]) }})"
                                    title="Edit {{$flowData['label']}}" class="cursor-pointer">
