@@ -55,6 +55,12 @@
         <div class="table w-full mt-4">
             <div class="table-row">
                 <div class="table-cell w-full pb-4 text-right">
+                    @if ($modalMode)
+                    <x-ui.button-secondary class="mr-4 " wire:click="$emit('closeModal')" type="button">
+                        CANCEL
+                    </x-ui.button-secondary>
+                    @endif
+
                     <x-ui.button-normal wire:loading.attr="disabled" class="uppercase" type="button">
                         @if($flowId)
                             {{__('Update Flow')}}

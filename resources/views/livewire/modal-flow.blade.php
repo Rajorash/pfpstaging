@@ -9,7 +9,7 @@
 
     <livewire:add-edit-flow :account-id="$accountId" :flow-id="$flowId" :modal-mode="true"/>
 
-    <x-ui.button-normal wire:click="$emit('closeModal')" type="button" class="bg-gray-500">
+    {{-- <x-ui.button-normal wire:click="$emit('closeModal')" type="button" class="bg-gray-500">
         Close
-    </x-ui.button-normal>
+    </x-ui.button-normal> --}}
 </div>
