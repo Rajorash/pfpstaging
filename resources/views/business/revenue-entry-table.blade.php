@@ -87,7 +87,8 @@
                         <x-ui.table-td padding="p-1 pl-2 pr-2"
                                        baseClass="text-dark_gray whitespace-nowrap sticky left-0 bg-data-entry z-10 text-left">
                             <div class="flex mr-auto">
-                                <div class="inline-flex text-{{$flowData['negative'] ? 'red-500' : 'green' }} text-2xl pr-2 w-5 leading-none">
+                                <div
+                                    class="inline-flex text-{{$flowData['negative'] ? 'red-500' : 'green' }} text-2xl pr-2 w-5 leading-none">
                                     {!! $flowData['negative'] ? '&ndash;' : '+' !!}
                                 </div>
                                 <div class="inline-flex flex-grow">
@@ -99,6 +100,10 @@
                                 <a onclick="Livewire.emit('openModal', 'modal-flow',  {{ json_encode(['accountId' => $accountId, 'flowId' => $flowId]) }})"
                                    title="Edit {{$flowData['label']}}" class="cursor-pointer">
                                     <x-icons.edit class="inline-flex self-end h-3 ml-auto"/>
+                                </a>
+                                <a onclick="Livewire.emit('openModal', 'modal-quick-entry-data-for-flow',  {{ json_encode(['accountId' => $accountId, 'flowId' => $flowId]) }})"
+                                   title="Quick Entry for Flow {{$flowData['label']}}" class="cursor-pointer ml-3">
+                                    <x-icons.fill class="inline-flex self-end h-3 ml-auto text-green"/>
                                 </a>
                             </div>
                         </x-ui.table-td>

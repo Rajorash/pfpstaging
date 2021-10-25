@@ -39,6 +39,8 @@
 
     <x-ui.main width="w-full">
 
+        <livewire:quick-entry-data-for-flow :account-id="4" :flow-id="85" :modal-mode="true"/>
+
         <div id="revenueTablePlace"
              class="relative overflow-scroll global_nice_scroll block_different_height return_coordinates_table">
         </div>

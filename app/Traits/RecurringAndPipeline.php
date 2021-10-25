@@ -9,7 +9,7 @@ use Illuminate\Support\Arr;
 
 trait RecurringAndPipeline
 {
-    public static function getRepeatTimeArray()
+    public static function getRepeatTimeArray(): array
     {
         return [
             self::REPEAT_DAY => __('Day'),
@@ -19,7 +19,7 @@ trait RecurringAndPipeline
         ];
     }
 
-    public static function getWeekDaysArray()
+    public static function getWeekDaysArray(): array
     {
         return [
             'monday' => __('Monday'),
