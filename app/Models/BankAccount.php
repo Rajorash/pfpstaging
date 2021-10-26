@@ -335,26 +335,25 @@ class BankAccount extends Model
     /**
      * Returns the result of totalling all allocations weighted by the flow certainty for a given date.
      *
-     * @param string|date $date
+     * @param  string|date  $date
      * @return float
      */
     public function getAdjustedFlowsTotalByDate($date): float
     {
         $adjusted_total = 0;
         $flows = DB::table('allocations AS a')
-                   ->join('account_flows AS f', 'a.allocatable_id', '=', 'f.id')
-                   ->select('a.id', 'a.allocatable_id', 'a.amount', 'a.allocation_date', 'f.certainty')
-                   ->where('a.allocatable_type', 'like', '%Flow')
-                   ->where('f.account_id', '=', $this->id)
-                   ->whereDate('a.allocation_date', $date)
-                   ->get();
+            ->join('account_flows AS f', 'a.allocatable_id', '=', 'f.id')
+            ->select('a.id', 'a.allocatable_id', 'a.amount', 'a.allocation_date', 'f.certainty', 'f.negative_flow')
+            ->where('a.allocatable_type', 'like', '%Flow')
+            ->where('f.account_id', '=', $this->id)
+            ->whereDate('a.allocation_date', $date)
+            ->get();
 
         foreach ($flows as $flow) {
-            $adjusted_total += $flow->amount * ($flow->certainty / 100);
+            $adjusted_total += ($flow->negative_flow ? -1 : 1) * $flow->amount * ($flow->certainty / 100);
         }
 
         return $adjusted_total;
-
     }
 
     /**
@@ -365,15 +364,13 @@ class BankAccount extends Model
      */
     public function dateOfLastBalanceEntry(): Carbon
     {
-
         $date = DB::table('allocations')
-                   ->select('id', 'allocatable_id', 'amount', 'allocation_date')
-                   ->where('allocatable_type', 'like', '%BankAccount')
-                   ->where('allocatable_id', '=', $this->id)
-                   ->where('manual_entry', '=', 1)
-                   ->max('allocation_date');
+            ->select('id', 'allocatable_id', 'amount', 'allocation_date')
+            ->where('allocatable_type', 'like', '%BankAccount')
+            ->where('allocatable_id', '=', $this->id)
+            ->where('manual_entry', '=', 1)
+            ->max('allocation_date');
 
         return Carbon::createFromFormat('Y-m-d', $date);
-
     }
 }
