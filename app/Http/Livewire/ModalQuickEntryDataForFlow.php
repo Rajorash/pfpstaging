@@ -14,6 +14,8 @@ class ModalQuickEntryDataForFlow extends ModalComponent
     public BankAccount $bankAccount;
     public AccountFlow $accountFlow;
 
+    protected $listeners = ['reloadRevenueTable' => 'reloadRevenueTable'];
+
     public function mount($accountId, $flowId = 0)
     {
         $this->accountId = $accountId;
@@ -21,6 +23,10 @@ class ModalQuickEntryDataForFlow extends ModalComponent
 
         $this->bankAccount = BankAccount::findOrFail($this->accountId);
         $this->accountFlow = AccountFlow::findOrFail($this->flowId);
+    }
+
+    public function reloadRevenueTable() {
+        $this->closeModal();
     }
 
     public function render()

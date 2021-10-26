@@ -186,8 +186,10 @@ class QuickEntryDataForFlow extends Component
             $this->description = '';
         }
 
-        $recurring = $this->_updateRecurringObject();
-        $this->forecast = $this->RecurringTransactionsController->getForecast($recurring);
+        if ($this->value) {
+            $recurring = $this->_updateRecurringObject();
+            $this->forecast = $this->RecurringTransactionsController->getForecast($recurring);
+        }
     }
 
     /**
@@ -220,24 +222,26 @@ class QuickEntryDataForFlow extends Component
     {
         $this->validate();
 
-        $recurring = $this->_updateRecurringObject();
+        if ($this->value) {
+            $recurring = $this->_updateRecurringObject();
 
-        $this->forecast = $this->RecurringTransactionsController->getForecast($recurring);
+            $this->forecast = $this->RecurringTransactionsController->getForecast($recurring);
 
-        $this->business = Business::findOrFail($this->bankAccount->business->id);
+            $this->business = Business::findOrFail($this->bankAccount->business->id);
 
-        foreach ($this->forecast as $date => $float) {
-            $this->storeSingle(
-                'flow',
-                $this->flowId,
-                $float,
-                $date,
-                false,
-                false
-            );
+            foreach ($this->forecast as $date => $float) {
+                $this->storeSingle(
+                    'flow',
+                    $this->flowId,
+                    $float,
+                    $date,
+                    false,
+                    false
+                );
+            }
         }
 
-        return redirect("business/".$this->bankAccount->business->id."/revenue-entry");
+        $this->emit('reloadRevenueTable');
     }
 
     /**

@@ -14,6 +14,8 @@ class ModalFlow extends ModalComponent
     public BankAccount $account;
     public AccountFlow $flow;
 
+    protected $listeners = ['reloadRevenueTable' => 'reloadRevenueTable'];
+
     public function mount($accountId, $flowId = 0)
     {
         $this->accountId = $accountId;
@@ -24,6 +26,10 @@ class ModalFlow extends ModalComponent
         if ($this->flowId) {
             $this->flow = AccountFlow::findOrFail($this->flowId);
         }
+    }
+
+    public function reloadRevenueTable() {
+        $this->closeModal();
     }
 
     public function render()

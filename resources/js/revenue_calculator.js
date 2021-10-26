@@ -10,6 +10,7 @@ $(function () {
     class RevenueCalculator extends calculatorCore {
         revenueControllerUpdate;
         revenueControllerSave;
+
         constructor() {
             super();
 
@@ -35,6 +36,10 @@ $(function () {
                 $this.recalculateRevenueTable();
                 $this.saveData(event);
             });
+
+            Livewire.on('reloadRevenueTable', function () {
+                $this.firstLoadData();
+            })
         }
 
         collectData(event) {

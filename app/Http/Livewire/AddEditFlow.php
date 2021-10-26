@@ -60,7 +60,8 @@ class AddEditFlow extends Component
         $flow->save();
 
         if ($this->modalMode) {
-            return redirect("business/".$account->business->id."/revenue-entry");
+            $this->emit('reloadRevenueTable');
+//            return redirect("business/".$account->business->id."/revenue-entry");
         } else {
             return redirect("business/".$account->business->id."/accounts");
         }
