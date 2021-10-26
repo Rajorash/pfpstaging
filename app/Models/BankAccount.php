@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Traits\Allocatable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 
 /**
  * App\Models\BankAccount
@@ -327,5 +328,24 @@ class BankAccount extends Model
         }
 
         return true;
+    }
+
+    public function getAdjustedFlowsTotalByDate($date)
+    {
+        $adjusted_total = 0;
+        $flows = DB::table('allocations AS a')
+                   ->join('account_flows AS f', 'a.allocatable_id', '=', 'f.id')
+                   ->select('a.id', 'a.allocatable_id', 'a.amount', 'a.allocation_date', 'f.certainty')
+                   ->where('a.allocatable_type', 'like', '%Flow')
+                   ->where('f.account_id', '=', $this->id)
+                   ->whereDate('a.allocation_date', $date)
+                   ->get();
+
+        foreach ($flows as $flow) {
+            $adjusted_total += $flow->amount * ($flow->certainty / 100);
+        }
+
+        return $adjusted_total;
+
     }
 }
