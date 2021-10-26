@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Traits\Allocatable;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
@@ -330,7 +331,14 @@ class BankAccount extends Model
         return true;
     }
 
-    public function getAdjustedFlowsTotalByDate($date)
+
+    /**
+     * Returns the result of totalling all allocations weighted by the flow certainty for a given date.
+     *
+     * @param string|date $date
+     * @return float
+     */
+    public function getAdjustedFlowsTotalByDate($date): float
     {
         $adjusted_total = 0;
         $flows = DB::table('allocations AS a')
@@ -346,6 +354,26 @@ class BankAccount extends Model
         }
 
         return $adjusted_total;
+
+    }
+
+    /**
+     * returns a Carbon date instance of the last date an account balance was
+     * entered for the account
+     *
+     * @return Carbon
+     */
+    public function dateOfLastBalanceEntry(): Carbon
+    {
+
+        $date = DB::table('allocations')
+                   ->select('id', 'allocatable_id', 'amount', 'allocation_date')
+                   ->where('allocatable_type', 'like', '%BankAccount')
+                   ->where('allocatable_id', '=', $this->id)
+                   ->where('manual_entry', '=', 1)
+                   ->max('allocation_date');
+
+        return Carbon::createFromFormat('Y-m-d', $date);
 
     }
 }
