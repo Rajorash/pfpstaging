@@ -2,9 +2,11 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 
 /**
  * App\Models\Business
@@ -205,5 +207,42 @@ class Business extends Model
     public function pipelines(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(Pipeline::class);
+    }
+
+
+    /**
+     * returns the last date an entry occurs for the given business
+     * will return null if no entries.
+     *
+     * @return Carbon|null
+     */
+    public function dateOfLatestEntry(): ?Carbon
+    {
+        $account_ids = $this->accounts()->pluck('id')->toArray();
+
+        $flow_ids = DB::table('account_flows')
+                      ->select('id')
+                      ->where('account_id', 'in', $account_ids)
+                      ->get()
+                      ->pluck('id')
+                      ->toArray();
+
+        $date = DB::table('allocations')
+                  ->select('id', 'allocatable_id', 'amount', 'allocation_date')
+                  ->where( function ($query) use ($account_ids) {
+                      $query->where('allocatable_type', 'like', '%Account')
+                      ->whereIn('allocatable_id', $account_ids);
+                  })
+                  ->orWhere( function ($query) use ($flow_ids) {
+                      $query->where('allocatable_type', 'like', '%Flow')
+                      ->whereIn('allocatable_id', $flow_ids);
+                  })
+                  ->max('allocation_date');
+
+
+        return $date
+             ? Carbon::createFromFormat('Y-m-d', $date)
+             : null;
+
     }
 }
