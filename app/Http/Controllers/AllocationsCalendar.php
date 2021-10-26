@@ -139,7 +139,7 @@ class AllocationsCalendar extends Controller
 
         // Need accounts to be sorted as below
         $response = [
-            BankAccount::ACCOUNT_TYPE_REVENUE => [],
+//            BankAccount::ACCOUNT_TYPE_REVENUE => [],
             BankAccount::ACCOUNT_TYPE_PRETOTAL => [],
             BankAccount::ACCOUNT_TYPE_SALESTAX => [],
             BankAccount::ACCOUNT_TYPE_PREREAL => [],
@@ -193,27 +193,27 @@ class AllocationsCalendar extends Controller
                         : 0;
 
                     switch ($type) {
-                        case BankAccount::ACCOUNT_TYPE_REVENUE:
-                            $totalRevenue = 0;
-                            foreach ($account_item as $key => $value) {
-                                if (is_integer($key)) {
-                                    $response[BankAccount::ACCOUNT_TYPE_REVENUE][$id][$key]['name'] = $value['name'];
-                                    $response[BankAccount::ACCOUNT_TYPE_REVENUE][$id][$key][$date_ymd]
-                                        = array_key_exists($date->format('Y-m-d 00:00:00'), $value)
-                                        ? $value[$date->format('Y-m-d 00:00:00')]
-                                        : 0;
-                                    $totalRevenue += $response[BankAccount::ACCOUNT_TYPE_REVENUE][$id][$key][$date_ymd];
-                                }
-                            }
-                            if ($response[BankAccount::ACCOUNT_TYPE_REVENUE][$id][$date_ymd] != $totalRevenue) {
-                                $response[BankAccount::ACCOUNT_TYPE_REVENUE][$id][$date_ymd] = $totalRevenue;
-                                $this->storeSingle('account', $id, $totalRevenue, $date_ymd);
-                                $key = 'getIncomeByDate_'.$businessId.'_'.$date_ymd;
-                                if (Config::get('app.pfp_cache')) {
-                                    Cache::forget($key);
-                                }
-                            }
-                            break;
+//                        case BankAccount::ACCOUNT_TYPE_REVENUE:
+//                            $totalRevenue = 0;
+//                            foreach ($account_item as $key => $value) {
+//                                if (is_integer($key)) {
+//                                    $response[BankAccount::ACCOUNT_TYPE_REVENUE][$id][$key]['name'] = $value['name'];
+//                                    $response[BankAccount::ACCOUNT_TYPE_REVENUE][$id][$key][$date_ymd]
+//                                        = array_key_exists($date->format('Y-m-d 00:00:00'), $value)
+//                                        ? $value[$date->format('Y-m-d 00:00:00')]
+//                                        : 0;
+//                                    $totalRevenue += $response[BankAccount::ACCOUNT_TYPE_REVENUE][$id][$key][$date_ymd];
+//                                }
+//                            }
+//                            if ($response[BankAccount::ACCOUNT_TYPE_REVENUE][$id][$date_ymd] != $totalRevenue) {
+//                                $response[BankAccount::ACCOUNT_TYPE_REVENUE][$id][$date_ymd] = $totalRevenue;
+//                                $this->storeSingle('account', $id, $totalRevenue, $date_ymd);
+//                                $key = 'getIncomeByDate_'.$businessId.'_'.$date_ymd;
+//                                if (Config::get('app.pfp_cache')) {
+//                                    Cache::forget($key);
+//                                }
+//                            }
+//                            break;
 
                         case BankAccount::ACCOUNT_TYPE_SALESTAX: // Tax amt
                             $response[BankAccount::ACCOUNT_TYPE_SALESTAX][$id]['transfer'][$date_ymd] =
