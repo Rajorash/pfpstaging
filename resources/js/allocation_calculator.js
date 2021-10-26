@@ -49,6 +49,10 @@ $(function () {
                     $(this).addClass('pfp_forecast_already_added');
                 }
             });
+
+            Livewire.on('reloadRevenueTable', function () {
+                $this.firstLoadData();
+            })
         }
 
         collectData(event) {

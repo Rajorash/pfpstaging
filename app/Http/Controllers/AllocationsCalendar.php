@@ -160,6 +160,8 @@ class AllocationsCalendar extends Controller
                 $response[BankAccount::ACCOUNT_TYPE_REVENUE.'_total'][$account_item->id]
                     = $account_item->getAdjustedFlowsTotalByDatePeriod($dateFrom, $dateTo);
                 $response[BankAccount::ACCOUNT_TYPE_REVENUE.'_total'][$account_item->id]['name'] = $account_item->name;
+                $response[BankAccount::ACCOUNT_TYPE_REVENUE.'_total'][$account_item->id]['negative'] = $account_item->negative;
+                $response[BankAccount::ACCOUNT_TYPE_REVENUE.'_total'][$account_item->id]['certainty'] = $account_item->certainty;
             }
         }
 
@@ -224,6 +226,8 @@ class AllocationsCalendar extends Controller
                             foreach ($account_item as $key => $value) {
                                 if (is_integer($key)) {
                                     $flows[$id][$key]['name'] = $value['name'];
+                                    $flows[$id][$key]['certainty'] = $value['certainty'];
+                                    $flows[$id][$key]['negative'] = $value['negative'];
                                     $flows[$id][$key][$date_ymd]
                                         = array_key_exists($date->format('Y-m-d 00:00:00'), $value)
                                         ? $value[$date->format('Y-m-d 00:00:00')]
@@ -285,6 +289,8 @@ class AllocationsCalendar extends Controller
                             foreach ($account_item as $key => $value) {
                                 if (is_integer($key)) {
                                     $flows[$id][$key]['name'] = $value['name'];
+                                    $flows[$id][$key]['certainty'] = $value['certainty'];
+                                    $flows[$id][$key]['negative'] = $value['negative'];
                                     $flows[$id][$key][$date_ymd]
                                         = array_key_exists($date->format('Y-m-d 00:00:00'), $value)
                                         ? $value[$date->format('Y-m-d 00:00:00')]
@@ -339,6 +345,8 @@ class AllocationsCalendar extends Controller
                             foreach ($account_item as $key => $value) {
                                 if (is_integer($key)) {
                                     $flows[$id][$key]['name'] = $value['name'];
+                                    $flows[$id][$key]['certainty'] = $value['certainty'];
+                                    $flows[$id][$key]['negative'] = $value['negative'];
                                     $flows[$id][$key][$date_ymd]
                                         = array_key_exists($date->format('Y-m-d 00:00:00'), $value)
                                         ? $value[$date->format('Y-m-d 00:00:00')]
@@ -403,6 +411,8 @@ class AllocationsCalendar extends Controller
                             foreach ($account_item as $key => $value) {
                                 if (is_integer($key)) {
                                     $flows[$id][$key]['name'] = $value['name'];
+                                    $flows[$id][$key]['certainty'] = $value['certainty'];
+                                    $flows[$id][$key]['negative'] = $value['negative'];
                                     $flows[$id][$key][$date_ymd]
                                         = array_key_exists($date->format('Y-m-d 00:00:00'), $value)
                                         ? $value[$date->format('Y-m-d 00:00:00')]
@@ -514,6 +524,7 @@ class AllocationsCalendar extends Controller
                         $flow->id => $flow->allocations->pluck('amount', 'allocation_date')->toArray()
                             + ['negative' => (bool) $flow->negative_flow]
                             + ['name' => $flow->label]
+                            + ['certainty' => $flow->certainty]
                     ];
                 }
 
@@ -523,6 +534,7 @@ class AllocationsCalendar extends Controller
                 $item->account_values = [
                     $item->id => array_merge_recursive($amounts, $manuals) + $flows
                 ];
+
                 return $item;
             })->all();
     }
