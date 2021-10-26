@@ -33,12 +33,12 @@ class AllocationsCalendar extends Controller
         $minDate = $this->business->rollout()->min('end_date');
         $startDate = session()->get('startDate_'.$this->business->id, Timezone::convertToLocal(Carbon::now(), 'Y-m-d'));
 
-        $this->pushRecurringTransactionData(
-            $this->business->id,
-            $startDate,
-            Carbon::now()->addMonths(13)->format('Y-m-d'),
-            true
-        );
+//        $this->pushRecurringTransactionData(
+//            $this->business->id,
+//            $startDate,
+//            Carbon::now()->addMonths(13)->format('Y-m-d'),
+//            true
+//        );
 
         $data = [
             'rangeArray' => $this->getRangeArray(),
@@ -99,18 +99,18 @@ class AllocationsCalendar extends Controller
 
         $this->store($cells);
 
-        $RecurringTransactionsController = new RecurringTransactionsController();
-        $recurring = [];
-        $rawData = $this->getRawData($businessId, $startDate, $endDate);
-        foreach ($rawData as $account_item) {
-            foreach ($account_item->flows as $key => $value) {
-                $recurring[$value->id] = null;
-                if ($value->recurringTransactions->count()) {
-                    $recurring[$value->id] = $RecurringTransactionsController
-                        ->getAllFlowsForecasts($value->recurringTransactions, $startDate, $endDate);
-                }
-            }
-        }
+//        $RecurringTransactionsController = new RecurringTransactionsController();
+//        $recurring = [];
+//        $rawData = $this->getRawData($businessId, $startDate, $endDate);
+//        foreach ($rawData as $account_item) {
+//            foreach ($account_item->flows as $key => $value) {
+//                $recurring[$value->id] = null;
+//                if ($value->recurringTransactions->count()) {
+//                    $recurring[$value->id] = $RecurringTransactionsController
+//                        ->getAllFlowsForecasts($value->recurringTransactions, $startDate, $endDate);
+//                }
+//            }
+//        }
 
         $tableData = $this->getGridData($rangeValue, $startDate, $endDate, $businessId);
 
@@ -122,7 +122,7 @@ class AllocationsCalendar extends Controller
                 'startDate' => Carbon::parse($startDate),
                 'range' => $rangeValue,
                 'business' => $business,
-                'recurring' => $recurring
+//                'recurring' => $recurring
             ])->render();
 
         return response()->json($response);
@@ -154,6 +154,12 @@ class AllocationsCalendar extends Controller
             $names[$account_item->id] = $account_item->name;
             foreach ($account_item->account_values as $key => $value) {
                 $flat[$key] = $value;
+            }
+
+            if ($account_item->type == BankAccount::ACCOUNT_TYPE_REVENUE) {
+                $response[BankAccount::ACCOUNT_TYPE_REVENUE.'_total'][$account_item->id]
+                    = $account_item->getAdjustedFlowsTotalByDatePeriod($dateFrom, $dateTo);
+                $response[BankAccount::ACCOUNT_TYPE_REVENUE.'_total'][$account_item->id]['name'] = $account_item->name;
             }
         }
 
@@ -346,10 +352,9 @@ class AllocationsCalendar extends Controller
                             }
                             $response[BankAccount::ACCOUNT_TYPE_PREREAL][$id]['total'][$date_ymd] = $flow_total;
 
-                            if ( array_key_exists($id, $flows)
+                            if (array_key_exists($id, $flows)
                                 && array_key_exists($key, $flows[$id])
-                                && count($flows[$id][$key]) == $complete)
-                            {
+                                && count($flows[$id][$key]) == $complete) {
                                 $response[BankAccount::ACCOUNT_TYPE_PREREAL][$id] += $flows[$id];
                             }
 
@@ -410,10 +415,9 @@ class AllocationsCalendar extends Controller
                                 }
                             }
                             $response[BankAccount::ACCOUNT_TYPE_POSTREAL][$id]['total'][$date_ymd] = $flow_total;
-                            if ( array_key_exists($id, $flows)
+                            if (array_key_exists($id, $flows)
                                 && array_key_exists($key, $flows[$id])
-                                && count($flows[$id][$key]) == $complete)
-                            {
+                                && count($flows[$id][$key]) == $complete) {
                                 $response[BankAccount::ACCOUNT_TYPE_POSTREAL][$id] += $flows[$id];
                             }
 
@@ -464,7 +468,8 @@ class AllocationsCalendar extends Controller
         $transfer_amount = 0;
 
         if ($income > 0) {
-            $transfer_amount = round($income - $income / ($percents[BankAccount::ACCOUNT_TYPE_SALESTAX][$id] / 100 + 1),
+            $transfer_amount = round(
+                $income - $income / ($percents[BankAccount::ACCOUNT_TYPE_SALESTAX][$id] / 100 + 1),
                 4);
         }
 
