@@ -340,16 +340,26 @@ class BankAccount extends Model
     public function getAdjustedFlowsTotalByDate($date): float
     {
         $adjusted_total = 0;
-        $flows = DB::table('allocations AS a')
-            ->join('account_flows AS f', 'a.allocatable_id', '=', 'f.id')
-            ->select('a.id', 'a.allocatable_id', 'a.amount', 'a.allocation_date', 'f.certainty', 'f.negative_flow')
-            ->where('a.allocatable_type', 'like', '%Flow')
-            ->where('f.account_id', '=', $this->id)
-            ->whereDate('a.allocation_date', $date)
-            ->get();
+        //TODO: using typical request
+        /**
+         * $flows = DB::table('allocations AS a')
+         * ->join('account_flows AS f', 'a.allocatable_id', '=', 'f.id')
+         * ->select('a.id', 'a.allocatable_id', 'a.amount', 'a.allocation_date', 'f.certainty', 'f.negative_flow')
+         * ->where('a.allocatable_type', 'like', '%Flow')
+         * ->where('f.account_id', '=', $this->id)
+         * ->whereDate('a.allocation_date', $date)
+         * ->get();
+         *
+         * foreach ($flows as $flow) {
+         * $adjusted_total += ($flow->negative_flow ? -1 : 1) * $flow->amount * ($flow->certainty / 100);
+         * }
+         */
 
-        foreach ($flows as $flow) {
-            $adjusted_total += ($flow->negative_flow ? -1 : 1) * $flow->amount * ($flow->certainty / 100);
+        //TODO: using mysql procedure
+        $adjusted = DB::select('CALL AdjustedFlowsTotalByDate ( '.$this->id.', \''.$date.'\' );');
+
+        foreach ($adjusted as $row) {
+            $adjusted_total = floatval($row->suma);
         }
 
         return $adjusted_total;
@@ -363,20 +373,32 @@ class BankAccount extends Model
     public function getAdjustedFlowsTotalByDatePeriod($dateStart, $dateEnd): array
     {
         $adjusted_total = [];
-        $flows = DB::table('allocations AS a')
-            ->join('account_flows AS f', 'a.allocatable_id', '=', 'f.id')
-            ->select('a.id', 'a.allocatable_id', 'a.amount', 'a.allocation_date', 'f.certainty', 'f.negative_flow')
-            ->where('a.allocatable_type', 'like', '%Flow')
-            ->where('f.account_id', '=', $this->id)
-            ->whereDate('a.allocation_date', '>=', $dateStart)
-            ->whereDate('a.allocation_date', '<=', $dateEnd)
-            ->get();
+        //TODO: using typical request
+        /**
+         * $flows = DB::table('allocations AS a')
+         * ->join('account_flows AS f', 'a.allocatable_id', '=', 'f.id')
+         * ->select('a.id', 'a.allocatable_id', 'a.amount', 'a.allocation_date', 'f.certainty', 'f.negative_flow')
+         * ->where('a.allocatable_type', 'like', '%Flow')
+         * ->where('f.account_id', '=', $this->id)
+         * ->whereDate('a.allocation_date', '>=', $dateStart)
+         * ->whereDate('a.allocation_date', '<=', $dateEnd)
+         * ->get();
+         *
+         * foreach ($flows as $flow) {
+         * if (!isset($adjusted_total[$flow->allocation_date])) {
+         * $adjusted_total[$flow->allocation_date] = 0;
+         * }
+         * $adjusted_total[$flow->allocation_date] += ($flow->negative_flow ? -1 : 1) * $flow->amount * ($flow->certainty / 100);
+         * }
+         *
+         * return $adjusted_total;
+         */
 
-        foreach ($flows as $flow) {
-            if (!isset($adjusted_total[$flow->allocation_date])) {
-                $adjusted_total[$flow->allocation_date] = 0;
-            }
-            $adjusted_total[$flow->allocation_date] += ($flow->negative_flow ? -1 : 1) * $flow->amount * ($flow->certainty / 100);
+        //TODO: using mysql procedure
+        $flowTotals = DB::select('CALL AdjustedFlowsTotalByDatePeriod ( '.$this->id.', \''.$dateStart.'\', \''.$dateEnd.'\' );');
+
+        foreach ($flowTotals as $row) {
+            $adjusted_total[$row->allocation_date] = floatval($row->suma);
         }
 
         return $adjusted_total;
