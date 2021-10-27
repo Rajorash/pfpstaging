@@ -541,31 +541,33 @@ class AllocationsCalendar extends Controller
 
     private function getIncomeByDate($businessId, $date)
     {
-        $key = 'getIncomeByDate_'.$businessId.'_'.$date;
-        $getIncomeByDate = Cache::get($key);
+        // $key = 'getIncomeByDate_'.$businessId.'_'.$date;
+        // $getIncomeByDate = Cache::get($key);
 
-        if ($getIncomeByDate === null) {
-            $getIncomeByDate = BankAccount::where('type', 'revenue')->where('business_id', $businessId)
-                ->with('allocations', function ($query) use ($date) {
-                    return $query->where('allocation_date', $date);
-                })
-                ->get()
-                ->map(function ($item) {
-                    return collect($item->toArray())
-                        ->only('allocations')
-                        ->all();
-                })
-                ->map(function ($a_item) {
-                    return count($a_item['allocations']) > 0
-                        ? $a_item['allocations'][0]['amount']
-                        : 0;
-                })->sum();
-            if (Config::get('app.pfp_cache')) {
-                Cache::put($key, $getIncomeByDate, now()->addMinutes(10));
-            }
-        }
+        // if ($getIncomeByDate === null) {
+        //     $getIncomeByDate = BankAccount::where('type', 'revenue')->where('business_id', $businessId)
+        //         ->with('allocations', function ($query) use ($date) {
+        //             return $query->where('allocation_date', $date);
+        //         })
+        //         ->get()
+        //         ->map(function ($item) {
+        //             return collect($item->toArray())
+        //                 ->only('allocations')
+        //                 ->all();
+        //         })
+        //         ->map(function ($a_item) {
+        //             return count($a_item['allocations']) > 0
+        //                 ? $a_item['allocations'][0]['amount']
+        //                 : 0;
+        //         })->sum();
+        //     if (Config::get('app.pfp_cache')) {
+        //         Cache::put($key, $getIncomeByDate, now()->addMinutes(10));
+        //     }
+        // }
 
-        return $getIncomeByDate;
+        $revenue_id = Business::find($businessId)->getAccountIdByType('revenue');
+
+        return BankAccount::find($revenue_id)->getAdjustedFlowsTotalByDate($date);
     }
 
     private function getPreviousNonZeroValue($accountId, $dateFrom)
