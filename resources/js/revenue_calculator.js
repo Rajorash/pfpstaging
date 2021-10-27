@@ -78,18 +78,21 @@ $(function () {
 
             //let array for other types
             $.each(['flow'], function (i, $class) {
-
+                console.log("Class " + $class);
                 if ($('.' + $class + '_total').length) {
                     $('.' + $class + '_total').each(function () {
                         let $result = 0;
 
                         $('.' + $class + '_cell[data-column="' + $(this).data('column') + '"]').each(function () {
+                            // preven NaN error on deleting value
+                            let value = $(this).val().length == 0 ? 0 : $(this).val();
+
                             $result += ($(this).data('negative') ? -1 : 1)
                                 * parseFloat(($(this).data('certainty') ?? 100)) / 100
-                                * parseFloat($(this).val());
+                                * parseFloat(value);
                         });
 
-                        $(this).val($result.toFixed(2));
+                        $(this).val($result.toFixed(0));
                     });
                 }
 
@@ -102,11 +105,13 @@ $(function () {
                 $.each(['flow'], function (i, $class) {
                     let $selector = '.' + $class + '_total[data-column="' + $column + '"]';
                     if ($($selector).length) {
-                        $revenue += parseFloat($($selector).val())
+                        $revenue += parseFloat($($selector).val() ?? 0);
+                    } else {
+                        $revenue += 0;
                     }
                 });
 
-                $(this).val($revenue.toFixed(2));
+                $(this).val($revenue.toFixed(0));
             });
 
         }

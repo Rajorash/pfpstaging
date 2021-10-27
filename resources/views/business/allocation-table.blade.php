@@ -48,7 +48,7 @@
                                     class="w-full px-2 py-1 text-right bg-transparent border-none"
                                     id="account_{{$accountId}}_{{$date->format('Y-m-d')}}"
                                     type="text" pattern="[0-9]{10}"
-                                    value="{{ (isset($data[$date->format('Y-m-d')]) ? number_format($data[$date->format('Y-m-d')], 2, '.', '') : '0') }}"
+                                    value="{{ (isset($data[$date->format('Y-m-d')]) ? number_format($data[$date->format('Y-m-d')], 0, '.', '') : '0') }}"
                                     data-row="{{$rowIndex}}"
                                     data-column="{{$columnIndex}}"
                                     disabled/>
@@ -297,7 +297,7 @@
                                                     <x-icons.edit class="inline-flex self-end h-3 ml-auto"/>
                                                 </a>
                                                 <a onclick="Livewire.emit('openModal', 'modal-quick-entry-data-for-flow',  {{ json_encode(['accountId' => $id, 'flowId' => $key]) }})"
-                                                   title="Quick Entry for Flow {{$ext_data['name']}}" class="cursor-pointer ml-3">
+                                                   title="Quick Entry for Flow {{$ext_data['name']}}" class="ml-3 cursor-pointer">
                                                     <x-icons.fill class="inline-flex self-end h-3 ml-auto text-green"/>
                                                 </a>
                                             </div>
