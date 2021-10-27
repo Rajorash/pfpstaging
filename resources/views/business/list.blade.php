@@ -48,7 +48,7 @@
                     {{-- Allocations Calculator column header row --}}
                     {{-- Account balance change manually --}}
                     {{-- Revenue Entry column header row --}}
-                    {{-- Data Entry column header row --}}
+                    {{-- Expense Entry column header row --}}
                     {{-- Forecast column header row --}}
                     {{-- Percentages column header row --}}
                 </x-ui.table-th>
@@ -168,11 +168,6 @@
                                     <x-icons.percent :class="'h-5 w-auto inline-block'"/>
                                 </x-ui.button-small>
 
-                                {{-- Pipeline column --}}
-                                {{-- <x-ui.button-small title="{{__('Pipelines')}}"
-                                    href="{{route('pipelines.list', ['business' => $business])}}">
-                                    <x-icons.chart :class="'h-5 w-auto inline-block'"/>
-                                </x-ui.button-small> --}}
                             </div>
                         </x-ui.table-td>
 
@@ -199,8 +194,8 @@
                                     <x-icons.dollar-fill :class="'h-5 w-auto inline-block'"/>
                                 </x-ui.button-small>
 
-                                {{-- Data Entry column --}}
-                                <x-ui.button-small title="Data Entry" class="whitespace-nowrap"
+                                {{-- Expense Entry column --}}
+                                <x-ui.button-small title="Expense Entry" class="whitespace-nowrap"
                                                 href="{{route('allocations-calendar', ['business' => $business])}}">
                                     <x-icons.table :class="'h-5 w-auto inline-block'"/>
                                 </x-ui.button-small>

@@ -80,12 +80,12 @@
     @php
         $active = request()->routeIs('allocations-calendar');
     @endphp
-    <a href="{{route('allocations-calendar', ['business' => $business])}}" title="{{__('Projection Data Entry')}}"
+    <a href="{{route('allocations-calendar', ['business' => $business])}}" title="{{__('Expense Entry')}}"
        class="busnav-btn mr-2
         @if($active) text-blue @else text-gray-700 @endif
            ">
         <x-icons.table class="inline-block w-auto h-6"/>
-        <span class="ml-2 text-lg inline-block @if(!$active) hidden @endif">{{__('Data Entry')}}</span>
+        <span class="ml-2 text-lg inline-block @if(!$active) hidden @endif">{{__('Expense Entry')}}</span>
     </a>
 
     @php
