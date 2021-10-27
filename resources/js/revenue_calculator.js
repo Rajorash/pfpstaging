@@ -78,7 +78,7 @@ $(function () {
 
             //let array for other types
             $.each(['flow'], function (i, $class) {
-                console.log("Class " + $class);
+                // console.log("Class " + $class);
                 if ($('.' + $class + '_total').length) {
                     $('.' + $class + '_total').each(function () {
                         let $result = 0;
