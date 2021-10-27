@@ -13,12 +13,18 @@
         case 'balance':
             $prev = route('allocation-calculator-with-id', ['business' => $business]);
             $prevText = 'Allocations Calculator';
-            $next = route('allocations-calendar', ['business' => $business]);
-            $nextText = 'Allocations';
+            $next = url('/business/'.$business->id.'/revenue-entry');
+            $nextText = 'Revenue Entry';
             break;
-        case 'allocations':
+        case 'revenue':
             $prev = url('/business/'.$business->id.'/balance');
             $prevText = 'Change balance';
+            $next = route('allocations-calendar', ['business' => $business]);
+            $nextText = 'Expense Entry';
+            break;
+        case 'allocations':
+            $prev = url('/business/'.$business->id.'/revenue-entry');
+            $prevText = 'Revenue Entry';
             $next = route('projections', ['business' => $business]);
             $nextText = 'Projection Forecast';
             break;

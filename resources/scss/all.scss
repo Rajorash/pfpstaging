@@ -41,3 +41,7 @@ html {
 .bg-data-entry {
     @apply bg-white;
 }
+
+.busnav-btn {
+    @apply bg-white block rounded box-border p-3 flex mr-4 h-12 hover:bg-dark_gray2 hover:text-white transition-all;
+}
