@@ -29,16 +29,10 @@
             $nextText = 'Projection Forecast';
             break;
         case 'projections':
-            $prev = route('allocation-calculator-with-id', ['business' => $business]);
-            $prevText = 'Allocations Calculator';
-            $next = route('allocations-percentages', ['business' => $business]);
-            $nextText = 'Percentages';
-            break;
-        case 'percentages':
-            $prev = route('projections', ['business' => $business]);
-            $prevText = 'Projection Forecast';
-            $next = '';
-            $nextText = '';
+            $prev = route('allocations-calendar', ['business' => $business]);
+            $prevText = 'Expense Entry';
+            $next = url('/business/'.$business->id.'/revenue-entry');
+            $nextText = 'Revenue Entry';
             break;
     }
 @endphp

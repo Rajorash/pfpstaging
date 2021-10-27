@@ -161,6 +161,13 @@
                                     <x-icons.vallet :class="'h-5 w-auto inline-block'"/>
                                 </x-ui.button-small>
 
+
+                                {{-- Percentages column --}}
+                                <x-ui.button-small title="{{__('Rollout Percentages')}}"
+                                                href="{{route('allocations-percentages', ['business' => $business])}}">
+                                    <x-icons.percent :class="'h-5 w-auto inline-block'"/>
+                                </x-ui.button-small>
+
                                 {{-- Pipeline column --}}
                                 {{-- <x-ui.button-small title="{{__('Pipelines')}}"
                                     href="{{route('pipelines.list', ['business' => $business])}}">
@@ -204,11 +211,6 @@
                                     <x-icons.presentation-chart :class="'h-5 w-auto inline-block'"/>
                                 </x-ui.button-small>
 
-                                {{-- Percentages column --}}
-                                <x-ui.button-small title="{{__('Rollout Percentages')}}"
-                                                href="{{route('allocations-percentages', ['business' => $business])}}">
-                                    <x-icons.percent :class="'h-5 w-auto inline-block'"/>
-                                </x-ui.button-small>
                             </div>
 
                         </x-ui.table-td>

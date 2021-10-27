@@ -56,7 +56,7 @@
                                 @foreach ($balances as $balance)
                                     <div class="table-row">
                                         <div class="table-cell w-1/5 pb-4 text-left">{{$balance['title']}}</div>
-                                        <div class="table-cell w-1/5 px-4 pb-4 text-right text-gray-600">{{$balance['amount']}}</div>
+                                        <div class="table-cell w-1/5 px-4 pb-4 text-right text-gray-600">{{number_format($balance['amount'], 0)}}</div>
                                         <div class="table-cell w-3/5 pb-4">
                                             <x-jet-input
                                                 name="balance[{{$balance['id']}}]"
