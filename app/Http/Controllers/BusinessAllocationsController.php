@@ -50,7 +50,7 @@ class BusinessAllocationsController extends Controller
         ]);
     }
 
-    public function updateData(Request $request)
+    public function updateData(Request $request): \Illuminate\Http\JsonResponse
     {
         $response = [
             'error' => [],
@@ -69,7 +69,6 @@ class BusinessAllocationsController extends Controller
         $this->business = Business::where('id', $businessId)
             ->with([
                 'accounts',
-//                'accounts.flows'
             ])
             ->first();
 
@@ -198,7 +197,6 @@ class BusinessAllocationsController extends Controller
                         : 0;
 
                     $this->fillFlowsAndData($flows, $data, $id, $currentDate, $currentDateTime, $startDate);
-
                 }
                 break;
 
@@ -216,6 +214,7 @@ class BusinessAllocationsController extends Controller
 
                 }
                 break;
+
             case BankAccount::ACCOUNT_TYPE_PREREAL:
                 $flows = [];
                 foreach ($period as $date) {
@@ -260,7 +259,6 @@ class BusinessAllocationsController extends Controller
                         : 0;
 
                     $this->fillFlowsAndData($flows, $data, $id, $currentDate, $currentDateTime, $startDate);
-
                 }
                 break;
         }

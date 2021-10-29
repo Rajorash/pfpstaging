@@ -103,11 +103,11 @@ export class calculatorCore {
         $(window).on("keydown", function (event) {
             if (event.which === 17) {
                 $this.copyMoveCtrlKeyEnabled = true;
-                $('.'+$this.copyMoveClassName).addClass('cursor-copy bg-yellow-300').removeClass('cursor-move');
+                $('.' + $this.copyMoveClassName).addClass('cursor-copy bg-yellow-300').removeClass('cursor-move');
             }
         }).on("keyup", function (event) {
             $this.copyMoveCtrlKeyEnabled = false;
-            $('.'+$this.copyMoveClassName).removeClass('cursor-copy bg-yellow-300').addClass('cursor-move');
+            $('.' + $this.copyMoveClassName).removeClass('cursor-copy bg-yellow-300').addClass('cursor-move');
         });
 
         $(document).keyup(function (event) {
