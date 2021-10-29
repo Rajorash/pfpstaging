@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use Carbon\CarbonPeriod;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Cache;
@@ -139,6 +140,20 @@ class Business extends Model
         return $phase ? $phase->id : null;
     }
 
+    /**return phases by period range
+     * @param CarbonPeriod $period
+     * @return array
+     */
+    public function getPhasesIdByPeriod(CarbonPeriod $period):array
+    {
+        $phases = [];
+        foreach ($period as $date) {
+            $phases[$date->format('Y-m-d')] = $this->getPhaseIdByDate($date->format('Y-m-d'));
+        }
+
+        return $phases;
+    }
+
     /**
      * Utility function to get current phase, uses getPhaseIdByDate() with
      * parameter of todays date
@@ -221,28 +236,28 @@ class Business extends Model
         $account_ids = $this->accounts()->pluck('id')->toArray();
 
         $flow_ids = DB::table('account_flows')
-                      ->select('id')
-                      ->where('account_id', 'in', $account_ids)
-                      ->get()
-                      ->pluck('id')
-                      ->toArray();
+            ->select('id')
+            ->where('account_id', 'in', $account_ids)
+            ->get()
+            ->pluck('id')
+            ->toArray();
 
         $date = DB::table('allocations')
-                  ->select('id', 'allocatable_id', 'amount', 'allocation_date')
-                  ->where( function ($query) use ($account_ids) {
-                      $query->where('allocatable_type', 'like', '%Account')
-                      ->whereIn('allocatable_id', $account_ids);
-                  })
-                  ->orWhere( function ($query) use ($flow_ids) {
-                      $query->where('allocatable_type', 'like', '%Flow')
-                      ->whereIn('allocatable_id', $flow_ids);
-                  })
-                  ->max('allocation_date');
+            ->select('id', 'allocatable_id', 'amount', 'allocation_date')
+            ->where(function ($query) use ($account_ids) {
+                $query->where('allocatable_type', 'like', '%Account')
+                    ->whereIn('allocatable_id', $account_ids);
+            })
+            ->orWhere(function ($query) use ($flow_ids) {
+                $query->where('allocatable_type', 'like', '%Flow')
+                    ->whereIn('allocatable_id', $flow_ids);
+            })
+            ->max('allocation_date');
 
 
         return $date
-             ? Carbon::createFromFormat('Y-m-d', $date)
-             : null;
+            ? Carbon::createFromFormat('Y-m-d', $date)
+            : null;
 
     }
 }

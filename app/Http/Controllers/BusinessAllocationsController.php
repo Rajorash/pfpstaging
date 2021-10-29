@@ -1,0 +1,562 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\AccountFlow;
+use App\Models\BankAccount;
+use App\Models\Business;
+use Carbon\Carbon;
+use Carbon\CarbonPeriod;
+use Illuminate\Http\Request;
+use JamesMills\LaravelTimezone\Facades\Timezone;
+
+class BusinessAllocationsController extends Controller
+{
+    protected $business = null;
+    private array $phases = [];
+    private array $percentages = [];
+    private array $incomeByPeriod = [];
+    private array $rawData;
+    private int $complete;
+
+    private array $accountFlowCache = [];
+    private array $bankAccountCache = [];
+    private array $previousNonZeroValueCache = [];
+    public array $accountsSubTypes = [];
+    protected int $defaultCurrentRangeValue = 14;
+
+    /**
+     * @param  Request  $request
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     */
+    public function index(Request $request)
+    {
+        $businessId = $request->business ?? null;
+        $this->business = Business::findOrFail($businessId);
+        $this->authorize('view', $this->business);
+
+        $maxDate = $this->business->rollout()->max('end_date');
+        $minDate = $this->business->rollout()->min('end_date');
+        $startDate = session()->get('startDate_'.$this->business->id, Timezone::convertToLocal(Carbon::now(), 'Y-m-d'));
+
+        return view('business.business-allocations', [
+            'business' => $this->business,
+            'rangeArray' => $this->getRangeArray(),
+            'startDate' => $startDate,
+            'minDate' => Carbon::parse($minDate)->subMonths(3)->format('Y-m-d'),
+            'maxDate' => Carbon::parse($maxDate)->subDays(31)->format('Y-m-d'),
+            'currentRangeValue' => session()->get('rangeValue_'.$this->business->id, $this->defaultCurrentRangeValue)
+        ]);
+    }
+
+    public function updateData(Request $request)
+    {
+        $response = [
+            'error' => [],
+            'html' => [],
+        ];
+
+        $tableData = [
+            BankAccount::ACCOUNT_TYPE_REVENUE => [],
+            BankAccount::ACCOUNT_TYPE_PRETOTAL => [],
+            BankAccount::ACCOUNT_TYPE_SALESTAX => [],
+            BankAccount::ACCOUNT_TYPE_PREREAL => [],
+            BankAccount::ACCOUNT_TYPE_POSTREAL => []
+        ];
+
+        $businessId = $request->businessId ?? null;
+        $this->business = Business::where('id', $businessId)
+            ->with([
+                'accounts',
+//                'accounts.flows'
+            ])
+            ->first();
+
+        $returnType = $request->returnType ?? 'html';
+        $startDate = $request->startDate ?? session()->get('startDate_'.$this->business->id,
+                Timezone::convertToLocal(Carbon::now(), 'Y-m-d'));
+        $rangeValue = $request->rangeValue ?? $this->defaultCurrentRangeValue;
+
+        $this->complete = $rangeValue;
+        $endDate = Carbon::parse($startDate)->addDays($rangeValue - 1)->format('Y-m-d');
+        $period = CarbonPeriod::create($startDate, $endDate);
+        $this->phases = $this->business->getPhasesIdByPeriod($period);
+        $this->rawData = $this->getRawData($this->business->id, $startDate, $endDate);
+        $this->percentages = $this->getPercentagesByPhasesId(
+            $this->business->id,
+            array_unique(array_values($this->phases))
+        );
+
+        $this->accountsSubTypes = [
+            '_dates' => [
+                'title' => '_self',
+                'class_tr' => 'bg-account',
+                'class_th' => 'pl-4'
+            ],
+            'transfer' => [
+                'title' => __('Transfer In'),
+                'class_tr' => 'bg-readonly',
+                'class_th' => 'pl-6',
+            ],
+            'total' => [
+                'title' => __('Flow Total'),
+                'class_tr' => 'bg-readonly',
+                'class_th' => 'pl-6',
+            ],
+        ];
+
+        $accounts = $this->business->accounts;
+        foreach ($accounts as $account) {
+            $accountAllData = $account->toArray();
+
+            //filter only data between $startDate and $endDate
+            if (isset($accountAllData['allocations'])) {
+                $accountAllData['allocations'] = array_filter(
+                    $accountAllData['allocations'],
+                    function ($element) use ($startDate, $endDate) {
+                        return Carbon::parse($element['allocation_date'])->betweenIncluded($startDate, $endDate);
+                    }
+                );
+            }
+
+            $tableData[$account->type][$account->id] = $accountAllData;
+
+            if ($account->type == BankAccount::ACCOUNT_TYPE_REVENUE) {
+                $this->incomeByPeriod = $account->getAdjustedFlowsTotalByDatePeriod($startDate, $endDate);
+            }
+
+            $tableData[$account->type][$account->id]['total_db'] =
+                $account->getAdjustedFlowsTotalByDatePeriod($startDate, $endDate);
+
+            if (array_key_exists('flows', $tableData[$account->type][$account->id])) {
+                //reorder flows data
+                $newFlows = [];
+                foreach ($tableData[$account->type][$account->id]['flows'] as $flowArray) {
+                    $newFlows[$flowArray['id']] = $flowArray;
+                }
+                $tableData[$account->type][$account->id]['flows'] = $newFlows;
+            }
+
+            $tableData[$account->type][$account->id] = $this->fillMissingDateValue(
+                $period,
+                $tableData[$account->type][$account->id],
+                $startDate
+            );
+        }
+
+        if ($returnType == 'html') {
+            $response['html'] = view('business.business-allocations-table')
+                ->with([
+                    'business' => $this->business,
+                    'rangeArray' => $this->getRangeArray(),
+                    'startDate' => $startDate,
+                    'period' => $period,
+                    'tableData' => $tableData,
+                    'rangeValue' => $rangeValue,
+                    'accountsSubTypes' => $this->accountsSubTypes
+                ])->render();
+
+            return response()->json($response);
+        } else {
+            return response()->json($tableData);
+        }
+    }
+
+    /**
+     * @param  CarbonPeriod  $period
+     * @param  array  $data
+     * @param  string  $startDate
+     * @return array
+     */
+    protected function fillMissingDateValue(CarbonPeriod $period, array $data, string $startDate): array
+    {
+        $id = $data['id'];
+
+        switch ($data['type']) {
+            case BankAccount::ACCOUNT_TYPE_REVENUE:
+                foreach ($period as $date) {
+                    $data['total'][$date->format('Y-m-d')] = $data['total'][$date->format('Y-m-d')] ?? 0;
+                }
+                break;
+
+            case BankAccount::ACCOUNT_TYPE_PRETOTAL:
+                $flows = [];
+                foreach ($period as $date) {
+                    $currentDate = $date->format('Y-m-d');
+                    $currentDateTime = $date->format('Y-m-d').' 00:00:00';
+                    $phaseId = $this->phases[$currentDate];
+                    $percents = $this->percentages[$phaseId];
+                    $salesTax = data_get($percents, 'salestax');
+                    $salesTax = count($salesTax) > 0 ? $salesTax[key($salesTax)] : null;
+                    $income = $this->incomeByPeriod[$currentDate] ?? 0;
+                    $nsp = ($income && $salesTax) ? $income / ($salesTax / 100 + 1) : 0;
+
+                    $percent = $this->percentages[$phaseId][BankAccount::ACCOUNT_TYPE_PRETOTAL][$id];
+                    $data['transfer'][$currentDate] = (is_numeric($percent))
+                        ? round($nsp * (floatval($percent) / 100), 4)
+                        : 0;
+
+                    $this->fillFlowsAndData($flows, $data, $id, $currentDate, $currentDateTime, $startDate);
+
+                }
+                break;
+
+            case BankAccount::ACCOUNT_TYPE_SALESTAX:
+                foreach ($period as $date) {
+                    $currentDate = $date->format('Y-m-d');
+                    $currentDateTime = $date->format('Y-m-d').' 00:00:00';
+                    $phaseId = $this->phases[$currentDate];
+                    $percents = $this->percentages[$phaseId];
+
+                    $income = $this->incomeByPeriod[$currentDate] ?? 0;
+                    $data['transfer'][$currentDate] = $this->calculateSalestaxTransfer($id, $income, $percents);
+
+                    $this->fillFlowsAndData($flows, $data, $id, $currentDate, $currentDateTime, $startDate);
+
+                }
+                break;
+            case BankAccount::ACCOUNT_TYPE_PREREAL:
+                $flows = [];
+                foreach ($period as $date) {
+                    $currentDate = $date->format('Y-m-d');
+                    $currentDateTime = $date->format('Y-m-d').' 00:00:00';
+                    $phaseId = $this->phases[$currentDate];
+                    $percents = $this->percentages[$phaseId];
+                    $income = $this->incomeByPeriod[$currentDate] ?? 0;
+                    $prereal = $this->getPrePrereal($income, $percents);
+                    $percent = $this->percentages[$phaseId][BankAccount::ACCOUNT_TYPE_PREREAL][$id];
+
+                    $data['transfer'][$currentDate] = (is_numeric($percent))
+                        ? round($prereal * ($percents[BankAccount::ACCOUNT_TYPE_PREREAL][$id] / 100), 4)
+                        : 0;
+
+                    $this->fillFlowsAndData($flows, $data, $id, $currentDate, $currentDateTime, $startDate);
+
+                }
+                break;
+
+            case BankAccount::ACCOUNT_TYPE_POSTREAL:
+                $flows = [];
+                foreach ($period as $date) {
+                    $currentDate = $date->format('Y-m-d');
+                    $currentDateTime = $date->format('Y-m-d').' 00:00:00';
+                    $phaseId = $this->phases[$currentDate];
+                    $percents = $this->percentages[$phaseId];
+                    $income = $this->incomeByPeriod[$currentDate] ?? 0;
+                    $prereal = $this->getPrePrereal($income, $percents);
+                    $percent = $this->percentages[$phaseId][BankAccount::ACCOUNT_TYPE_POSTREAL][$data['id']];
+                    $prereal_percents = key_exists(BankAccount::ACCOUNT_TYPE_PREREAL, $percents)
+                        ? array_sum($percents[BankAccount::ACCOUNT_TYPE_PREREAL])
+                        : 0;
+
+                    // Real Revenue = $prereal - $prereal * ($prereal_percents / 100)
+                    $data['transfer'][$currentDate] = (is_numeric($percent))
+                        ? round(
+                            ($prereal - $prereal * ($prereal_percents / 100))
+                            * ($percents[BankAccount::ACCOUNT_TYPE_POSTREAL][$id] / 100),
+                            4
+                        )
+                        : 0;
+
+                    $this->fillFlowsAndData($flows, $data, $id, $currentDate, $currentDateTime, $startDate);
+
+                }
+                break;
+        }
+
+        return $data;
+    }
+
+    /**
+     * @param  int  $businessId
+     * @param  array  $phasesIdArray
+     * @return array
+     */
+    protected function getPercentagesByPhasesId(int $businessId, array $phasesIdArray): array
+    {
+        $percentages = [];
+
+        foreach ($phasesIdArray as $phaseId) {
+            $percentages[$phaseId] = BankAccount::where('business_id', $businessId)
+                ->with('percentages', function ($query) use ($phaseId) {
+                    return $query->where('phase_id', $phaseId);
+                })
+                ->get()
+                ->mapToGroups(function ($item, $key) {
+                    return [
+                        $item->type => [
+                            'id' => $item->id,
+                            'val' => count($item->percentages) ? $item->percentages[0]->percent : null
+                        ]
+                    ];
+                })->map(function ($a_item) {
+                    return array_column(collect($a_item)->toArray(), 'val', 'id');
+                })->toArray();
+        }
+
+        return $percentages;
+    }
+
+    /**
+     * @param  int  $businessId
+     * @param  string  $dateFrom
+     * @param  string  $dateTo
+     * @return array
+     */
+    private function getRawData(int $businessId, string $dateFrom, string $dateTo): array
+    {
+        $raw = BankAccount::where('business_id', $businessId)
+            ->with('flows.allocations', function ($query) use ($dateFrom, $dateTo) {
+                return $query->where('allocation_date', '>=', $dateFrom)
+                    ->where('allocation_date', '<=', $dateTo);
+            })
+            ->with('allocations', function ($query) use ($dateFrom, $dateTo) {
+                return $query->where('allocation_date', '>=', $dateFrom)
+                    ->where('allocation_date', '<=', $dateTo);
+            })
+            ->get()
+            ->map(function ($item) {
+                $flows = [];
+                foreach ($item->flows as $flow) {
+                    $flows += [
+                        $flow->id => $flow->allocations->pluck('amount', 'allocation_date')->toArray()
+                            + ['negative' => (bool) $flow->negative_flow]
+                            + ['name' => $flow->label]
+                            + ['certainty' => $flow->certainty]
+                    ];
+                }
+
+                $amounts = $item->allocations->pluck('amount', 'allocation_date')->toArray();
+                $manuals = $item->allocations->pluck('manual_entry', 'allocation_date')->toArray();
+
+                $item->account_values = [
+                    $item->id => array_merge_recursive($amounts, $manuals) + $flows
+                ];
+
+                return $item;
+            })->all();
+
+        $result = [];
+
+        foreach ($raw as $account_item) {
+            foreach ($account_item->account_values as $key => $value) {
+                $result[$key] = $value;
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param  int  $accountId
+     * @param  string  $dateFrom
+     * @return mixed|null
+     */
+    private function getPreviousNonZeroValue(int $accountId, string $dateFrom)
+    {
+        $key = $accountId.'_'.$dateFrom;
+
+        if (!key_exists($key, $this->previousNonZeroValueCache)) {
+            $result = BankAccount::where('id', $accountId)
+                ->with('allocations', function ($query) use ($dateFrom) {
+                    return $query->where('allocation_date', '<', $dateFrom)
+                        ->where('amount', '>', 0)
+                        ->orderBy('allocation_date', 'desc');
+                })
+                ->get()//;
+                ->map(function ($item) {
+                    return $item->allocations->slice(0, 1)->pluck(['amount']);
+                })->pop()->toArray();
+
+            $this->previousNonZeroValueCache[$key] = (count($result) > 0) ? $result[0] : null;
+        }
+
+        return $this->previousNonZeroValueCache[$key];
+    }
+
+    /**
+     * @param  string  $type
+     * @param  int  $accountId
+     * @param  float  $amount
+     * @param  string  $date
+     * @param  bool  $manualEntry
+     */
+    private function store(string $type, int $accountId, float $amount, string $date, bool $manualEntry = false)
+    {
+        $phaseId = $this->phases[$date];
+
+        if ($type == 'flow') {
+            $account = $this->getFlowAccount($accountId);
+        } else {
+            $account = $this->getBankAccount($accountId);
+        }
+
+        $account->allocate($amount, $date, $phaseId, $manualEntry, false);
+    }
+
+    /**
+     * @param  int  $accountId
+     * @return AccountFlow|AccountFlow[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Model|mixed|null
+     */
+    private function getFlowAccount(int $accountId)
+    {
+        if (!array_key_exists($accountId, $this->accountFlowCache)) {
+            $this->accountFlowCache[$accountId] = AccountFlow::find($accountId);
+        }
+
+        return $this->accountFlowCache[$accountId];
+    }
+
+    /**
+     * @param  int  $accountId
+     * @return BankAccount|BankAccount[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Model|mixed|null
+     */
+    private function getBankAccount(int $accountId)
+    {
+        if (!array_key_exists($accountId, $this->bankAccountCache)) {
+            $this->bankAccountCache[$accountId] = BankAccount::find($accountId);
+        }
+
+        return $this->bankAccountCache[$accountId];
+    }
+
+    /**
+     * @param  int  $id
+     * @param  float  $income
+     * @param  array  $percents
+     * @return float|int
+     */
+    private function calculateSalestaxTransfer(int $id, float $income, array $percents)
+    {
+        $transfer_amount = 0;
+
+        if ($income > 0) {
+            $transfer_amount = round(
+                $income - $income / ($percents[BankAccount::ACCOUNT_TYPE_SALESTAX][$id] / 100 + 1),
+                4);
+        }
+
+        return $transfer_amount;
+    }
+
+    /**
+     * @param  array  $data
+     * @param  string  $date
+     * @return bool
+     */
+    private function hasManualEntry(array $data, string $date): bool
+    {
+        return isset($data['manual'][$date]);
+    }
+
+    /**
+     * @param  float  $income
+     * @param  array  $percents
+     * @return float|int
+     */
+    private function getPrePrereal(float $income, array $percents)
+    {
+        $salestax = data_get($percents, 'salestax');
+        $salestax = count($salestax) > 0 ? $salestax[key($salestax)] : null;
+        $nsp = ($income > 0 && is_numeric($salestax)) ? $income / ($salestax / 100 + 1) : 0;
+
+        $pretotal = data_get($percents, 'pretotal');
+        $pretotal = isset($pretotal) && count($pretotal) > 0 ? $pretotal[key($pretotal)] : null;
+        $pretotal_amt = (is_numeric($pretotal))
+            ? round($nsp * ($pretotal / 100), 4)
+            : 0;
+
+        return $nsp - $pretotal_amt;
+    }
+
+    /**
+     * @param  array|null  $flows
+     * @param  array  $data
+     * @param  int  $id
+     * @param  string  $currentDate
+     * @param  string  $currentDateTime
+     * @param  string  $startDate
+     */
+    private function fillFlowsAndData(
+        ?array &$flows,
+        array &$data,
+        int $id,
+        string $currentDate,
+        string $currentDateTime,
+        string $startDate
+    ) {
+        $key = null;
+
+        $data['_dates'][$currentDate]
+            = array_key_exists($currentDateTime, $this->rawData[$id])
+            ? $this->rawData[$id][$currentDateTime]
+            : 0;
+
+        $flow_total = 0;
+
+        //key as date string 'YYY-MM-DD 00:00:00'
+        foreach ($this->rawData[$id] as $key => $value) {
+            if (is_integer($key)) {
+                $flows[$id][$key][$currentDate]
+                    = array_key_exists($currentDateTime, $value)
+                    ? $value[$currentDateTime]
+                    : 0;
+                $flow_total += ($value['negative'] ? -1 : 1)
+                    * ($flows[$id][$key][$currentDate] * $value['certainty'] / 100);
+            } elseif ($key == $currentDateTime) {
+
+                $data['manual'][$currentDate] = $value[1];
+            }
+        }
+
+        $data['total'][$currentDate] = $flow_total;
+
+        if (
+            array_key_exists($id, $flows)
+            && array_key_exists($key, $flows[$id])
+            && count($flows[$id][$key]) == $this->complete
+        ) {
+            foreach ($flows[$id] as $flowid => $flowDates) {
+                $data['flows'][$flowid]['_dates'] = $flowDates;
+            }
+        }
+
+        $actualValue = $flow_total + $data['transfer'][$currentDate];
+
+        $previousDate = Carbon::parse($currentDate)->subDays(1)->format('Y-m-d');
+
+        if (array_key_exists($previousDate, $data['_dates'])) {
+            $actualValue += is_array($data['_dates'][$previousDate])
+                ? $data['_dates'][$previousDate][0]
+                : $data['_dates'][$previousDate];
+        } else {
+            $previousNonZero = $this->getPreviousNonZeroValue($id, $startDate);
+            if (is_numeric($previousNonZero)) {
+                $actualValue += $previousNonZero;
+            }
+        }
+
+        $stored_value = is_array($data['_dates'][$currentDate])
+            ? $data['_dates'][$currentDate][0]
+            : $data['_dates'][$currentDate];
+
+        if ($stored_value != $actualValue &&
+            !$this->hasManualEntry($data, $currentDate)
+        ) {
+            $data['_dates'][$currentDate] = $actualValue;
+            $this->store('account', $id, $actualValue, $currentDate);
+        } else {
+            $data['_dates'][$currentDate] = $stored_value;
+        }
+    }
+
+    protected function getRangeArray(): array
+    {
+        return [
+            7 => 'Weekly',
+            14 => 'Fortnightly',
+            31 => 'Monthly'
+        ];
+    }
+}
