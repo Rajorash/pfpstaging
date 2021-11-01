@@ -20,7 +20,7 @@
                 </div>
                 <div class="table-cell w-3/4 pb-4">
                     <x-jet-input id="certainty" class="w-full" type="number"
-                                 min="5" max="100" step="5"
+                                 min="5" max="500" step="5"
                                  name="certainty"
                                  wire:model.defer="certainty"
                                  wire:loading.attr="disabled"
