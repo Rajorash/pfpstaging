@@ -44,7 +44,11 @@
                            autocomplete="off"
                            wire:model.defer="negative_flow"
                            wire:loading.attr="disabled"
-                           value="1"/>
+                           value="1"
+                           @if(request()->routeIs('allocations-calendar'))
+                           checked
+                           @endif
+                           />
                     <x-jet-input-error for="negative_flow" class="mt-2"/>
                     <label for="flow-out">{{__('Negative')}}</label>
                 </div>
