@@ -226,15 +226,15 @@ class AllocationsCalendar extends Controller
                             foreach ($account_item as $key => $value) {
                                 if (is_integer($key)) {
                                     $flows[$id][$key]['name'] = $value['name'];
-                                    $flows[$id][$key]['certainty'] = $value['certainty'];
+                                    $certainty = $flows[$id][$key]['certainty'] = $value['certainty'];
                                     $flows[$id][$key]['negative'] = $value['negative'];
-                                    $flows[$id][$key][$date_ymd]
+                                    $flow_value = $flows[$id][$key][$date_ymd]
                                         = array_key_exists($date->format('Y-m-d 00:00:00'), $value)
                                         ? $value[$date->format('Y-m-d 00:00:00')]
                                         : 0;
                                     $flow_total = $value['negative']
-                                        ? $flow_total - $flows[$id][$key][$date_ymd]
-                                        : $flow_total + $flows[$id][$key][$date_ymd];
+                                        ? $flow_total - ($flow_value * ($certainty / 100))
+                                        : $flow_total + ($flow_value * ($certainty / 100));
                                 } elseif ($key == $date->format('Y-m-d 00:00:00')) {
                                     $response[BankAccount::ACCOUNT_TYPE_SALESTAX][$id]['manual'][$date_ymd] = $value[1];
                                 }
@@ -289,15 +289,15 @@ class AllocationsCalendar extends Controller
                             foreach ($account_item as $key => $value) {
                                 if (is_integer($key)) {
                                     $flows[$id][$key]['name'] = $value['name'];
-                                    $flows[$id][$key]['certainty'] = $value['certainty'];
+                                    $certainty = $flows[$id][$key]['certainty'] = $value['certainty'];
                                     $flows[$id][$key]['negative'] = $value['negative'];
-                                    $flows[$id][$key][$date_ymd]
+                                    $flow_value = $flows[$id][$key][$date_ymd]
                                         = array_key_exists($date->format('Y-m-d 00:00:00'), $value)
                                         ? $value[$date->format('Y-m-d 00:00:00')]
                                         : 0;
                                     $flow_total = $value['negative']
-                                        ? $flow_total - $flows[$id][$key][$date_ymd]
-                                        : $flow_total + $flows[$id][$key][$date_ymd];
+                                        ? $flow_total - ($flow_value * ($certainty / 100))
+                                        : $flow_total + ($flow_value * ($certainty / 100));
                                 } elseif ($key == $date->format('Y-m-d 00:00:00')) {
                                     $response[BankAccount::ACCOUNT_TYPE_PRETOTAL][$id]['manual'][$date_ymd] = $value[1];
                                 }
@@ -345,15 +345,15 @@ class AllocationsCalendar extends Controller
                             foreach ($account_item as $key => $value) {
                                 if (is_integer($key)) {
                                     $flows[$id][$key]['name'] = $value['name'];
-                                    $flows[$id][$key]['certainty'] = $value['certainty'];
+                                    $certainty = $flows[$id][$key]['certainty'] = $value['certainty'];
                                     $flows[$id][$key]['negative'] = $value['negative'];
-                                    $flows[$id][$key][$date_ymd]
+                                    $flow_value = $flows[$id][$key][$date_ymd]
                                         = array_key_exists($date->format('Y-m-d 00:00:00'), $value)
                                         ? $value[$date->format('Y-m-d 00:00:00')]
                                         : 0;
                                     $flow_total = $value['negative']
-                                        ? $flow_total - $flows[$id][$key][$date_ymd]
-                                        : $flow_total + $flows[$id][$key][$date_ymd];
+                                        ? $flow_total - ($flow_value * ($certainty / 100))
+                                        : $flow_total + ($flow_value * ($certainty / 100));
                                 } elseif ($key == $date->format('Y-m-d 00:00:00')) {
                                     $response[BankAccount::ACCOUNT_TYPE_PREREAL][$id]['manual'][$date_ymd] = $value[1];
                                 }
@@ -411,15 +411,15 @@ class AllocationsCalendar extends Controller
                             foreach ($account_item as $key => $value) {
                                 if (is_integer($key)) {
                                     $flows[$id][$key]['name'] = $value['name'];
-                                    $flows[$id][$key]['certainty'] = $value['certainty'];
+                                    $certainty = $flows[$id][$key]['certainty'] = $value['certainty'];
                                     $flows[$id][$key]['negative'] = $value['negative'];
-                                    $flows[$id][$key][$date_ymd]
+                                    $flow_value = $flows[$id][$key][$date_ymd]
                                         = array_key_exists($date->format('Y-m-d 00:00:00'), $value)
                                         ? $value[$date->format('Y-m-d 00:00:00')]
                                         : 0;
                                     $flow_total = $value['negative']
-                                        ? $flow_total - $flows[$id][$key][$date_ymd]
-                                        : $flow_total + $flows[$id][$key][$date_ymd];
+                                        ? $flow_total - ($flow_value * ($certainty / 100))
+                                        : $flow_total + ($flow_value * ($certainty / 100));
                                 } elseif ($key == $date->format('Y-m-d 00:00:00')) {
                                     $response[BankAccount::ACCOUNT_TYPE_POSTREAL][$id]['manual'][$date_ymd] = $value[1];
                                 }

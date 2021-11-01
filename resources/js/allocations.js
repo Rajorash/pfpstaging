@@ -31,18 +31,21 @@ var calculateAccountTotal = function (e) {
 
     flows.each( function () {
         let value = parseInt($(this).val());
+        let certainty = parseInt($(this).data('certainty'))
         if(!value)
         {
             value = 0;
         }
 
+        let adjustedValue = value * (certainty / 100);
+        alert("AdjV:" + adjustedValue);
         if ($(this).data('direction') == 'negative')
         {
-            total = total - value;
+            total = total - adjustedValue;
         }
         else
         {
-            total = total + value;
+            total = total + adjustedValue;
         }
     });
 
