@@ -45,3 +45,14 @@ html {
 .busnav-btn {
     @apply bg-white block rounded box-border p-3 flex h-12 hover:bg-dark_gray2 hover:text-white transition-all;
 }
+
+// for projection view hide rows that are not account totals, also hide revenue totals
+.projection-mode {
+    tr {
+        &.bg-readonly,
+        &.bg-data-entry,
+        &.revenue-row {
+            @apply hidden;
+        }
+    }
+}
