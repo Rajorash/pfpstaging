@@ -8,7 +8,7 @@
         @if ($projectionMode)
         {{__('Projection Forecast')}}
         @else
-        {{__('Allocations NEW')}}
+        {{__('Expense Entry')}}
         @endif
     </x-slot>
 
