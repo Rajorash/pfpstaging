@@ -37,7 +37,7 @@ export class calculatorCore {
         this.heightMode = this.heightModeDefault;
 
         this.copyMoveClassName = 'pfp_copy_move_element';
-        this.copyMoveCtrlKeyEnabled = false;
+        this.copyMoveAltKeyEnabled = false; //if ALt key is pressed
 
         this.windowCoordinates = {};
 
@@ -88,7 +88,7 @@ export class calculatorCore {
             if ($targetElement.hasClass($this.copyMoveClassName)) {
 
                 let value = parseFloat($sourceElement.val());
-                if ($this.copyMoveCtrlKeyEnabled) {
+                if (!$this.copyMoveAltKeyEnabled) {
                     //add
                     value += parseFloat($targetElement.val());
                 } else {
@@ -99,15 +99,16 @@ export class calculatorCore {
             }
         });
 
-        //check and save state of Control key
+        //check and save state of Alt key
         $(window).on("keydown", function (event) {
-            if (event.which === 17) {
-                $this.copyMoveCtrlKeyEnabled = true;
-                $('.' + $this.copyMoveClassName).addClass('cursor-copy bg-yellow-300').removeClass('cursor-move');
+            console.log(event.which);
+            if (event.which === 18) {
+                $this.copyMoveAltKeyEnabled = true;
+                $('.' + $this.copyMoveClassName).removeClass('cursor-copy').addClass('cursor-move bg-yellow-300');
             }
         }).on("keyup", function (event) {
-            $this.copyMoveCtrlKeyEnabled = false;
-            $('.' + $this.copyMoveClassName).removeClass('cursor-copy bg-yellow-300').addClass('cursor-move');
+            $this.copyMoveAltKeyEnabled = false;
+            $('.' + $this.copyMoveClassName).addClass('cursor-copy').removeClass('cursor-move bg-yellow-300');
         });
 
         $(document).keyup(function (event) {
@@ -288,7 +289,7 @@ export class calculatorCore {
                 $this.resetData();
                 $this.scrollToLatestPoint();
                 //only for Allocations table
-                $this.forecastAutoFillValues();
+                // $this.forecastAutoFillValues();
             }
         });
     }
@@ -463,9 +464,9 @@ export class calculatorCore {
         }
     }
 
-    forecastAutoFillValues() {
-
-    }
+    // forecastAutoFillValues() {
+    //
+    // }
 
     renderButtonForManualSubmit() {
         return '<a href="#" id="manualSubmitData" class="bg-white hover:bg-gray-100 font-bold p-2 rounded text-red-700">Submit data</a>';

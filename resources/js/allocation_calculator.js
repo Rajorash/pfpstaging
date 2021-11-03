@@ -40,15 +40,15 @@ $(function () {
                 $this.progressBar();
             });
 
-            $(document).on('dblclick', '.pfp_forecast_value', function () {
-                if ($('#' + $this.allowForecastDoubleClickId).is(':checked') && !$(this).hasClass('pfp_forecast_already_added')) {
-                    let targetSelector = $this.getTargetSelectorForForecast($(this).data('for_row'), $(this).data('for_column'));
-                    $(targetSelector).val(parseFloat($(targetSelector).val()) + parseFloat($(this).val()))
-                        .select(false)
-                        .change();
-                    $(this).addClass('pfp_forecast_already_added');
-                }
-            });
+            // $(document).on('dblclick', '.pfp_forecast_value', function () {
+            //     if ($('#' + $this.allowForecastDoubleClickId).is(':checked') && !$(this).hasClass('pfp_forecast_already_added')) {
+            //         let targetSelector = $this.getTargetSelectorForForecast($(this).data('for_row'), $(this).data('for_column'));
+            //         $(targetSelector).val(parseFloat($(targetSelector).val()) + parseFloat($(this).val()))
+            //             .select(false)
+            //             .change();
+            //         $(this).addClass('pfp_forecast_already_added');
+            //     }
+            // });
 
             Livewire.on('reloadRevenueTable', function () {
                 $this.firstLoadData();
@@ -142,25 +142,25 @@ $(function () {
             $.cookie('allocation_heightMode', $this.heightMode, {expires: 14});
         }
 
-        getTargetSelectorForForecast(row, col) {
-            return '[data-row="' + row + '"][data-column="' + col + '"]';
-        }
+        // getTargetSelectorForForecast(row, col) {
+        //     return '[data-row="' + row + '"][data-column="' + col + '"]';
+        // }
 
-        forecastAutoFillValues() {
-            let $this = this;
-
-            $('.pfp_forecast_value').each(function (i, element) {
-                let targetSelector = $this.getTargetSelectorForForecast($(element).data('for_row'), $(element).data('for_column'));
-                if (parseFloat($(targetSelector).val()) === 0 || $(targetSelector).hasClass('pfp_allow_to_forecast_autofill')) {
-                    $(targetSelector).val(parseFloat($(targetSelector).val()) + parseFloat($(element).val())).select(false)
-                        .addClass('pfp_allow_to_forecast_autofill')
-                        .change();
-                    $(element).addClass('pfp_forecast_already_added');
-                }
-            });
-
-            $('.pfp_allow_to_forecast_autofill').removeClass('pfp_allow_to_forecast_autofill');
-        }
+        // forecastAutoFillValues() {
+        //     let $this = this;
+        //
+        //     $('.pfp_forecast_value').each(function (i, element) {
+        //         let targetSelector = $this.getTargetSelectorForForecast($(element).data('for_row'), $(element).data('for_column'));
+        //         if (parseFloat($(targetSelector).val()) === 0 || $(targetSelector).hasClass('pfp_allow_to_forecast_autofill')) {
+        //             $(targetSelector).val(parseFloat($(targetSelector).val()) + parseFloat($(element).val())).select(false)
+        //                 .addClass('pfp_allow_to_forecast_autofill')
+        //                 .change();
+        //             $(element).addClass('pfp_forecast_already_added');
+        //         }
+        //     });
+        //
+        //     $('.pfp_allow_to_forecast_autofill').removeClass('pfp_allow_to_forecast_autofill');
+        // }
     }
 
     if ($('#allocationTablePlace').length) {

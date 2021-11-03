@@ -17,7 +17,7 @@
     @endif --}}
 
     @if($heightController)
-        <div class="flex mr-4 flex-nowrap">
+        <div class="flex flex-nowrap">
             <input type="radio" value="full" id="height_full" name="block_different_height"
                    class="hidden radio_as_switcher"/>
             <label for="height_full" class="text-right whitespace-nowrap h-9"
@@ -31,7 +31,7 @@
 
 
     @if($autoSubmit)
-        <div class="flex items-center ml-3"
+        <div class="flex items-center ml-4"
              title="{{__('The amount of seconds that will pass before the form will automatically recalculate after updating values')}}">
             <input type="number" min="1" max="30" id="delay_submit_data"
                    class="w-16 mx-3 my-0 text-center text-right rounded h-9 form-input">

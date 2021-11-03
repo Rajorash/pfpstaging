@@ -29,18 +29,19 @@
             @foreach ($tableData[\App\Models\BankAccount::ACCOUNT_TYPE_REVENUE] as $accountId => $accountData)
                 <tr class="divide-x border-light_blue bg-atlantis-200">
                     <x-ui.table-td padding="p-1 pl-4"
-                                   baseClass="text-dark_gray sticky left-0 z-10">
+                                   baseClass="text-dark_gray sticky left-0 z-10 bg-atlantis-200">
                         {{$accountData['name']}}
                     </x-ui.table-td>
 
                     @foreach($period as $date)
                         @php
                             $currentDate = $date->format('Y-m-d');
-                            $value = $accountData['total'][$currentDate] ?? 0;
+                            $value = $accountData['total_db'][$currentDate] ?? 0;
                         @endphp
                         <x-ui.table-td class="text-right" padding="p-0" attr="disabled">
                             <input
-                                class="w-full px-2 py-1 text-right border-none bg-atlantis-200"
+                                class="w-full px-2 py-1 text-right border-none bg-atlantis-200
+                                @if ($value < 0) allocation-negative-value @endif "
                                 type="text" pattern="[0-9]{10}"
                                 value="{{ number_format($value, 0, '.', '')}}"
                                 disabled/>
