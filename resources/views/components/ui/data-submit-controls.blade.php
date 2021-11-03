@@ -4,17 +4,17 @@
 'forecastController' => false,
 'autoSubmit' => true
 ])
-<div class="{{$width}} mx-auto py-2 text-sm flex justify-end items-center">
+<div class="{{$width}} ml-auto py-2 text-sm flex justify-end items-center">
 
-    @if($forecastController)
+    {{-- @if($forecastController)
         <div title="{{__('Enabling this allows a user to manually add forecast values by double clicking them.')}}"
              class="flex items-center mr-4 flex-nowrap">
-            <input type="checkbox" id="allow_forecast_double_click" class="pr-2 py-2 mx-3 my-3 rounded form-input"/>
+            <input type="checkbox" id="allow_forecast_double_click" class="py-2 pr-2 mx-3 my-3 rounded form-input"/>
             <label for="allow_forecast_double_click">{{__('Enable manual quick add')}}
                 <x-icons.question/>
             </label>
         </div>
-    @endif
+    @endif --}}
 
     @if($heightController)
         <div class="flex mr-4 flex-nowrap">
@@ -31,19 +31,21 @@
 
 
     @if($autoSubmit)
-        <div class="flex items-center"
+        <div class="flex items-center ml-3"
              title="{{__('The amount of seconds that will pass before the form will automatically recalculate after updating values')}}">
             <input type="number" min="1" max="30" id="delay_submit_data"
-                   class="w-16 h-9 my-0 ml-3 mr-0 text-center rounded form-input text-right">
-            <label class="ml-3" for="delay_submit_data">{{__('Auto submit delay (sec)')}}
+                   class="w-16 mx-3 my-0 text-center text-right rounded h-9 form-input">
+            <label class="inline-flex space-x-4" for="delay_submit_data">
+                <span>{{__('Auto submit delay (sec)')}}</span>
                 <x-icons.question/>
             </label>
         </div>
 
         <div title="{{__('Enabling auto-submit data. If not - use Enter for submit')}}"
-             class="flex items-center mr-4 flex-nowrap">
-            <input type="checkbox" id="allow_auto_submit_data" class="pr-2 py-2 mx-3 my-3 rounded form-input"/>
-            <label for="allow_auto_submit_data">{{__('Auto-submit')}}
+             class="flex items-center ml-3">
+            <input type="checkbox" id="allow_auto_submit_data" class="py-2 mx-3 my-3 rounded form-input"/>
+            <label class="inline-flex space-x-4" for="allow_auto_submit_data">
+                <span>{{__('Auto-submit')}}</span>
                 <x-icons.question/>
             </label>
         </div>
