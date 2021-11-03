@@ -171,15 +171,24 @@ $(function () {
             switch ($('#show_rows_level').val()) {
                 case '1':
                     $('.level_2, .level_3').hide();
+                    $('label[for="show_rows_level"] span').text('Accounts');
                     break;
                 case '2':
                     $('.level_2').show();
                     $('.level_3').hide();
+                    $('label[for="show_rows_level"] span').text('Accounts with details');
                     break;
                 case '3':
                     $('.level_2, .level_3').show();
+                    $('label[for="show_rows_level"] span').text('All records');
                     break;
             }
+        }
+
+        firstLoadData() {
+            super.firstLoadData();
+
+            this.changeDeepLevel();
         }
     }
 

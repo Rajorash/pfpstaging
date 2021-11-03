@@ -58,7 +58,7 @@
             class="flex items-center ml-3">
             <input type="range" id="show_rows_level" list="step_levels"
                    class="py-2 mx-3 my-3 rounded form-input" min="1" max="3" value="3"/>
-            <label class="inline-flex space-x-4" for="show_rows_level">
+            <label class="inline-flex space-x-4 w-48 justify-between" for="show_rows_level">
                 <span>{{__('Detailed view')}}</span>
                 <x-icons.question/>
             </label>
