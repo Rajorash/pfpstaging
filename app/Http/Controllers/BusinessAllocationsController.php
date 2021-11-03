@@ -46,7 +46,8 @@ class BusinessAllocationsController extends Controller
             'startDate' => $startDate,
             'minDate' => Carbon::parse($minDate)->subMonths(3)->format('Y-m-d'),
             'maxDate' => Carbon::parse($maxDate)->subDays(31)->format('Y-m-d'),
-            'currentRangeValue' => session()->get('rangeValue_'.$this->business->id, $this->defaultCurrentRangeValue)
+            'currentRangeValue' => session()->get('rangeValue_'.$this->business->id, $this->defaultCurrentRangeValue),
+            'projectionMode' => $request->routeIs('projection-view'),
         ]);
     }
 

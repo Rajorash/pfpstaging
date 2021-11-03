@@ -5,7 +5,11 @@
 
         {{$business->name}}
         <x-icons.chevron-right :class="'h-4 w-auto inline-block px-2'"/>
+        @if ($projectionMode)
+        {{__('Projection Forecast')}}
+        @else
         {{__('Allocations NEW')}}
+        @endif
     </x-slot>
 
     <x-slot name="subMenu">
@@ -34,7 +38,7 @@
             </div>
 
             <x-ui.data-submit-controls class="items-center p-2"
-                                       :heightController="true" :autoSubmit="false" :hideRows="true"/>
+                                       :heightController="true" :autoSubmit="false" :projectionMode="$projectionMode"/>
 
         </div>
     </x-slot>
@@ -50,7 +54,11 @@
     <x-ui.main width="w-full">
 
         <div id="allocationsNewTablePlace"
-             class="relative overflow-scroll global_nice_scroll block_different_height return_coordinates_table">
+             class="relative overflow-scroll global_nice_scroll block_different_height return_coordinates_table
+             @if ($projectionMode)
+             projection-mode
+             @endif
+             ">
             <div class="p-8 text-center opacity-50">...loading</div>
         </div>
 

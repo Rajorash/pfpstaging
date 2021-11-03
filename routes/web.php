@@ -115,7 +115,7 @@ Route::group(['middleware' => 'auth'], function () {
     //ajax calls
     Route::get(
         '/business/{business}/projection-view',
-        [AllocationsCalendar::class, 'calendar']
+        [BusinessAllocationsController::class, 'index']
     )->name('projection-view');
 
 
