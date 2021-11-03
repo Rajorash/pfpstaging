@@ -20,7 +20,7 @@
                 </div>
                 <div class="table-cell w-3/4 pb-4">
                     <x-jet-input id="certainty" class="w-full" type="number"
-                                 min="5" max="100" step="5"
+                                 min="5" max="500" step="5"
                                  name="certainty"
                                  wire:model.defer="certainty"
                                  wire:loading.attr="disabled"
@@ -44,7 +44,11 @@
                            autocomplete="off"
                            wire:model.defer="negative_flow"
                            wire:loading.attr="disabled"
-                           value="1"/>
+                           value="1"
+                           @if(request()->routeIs('allocations-calendar'))
+                           checked
+                           @endif
+                           />
                     <x-jet-input-error for="negative_flow" class="mt-2"/>
                     <label for="flow-out">{{__('Negative')}}</label>
                 </div>

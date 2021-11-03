@@ -38,27 +38,27 @@
                                         class="table-cell px-2 pb-1 rounded-tl-lg rounded-bl-lg text-{{$flow->isNegative() ? 'red-500' : 'green' }}">
                                         {{ $flow->label }} ({{ $flow->certainty }}%)
                                     </div>
-{{--                                    @if(auth()->user()->isAdvisor() || auth()->user()->isClient())--}}
-{{--                                        <div class="table-cell w-10 px-2 pb-1">--}}
-{{--                                            <div class="flex">--}}
-{{--                                                @php--}}
-{{--                                                    $recurringTransactionsCount = count($flow->recurringTransactions);--}}
-{{--                                                @endphp--}}
-{{--                                                @if($recurringTransactionsCount)--}}
-{{--                                                    <div class="leading-6"--}}
-{{--                                                         title="{{__('Flow contains').' '.$recurringTransactionsCount--}}
-{{--                                                            .' '.Str::plural('recurring task', $recurringTransactionsCount)}}">--}}
-{{--                                                        {{$recurringTransactionsCount}}</div>--}}
-{{--                                                @endif--}}
-{{--                                                <x-ui.button-small title="Recurring transactions"--}}
-{{--                                                                   class="w-auto h-6 text-green hover:opacity-100 opacity-40"--}}
-{{--                                                                   background="bg-transparent hover:bg-transparent border-transparent border-transparent"--}}
-{{--                                                                   href="{{url('/accounts/'.$acc->id.'/flow/'.$flow->id.'/recurring')}}">--}}
-{{--                                                    <x-icons.recurring class="w-3 h-auto"/>--}}
-{{--                                                </x-ui.button-small>--}}
-{{--                                            </div>--}}
-{{--                                        </div>--}}
-{{--                                    @endif--}}
+                                    {{-- @if(auth()->user()->isAdvisor() || auth()->user()->isClient())
+                                        <div class="table-cell w-10 px-2 pb-1">
+                                            <div class="flex">
+                                                @php
+                                                    $recurringTransactionsCount = count($flow->recurringTransactions);
+                                                @endphp
+                                                @if($recurringTransactionsCount)
+                                                    <div class="leading-6"
+                                                         title="{{__('Flow contains').' '.$recurringTransactionsCount
+                                                            .' '.Str::plural('recurring task', $recurringTransactionsCount)}}">
+                                                        {{$recurringTransactionsCount}}</div>
+                                                @endif
+                                                <x-ui.button-small title="Recurring transactions"
+                                                                   class="w-auto h-6 text-green hover:opacity-100 opacity-40"
+                                                                   background="bg-transparent hover:bg-transparent border-transparent border-transparent"
+                                                                   href="{{url('/accounts/'.$acc->id.'/flow/'.$flow->id.'/recurring')}}">
+                                                    <x-icons.recurring class="w-3 h-auto"/>
+                                                </x-ui.button-small>
+                                            </div>
+                                        </div>
+                                    @endif --}}
                                     <div class="table-cell w-10 px-2 pb-1">
                                         <x-ui.button-small title="Edit"
                                                            class="w-auto h-6 text-light_purple hover:text-purple-700"

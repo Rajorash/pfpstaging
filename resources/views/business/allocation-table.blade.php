@@ -34,7 +34,7 @@
                     @php
                         $rowIndex = 1;
                     @endphp
-                    <tr class="divide-x bg-atlantis-200 border-light_blue">
+                    <tr class="divide-x bg-atlantis-200 border-light_blue revenue-row">
                         <x-ui.table-td padding="p-1 pl-4"
                                        baseClass="text-dark_gray sticky left-0 bg-atlantis-200 z-10">
                             {{$data['name']}} {{__('total')}}

@@ -60,7 +60,7 @@ export class calculatorCore {
         $(document).on('change', '#' + $this.autoSubmitDataDelayId, function (event) {
             $this.autoSubmitDataDelay = $(this).val();
             $this.updateSubmitDataDelay();
-            $this.timeOutSeconds = 1000 * parseInt($this.autoSubmitDataDelay);
+            $this.timeOutSeconds = 1000 * parseFloat($this.autoSubmitDataDelay);
         });
 
         $(document).on('change', '#' + $this.autoSubmitDataAllowId, function (event) {
