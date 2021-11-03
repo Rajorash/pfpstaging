@@ -81,6 +81,14 @@ class BusinessAllocationsController extends Controller
         $endDate = Carbon::parse($startDate)->addDays($rangeValue - 1)->format('Y-m-d');
         $period = CarbonPeriod::create($startDate, $endDate);
         $this->phases = $this->business->getPhasesIdByPeriod($period);
+
+        //update value of cell
+        $cellId = $request->cellId ?? null;
+        $cellValue = $request->cellValue ?? null;
+        if ($cellId && $cellValue !== null) {
+            $this->storeCellValue($cellId, floatVal($cellValue));
+        }
+
         $this->rawData = $this->getRawData($this->business->id, $startDate, $endDate);
         $this->percentages = $this->getPercentagesByPhasesId(
             $this->business->id,
@@ -158,7 +166,11 @@ class BusinessAllocationsController extends Controller
 
             return response()->json($response);
         } else {
-            return response()->json($tableData);
+            return response()->json([
+                    'error' => $response['error'],
+                    'data' => $this->convertTableDataToFlatArrayForJSONUpdate($tableData)
+                ]
+            );
         }
     }
 
@@ -543,7 +555,7 @@ class BusinessAllocationsController extends Controller
             !$this->hasManualEntry($data, $currentDate)
         ) {
             $data['_dates'][$currentDate] = $actualValue;
-            $this->store('account', $id, $actualValue, $currentDate);
+            $this->store('account', $id, round($actualValue, 2), $currentDate);
         } else {
             $data['_dates'][$currentDate] = $stored_value;
         }
@@ -556,5 +568,59 @@ class BusinessAllocationsController extends Controller
             14 => 'Fortnightly',
             31 => 'Monthly'
         ];
+    }
+
+    /**
+     * @param  array  $tableData
+     * @return array
+     */
+    protected function convertTableDataToFlatArrayForJSONUpdate(array $tableData): array
+    {
+        $newTableData = [];
+
+        foreach ($tableData as $accountsArray) {
+            foreach ($accountsArray as $accountId => $accountData) {
+                foreach ($this->accountsSubTypes as $subType => $subTypeArray) {
+                    if (array_key_exists($subType, $accountData)) {
+                        foreach ($accountData[$subType] as $currentDate => $value) {
+                            $key = ($subType == '_dates')
+                                ? 'account_'.$accountId.'_'.$currentDate
+                                : $subType.'_'.$accountId.'_'.$currentDate;
+                            $newTableData[$key] = number_format($value, 0, '.', '');
+                        }
+                    }
+                }
+                if (array_key_exists('flows', $accountData)) {
+                    foreach ($accountData['flows'] as $flowId => $flowData) {
+                        if (array_key_exists('_dates', $flowData)) {
+                            foreach ($flowData['_dates'] as $currentDate => $value) {
+                                $key = 'flow_'.$flowId.'_'.$currentDate;
+                                $newTableData[$key] = number_format($value, 0, '.', '');
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return $newTableData;
+    }
+
+    /**
+     * @param  string  $cellId
+     * @param  float  $amount
+     */
+    protected function storeCellValue(string $cellId, float $amount): void
+    {
+        $matches = [];
+        preg_match('/(\w+)_(\d+)_(\d{4}-\d{2}-\d{2})/', $cellId, $matches);
+        $type = $matches[1];
+        $accountId = intval($matches[2]);
+        $date = $matches[3];
+
+        //allowed only for flows
+        if ($type) {
+            $this->store($type, $accountId, $amount, $date, ($type == 'account'));
+        }
     }
 }

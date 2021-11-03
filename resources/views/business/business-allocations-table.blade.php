@@ -66,7 +66,7 @@
                                         <div class="inline-flex">
                                             {{$accountData['name']}}
                                         </div>
-                                        <a onclick="Livewire.emit('openModal', 'modal-flow',  {{ json_encode(['accountId' => $accountId]) }})"
+                                        <a onclick="Livewire.emit('openModal', 'modal-flow',  {{ json_encode(['accountId' => $accountId, 'flowId' => 0, 'defaultNegative' => true]) }})"
                                            title="Create new flow for {{$accountData['name']}}"
                                            class="ml-2 cursor-pointer">
                                             <x-icons.add-border class="inline-flex h-4"/>
@@ -93,15 +93,18 @@
                                                 bg-yellow-300 hover:bg-yellow-300 focus:bg-yellow-300
 @if(!$checkLicense) focus:bg-gray-100 @else hover:bg-yellow-50 focus:bg-yellow-50 @endif
                                             @endif
+                                                @if ($value < 0) allocation-negative-value @endif
                                                 "
                                             @if ($manual)
                                             title="Balance overridden"
                                             @endif
-                                            {{--                                                id="account_{{$accountId}}_{{$currentDate}}"--}}
+                                            @if($subType == '_dates')
+                                            id="account_{{$accountId}}_{{$currentDate}}"
+                                            @else
+                                            id="{{$subType}}_{{$accountId}}_{{$currentDate}}"
+                                            @endif
                                             type="text" pattern="[0-9]{10}"
                                             value="{{ number_format($value, 0, '.', '')}}"
-                                            {{--                                        data-row="{{$rowIndex}}"--}}
-                                            {{--                                        data-column="{{$columnIndex}}"--}}
                                             disabled/>
                                     </x-ui.table-td>
                                 @endforeach
@@ -155,7 +158,9 @@
                                                 focus:outline-none focus:ring-1 focus:shadow-none disabled:opacity-90
                                                 @if(!$checkLicense) focus:bg-gray-100
                                                 @else pfp_copy_move_element hover:bg-yellow-50 focus:bg-yellow-50
-                                                @endif "
+                                                @endif
+                                                @if ($value < 0) allocation-negative-value @endif
+                                            "
                                                @if($checkLicense) draggable="true" @endif
 
                                                id="flow_{{$flowId}}_{{$currentDate}}"

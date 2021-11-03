@@ -8,11 +8,15 @@ $(function () {
     });
 
     class AllocationCalculatorNew extends calculatorCore {
+        allocationsNewControllerUpdate;
+
         constructor() {
             super();
 
             this.ajaxUrl = window.allocationsNewControllerUpdate;
             this.elementTablePlace = $('#allocationsNewTablePlace');
+
+            this.updateData = {};
 
             // this.autoSubmitDataDelay = $.cookie('allocation_autoSubmitDataDelay') !== undefined
             //     ? parseInt($.cookie('allocation_autoSubmitDataDelay'))
@@ -56,6 +60,81 @@ $(function () {
             Livewire.on('reloadRevenueTable', function () {
                 $this.firstLoadData();
             })
+
+            $(document).on('change', '#allocationsNewTablePlace input', function (event) {
+                $this.updateValue(event);
+            });
+        }
+
+        updateValue(event) {
+            let $this = this;
+
+            $this.updateData.businessId = $('#businessId').val();
+            $this.updateData.startDate = $('#startDate').val();
+            $this.updateData.rangeValue = $('#currentRangeValue').val();
+            $this.updateData.cellId = event.target.id;
+            $this.updateData.cellValue = parseFloat($('#' + event.target.id).val());
+            $this.updateData.returnType = 'json';
+
+            if ($this.debug) {
+                console.log($this.updateData);
+            }
+
+            $.ajax({
+                type: 'POST',
+                url: $this.ajaxUrl,
+                data: $this.updateData,
+                async: true,
+                beforeSend: function () {
+                    // $this.hideTableDuringRender();
+                    // $this.showSpinner();
+                    $('.allocation-highlight').removeClass('allocation-highlight');
+                },
+                success: function (data) {
+                    if ($this.debug) {
+                        console.log('loadData', data);
+                    }
+                    $this.renderUpdatedData(data);
+                    // $this.renderData(data);
+                    // $this.readLastIndexes();
+                },
+                complete: function () {
+                    $this.updateData = {};
+
+                    // $this.hideSpinner();
+                    // $this.resetData();
+                    // $this.scrollToLatestPoint();
+                    //only for Allocations table
+                    // $this.forecastAutoFillValues();
+                }
+            });
+        }
+
+        renderUpdatedData(data) {
+            let $this = this;
+
+            if ($this.debug) {
+                console.log('renderData');
+            }
+
+            if (data.error.length === 0) {
+                $.each(data['data'], function (cellId, value) {
+                    let $elements = $('#' + cellId);
+                    console.log($elements.val(), value, $elements.val() !== value);
+                    if ($elements.val() !== value) {
+                        $elements.val(value)
+                            .removeClass('allocation-negative-value')
+                            .addClass((value < 0 ? 'allocation-negative-value' : ''))
+                            .addClass('allocation-highlight');
+                    }
+                });
+            } else {
+                $this.elementTablePlace.html('<p class="p-8 text-red-700 text-bold">' + data.error.join('<br/>') + '</p>');
+            }
+        }
+
+        manualSubmitData(event) {
+
         }
 
         collectData(event) {
@@ -75,21 +154,21 @@ $(function () {
                     left: $(window).scrollLeft()
                 }
 
-                if (event.target.id !== 'currentRangeValue'
-                    && event.target.id !== 'startDate') {
-                    $this.data.cells.push({
-                        cellId: event.target.id,
-                        cellValue: $('#' + event.target.id).val()
-                    });
-                }
+                // if (event.target.id !== 'currentRangeValue'
+                //     && event.target.id !== 'startDate') {
+                //     $this.data.cells.push({
+                //         cellId: event.target.id,
+                //         cellValue: $('#' + event.target.id).val()
+                //     });
+                // }
             }
 
-            if ($this.changesCounter) {
-                $('#' + $this.changesCounterId).html('...changes ready for calculation: <b>' + $this.changesCounter + '</b>'
-                    + '<br/>' + $this.renderButtonForManualSubmit()).show();
-            } else {
-                $('#' + $this.changesCounterId).html('').hide();
-            }
+            // if ($this.changesCounter) {
+            //     $('#' + $this.changesCounterId).html('...changes ready for calculation: <b>' + $this.changesCounter + '</b>'
+            //         + '<br/>' + $this.renderButtonForManualSubmit()).show();
+            // } else {
+            //     $('#' + $this.changesCounterId).html('').hide();
+            // }
 
             if ($this.debug) {
                 console.log('collectData', $this.data);
