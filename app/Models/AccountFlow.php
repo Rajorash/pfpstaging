@@ -30,7 +30,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|AccountFlow whereUpdatedAt($value)
  * @mixin \Eloquent
  * @property int $certainty
- * @method static \Illuminate\Database\Eloquent\Builder|AccountFlow whereCertainly($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AccountFlow whereCertainty($value)
  */
 class AccountFlow extends Model
 {

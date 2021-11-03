@@ -5,6 +5,7 @@ use App\Http\Controllers\AllocationsCalendar;
 use App\Http\Controllers\AllocationsController;
 use App\Http\Controllers\BankAccountController;
 use App\Http\Controllers\BankAccountEntryController;
+use App\Http\Controllers\BusinessAllocationsController;
 use App\Http\Controllers\BusinessController;
 use App\Http\Controllers\LicenseController;
 use App\Http\Controllers\PipelineController;
@@ -289,6 +290,16 @@ Route::group(['middleware' => 'auth'], function () {
         '/business/revenue-entry/ajax/save',
         [\App\Http\Controllers\RevenueController::class, 'saveData']
     )->name('revenue-entry.saveData');
+
+    Route::get(
+        '/business/{business}/allocations',
+        [BusinessAllocationsController::class, 'index']
+    )->name('allocations-new');
+    Route::post(
+        '/business/allocations/ajax/update',
+        [BusinessAllocationsController::class, 'updateData']
+    )->name('allocations-new-update');
+
 });
 
 Route::middleware(

@@ -121,12 +121,12 @@ class ProjectionController extends Controller
             }
         }
 
-        if (isset($request->recalculateAll) && $request->recalculateAll == '1') {
-            $startDate = session()->get('startDate_'.$businessId,
-                Carbon::parse(Timezone::convertToLocal(Carbon::now(), 'Y-m-d')));
-            $AllocationsCalendarController = new AllocationsCalendar();
-            $AllocationsCalendarController->pushRecurringTransactionData($businessId, $startDate, $end_date, false);
-        }
+//        if (isset($request->recalculateAll) && $request->recalculateAll == '1') {
+//            $startDate = session()->get('startDate_'.$businessId,
+//                Carbon::parse(Timezone::convertToLocal(Carbon::now(), 'Y-m-d')));
+//            $AllocationsCalendarController = new AllocationsCalendar();
+//            $AllocationsCalendarController->pushRecurringTransactionData($businessId, $startDate, $end_date, false);
+//        }
 
         $datesAll = array();
         if ($rangeValue == self::RANGE_QUARTERLY) {

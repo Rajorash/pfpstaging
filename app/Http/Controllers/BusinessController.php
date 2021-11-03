@@ -172,6 +172,7 @@ class BusinessController extends Controller
 
         //if more than 0 - we can laucnh recalculate
         $howManyChanges = 0;
+//        dd($request->balance);
         foreach ($request->balance as $allocatable_id => $amount) {
             $allocation = Allocation::where(
                 [
@@ -181,7 +182,9 @@ class BusinessController extends Controller
                 ],
             )->first();
 
-            if (!$allocation || ($allocation && $allocation->amount != floatval($amount))) {
+            if (!$allocation || (
+                $allocation && number_format($allocation->amount, 0) != floatval($amount)
+                )) {
                 //new record or update if amount not equal
                 $allocation = Allocation::updateOrCreate(
                     [

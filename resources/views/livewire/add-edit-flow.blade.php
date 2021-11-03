@@ -25,7 +25,7 @@
                                  wire:model.defer="certainty"
                                  wire:loading.attr="disabled"
                                  required/>
-                    <x-jet-input-error for="label" class="mt-2"/>
+                    <x-jet-input-error for="certainty" class="mt-2"/>
                 </div>
             </div>
 
@@ -45,9 +45,6 @@
                            wire:model.defer="negative_flow"
                            wire:loading.attr="disabled"
                            value="1"
-                           @if(request()->routeIs('allocations-calendar'))
-                           checked
-                           @endif
                            />
                     <x-jet-input-error for="negative_flow" class="mt-2"/>
                     <label for="flow-out">{{__('Negative')}}</label>

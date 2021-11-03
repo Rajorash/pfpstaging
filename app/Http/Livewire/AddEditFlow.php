@@ -5,13 +5,12 @@ namespace App\Http\Livewire;
 use App\Models\AccountFlow;
 use App\Models\BankAccount;
 use Livewire\Component;
-use phpDocumentor\Reflection\Types\Boolean;
-use phpDocumentor\Reflection\Types\Integer;
 
 class AddEditFlow extends Component
 {
     public int $flowId = 0;
     public int $accountId = 0;
+    public bool $defaultNegative = false;
 
     public string $label = '';
     public bool $negative_flow = false;
@@ -29,6 +28,8 @@ class AddEditFlow extends Component
             $this->label = $flow->label;
             $this->negative_flow = $flow->negative_flow;
             $this->certainty = $flow->certainty;
+        } else {
+            $this->negative_flow = $this->defaultNegative;
         }
     }
 
@@ -37,7 +38,7 @@ class AddEditFlow extends Component
         return [
             'label' => ['required', 'min:3'],
             'negative_flow' => ['required'],
-            'certainty' => ['required', 'integer', 'min:5', 'max:100']
+            'certainty' => ['required', 'integer', 'min:5', 'max:500']
         ];
     }
 
@@ -61,7 +62,6 @@ class AddEditFlow extends Component
 
         if ($this->modalMode) {
             $this->emit('reloadRevenueTable');
-//            return redirect("business/".$account->business->id."/revenue-entry");
         } else {
             return redirect("business/".$account->business->id."/accounts");
         }

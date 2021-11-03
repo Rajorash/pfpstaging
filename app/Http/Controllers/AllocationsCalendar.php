@@ -279,7 +279,7 @@ class AllocationsCalendar extends Controller
 
                         case BankAccount::ACCOUNT_TYPE_PRETOTAL:
                             $salestax = data_get($percents, 'salestax');
-                            $salestax = count($salestax) > 0 ? $salestax[key($salestax)] : null;
+                            $salestax = count($salestax) > 0 ? floatval($salestax[key($salestax)]) : null;
                             $nsp = ($income > 0 && is_numeric($salestax)) ? $income / ($salestax / 100 + 1) : 0;
                             $response[BankAccount::ACCOUNT_TYPE_PRETOTAL][$id]['transfer'][$date_ymd]
                                 = (is_numeric($percents[$type][$id]))
@@ -303,13 +303,16 @@ class AllocationsCalendar extends Controller
                                 }
                             }
                             $response[BankAccount::ACCOUNT_TYPE_PRETOTAL][$id]['total'][$date_ymd] = $flow_total;
+
                             if (array_key_exists($key, $flows[$id]) && count($flows[$id][$key]) == $complete) {
                                 $response[BankAccount::ACCOUNT_TYPE_PRETOTAL][$id] += $flows[$id];
                             }
 
                             $actualValue = $flow_total +
                                 $response[BankAccount::ACCOUNT_TYPE_PRETOTAL][$id]['transfer'][$date_ymd];
+
                             $previousDate = Carbon::parse($date)->subDays(1)->format('Y-m-d');
+
                             if (array_key_exists($previousDate, $response[BankAccount::ACCOUNT_TYPE_PRETOTAL][$id])) {
                                 $actualValue += is_array($response[BankAccount::ACCOUNT_TYPE_PRETOTAL][$id][$previousDate])
                                     ? $response[BankAccount::ACCOUNT_TYPE_PRETOTAL][$id][$previousDate][0]
@@ -324,6 +327,9 @@ class AllocationsCalendar extends Controller
                             $stored_value = is_array($response[BankAccount::ACCOUNT_TYPE_PRETOTAL][$id][$date_ymd])
                                 ? $response[BankAccount::ACCOUNT_TYPE_PRETOTAL][$id][$date_ymd][0]
                                 : $response[BankAccount::ACCOUNT_TYPE_PRETOTAL][$id][$date_ymd];
+
+
+//                            $response[BankAccount::ACCOUNT_TYPE_PRETOTAL][$id][$date_ymd] = $actualValue;
 
                             if ($stored_value != $actualValue
                                 && (!isset($response[BankAccount::ACCOUNT_TYPE_PRETOTAL][$id]['manual'][$date_ymd])
@@ -368,15 +374,27 @@ class AllocationsCalendar extends Controller
 
                             $actualValue = $flow_total +
                                 $response[BankAccount::ACCOUNT_TYPE_PREREAL][$id]['transfer'][$date_ymd];
+
+//                            $response[BankAccount::ACCOUNT_TYPE_PREREAL][$id]['db'][$date_ymd]['actual'] =
+//                                $flow_total .' + '.
+//                                $response[BankAccount::ACCOUNT_TYPE_PREREAL][$id]['transfer'][$date_ymd];
+//                            $response[BankAccount::ACCOUNT_TYPE_PREREAL][$id]['db'][$date_ymd]['actualValue'] = $actualValue;
+
+
                             $previousDate = Carbon::parse($date->format('Y-m-d'))->subDays(1)->format('Y-m-d');
+
+//                            $response[BankAccount::ACCOUNT_TYPE_PREREAL][$id]['db'][$date_ymd]['previousDate'] = $previousDate;
+
                             if (array_key_exists($previousDate, $response[BankAccount::ACCOUNT_TYPE_PREREAL][$id])) {
                                 $actualValue += is_array($response[BankAccount::ACCOUNT_TYPE_PREREAL][$id][$previousDate])
                                     ? $response[BankAccount::ACCOUNT_TYPE_PREREAL][$id][$previousDate][0]
                                     : $response[BankAccount::ACCOUNT_TYPE_PREREAL][$id][$previousDate];
+//                                $response[BankAccount::ACCOUNT_TYPE_PREREAL][$id]['db'][$date_ymd]['actualValue2'] = $actualValue;
                             } else {
                                 $previousNonZero = $this->getPreviousNonZeroValue($id, $dateFrom);
                                 if (is_numeric($previousNonZero)) {
                                     $actualValue += $previousNonZero;
+//                                    $response[BankAccount::ACCOUNT_TYPE_PREREAL][$id]['db'][$date_ymd]['actualValue3'] = $actualValue;
                                 }
                             }
 
