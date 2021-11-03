@@ -196,13 +196,13 @@
 
                                 {{-- Expense Entry column --}}
                                 <x-ui.button-small title="Expense Entry" class="whitespace-nowrap"
-                                                href="{{route('allocations-calendar', ['business' => $business])}}">
+                                                href="{{route('allocations-new', ['business' => $business])}}">
                                     <x-icons.table :class="'h-5 w-auto inline-block'"/>
                                 </x-ui.button-small>
 
                                 {{-- Forecast column --}}
                                 <x-ui.button-small title="{{__('Projection Forecast')}}"
-                                                href="{{route('projections', ['business' => $business])}}">
+                                                href="{{route('projection-view', ['business' => $business])}}">
                                     <x-icons.presentation-chart :class="'h-5 w-auto inline-block'"/>
                                 </x-ui.button-small>
 

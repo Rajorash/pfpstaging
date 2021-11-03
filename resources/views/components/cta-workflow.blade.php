@@ -19,17 +19,17 @@
         case 'revenue':
             $prev = url('/business/'.$business->id.'/balance');
             $prevText = 'Change balance';
-            $next = route('allocations-calendar', ['business' => $business]);
+            $next = route('allocations-new', ['business' => $business]);
             $nextText = 'Expense Entry';
             break;
         case 'allocations':
             $prev = url('/business/'.$business->id.'/revenue-entry');
             $prevText = 'Revenue Entry';
-            $next = route('projections', ['business' => $business]);
+            $next = route('projection-view', ['business' => $business]);
             $nextText = 'Projection Forecast';
             break;
         case 'projections':
-            $prev = route('allocations-calendar', ['business' => $business]);
+            $prev = route('allocations-new', ['business' => $business]);
             $prevText = 'Expense Entry';
             $next = url('/business/'.$business->id.'/revenue-entry');
             $nextText = 'Revenue Entry';

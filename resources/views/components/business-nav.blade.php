@@ -78,9 +78,9 @@
     </a>
 
     @php
-        $active = request()->routeIs('allocations-calendar');
+        $active = request()->routeIs('allocations-new');
     @endphp
-    <a href="{{route('allocations-calendar', ['business' => $business])}}" title="{{__('Expense Entry')}}"
+    <a href="{{route('allocations-new', ['business' => $business])}}" title="{{__('Expense Entry')}}"
        class="busnav-btn mr-2
         @if($active) text-blue @else text-gray-700 @endif
            ">
@@ -91,7 +91,7 @@
     @php
         $active = request()->routeIs('projections');
     @endphp
-    <a href="{{route('projections', ['business' => $business])}}" title="{{__('Projection Forecast')}}"
+    <a href="{{route('projection-view', ['business' => $business])}}" title="{{__('Projection Forecast')}}"
        class="busnav-btn
         @if($active) text-blue @else text-gray-700 @endif
            ">
