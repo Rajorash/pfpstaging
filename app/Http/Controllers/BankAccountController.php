@@ -22,9 +22,7 @@ class BankAccountController extends Controller
     {
         $this->authorize('view', $business);
 
-        $accounts = $business->accounts->load('flows');
-
-        return view('accounts.show', ['accounts' => $accounts, 'business' => $business]);
+        return view('accounts.show', ['business' => $business]);
     }
 
     /**

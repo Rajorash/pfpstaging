@@ -19,7 +19,7 @@ class BusinessAccountShow extends Component
     public function mount()
     {
         $this->business->refresh();
-        $this->accounts = $this->business->accounts->load('flows');
+        $this->accounts = $this->business->accounts;
     }
 
     public function deleteAccount()
