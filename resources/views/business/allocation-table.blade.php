@@ -174,10 +174,12 @@
                                     <div class="inline-flex">
                                         {{$data['name']}}
                                     </div>
+                                    @if (request()->routeIs('projection-view'))
                                     <a onclick="Livewire.emit('openModal', 'modal-flow',  {{ json_encode(['accountId' => $id]) }})"
-                                       title="Create new flow for {{$data['name']}}" class="ml-2 cursor-pointer">
+                                        title="Create new flow for {{$data['name']}}" class="ml-2 cursor-pointer">
                                         <x-icons.add-border class="inline-flex h-4"/>
                                     </a>
+                                    @endif
                                 </div>
                             </x-ui.table-td>
                             @foreach($period as $date)
