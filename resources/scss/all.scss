@@ -61,7 +61,7 @@ html {
 }
 
 .allocation-negative-value {
-    @apply text-red-600 border-red-400;
+    @apply text-red-600 bg-red-100 border-red-400;
 }
 
 .allocation-highlight {
