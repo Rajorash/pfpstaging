@@ -28,7 +28,6 @@ $(function () {
             super.events();
 
             $(document).on('change', '#startDate, #currentRangeValue', function (event) {
-                //TODO: save old values
                 $this.autoSubmitDataAllow = true;
                 $this.timeOutSeconds = 0;
                 $this.loadData(event);
@@ -41,6 +40,10 @@ $(function () {
 
             $(document).on('change', '#allocationsNewTablePlace input', function (event) {
                 $this.updateValue(event);
+            });
+
+            $(document).on('change', '#show_rows_level', function (event) {
+                $this.changeDeepLevel();
             });
         }
 
@@ -95,13 +98,14 @@ $(function () {
                             .addClass('allocation-highlight');
                     }
                 });
+                $this.changeDeepLevel();
             } else {
                 $this.elementTablePlace.html('<p class="p-8 text-red-700 text-bold">' + data.error.join('<br/>') + '</p>');
             }
         }
 
         manualSubmitData(event) {
-
+            return false;
         }
 
         collectData(event) {
@@ -161,6 +165,21 @@ $(function () {
             $this.switchHeightMode();
 
             $.cookie('allocation_heightMode', $this.heightMode, {expires: 14});
+        }
+
+        changeDeepLevel() {
+            switch ($('#show_rows_level').val()) {
+                case '1':
+                    $('.level_2, .level_3').hide();
+                    break;
+                case '2':
+                    $('.level_2').show();
+                    $('.level_3').hide();
+                    break;
+                case '3':
+                    $('.level_2, .level_3').show();
+                    break;
+            }
         }
     }
 

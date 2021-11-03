@@ -27,7 +27,7 @@
 
         @if(isset($tableData[\App\Models\BankAccount::ACCOUNT_TYPE_REVENUE]))
             @foreach ($tableData[\App\Models\BankAccount::ACCOUNT_TYPE_REVENUE] as $accountId => $accountData)
-                <tr class="divide-x border-light_blue bg-atlantis-200">
+                <tr class="divide-x border-light_blue bg-atlantis-200 level_1">
                     <x-ui.table-td padding="p-1 pl-4"
                                    baseClass="text-dark_gray sticky left-0 z-10 bg-atlantis-200">
                         {{$accountData['name']}}
@@ -59,7 +59,8 @@
             @if($accountType != \App\Models\BankAccount::ACCOUNT_TYPE_REVENUE)
                 @foreach ($accountsArray as $accountId => $accountData)
                     @foreach ($accountsSubTypes as $subType => $subTypeArray)
-                        <tr class="divide-x border-light_blue {{$subTypeArray['class_tr']}}">
+                        <tr class="divide-x border-light_blue {{$subTypeArray['class_tr']}}
+                        @if($subType == '_dates') level_1 @else level_2 @endif">
                             <x-ui.table-td padding="p-1 {{$subTypeArray['class_tr']}} {{$subTypeArray['class_th']}}"
                                            baseClass="text-dark_gray sticky left-0 z-10">
                                 <div class="flex mr-auto">
@@ -94,7 +95,7 @@
                                                 bg-yellow-300 hover:bg-yellow-300 focus:bg-yellow-300
 @if(!$checkLicense) focus:bg-gray-100 @else hover:bg-yellow-50 focus:bg-yellow-50 @endif
                                             @endif
-                                                @if ($value < 0) allocation-negative-value @endif
+                                            @if ($value < 0) allocation-negative-value @endif
                                                 "
                                             @if ($manual)
                                             title="Balance overridden"
@@ -119,7 +120,7 @@
                                 $rowIndex++;
                                 $columnIndex = 0;
                             @endphp
-                            <tr class="divide-x bg-data-entry hover:bg-yellow-100 border-light_blue">
+                            <tr class="divide-x bg-data-entry hover:bg-yellow-100 border-light_blue level_3">
                                 <x-ui.table-td padding="p-1 pr-2 pl-4"
                                                class="sticky left-0 z-10 text-left bg-data-entry whitespace-nowrap ">
                                     <div class="flex mr-auto">
@@ -160,7 +161,7 @@
                                                 @if(!$checkLicense) focus:bg-gray-100
                                                 @else pfp_copy_move_element hover:bg-yellow-50 focus:bg-yellow-50
                                                 @endif
-                                                @if ($value < 0) allocation-negative-value @endif
+                                        @if ($value < 0) allocation-negative-value @endif
                                             "
                                                @if($checkLicense) draggable="true" @endif
 
@@ -180,7 +181,7 @@
 
                 @endforeach
             @endif
-            <tr class="bg-light_blue">
+            <tr class="bg-light_blue level_2">
                 <x-ui.table-td class="h-1 text-center" padding="p-0"
                                attr="colspan={{$rangeValue+1}}"></x-ui.table-td>
             </tr>

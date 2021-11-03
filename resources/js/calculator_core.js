@@ -101,7 +101,6 @@ export class calculatorCore {
 
         //check and save state of Alt key
         $(window).on("keydown", function (event) {
-            console.log(event.which);
             if (event.which === 18) {
                 $this.copyMoveAltKeyEnabled = true;
                 $('.' + $this.copyMoveClassName).removeClass('cursor-copy').addClass('cursor-move bg-yellow-300');
