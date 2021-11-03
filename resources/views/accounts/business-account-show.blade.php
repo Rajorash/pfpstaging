@@ -38,7 +38,7 @@
                                         class="table-cell px-2 pb-1 rounded-tl-lg rounded-bl-lg text-{{$flow->isNegative() ? 'red-500' : 'green' }}">
                                         {{ $flow->label }} ({{ $flow->certainty }}%)
                                     </div>
-                                    @if(auth()->user()->isAdvisor() || auth()->user()->isClient())
+                                    {{-- @if(auth()->user()->isAdvisor() || auth()->user()->isClient())
                                         <div class="table-cell w-10 px-2 pb-1">
                                             <div class="flex">
                                                 @php
@@ -58,7 +58,7 @@
                                                 </x-ui.button-small>
                                             </div>
                                         </div>
-                                    @endif
+                                    @endif --}}
                                     <div class="table-cell w-10 px-2 pb-1">
                                         <x-ui.button-small title="Edit"
                                                            class="w-auto h-6 text-light_purple hover:text-purple-700"
