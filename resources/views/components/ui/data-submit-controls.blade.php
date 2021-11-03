@@ -68,39 +68,5 @@
                 <option value="3" label="all">{{__('+ Flows (Show all)')}}</option>
             </datalist>
         </div>
-
-
-        {{--        <div title="{{__('Show all')}}"--}}
-        {{--             class="flex items-center ml-3">--}}
-        {{--            <input type="radio" name="show_rows_level" class="py-2 mx-3 my-3 rounded form-input"/>--}}
-        {{--            <label class="inline-flex space-x-4" for="show_rows_level">--}}
-        {{--                <span>{{__('All')}}</span>--}}
-        {{--                <x-icons.question/>--}}
-        {{--            </label>--}}
-        {{--        </div>--}}
-        {{--        <div title="{{__('Only Accounts')}}"--}}
-        {{--             class="flex items-center ml-3">--}}
-        {{--            <input type="radio" name="show_rows_level" class="py-2 mx-3 my-3 rounded form-input"/>--}}
-        {{--            <label class="inline-flex space-x-4" for="show_rows_level">--}}
-        {{--                <span>{{__('Only Accounts')}}</span>--}}
-        {{--                <x-icons.question/>--}}
-        {{--            </label>--}}
-        {{--        </div>--}}
-        {{--        <div title="{{__('+ Transfer In & Flow total')}}"--}}
-        {{--             class="flex items-center ml-3">--}}
-        {{--            <input type="radio" name="show_rows_level" class="py-2 mx-3 my-3 rounded form-input"/>--}}
-        {{--            <label class="inline-flex space-x-4" for="show_rows_level">--}}
-        {{--                <span>{{__('+ Transfer In & Flow total')}}</span>--}}
-        {{--                <x-icons.question/>--}}
-        {{--            </label>--}}
-        {{--        </div>--}}
-        {{--        <div title="{{__('+ Flows')}}"--}}
-        {{--             class="flex items-center ml-3">--}}
-        {{--            <input type="radio" name="show_rows_level" class="py-2 mx-3 my-3 rounded form-input"/>--}}
-        {{--            <label class="inline-flex space-x-4" for="show_rows_level">--}}
-        {{--                <span>{{__('+ Flows')}}</span>--}}
-        {{--                <x-icons.question/>--}}
-        {{--            </label>--}}
-        {{--        </div>--}}
     @endif
 </div>
