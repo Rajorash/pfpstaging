@@ -27,7 +27,7 @@
 
         @if(isset($tableData[\App\Models\BankAccount::ACCOUNT_TYPE_REVENUE]))
             @foreach ($tableData[\App\Models\BankAccount::ACCOUNT_TYPE_REVENUE] as $accountId => $accountData)
-                <tr class="divide-x border-light_blue bg-atlantis-200 level_1">
+                <tr class="divide-x border-light_blue bg-atlantis-200 level_1 revenue-row">
                     <x-ui.table-td padding="p-1 pl-4"
                                    baseClass="text-dark_gray sticky left-0 z-10 bg-atlantis-200">
                         {{$accountData['name']}}
@@ -138,12 +138,12 @@
                                         </div>
                                         <a onclick="Livewire.emit('openModal', 'modal-flow',  {{ json_encode(['accountId' => $accountId, 'flowId' => $flowId]) }})"
                                            title="Edit {{$flowData['label']}}"
-                                           class="cursor-pointer opacity-50 hover:opacity-100">
+                                           class="opacity-50 cursor-pointer hover:opacity-100">
                                             <x-icons.edit class="inline-flex self-end h-3 ml-auto"/>
                                         </a>
                                         <a onclick="Livewire.emit('openModal', 'modal-quick-entry-data-for-flow',  {{ json_encode(['accountId' => $accountId, 'flowId' => $flowId]) }})"
                                            title="Quick Entry for Flow {{$flowData['label']}}"
-                                           class="ml-3 cursor-pointer opacity-50 hover:opacity-100">
+                                           class="ml-3 opacity-50 cursor-pointer hover:opacity-100">
                                             <x-icons.fill class="inline-flex self-end h-3 ml-auto text-green"/>
                                         </a>
                                     </div>
