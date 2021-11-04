@@ -11,6 +11,7 @@ class AddEditFlow extends Component
     public int $flowId = 0;
     public int $accountId = 0;
     public bool $defaultNegative = false;
+    public string $routeName = '';
 
     public string $label = '';
     public bool $negative_flow = false;

@@ -22,7 +22,7 @@
     </thead>
 
     <x-ui.table-tbody>
-        <tr class="divide-x border-light_blue">
+        <tr class="divide-x border-light_blue level_1">
             <x-ui.table-td padding="p-1 pl-2"
                            baseClass="text-dark_gray sticky left-0 z-10 bg-atlantis-200">
                 {{__('Revenue')}}
@@ -59,7 +59,7 @@
 
         @foreach($tableData as $accountId => $accountData)
             @if (isset($accountData['flows']) && !empty($accountData['flows']))
-                <tr class="divide-x border-light_blue">
+                <tr class="divide-x border-light_blue level_2">
                     <x-ui.table-td padding="p-1 pl-2"
                                    baseClass="text-dark_gray sticky left-0 z-10 bg-account">
                         <div class="flex mr-auto">
@@ -83,7 +83,7 @@
                         $rowIndex++;
                         $columnIndex = 0;
                     @endphp
-                    <tr class="divide-x border-light_blue">
+                    <tr class="divide-x border-light_blue level_3">
                         <x-ui.table-td padding="p-1 pl-2 pr-2"
                                        baseClass="text-dark_gray whitespace-nowrap sticky left-0 bg-data-entry z-10 text-left">
                             <div class="flex mr-auto">
@@ -97,7 +97,7 @@
                                 <div class="inline-flex px-4 text-right">
                                     ({{$flowData['certainty']}}%)
                                 </div>
-                                <a onclick="Livewire.emit('openModal', 'modal-flow',  {{ json_encode(['accountId' => $accountId, 'flowId' => $flowId]) }})"
+                                <a onclick="Livewire.emit('openModal', 'modal-flow',  {{ json_encode(['accountId' => $accountId, 'flowId' => $flowId, 'routeName' => 'revenue-entry.table']) }})"
                                    title="Edit {{$flowData['label']}}" class="cursor-pointer">
                                     <x-icons.edit class="inline-flex self-end h-3 ml-auto"/>
                                 </a>
@@ -112,8 +112,8 @@
                                 $columnIndex++;
                             @endphp
                             <x-ui.table-td class="text-right " padding="p-0">
-                                <input class="flow_cell px-2 py-1 w-full text-right bg-transparent border-0
-                                            border-transparent outline-none
+                                <input draggable="true" class="flow_cell px-2 py-1 w-full text-right bg-transparent border-0
+                                            border-transparent outline-none pfp_copy_move_element
                                             focus:outline-none focus:ring-1 focus:shadow-none disabled:opacity-90
                                             @if(!$business->license->checkLicense)
                                     focus:bg-gray-100
