@@ -36,7 +36,8 @@ class BusinessAllocationsController extends Controller
         $this->business = Business::findOrFail($businessId);
         $this->authorize('view', $this->business);
 
-        $maxDate = $this->business->rollout()->max('end_date');
+//        $maxDate = $this->business->rollout()->max('end_date');
+        $maxDate = Carbon::now()->addYears(5)->format('Y-m-d');
         $minDate = $this->business->rollout()->min('end_date');
         $startDate = session()->get('startDate_'.$this->business->id, Timezone::convertToLocal(Carbon::now(), 'Y-m-d'));
 
@@ -45,7 +46,8 @@ class BusinessAllocationsController extends Controller
             'rangeArray' => $this->getRangeArray(),
             'startDate' => $startDate,
             'minDate' => Carbon::parse($minDate)->subMonths(3)->format('Y-m-d'),
-            'maxDate' => Carbon::parse($maxDate)->subDays(31)->format('Y-m-d'),
+//            'maxDate' => Carbon::parse($maxDate)->subDays(31)->format('Y-m-d'),
+            'maxDate' => $maxDate,
             'currentRangeValue' => session()->get('rangeValue_'.$this->business->id, $this->defaultCurrentRangeValue),
             'projectionMode' => $request->routeIs('projection-view'),
         ]);
