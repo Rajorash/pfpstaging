@@ -43,6 +43,14 @@ export class calculatorCore {
         this.windowCoordinates = {};
 
         this.hideTableDuringRecalculate = false;
+
+        this.showRowsLevelID = 'show_rows_level';
+
+        this.showRowsLevelTitles = {
+            1: 'Accounts',
+            2: 'Accounts with details',
+            3: 'All records'
+        };
     }
 
     init() {
@@ -82,24 +90,9 @@ export class calculatorCore {
             return false;
         });
 
-        // $(document).on('dragend', '.' + $this.copyMoveClassName, function (event) {
-        //     let $sourceElement = $(this);
-        //     let $targetElement = $(document.elementFromPoint(event.clientX, event.clientY));
-        //
-        //     if ($targetElement.hasClass($this.copyMoveClassName)) {
-        //
-        //         let value = parseFloat($sourceElement.val());
-        //         if (!$this.copyMoveAltKeyEnabled) {
-        //             //add
-        //             value += parseFloat($targetElement.val());
-        //         } else {
-        //             //replace
-        //         }
-        //
-        //         $targetElement.val(value).change();
-        //         $sourceElement.val('0').change();
-        //     }
-        // });
+        $(document).on('change', '#' + $this.showRowsLevelID, function (event) {
+            $this.changeDeepLevel();
+        });
 
         //check and save state of Alt key
         $(window).on("keydown", function (event) {
@@ -468,6 +461,9 @@ export class calculatorCore {
     }
 
     afterLoadingDataHook() {
+        let $this = this;
+
+        this.changeDeepLevel();
     }
 
     dragAdnDropValues() {
@@ -520,5 +516,27 @@ export class calculatorCore {
 
     renderButtonForManualSubmit() {
         return '<a href="#" id="manualSubmitData" class="bg-white hover:bg-gray-100 font-bold p-2 rounded text-red-700">Submit data</a>';
+    }
+
+    changeDeepLevel() {
+        let $this = this;
+
+        let $showRowsLevelSelectorSpan = $('label[for="' + $this.showRowsLevelID + '"] span');
+
+        switch ($('#' + $this.showRowsLevelID).val()) {
+            case '1':
+                $('.level_2, .level_3').hide();
+                $showRowsLevelSelectorSpan.text($this.showRowsLevelTitles[1]);
+                break;
+            case '2':
+                $('.level_2').show();
+                $('.level_3').hide();
+                $showRowsLevelSelectorSpan.text($this.showRowsLevelTitles[2]);
+                break;
+            case '3':
+                $('.level_2, .level_3').show();
+                $showRowsLevelSelectorSpan.text($this.showRowsLevelTitles[3]);
+                break;
+        }
     }
 }

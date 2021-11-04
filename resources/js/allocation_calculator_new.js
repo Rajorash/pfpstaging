@@ -41,10 +41,6 @@ $(function () {
             $(document).on('change', '#allocationsNewTablePlace input', function (event) {
                 $this.updateValue(event);
             });
-
-            $(document).on('change', '#show_rows_level', function (event) {
-                $this.changeDeepLevel();
-            });
         }
 
         updateValue(event) {
@@ -169,25 +165,9 @@ $(function () {
             $.cookie('allocation_heightMode', $this.heightMode, {expires: 14});
         }
 
-        changeDeepLevel() {
-            switch ($('#show_rows_level').val()) {
-                case '1':
-                    $('.level_2, .level_3').hide();
-                    $('label[for="show_rows_level"] span').text('Accounts');
-                    break;
-                case '2':
-                    $('.level_2').show();
-                    $('.level_3').hide();
-                    $('label[for="show_rows_level"] span').text('Accounts with details');
-                    break;
-                case '3':
-                    $('.level_2, .level_3').show();
-                    $('label[for="show_rows_level"] span').text('All records');
-                    break;
-            }
-        }
-
         afterLoadingDataHook() {
+            super.afterLoadingDataHook();
+
             let $this = this;
 
             $this.dragAdnDropValues();

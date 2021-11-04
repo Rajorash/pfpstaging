@@ -19,6 +19,12 @@ $(function () {
             this.elementTablePlace = $('#revenueTablePlace');
             this.autoSubmitDataAllow = true;
             this.timeOutSeconds = 2000;
+
+            this.showRowsLevelTitles = {
+                1: 'Totals only',
+                2: 'Totals with Accounts',
+                3: 'All records'
+            };
         }
 
         events() {
@@ -157,6 +163,14 @@ $(function () {
 
 
             $this.resetData();
+        }
+
+        afterLoadingDataHook() {
+            super.afterLoadingDataHook();
+
+            let $this = this;
+
+            $this.dragAdnDropValues();
         }
     }
 
