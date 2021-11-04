@@ -150,7 +150,7 @@
                                         <div class="inline-flex px-4 text-right">
                                             ({{$flowData['certainty']}}%)
                                         </div>
-                                        <a onclick="Livewire.emit('openModal', 'modal-flow',  {{ json_encode(['accountId' => $accountId, 'flowId' => $flowId]) }})"
+                                        <a onclick="Livewire.emit('openModal', 'modal-flow',  {{ json_encode(['accountId' => $accountId, 'flowId' => $flowId, 'routeName' => 'allocations-new']) }})"
                                            title="Edit {{$flowData['label']}}"
                                            class="opacity-50 cursor-pointer hover:opacity-100">
                                             <x-icons.edit class="inline-flex self-end h-3 ml-auto"/>

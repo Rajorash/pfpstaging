@@ -45,7 +45,7 @@
                            wire:model.defer="negative_flow"
                            wire:loading.attr="disabled"
                            value="1"
-                           />
+                    />
                     <x-jet-input-error for="negative_flow" class="mt-2"/>
                     <label for="flow-out">{{__('Negative')}}</label>
                 </div>
@@ -55,11 +55,21 @@
 
         <div class="table w-full mt-4">
             <div class="table-row">
-                <div class="table-cell w-full pb-4 text-right">
+                @if ($modalMode && $flowId)
+                    <div class="table-cell w-1/3 pb-4 text-left">
+                        <x-ui.button-danger class="uppercase"
+                                            wire:click="$emit('openModal', 'confirm-delete-modal', {{json_encode(['flowId' => $flowId, 'accountId' => $accountId, 'routeName' => $routeName])}})"
+                                            type="button">
+                            {{__('Delete Flow')}}
+                        </x-ui.button-danger>
+                    </div>
+                @endif
+
+                <div class="table-cell @if ($modalMode) w-2/3 @else w-full @endif  pb-4 text-right">
                     @if ($modalMode)
-                    <x-ui.button-secondary class="mr-4 uppercase" wire:click="$emit('closeModal')" type="button">
-                        {{__('Cancel')}}
-                    </x-ui.button-secondary>
+                        <x-ui.button-secondary class="mr-4 uppercase" wire:click="$emit('closeModal')" type="button">
+                            {{__('Cancel')}}
+                        </x-ui.button-secondary>
                     @endif
 
                     <x-ui.button-normal wire:loading.attr="disabled" class="uppercase" type="button">

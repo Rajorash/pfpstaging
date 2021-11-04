@@ -1,5 +1,5 @@
 <div>
-    <div class="text-bold">
+    <div class="text-black">
         {{__('Quick Entry for Flow ":flow" (":account")', ['flow' => $accountFlow->label, 'account' => $bankAccount->name])}}
     </div>
 

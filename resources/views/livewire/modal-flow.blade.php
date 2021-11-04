@@ -1,5 +1,5 @@
 <div>
-    <div class="text-bold">
+    <div class="text-black">
         @if ($flowId)
             {{__('Update Flow ":flow" For ":account"', ['flow' => $flow->label, 'account' => $account->name])}}
         @else
@@ -7,5 +7,5 @@
         @endif
     </div>
 
-    <livewire:add-edit-flow :account-id="$accountId" :flow-id="$flowId" :default-negative="$defaultNegative" :modal-mode="true"/>
+    <livewire:add-edit-flow :account-id="$accountId" :flow-id="$flowId" :default-negative="$defaultNegative" :modal-mode="true" :routeName="$routeName"/>
 </div>

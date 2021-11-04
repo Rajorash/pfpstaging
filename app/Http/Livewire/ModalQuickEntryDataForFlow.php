@@ -16,7 +16,11 @@ class ModalQuickEntryDataForFlow extends ModalComponent
 
     protected $listeners = ['reloadRevenueTable' => 'reloadRevenueTable'];
 
-    public function mount($accountId, $flowId = 0)
+    /**
+     * @param  int  $accountId
+     * @param  int  $flowId
+     */
+    public function mount(int $accountId, int $flowId = 0)
     {
         $this->accountId = $accountId;
         $this->flowId = $flowId;
@@ -25,10 +29,14 @@ class ModalQuickEntryDataForFlow extends ModalComponent
         $this->accountFlow = AccountFlow::findOrFail($this->flowId);
     }
 
-    public function reloadRevenueTable() {
+    public function reloadRevenueTable()
+    {
         $this->closeModal();
     }
 
+    /**
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+     */
     public function render()
     {
         return view('livewire.modal-quick-entry-data-for-flow');

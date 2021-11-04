@@ -97,7 +97,7 @@
                                 <div class="inline-flex px-4 text-right">
                                     ({{$flowData['certainty']}}%)
                                 </div>
-                                <a onclick="Livewire.emit('openModal', 'modal-flow',  {{ json_encode(['accountId' => $accountId, 'flowId' => $flowId]) }})"
+                                <a onclick="Livewire.emit('openModal', 'modal-flow',  {{ json_encode(['accountId' => $accountId, 'flowId' => $flowId, 'routeName' => 'revenue-entry.table']) }})"
                                    title="Edit {{$flowData['label']}}" class="cursor-pointer">
                                     <x-icons.edit class="inline-flex self-end h-3 ml-auto"/>
                                 </a>

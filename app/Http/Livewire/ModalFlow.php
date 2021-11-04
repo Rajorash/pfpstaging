@@ -12,16 +12,26 @@ class ModalFlow extends ModalComponent
     public int $accountId = 0;
     public int $flowId = 0;
     public bool $defaultNegative = false;
+    public string $routeName = '';
     public BankAccount $account;
     public AccountFlow $flow;
 
-    protected $listeners = ['reloadRevenueTable' => 'reloadRevenueTable'];
+    protected $listeners = [
+        'reloadRevenueTable' => 'reloadRevenueTable',
+    ];
 
-    public function mount($accountId, $flowId = 0, $defaultNegative = false)
+    /**
+     * @param $accountId
+     * @param  int  $flowId
+     * @param  false  $defaultNegative
+     * @param  string  $routeName
+     */
+    public function mount($accountId, int $flowId = 0, bool $defaultNegative = false, string $routeName = '')
     {
         $this->accountId = $accountId;
         $this->flowId = $flowId;
         $this->defaultNegative = $defaultNegative;
+        $this->routeName = $routeName;
 
         $this->account = BankAccount::findOrFail($this->accountId);
 
@@ -30,10 +40,14 @@ class ModalFlow extends ModalComponent
         }
     }
 
-    public function reloadRevenueTable() {
+    public function reloadRevenueTable()
+    {
         $this->closeModal();
     }
 
+    /**
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+     */
     public function render()
     {
         return view('livewire.modal-flow');
