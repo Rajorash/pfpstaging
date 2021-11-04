@@ -96,6 +96,7 @@ export class calculatorCore {
                 }
 
                 $targetElement.val(value).change();
+                $sourceElement.val('0').change();
             }
         });
 

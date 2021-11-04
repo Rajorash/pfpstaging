@@ -41,6 +41,7 @@
                         <x-ui.table-td class="text-right" padding="p-0" attr="disabled">
                             <input
                                 class="w-full px-2 py-1 text-right border-none bg-atlantis-200
+                                can_apply_negative_class
                                 @if ($value < 0) allocation-negative-value @endif "
                                 type="text" pattern="[0-9]{10}"
                                 value="{{ number_format($value, 0, '.', '')}}"
@@ -69,8 +70,8 @@
                                             {{$accountData['name']}}
                                         </div>
                                         <a onclick="Livewire.emit('openModal', 'modal-flow',  {{ json_encode(['accountId' => $accountId, 'flowId' => 0, 'defaultNegative' => true]) }})"
-                                            title="Create new flow for {{$accountData['name']}}"
-                                            class="ml-auto cursor-pointer add-flow-btn">
+                                           title="Create new flow for {{$accountData['name']}}"
+                                           class="ml-auto cursor-pointer add-flow-btn">
                                             <x-icons.add-border class="inline-flex h-4"/>
                                         </a>
                                     @else
@@ -91,20 +92,33 @@
                                     <x-ui.table-td class="text-right" padding="p-0" attr="disabled">
                                         <input
                                             class="w-full px-2 py-1 text-right bg-transparent border-none disabled:opacity-90
-                                                     @if ($manual)
-                                                bg-yellow-300 hover:bg-yellow-300 focus:bg-yellow-300
-@if(!$checkLicense) focus:bg-gray-100 @else hover:bg-yellow-50 focus:bg-yellow-50 @endif
+                                                @if ($manual)
+                                                    bg-yellow-300 hover:bg-yellow-300 focus:bg-yellow-300
+                                                @endif
+
+                                            @if(!$checkLicense)
+                                                focus:bg-gray-100
+                                            @else
+                                                hover:bg-yellow-50 focus:bg-yellow-50
                                             @endif
-                                            @if ($value < 0) allocation-negative-value @endif
+
+                                            @if($subType == '_dates')
+                                                can_apply_negative_class
+                                                @if ($value < 0)
+                                                    allocation-negative-value
+                                                @endif
+                                            @endif
                                                 "
                                             @if ($manual)
                                             title="Balance overridden"
                                             @endif
+
                                             @if($subType == '_dates')
                                             id="account_{{$accountId}}_{{$currentDate}}"
                                             @else
                                             id="{{$subType}}_{{$accountId}}_{{$currentDate}}"
                                             @endif
+
                                             type="text" pattern="[0-9]{10}"
                                             value="{{ number_format($value, 0, '.', '')}}"
                                             disabled/>
@@ -161,7 +175,6 @@
                                                 @if(!$checkLicense) focus:bg-gray-100
                                                 @else pfp_copy_move_element hover:bg-yellow-50 focus:bg-yellow-50
                                                 @endif
-                                        @if ($value < 0) allocation-negative-value @endif
                                             "
                                                @if($checkLicense) draggable="true" @endif
 
