@@ -92,10 +92,12 @@ $(function () {
                 $.each(data['data'], function (cellId, value) {
                     let $elements = $('#' + cellId);
                     if ($elements.val() !== value) {
-                        $elements.val(value)
-                            .removeClass('allocation-negative-value')
-                            .addClass((value < 0 ? 'allocation-negative-value' : ''))
-                            .addClass('allocation-highlight');
+                        $elements.val(value).addClass('allocation-highlight');
+
+                        if ($elements.hasClass('can_apply_negative_class')) {
+                            $elements.removeClass('allocation-negative-value')
+                                .addClass((value < 0 ? 'allocation-negative-value' : ''));
+                        }
                     }
                 });
                 $this.changeDeepLevel();
