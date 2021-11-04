@@ -502,11 +502,11 @@ export class calculatorCore {
                 let targetElement = document.elementFromPoint(clientX, clientY);
 
                 if (targetElement.classList.contains($this.copyMoveClassName)) {
-                    let value = parseFloat(sourceElement.value);
+                    let value = parseFloat(!!sourceElement.value ? sourceElement.value : 0);
 
                     if (!$this.copyMoveAltKeyEnabled) {
                         //sum of values
-                        value += parseFloat(targetElement.value);
+                        value += parseFloat(!!targetElement.value ? targetElement.value : 0);
                     }
 
                     targetElement.value = value;
