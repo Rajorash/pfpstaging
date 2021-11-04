@@ -187,10 +187,10 @@ $(function () {
             }
         }
 
-        firstLoadData() {
-            super.firstLoadData();
+        afterLoadingDataHook() {
+            let $this = this;
 
-            this.changeDeepLevel();
+            $this.dragAdnDropValues();
         }
     }
 
