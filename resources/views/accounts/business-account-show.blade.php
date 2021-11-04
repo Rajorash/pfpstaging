@@ -68,17 +68,13 @@
                                         </x-ui.button-small>
                                     </div>
                                     <div class="table-cell w-10 px-2 pb-1 rounded-tr-lg rounded-br-lg">
-                                        <form class="inline-block"
-                                              action="{{url('/accounts/'.$acc->id.'/flow/'.$flow->id)}}"
-                                              method="POST">
-                                            @method('DELETE')
-                                            @csrf
-                                            <x-ui.button-small background="bg-transparent hover:bg-transparent"
-                                                               class="w-auto h-6 text-red-300 border-transparent hover:text-red-700"
-                                                               attr="title=Delete" type="button">
-                                                <x-icons.delete class="w-3 h-auto"/>
-                                            </x-ui.button-small>
-                                        </form>
+                                        <x-ui.button-small
+                                            background="bg-transparent hover:bg-transparent"
+                                            class="w-auto h-6 text-red-300 border-transparent hover:text-red-700"
+                                            title="Delete"
+                                            wire:click="confirmDeleteItem('flow', {{$flow->id}})">
+                                            <x-icons.delete class="w-3 h-auto"/>
+                                        </x-ui.button-small>
                                     </div>
                                 </div>
                             </div>
@@ -114,7 +110,7 @@
                                             <x-ui.button-small
                                                 background="bg-red-900 hover:bg-dark_gray2"
                                                 type="button"
-                                                wire:click="confirmDeleteAccount({{$acc->id}})">
+                                                wire:click="confirmDeleteItem('account', {{$acc->id}})">
                                                 <x-icons.delete class="w-3 h-auto mr-2"/>
                                                 {{__('Delete')}}
                                             </x-ui.button-small>
@@ -135,13 +131,13 @@
             @endforelse
         </x-ui.table-tbody>
     </x-ui.table-table>
-    @if ($confirmingId)
-        <x-jet-confirmation-modal wire:model="confirmingId">
+    @if ($itemToDelete)
+        <x-jet-confirmation-modal wire:model="itemToDelete">
             <x-slot name="title">
-                {{__('Confirm Account Deletion?')}}
+                {{__($confirmationTitle)}}
             </x-slot>
             <x-slot name="content">
-                {{__('Are you certain you wish to delete this account, all flows and data will also be removed.')}}
+                {{__($confirmationMessage)}}
             </x-slot>
             <x-slot name="footer">
                 <div class="inline-flex space-x-4">
@@ -154,7 +150,7 @@
                     <x-ui.button-danger
                         type="button"
                         background="bg-red-500 hover:bg-red-800"
-                        wire:click="deleteAccount()">
+                        wire:click="deleteItem()">
                         <x-icons.delete class="w-3 h-auto mr-2"/>
                         {{__('Confirm Delete?')}}
                     </x-ui.button-danger>
