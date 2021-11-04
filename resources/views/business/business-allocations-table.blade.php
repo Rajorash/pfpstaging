@@ -29,7 +29,7 @@
             @foreach ($tableData[\App\Models\BankAccount::ACCOUNT_TYPE_REVENUE] as $accountId => $accountData)
                 <tr class="divide-x border-light_blue bg-atlantis-200 level_1 revenue-row">
                     <x-ui.table-td padding="p-1 pl-4"
-                                   baseClass="text-dark_gray sticky left-0 z-10 bg-atlantis-200">
+                                   baseClass="text-dark_gray sticky left-0 z-10 bg-atlantis-200 whitespace-nowrap">
                         {{$accountData['name']}}
                     </x-ui.table-td>
 
@@ -65,7 +65,7 @@
                                            baseClass="text-dark_gray sticky left-0 z-10">
                                 <div class="flex mr-auto">
                                     @if($subType == '_dates')
-                                        <div class="inline-flex">
+                                        <div class="inline-flex pr-4 whitespace-nowrap">
                                             {{$accountData['name']}}
                                         </div>
                                         <a onclick="Livewire.emit('openModal', 'modal-flow',  {{ json_encode(['accountId' => $accountId, 'flowId' => 0, 'defaultNegative' => true]) }})"
