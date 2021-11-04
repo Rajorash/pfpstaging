@@ -70,7 +70,7 @@
                                         </div>
                                         <a onclick="Livewire.emit('openModal', 'modal-flow',  {{ json_encode(['accountId' => $accountId, 'flowId' => 0, 'defaultNegative' => true]) }})"
                                             title="Create new flow for {{$accountData['name']}}"
-                                            class="ml-2 cursor-pointer add-flow-btn">
+                                            class="ml-auto cursor-pointer add-flow-btn">
                                             <x-icons.add-border class="inline-flex h-4"/>
                                         </a>
                                     @else
