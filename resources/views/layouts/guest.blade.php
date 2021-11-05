@@ -16,8 +16,8 @@
     <!-- Scripts -->
     <script src="{{ mix('js/app.js') }}" defer></script>
 </head>
-<body class="font-sans antialiased relative text-light_gray">
-<div class="min-h-screen bg-light_purple2 bg-right-bottom bg-no-repeat"
+<body class="relative font-sans antialiased text-light_gray">
+<div class="min-h-screen bg-right-bottom bg-no-repeat bg-light_purple2"
      style="background-image: url({{mix('images/bg.svg')}})">
     {{ $slot }}
 </div>
