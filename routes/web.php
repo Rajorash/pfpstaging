@@ -162,7 +162,7 @@ Route::group(['middleware' => 'auth'], function () {
 
     // Bankaccount routing
     Route::resource(
-        'business.accounts', BankAccountController::class, [
+        'business.accounts', 'BankAccountController', [
             'names' => [
                 'index' => 'accounts',
                 'create' => 'accounts.create',
