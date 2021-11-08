@@ -88,11 +88,13 @@ class BusinessAllocationsController extends Controller
         //update value of cell
         $cellId = $request->cellId ?? null;
         $cellValue = $request->cellValue ?? null;
+        $updatedAccountId = null;
         if ($cellId && $cellValue !== null) {
-            $this->storeCellValue($cellId, floatVal($cellValue));
+            $returnCellAttributes = $this->storeCellValue($cellId, floatVal($cellValue));
+            $updatedAccountId = optional(optional(AccountFlow::find($returnCellAttributes['accountId']))->account)->id;
         }
 
-        $this->rawData = $this->getRawData($this->business->id, $startDate, $endDate);
+        $this->rawData = $this->getRawData($this->business->id, $startDate, $endDate, $updatedAccountId);
         $this->percentages = $this->getPercentagesByPhasesId(
             $this->business->id,
             array_unique(array_values($this->phases))
@@ -118,6 +120,12 @@ class BusinessAllocationsController extends Controller
 
         $accounts = $this->business->accounts;
         foreach ($accounts as $account) {
+
+            //during return json - recalculate only Account which related to changed cell
+            if ($returnType != 'html' && $updatedAccountId && $updatedAccountId != $account->id) {
+                continue;
+            }
+
             $accountAllData = $account->toArray();
 
             //filter only data between $startDate and $endDate
@@ -315,9 +323,10 @@ class BusinessAllocationsController extends Controller
      * @param  int  $businessId
      * @param  string  $dateFrom
      * @param  string  $dateTo
+     * @param  null  $updatedAccountId
      * @return array
      */
-    private function getRawData(int $businessId, string $dateFrom, string $dateTo): array
+    private function getRawData(int $businessId, string $dateFrom, string $dateTo, $updatedAccountId = null): array
     {
         $raw = BankAccount::where('business_id', $businessId)
             ->with('flows.allocations', function ($query) use ($dateFrom, $dateTo) {
@@ -329,32 +338,39 @@ class BusinessAllocationsController extends Controller
                     ->where('allocation_date', '<=', $dateTo);
             })
             ->get()
-            ->map(function ($item) {
-                $flows = [];
-                foreach ($item->flows as $flow) {
-                    $flows += [
-                        $flow->id => $flow->allocations->pluck('amount', 'allocation_date')->toArray()
-                            + ['negative' => (bool) $flow->negative_flow]
-                            + ['name' => $flow->label]
-                            + ['certainty' => $flow->certainty]
+            ->map(function ($item) use ($updatedAccountId) {
+                if ($updatedAccountId && $item->id != $updatedAccountId) {
+                    //leave as is
+                } else {
+                    $flows = [];
+                    foreach ($item->flows as $flow) {
+                        $flows += [
+                            $flow->id => $flow->allocations->pluck('amount', 'allocation_date')->toArray()
+                                + ['negative' => (bool) $flow->negative_flow]
+                                + ['name' => $flow->label]
+                                + ['certainty' => $flow->certainty]
+                        ];
+                    }
+
+                    $amounts = $item->allocations->pluck('amount', 'allocation_date')->toArray();
+                    $manuals = $item->allocations->pluck('manual_entry', 'allocation_date')->toArray();
+
+                    $item->account_values = [
+                        $item->id => array_merge_recursive($amounts, $manuals) + $flows
                     ];
                 }
 
-                $amounts = $item->allocations->pluck('amount', 'allocation_date')->toArray();
-                $manuals = $item->allocations->pluck('manual_entry', 'allocation_date')->toArray();
-
-                $item->account_values = [
-                    $item->id => array_merge_recursive($amounts, $manuals) + $flows
-                ];
-
                 return $item;
-            })->all();
+            })
+            ->all();
 
         $result = [];
 
         foreach ($raw as $account_item) {
-            foreach ($account_item->account_values as $key => $value) {
-                $result[$key] = $value;
+            if (isset($account_item->account_values)) {
+                foreach ($account_item->account_values as $key => $value) {
+                    $result[$key] = $value;
+                }
             }
         }
 
@@ -612,8 +628,9 @@ class BusinessAllocationsController extends Controller
     /**
      * @param  string  $cellId
      * @param  float  $amount
+     * @return array
      */
-    protected function storeCellValue(string $cellId, float $amount): void
+    protected function storeCellValue(string $cellId, float $amount): array
     {
         $matches = [];
         preg_match('/(\w+)_(\d+)_(\d{4}-\d{2}-\d{2})/', $cellId, $matches);
@@ -625,5 +642,11 @@ class BusinessAllocationsController extends Controller
         if ($type) {
             $this->store($type, $accountId, $amount, $date, ($type == 'account'));
         }
+
+        return [
+            'type' => $type,
+            'accountId' => $accountId,
+            'date' => $date
+        ];
     }
 }
