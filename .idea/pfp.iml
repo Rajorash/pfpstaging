@@ -35,10 +35,10 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/torann/geoip" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/jamesmills/laravel-timezone" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/laravel/serializable-closure" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/livewire-ui/modal" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/spatie/laravel-package-tools" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/nunomaduro/larastan" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/phpstan/phpstan" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/wire-elements/modal" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
