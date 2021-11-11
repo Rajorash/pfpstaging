@@ -304,13 +304,13 @@ class BankAccount extends Model
         return $nsp - $pretotal_amt;
     }
 
-    /**
-     * Return the tax rate for the account (if it has one)
-     */
-    public function taxRate(): \Illuminate\Database\Eloquent\Relations\HasOne
-    {
-        return $this->hasOne(TaxRate::class);
-    }
+//    /**
+//     * Return the tax rate for the account (if it has one)
+//     */
+//    public function taxRate(): \Illuminate\Database\Eloquent\Relations\HasOne
+//    {
+//        return $this->hasOne(TaxRate::class);
+//    }
 
     /**
      * returns true if the account type should be able to be deleted

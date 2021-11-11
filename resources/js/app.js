@@ -6,7 +6,7 @@ require('arrow-table');
 
 // require('./percentages');
 require('./pfp_functions');
-require('./allocation_calculator');
+// require('./allocation_calculator');
 require('./allocation_calculator_new');
 require('./percentages_calculator');
 require('./projections_calculator');

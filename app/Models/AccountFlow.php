@@ -18,7 +18,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Allocation[] $allocations
  * @property-read int|null $allocations_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\RecurringTransactions[] $recurringTransactions
- * @property-read int|null $recurring_transactions_count
  * @method static \Illuminate\Database\Eloquent\Builder|AccountFlow newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|AccountFlow newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|AccountFlow query()
@@ -56,9 +55,9 @@ class AccountFlow extends Model
     {
         return $this->negative_flow;
     }
-
-    public function recurringTransactions(): \Illuminate\Database\Eloquent\Relations\HasMany
-    {
-        return $this->hasMany(RecurringTransactions::class, 'account_id', 'id');
-    }
+//
+//    public function recurringTransactions(): \Illuminate\Database\Eloquent\Relations\HasMany
+//    {
+//        return $this->hasMany(RecurringTransactions::class, 'account_id', 'id');
+//    }
 }

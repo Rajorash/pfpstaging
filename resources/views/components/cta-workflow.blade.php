@@ -8,31 +8,31 @@
             $prev = '';
             $prevText = '';
             $next = url('/business/'.$business->id.'/balance');
-            $nextText = 'Change balance';
+            $nextText = __('Change balance');
             break;
         case 'balance':
             $prev = route('allocation-calculator-with-id', ['business' => $business]);
-            $prevText = 'Allocations Calculator';
+            $prevText = __('Allocations Calculator');
             $next = url('/business/'.$business->id.'/revenue-entry');
-            $nextText = 'Revenue Entry';
+            $nextText = __('Revenue Entry');
             break;
         case 'revenue':
             $prev = url('/business/'.$business->id.'/balance');
-            $prevText = 'Change balance';
+            $prevText = __('Change balance');
             $next = route('allocations-new', ['business' => $business]);
-            $nextText = 'Expense Entry';
+            $nextText = __('Expense Entry');
             break;
         case 'allocations':
             $prev = url('/business/'.$business->id.'/revenue-entry');
-            $prevText = 'Revenue Entry';
+            $prevText = __('Revenue Entry');
             $next = route('projection-view', ['business' => $business]);
-            $nextText = 'Projection Forecast';
+            $nextText = __('Projection Forecast');
             break;
         case 'projections':
             $prev = route('allocations-new', ['business' => $business]);
-            $prevText = 'Expense Entry';
+            $prevText = __('Expense Entry');
             $next = url('/business/'.$business->id.'/revenue-entry');
-            $nextText = 'Revenue Entry';
+            $nextText = __('Revenue Entry');
             break;
     }
 @endphp

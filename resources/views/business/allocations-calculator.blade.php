@@ -1,6 +1,5 @@
 <x-app-layout>
     <x-slot name="header">
-
         <x-cta-workflow :business="$business"
             @if (request()->routeIs('projection-view'))
             step="projections"

@@ -1,14 +1,12 @@
 <x-app-layout>
     <x-slot name="header">
-
         <x-cta-workflow :business="$business" :step="'allocations'"/>
-
         {{$business->name}}
         <x-icons.chevron-right :class="'h-4 w-auto inline-block px-2'"/>
         @if ($projectionMode)
-        {{__('Projection Forecast')}}
+            {{__('Projection Forecast')}}
         @else
-        {{__('Expense Entry')}}
+            {{__('Expense Entry')}}
         @endif
     </x-slot>
 
@@ -56,9 +54,9 @@
         <div id="allocationsNewTablePlace"
              class="relative overflow-scroll global_nice_scroll block_different_height return_coordinates_table
              @if ($projectionMode)
-             projection-mode
-             @endif
-             ">
+                 projection-mode
+@endif
+                 ">
             <div class="p-8 text-center opacity-50">...loading</div>
         </div>
 

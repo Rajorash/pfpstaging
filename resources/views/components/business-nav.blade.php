@@ -89,7 +89,7 @@
     </a>
 
     @php
-        $active = request()->routeIs('projections');
+        $active = request()->routeIs('projection-view');
     @endphp
     <a href="{{route('projection-view', ['business' => $business])}}" title="{{__('Projection Forecast')}}"
        class="busnav-btn
