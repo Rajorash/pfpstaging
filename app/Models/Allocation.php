@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $phase_id
  * @property int $allocatable_id
  * @property string $allocatable_type
- * @property string $amount
+ * @property float $amount
  * @property mixed $allocation_date
  * @property int|null $manual_entry
  * @property \Illuminate\Support\Carbon|null $created_at

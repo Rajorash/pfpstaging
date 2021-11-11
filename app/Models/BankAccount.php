@@ -24,7 +24,6 @@ use Illuminate\Support\Facades\DB;
  * @property-read int|null $flows_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\AllocationPercentage[] $percentages
  * @property-read int|null $percentages_count
- * @property-read \App\Models\TaxRate|null $taxRate
  * @method static \Illuminate\Database\Eloquent\Builder|BankAccount newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|BankAccount newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|BankAccount query()

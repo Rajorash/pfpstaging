@@ -4,6 +4,11 @@ namespace App\Traits;
 
 trait TablesTrait
 {
+    /**
+     * @param  $cells
+     * @param  bool  $checkIsValuePresent
+     * @return null
+     */
     public function store($cells, bool $checkIsValuePresent = false)
     {
         if (is_array($cells) && count($cells) > 0) {
@@ -31,7 +36,7 @@ trait TablesTrait
      * Validate and store the Allocation
      * @param  string  $type
      * @param  int  $allocation_id
-     * @param $amount
+     * @param  float  $amount
      * @param  string  $date
      * @param  bool  $manual_entry
      * @param  bool  $checkIsValuePresent
@@ -39,7 +44,7 @@ trait TablesTrait
     public function storeSingle(
         string $type,
         int $allocation_id,
-        $amount,
+        float $amount,
         string $date,
         bool $manual_entry = false,
         bool $checkIsValuePresent = false

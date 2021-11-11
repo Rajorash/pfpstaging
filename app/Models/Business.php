@@ -26,8 +26,6 @@ use Illuminate\Support\Facades\DB;
  * @property-read null|int $current_phase
  * @property-read \App\Models\License|null $license
  * @property-read \App\Models\User|null $owner
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Pipeline[] $pipelines
- * @property-read int|null $pipelines_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Phase[] $rollout
  * @property-read int|null $rollout_count
  * @method static \Illuminate\Database\Eloquent\Builder|Business newModelQuery()
@@ -218,11 +216,11 @@ class Business extends Model
 
         return $accountIds;
     }
-
-    public function pipelines(): \Illuminate\Database\Eloquent\Relations\HasMany
-    {
-        return $this->hasMany(Pipeline::class);
-    }
+//
+//    public function pipelines(): \Illuminate\Database\Eloquent\Relations\HasMany
+//    {
+//        return $this->hasMany(Pipeline::class);
+//    }
 
 
     /**
