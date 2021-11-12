@@ -104,8 +104,8 @@ $(function () {
 
             $this.data.businessId = $('#businessId').val();
             $this.data.rangeValue = $('#currentProjectionsRange').val();
-            $this.data.endDate = $('#endDate').val();
-            $this.data.recalculateAll = $this.recalculateAllDataState ? 1 : 0;
+            // $this.data.endDate = $('#endDate').val();
+            // $this.data.recalculateAll = $this.recalculateAllDataState ? 1 : 0;
             $this.data.page = $this.currentPage;
 
             if ($this.debug) {

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\CarbonPeriod;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
 use App\Models\AccountFlow;
@@ -16,47 +17,66 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 use JamesMills\LaravelTimezone\Facades\Timezone;
 
-class ProjectionController extends Controller
+class ProjectionController extends BusinessAllocationsController
 {
-    protected $defaultProjectionsRangeValue = 7;
-
-    public const RANGE_DAILY = 1;
-    public const RANGE_WEEKLY = 7;
-    public const RANGE_MONTHLY = 31;
-    public const RANGE_QUARTERLY = 93;
-
     protected int $showEntries = 14;
+
+    protected int $defaultCurrentRangeValue = self::RANGE_WEEKLY;
 
     /**
      * Display a listing of the the accounts with projection.
-     *
-     * @param  Business  $business
-     * @return View
-     * @throws AuthorizationException
+     * @param  Request  $request
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function index(Business $business): View
+    public function index(Request $request)
     {
-        $this->authorize('view', $business);
 
-        $rangeArray = $this->getRangeArray();
-        $currentProjectionsRange = session()->get(
-            'projectionRangeValue_'.$business->id,
-            $this->defaultProjectionsRangeValue
-        );
+        $businessId = $request->business ?? null;
+        $this->business = Business::findOrFail($businessId);
+        $this->authorize('view', $this->business);
 
         $minDate = Carbon::now()->addWeek()->format('Y-m-d');
         $maxDate = Carbon::now()->addMonths(($this->showEntries - 1) * 3)->format('Y-m-d');
 
         return view(
-            'business.projections',
-            compact(
-                'business',
-                'rangeArray',
-                'currentProjectionsRange',
-                'minDate',
-                'maxDate'
-            )
+            'business.projections', [
+                'business' => $this->business,
+                'rangeArray' => $this->getRangeArray(),
+//                'endDate' => session()->get(
+//                    'endDate_'.$this->business->id,
+//                    Timezone::convertToLocal(Carbon::now()->addMonths(1), 'Y-m-d')
+//                ),
+                'minDate' => $minDate,
+                'maxDate' => $maxDate,
+                'currentProjectionsRange' => session()->get(
+                    'projectionRangeValue_'.$this->business->id,
+                    $this->defaultCurrentRangeValue
+                ),
+            ]
         );
+    }
+
+    public function updateData(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $this->projectionMode = 'forecast';
+
+        $this->periodInterval = $request->rangeValue ?? self::RANGE_WEEKLY;
+
+        $this->accountsSubTypes = $this->getAccountsSubTypes();
+
+        return parent::updateData($request);
+    }
+
+    protected function getAccountsSubTypes(): array
+    {
+        return [
+            '_dates' => [
+                'title' => '_self',
+                'class_tr' => 'bg-account',
+                'class_th' => 'pl-4'
+            ]
+        ];
     }
 
     /**
@@ -64,7 +84,7 @@ class ProjectionController extends Controller
      * @return \Illuminate\Http\JsonResponse
      * @throws AuthorizationException
      */
-    public function updateData(Request $request): \Illuminate\Http\JsonResponse
+    public function updateDataOld(Request $request): \Illuminate\Http\JsonResponse
     {
         $response = [
             'error' => [],
@@ -210,7 +230,7 @@ class ProjectionController extends Controller
     /**
      * @return string[]
      */
-    private function getRangeArray(): array
+    protected function getRangeArray(): array
     {
         return [
             self::RANGE_DAILY => 'Daily',
@@ -220,63 +240,63 @@ class ProjectionController extends Controller
         ];
     }
 
-    /**
-     * @param  Business  $business
-     * @return BankAccount[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Support\Collection
-     */
-    public function allocationsByDate(Business $business)
-    {
-        /**
-         *  structure as follows
-         *
-         *  "${account_id}" => dates (collection) {
-         *      "${Y-m-d}" => allocations (collection) {
-         *          App\Models\Allocation
-         *      }, ...
-         *  }, ...
-         */
+//    /**
+//     * @param  Business  $business
+//     * @return BankAccount[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Support\Collection
+//     */
+//    public function allocationsByDate(Business $business)
+//    {
+//        /**
+//         *  structure as follows
+//         *
+//         *  "${account_id}" => dates (collection) {
+//         *      "${Y-m-d}" => allocations (collection) {
+//         *          App\Models\Allocation
+//         *      }, ...
+//         *  }, ...
+//         */
+//
+//        $accounts = $this->sortAccountsByType($business->accounts);
+//
+//        return $accounts->filter(
+//            function ($account) {
+//                return $account->type != BankAccount::ACCOUNT_TYPE_REVENUE;
+//            }
+//        )->mapWithKeys(
+//            function ($account) {
+//                // return key mapped accounts
+//                return [
+//                    $account->id => collect([
+//                        'account' => $account,
+//                        'type' => $account->type,
+//                        'dates' => $account->allocations->mapWithKeys(function ($allocation) {
+//                            // return key mapped allocations
+//                            return [$allocation->allocation_date->format('Y-m-d') => $allocation];
+//                        }),
+//                        'last_val' => $account->allocations->last()->amount ?? null
+//                    ])
+//                ];
+//            }
+//        );
+//    }
 
-        $accounts = $this->sortAccountsByType($business->accounts);
+//    /**
+//     * Gets the last calculated or entered value for the account,
+//     * if no existing values (ie. there have been no allocations),
+//     * returns null.
+//     */
+//    private function getLatestValueByAccount(BankAccount $account)
+//    {
+//        return $account->allocations->sortBy('allocation_date')->last();
+//    }
 
-        return $accounts->filter(
-            function ($account) {
-                return $account->type != BankAccount::ACCOUNT_TYPE_REVENUE;
-            }
-        )->mapWithKeys(
-            function ($account) {
-                // return key mapped accounts
-                return [
-                    $account->id => collect([
-                        'account' => $account,
-                        'type' => $account->type,
-                        'dates' => $account->allocations->mapWithKeys(function ($allocation) {
-                            // return key mapped allocations
-                            return [$allocation->allocation_date->format('Y-m-d') => $allocation];
-                        }),
-                        'last_val' => $account->allocations->last()->amount ?? null
-                    ])
-                ];
-            }
-        );
-    }
-
-    /**
-     * Gets the last calculated or entered value for the account,
-     * if no existing values (ie. there have been no allocations),
-     * returns null.
-     */
-    private function getLatestValueByAccount(BankAccount $account)
-    {
-        return $account->allocations->sortBy('allocation_date')->last();
-    }
-
-    private function sortAccountsByType($accounts)
-    {
-        // returns ['revenue', 'pretotal', 'salestax', 'prereal', 'postreal']
-        $order = BankAccount::type_list();
-
-        return $accounts->sortBy(function ($account) use ($order) {
-            return array_search($account->type, $order);
-        });
-    }
+//    private function sortAccountsByType($accounts)
+//    {
+//        // returns ['revenue', 'pretotal', 'salestax', 'prereal', 'postreal']
+//        $order = BankAccount::type_list();
+//
+//        return $accounts->sortBy(function ($account) use ($order) {
+//            return array_search($account->type, $order);
+//        });
+//    }
 }

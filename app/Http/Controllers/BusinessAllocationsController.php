@@ -25,6 +25,15 @@ class BusinessAllocationsController extends Controller
     public array $accountsSubTypes = [];
     protected int $defaultCurrentRangeValue = 14;
 
+    public const RANGE_DAILY = 1;
+    public const RANGE_WEEKLY = 7;
+    public const RANGE_FORTNIGHTLY = 14;
+    public const RANGE_MONTHLY = 31;
+    public const RANGE_QUARTERLY = 93;
+
+    protected int $periodInterval = 1;
+    protected string $projectionMode = 'expense';
+
     /**
      * @param  Request  $request
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
@@ -46,10 +55,8 @@ class BusinessAllocationsController extends Controller
             'rangeArray' => $this->getRangeArray(),
             'startDate' => $startDate,
             'minDate' => Carbon::parse($minDate)->subMonths(3)->format('Y-m-d'),
-//            'maxDate' => Carbon::parse($maxDate)->subDays(31)->format('Y-m-d'),
             'maxDate' => $maxDate,
             'currentRangeValue' => session()->get('rangeValue_'.$this->business->id, $this->defaultCurrentRangeValue),
-            'projectionMode' => $request->routeIs('projection-view'),
         ]);
     }
 
@@ -76,13 +83,23 @@ class BusinessAllocationsController extends Controller
             ->first();
 
         $returnType = $request->returnType ?? 'html';
-        $startDate = $request->startDate ?? session()->get('startDate_'.$this->business->id,
-                Timezone::convertToLocal(Carbon::now(), 'Y-m-d'));
+
+        $startDate = $request->startDate ?? Timezone::convertToLocal(Carbon::now(), 'Y-m-d');
+//        $startDate = $request->startDate ?? session()->get('startDate_'.$this->business->id,
+//                Timezone::convertToLocal(Carbon::now(), 'Y-m-d'));
+
         $rangeValue = $request->rangeValue ?? $this->defaultCurrentRangeValue;
 
-        $this->complete = $rangeValue;
-        $endDate = Carbon::parse($startDate)->addDays($rangeValue - 1)->format('Y-m-d');
+        if ($this->projectionMode == 'expense') {
+            $this->complete = $rangeValue;
+        } elseif ($this->projectionMode == 'forecast') {
+            $this->complete = $this->periodInterval * 7;
+        }
+
+        $endDate = Carbon::parse($startDate)->addDays($this->complete - 1)->format('Y-m-d');
+
         $period = CarbonPeriod::create($startDate, $endDate);
+
         $this->phases = $this->business->getPhasesIdByPeriod($period);
 
         //update value of cell
@@ -100,23 +117,9 @@ class BusinessAllocationsController extends Controller
             array_unique(array_values($this->phases))
         );
 
-        $this->accountsSubTypes = [
-            '_dates' => [
-                'title' => '_self',
-                'class_tr' => 'bg-account',
-                'class_th' => 'pl-4'
-            ],
-            'transfer' => [
-                'title' => __('Transfer In'),
-                'class_tr' => 'bg-readonly',
-                'class_th' => 'pl-6',
-            ],
-            'total' => [
-                'title' => __('Flow Total'),
-                'class_tr' => 'bg-readonly',
-                'class_th' => 'pl-6',
-            ],
-        ];
+        if (empty($this->accountsSubTypes)) {
+            $this->accountsSubTypes = $this->getAccountsSubTypes();
+        }
 
         $accounts = $this->business->accounts;
         foreach ($accounts as $account) {
@@ -163,6 +166,27 @@ class BusinessAllocationsController extends Controller
             );
         }
 
+        //reset period for Forecast
+        if ($this->projectionMode == 'forecast') {
+            switch ($rangeValue) {
+                case self::RANGE_DAILY:
+                    //left as is
+                    break;
+                case self::RANGE_WEEKLY:
+                    $period = CarbonPeriod::since($startDate)->week()->until($endDate);
+                    break;
+                case self::RANGE_FORTNIGHTLY:
+                    $period = CarbonPeriod::since($startDate)->weeks(2)->until($endDate);
+                    break;
+                case self::RANGE_MONTHLY:
+                    $period = CarbonPeriod::since($startDate)->month()->until($endDate);
+                    break;
+                case self::RANGE_QUARTERLY:
+                    $period = CarbonPeriod::since($startDate)->months(3)->until($endDate);
+                    break;
+            }
+        }
+
         if ($returnType == 'html') {
             $response['html'] = view('business.business-allocations-table')
                 ->with([
@@ -172,7 +196,8 @@ class BusinessAllocationsController extends Controller
                     'period' => $period,
                     'tableData' => $tableData,
                     'rangeValue' => $rangeValue,
-                    'accountsSubTypes' => $this->accountsSubTypes
+                    'accountsSubTypes' => $this->accountsSubTypes,
+                    'projectionMode' => $this->projectionMode
                 ])->render();
 
             return response()->json($response);
@@ -183,6 +208,27 @@ class BusinessAllocationsController extends Controller
                 ]
             );
         }
+    }
+
+    protected function getAccountsSubTypes(): array
+    {
+        return [
+            '_dates' => [
+                'title' => '_self',
+                'class_tr' => 'bg-account',
+                'class_th' => 'pl-4'
+            ],
+            'transfer' => [
+                'title' => __('Transfer In'),
+                'class_tr' => 'bg-readonly',
+                'class_th' => 'pl-6',
+            ],
+            'total' => [
+                'title' => __('Flow Total'),
+                'class_tr' => 'bg-readonly',
+                'class_th' => 'pl-6',
+            ],
+        ];
     }
 
     /**
@@ -583,9 +629,9 @@ class BusinessAllocationsController extends Controller
     protected function getRangeArray(): array
     {
         return [
-            7 => 'Weekly',
-            14 => 'Fortnightly',
-            31 => 'Monthly'
+            self::RANGE_WEEKLY => 'Weekly',
+            self::RANGE_FORTNIGHTLY => 'Fortnightly',
+            self::RANGE_MONTHLY => 'Monthly'
         ];
     }
 

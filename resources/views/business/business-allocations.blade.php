@@ -3,11 +3,7 @@
         <x-cta-workflow :business="$business" :step="'allocations'"/>
         {{$business->name}}
         <x-icons.chevron-right :class="'h-4 w-auto inline-block px-2'"/>
-        @if ($projectionMode)
-            {{__('Projection Forecast')}}
-        @else
-            {{__('Expense Entry')}}
-        @endif
+        {{__('Expense Entry')}}
     </x-slot>
 
     <x-slot name="subMenu">
@@ -36,7 +32,7 @@
             </div>
 
             <x-ui.data-submit-controls class="items-center p-2"
-                                       :heightController="true" :autoSubmit="false" :projectionMode="$projectionMode"/>
+                                       :heightController="true" :autoSubmit="false" />
 
         </div>
     </x-slot>
@@ -50,17 +46,10 @@
     @endif
 
     <x-ui.main width="w-full">
-
         <div id="allocationsNewTablePlace"
-             class="relative overflow-scroll global_nice_scroll block_different_height return_coordinates_table
-             @if ($projectionMode)
-                 projection-mode
-@endif
-                 ">
+             class="relative overflow-scroll global_nice_scroll block_different_height return_coordinates_table">
             <div class="p-8 text-center opacity-50">...loading</div>
         </div>
-
-
     </x-ui.main>
 
     <x-spinner-block/>

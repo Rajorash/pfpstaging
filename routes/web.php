@@ -13,6 +13,7 @@ use App\Http\Controllers\LicenseController;
 
 //use App\Http\Controllers\ProjectionController;
 //use App\Http\Controllers\RecurringTransactionsController;
+use App\Http\Controllers\ProjectionController;
 use App\Http\Controllers\UserController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Support\Facades\Auth;
@@ -115,8 +116,13 @@ Route::group(['middleware' => 'auth'], function () {
     //ajax calls
     Route::get(
         '/business/{business}/projection-view',
-        [BusinessAllocationsController::class, 'index']
+        [ProjectionController::class, 'index']
+//        [BusinessAllocationsController::class, 'projectionForecast']
     )->name('projection-view'); //++
+        Route::post(
+        '/business/projections/ajax/update',
+        [ProjectionController::class, 'updateData']
+    )->name('projections-controller-update'); //--
 
 
 //    Route::get(

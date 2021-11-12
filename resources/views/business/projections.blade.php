@@ -1,10 +1,9 @@
 <x-app-layout>
     <x-slot name="header">
         <x-cta-workflow :business="$business" :step="'projections'"/>
-
         {{$business->name}}
         <x-icons.chevron-right :class="'h-4 w-auto inline-block px-2'"/>
-        {{__('Projections')}}
+        {{__('Projection Forecast')}}
     </x-slot>
 
     <x-slot name="subMenu">
@@ -14,6 +13,7 @@
     <x-slot name="subHeader">
         <div class="flex content-between">
             <input type="hidden" id="businessId" name="businessId" value="{{$business->id}}"/>
+
             <div class="py-2 pr-2">
                 <label for="range">{{__('Range')}}</label>
                 <select name="range" id="currentProjectionsRange" class="form-select rounded py-1 mx-3 my-0">
@@ -24,18 +24,13 @@
                 </select>
             </div>
 
-            <div class="p-2 pr-6">
-                <label class="mr-2" for="endDate">{{__('End date')}}</label>
-                <input name="endDate" id="endDate"
-                       min="{{$minDate}}" max="{{$maxDate}}"
-                       class="py-1 my-0 rounded form-input" type="date"
-                       value="">
-            </div>
-
-            <div class="mr-4 py-2">
-                <button id="recalculate_pf" class="text-center select-none border font-normal whitespace-no-wrap
-           rounded-lg py-1 px-6 leading-normal no-underline bg-blue text-white hover:bg-dark_gray2">{{__('Recalculate data for current period')}}</button>
-            </div>
+{{--            <div class="p-2">--}}
+{{--                <label class="mr-2" for="endDate">{{__('End date')}}</label>--}}
+{{--                <input name="endDate" id="endDate"--}}
+{{--                       min="{{$minDate}}" max="{{$maxDate}}"--}}
+{{--                       class="py-1 my-0 rounded form-input" type="date"--}}
+{{--                       value="{{$endDate}}">--}}
+{{--            </div>--}}
 
             <div class="py-2" style="display: none">
                 <button id="prev_page" class="text-center select-none border font-normal whitespace-no-wrap
@@ -54,7 +49,8 @@
     </x-slot>
 
     <x-ui.main width="w-full">
-        <div id="projectionsTablePlace" class="global_nice_scroll return_coordinates_table">
+        <div id="projectionsTablePlace"
+             class="relative overflow-scroll global_nice_scroll return_coordinates_table">
             <div class="p-8 text-center opacity-50">...loading</div>
         </div>
     </x-ui.main>
@@ -64,5 +60,4 @@
     <script type="text/javascript">
         window.projectionsControllerUpdate = "{{route('projections-controller-update')}}";
     </script>
-
 </x-app-layout>
