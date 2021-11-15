@@ -16,12 +16,19 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 use JamesMills\LaravelTimezone\Facades\Timezone;
+use phpDocumentor\Reflection\Types\Array_;
 
 class ProjectionController extends BusinessAllocationsController
 {
     protected int $showEntries = 14;
 
     protected int $defaultCurrentRangeValue = self::RANGE_WEEKLY;
+
+    protected string $pageDate = '';
+    protected string $way = '';
+
+    public const WAY_FUTURE = 'future';
+    public const WAY_PAST = 'past';
 
     /**
      * Display a listing of the the accounts with projection.
@@ -59,13 +66,79 @@ class ProjectionController extends BusinessAllocationsController
 
     public function updateData(Request $request): \Illuminate\Http\JsonResponse
     {
-        $this->projectionMode = 'forecast';
+        $this->projectionMode = self::PROJECTION_MODE_FORECAST;//set mode for Forecast page
 
         $this->periodInterval = $request->rangeValue ?? self::RANGE_WEEKLY;
+        $this->pageDate = $request->pageDate ?? '';
+        $this->way = $request->way ?? '';
+
+        Carbon::macro('checkDate', function ($year, $month = null, $day = null) {
+            if (isset($this)) {
+                throw new \RuntimeException('Carbon::checkDate() must be called statically.');
+            }
+
+            if ($day === null) {
+                [$year, $month, $day] = explode('-', $year);
+            }
+
+            return checkdate($month, $day, $year);
+        });
+
+        if ($this->way == self::WAY_FUTURE && $this->pageDate && Carbon::checkDate($this->pageDate)) {
+            $request->startDate = Carbon::parse($this->pageDate)->format('Y-m-d');
+        }
+        if ($this->way == self::WAY_PAST && $this->pageDate && Carbon::checkDate($this->pageDate)) {
+            $request->startDate = Carbon::parse($this->pageDate)
+                ->subDays(($this->periodInterval * $this->forecastRowsPerPeriod) - 1)
+                ->format('Y-m-d');
+        }
 
         $this->accountsSubTypes = $this->getAccountsSubTypes();
 
         return parent::updateData($request);
+    }
+
+    protected function optimizationTableData($tableData, $period): array
+    {
+        $today = Timezone::convertToLocal(Carbon::now(), 'Y-m-d');
+        $periodDates = [];
+        foreach ($period as $date) {
+            $periodDates[] = $date->format('Y-m-d');
+        }
+
+        //remove unused data
+        unset($tableData[BankAccount::ACCOUNT_TYPE_REVENUE]);
+        foreach ($tableData as $accountType => $accountsArray) {
+            foreach ($accountsArray as $accountId => $accountData) {
+                unset($accountData['flows']);
+                unset($accountData['total_db']);
+                unset($accountData['total']);
+                unset($accountData['transfer']);
+                unset($accountData['allocations']);
+                $accountData['_dates'] = array_filter($accountData['_dates'], function ($key) use ($periodDates) {
+                    return in_array($key, $periodDates);
+                }, ARRAY_FILTER_USE_KEY);
+                $tableData[$accountType][$accountId] = $accountData;
+            }
+        }
+
+        if ($today != Arr::first($periodDates)) {
+            $this->tableAttributes .= "data-left-date='".(Arr::first($periodDates))."'";
+            $title = Carbon::parse(Arr::first($periodDates))
+                    ->subDays(($this->periodInterval * $this->forecastRowsPerPeriod) - 1)
+                    ->format('d/m/Y')
+                .' - '
+                .Carbon::parse(Arr::first($periodDates))->format('d/m/Y');
+            $this->tableAttributes .= "data-left-date-title='".$title."'";
+        }
+
+        $title = Carbon::parse(Arr::last($periodDates))->format('d/m/Y')
+            .' - '.Carbon::parse(Arr::first($periodDates))
+                ->addDays(($this->periodInterval * $this->forecastRowsPerPeriod) - 1)
+                ->format('d/m/Y');
+        $this->tableAttributes .= "data-right-date='".(Arr::last($periodDates))."' data-right-date-title='".$title."'";
+
+        return $tableData;
     }
 
     protected function getAccountsSubTypes(): array

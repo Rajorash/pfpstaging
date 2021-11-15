@@ -23,11 +23,9 @@ $(function () {
 
             this.autoSubmitDataAllow = true;
 
-            this.tableId = 'projection_table';
+            this.tableId = 'projectionsTablePlace';
             this.prevPageId = 'prev_page';
             this.nextPageId = 'next_page';
-
-            this.currentPage = 1;
         }
 
         events() {
@@ -35,7 +33,8 @@ $(function () {
             super.events();
 
             $(document).on('change', '#currentProjectionsRange, #endDate', function (event) {
-                $this.currentPage = 1; //reset current page
+                $this.pageDate = null; //reset current page
+                $this.way = null; //reset current page
                 $this.loadData(event);
             });
 
@@ -46,8 +45,9 @@ $(function () {
             });
 
             $(document).on('click', '#' + $this.nextPageId, function () {
-                if ($('#' + $this.tableId).data('next-page')) {
-                    $this.currentPage = parseInt($('#' + $this.tableId).data('next-page'));
+                if ($('#' + $this.tableId).find('thead').data('right-date')) {
+                    $this.pageDate = $('#' + $this.tableId).find('thead').data('right-date');
+                    $this.way = 'future';
 
                     $this.collectData();
                     $this.ajaxLoadWorker();
@@ -57,8 +57,9 @@ $(function () {
                 return false;
             });
             $(document).on('click', '#' + $this.prevPageId, function () {
-                if ($('#' + $this.tableId).data('prev-page')) {
-                    $this.currentPage = parseInt($('#' + $this.tableId).data('prev-page'));
+                if ($('#' + $this.tableId).find('thead').data('left-date')) {
+                    $this.pageDate = $('#' + $this.tableId).find('thead').data('left-date');
+                    $this.way = 'past';
 
                     $this.collectData();
                     $this.ajaxLoadWorker();
@@ -104,9 +105,8 @@ $(function () {
 
             $this.data.businessId = $('#businessId').val();
             $this.data.rangeValue = $('#currentProjectionsRange').val();
-            // $this.data.endDate = $('#endDate').val();
-            // $this.data.recalculateAll = $this.recalculateAllDataState ? 1 : 0;
-            $this.data.page = $this.currentPage;
+            $this.data.pageDate = $this.pageDate;
+            $this.data.way = $this.way;
 
             if ($this.debug) {
                 console.log('collectData', $this.data);
@@ -116,18 +116,22 @@ $(function () {
         prevNextButtons() {
             let $this = this;
 
-            let $table = $('#' + $this.tableId);
+            let $attributePlace = $('#' + $this.tableId).find('thead');
 
-            if ($table.data('prev-page')) {
-                $('#' + $this.prevPageId).attr('title', $table.data('prev-page-title')).parent().show();
+            if ($attributePlace.data('left-date')) {
+                $('#' + $this.prevPageId).find('.place').text($attributePlace.data('left-date-title'));
+                $('#' + $this.prevPageId).parent().show();
             } else {
-                $('#' + $this.prevPageId).attr('title', '').parent().hide();
+                $('#' + $this.prevPageId).find('.place').text('');
+                $('#' + $this.prevPageId).parent().hide();
             }
 
-            if ($table.data('next-page')) {
-                $('#' + $this.nextPageId).attr('title', $table.data('next-page-title')).parent().show();
+            if ($attributePlace.data('right-date')) {
+                $('#' + $this.nextPageId).find('.place').text($attributePlace.data('right-date-title'));
+                $('#' + $this.nextPageId).parent().show();
             } else {
-                $('#' + $this.nextPageId).attr('title', '').parent().hide();
+                $('#' + $this.nextPageId).find('.place').text('');
+                $('#' + $this.nextPageId).parent().hide();
             }
         }
     }

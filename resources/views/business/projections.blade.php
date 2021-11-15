@@ -24,25 +24,19 @@
                 </select>
             </div>
 
-{{--            <div class="p-2">--}}
-{{--                <label class="mr-2" for="endDate">{{__('End date')}}</label>--}}
-{{--                <input name="endDate" id="endDate"--}}
-{{--                       min="{{$minDate}}" max="{{$maxDate}}"--}}
-{{--                       class="py-1 my-0 rounded form-input" type="date"--}}
-{{--                       value="{{$endDate}}">--}}
-{{--            </div>--}}
-
-            <div class="py-2" style="display: none">
+            <div class="py-2 mr-4" style="display: none">
                 <button id="prev_page" class="text-center select-none border font-normal whitespace-no-wrap
-           rounded-lg py-1 px-6 leading-normal no-underline bg-blue text-white hover:bg-dark_gray2">
-                    <x-icons.chevron-left :class="'h-3 w-auto inline-block'"/>{{__('prev')}}</button>
+           rounded-lg py-1 px-6 pl-3 leading-normal no-underline bg-blue text-white hover:bg-dark_gray2">
+                    <x-icons.chevron-left :class="'mr-3 h-3 w-auto inline-block'"/>
+                    <span class="place">{{__('prev')}}</span>
+                </button>
             </div>
 
             <div class="py-2" style="display: none">
                 <button id="next_page" class="text-center select-none border font-normal whitespace-no-wrap
-           rounded-lg py-1 px-6 leading-normal no-underline bg-blue text-white hover:bg-dark_gray2">
-                    {{__('next')}}
-                    <x-icons.chevron-right :class="'h-3 w-auto inline-block'"/>
+           rounded-lg py-1 px-6 pr-3 leading-normal no-underline bg-blue text-white hover:bg-dark_gray2">
+                    <span class="place">{{__('next')}}</span>
+                    <x-icons.chevron-right :class="'ml-3 h-3 w-auto inline-block'"/>
                 </button>
             </div>
         </div>

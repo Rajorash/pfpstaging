@@ -3,8 +3,9 @@
     $rowIndex = 0;
     $columnIndex = 0;
 @endphp
+
 <x-ui.table-table class="relative mb-2 cursor-fill-data">
-    <thead>
+    <thead {!! $tableAttributes !!}>
     <tr class="border-b divide-x border-light_blue">
         <x-ui.table-th class="sticky top-0 left-0 text-center"
                        baseClass="min-w-24 w-32 text-dark_gray font-normal bg-data-entry z-30">
@@ -35,9 +36,9 @@
                             {{$accountData['name']}}
                         </x-ui.table-td>
 
-                        @foreach($period as $date)
+                        @foreach($periodDates as $currentDate)
                             @php
-                                $currentDate = $date->format('Y-m-d');
+                                //$currentDate = $date->format('Y-m-d');
                                 $value = $accountData['total_db'][$currentDate] ?? 0;
                             @endphp
                             <x-ui.table-td class="text-right" padding="p-0" attr="disabled">
@@ -88,9 +89,9 @@
                                 </div>
                             </x-ui.table-td>
                             @if (array_key_exists($subType, $accountData))
-                                @foreach($period as $date)
+                                @foreach($periodDates as $currentDate)
                                     @php
-                                        $currentDate = $date->format('Y-m-d');
+                                        //$currentDate = $date->format('Y-m-d');
                                         $value = $accountData[$subType][$currentDate] ?? 0;
                                         //$columnIndex++;
                                         $manual = $subType == '_dates' ? ($accountData['manual'][$currentDate] ?? null) : null;
@@ -171,10 +172,10 @@
                                             </a>
                                         </div>
                                     </x-ui.table-td>
-                                    @foreach($period as $date)
+                                    @foreach($periodDates as $currentDate)
                                         @php
                                             $columnIndex++;
-                                            $currentDate = $date->format('Y-m-d');
+                                            //$currentDate = $date->format('Y-m-d');
                                             $value = $flowData['_dates'][$currentDate] ?? 0;
                                         @endphp
                                         <x-ui.table-td padding="p-0" class="text-right hover:bg-yellow-200">

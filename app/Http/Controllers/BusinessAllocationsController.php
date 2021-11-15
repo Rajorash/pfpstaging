@@ -32,7 +32,11 @@ class BusinessAllocationsController extends Controller
     public const RANGE_QUARTERLY = 93;
 
     protected int $periodInterval = 1;
-    protected string $projectionMode = 'expense';
+    public const PROJECTION_MODE_EXPENSE = 'expense';
+    public const PROJECTION_MODE_FORECAST = 'forecast';
+    protected string $projectionMode = self::PROJECTION_MODE_EXPENSE;
+    protected int $forecastRowsPerPeriod = 10;
+    protected string $tableAttributes = '';
 
     /**
      * @param  Request  $request
@@ -92,8 +96,8 @@ class BusinessAllocationsController extends Controller
 
         if ($this->projectionMode == 'expense') {
             $this->complete = $rangeValue;
-        } elseif ($this->projectionMode == 'forecast') {
-            $this->complete = $this->periodInterval * 7;
+        } elseif ($this->projectionMode == self::PROJECTION_MODE_FORECAST) {
+            $this->complete = $this->periodInterval * $this->forecastRowsPerPeriod;
         }
 
         $endDate = Carbon::parse($startDate)->addDays($this->complete - 1)->format('Y-m-d');
@@ -167,7 +171,7 @@ class BusinessAllocationsController extends Controller
         }
 
         //reset period for Forecast
-        if ($this->projectionMode == 'forecast') {
+        if ($this->projectionMode == self::PROJECTION_MODE_FORECAST) {
             switch ($rangeValue) {
                 case self::RANGE_DAILY:
                     //left as is
@@ -185,6 +189,13 @@ class BusinessAllocationsController extends Controller
                     $period = CarbonPeriod::since($startDate)->months(3)->until($endDate);
                     break;
             }
+
+            $tableData = $this->optimizationTableData($tableData, $period);
+        }
+
+        $periodDates = [];
+        foreach ($period as $date) {
+            $periodDates[] = $date->format('Y-m-d');
         }
 
         if ($returnType == 'html') {
@@ -194,10 +205,12 @@ class BusinessAllocationsController extends Controller
                     'rangeArray' => $this->getRangeArray(),
                     'startDate' => $startDate,
                     'period' => $period,
+                    'periodDates' => $periodDates,
                     'tableData' => $tableData,
                     'rangeValue' => $rangeValue,
                     'accountsSubTypes' => $this->accountsSubTypes,
-                    'projectionMode' => $this->projectionMode
+                    'projectionMode' => $this->projectionMode,
+                    'tableAttributes' => $this->tableAttributes
                 ])->render();
 
             return response()->json($response);
@@ -694,5 +707,10 @@ class BusinessAllocationsController extends Controller
             'accountId' => $accountId,
             'date' => $date
         ];
+    }
+
+    protected function optimizationTableData($tableData, $period)
+    {
+        return $tableData;
     }
 }
