@@ -160,6 +160,7 @@
       <path value="$PROJECT_DIR$/vendor/phpstan/phpstan" />
       <path value="$PROJECT_DIR$/vendor/wire-elements/modal" />
       <path value="$PROJECT_DIR$/vendor/livewire-ui/modal" />
+      <path value="$PROJECT_DIR$/vendor/treeware/plant" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="7.4">
