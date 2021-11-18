@@ -76,7 +76,7 @@
                                         <div class="table-cell w-3/5 pb-4 text-left">
                                             <x-ui.button-normal class="uppercase" type="button"
                                                                 onclick="this.disabled=true;this.form.submit();this.innerText='...calculating';">
-                                                {{__('Save changes and recalculate flow')}}
+                                                {{__('Save Changes for Balance')}}
                                             </x-ui.button-normal>
                                         </div>
                                     @endif

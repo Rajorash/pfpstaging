@@ -10,7 +10,7 @@
     </x-slot>
 
     <x-slot name="subHeader">
-        <x-ui.data-submit-controls :projectionMode="true"/>
+        <x-ui.data-submit-controls :projectionMode="true" :deepRecords="false"/>
     </x-slot>
 
     @if(!optional($business->license)->checkLicense)
