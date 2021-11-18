@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Allocation as Allocation;
+use App\Models\BankAccount;
 use App\Traits\GettersTrait;
 
 //use Auth;
@@ -127,9 +128,17 @@ class BusinessController extends Controller
     public function balance(Business $business)
     {
         $this->authorize('update', $business);
-        $today = Timezone::convertToLocal(Carbon::now(),'Y-m-d');
+        $today = Timezone::convertToLocal(Carbon::now(), 'Y-m-d');
 
-        $result = $balances = $bankAccountTitles = [];
+        $balances = $bankAccountTitles = [];
+
+        $result = [
+            BankAccount::ACCOUNT_TYPE_REVENUE => [],
+            BankAccount::ACCOUNT_TYPE_PRETOTAL => [],
+            BankAccount::ACCOUNT_TYPE_SALESTAX => [],
+            BankAccount::ACCOUNT_TYPE_PREREAL => [],
+            BankAccount::ACCOUNT_TYPE_POSTREAL => []
+        ];
 
         foreach ($business->accounts as $bankAccount) {
             $bankAccountTitles[$bankAccount->id] = $bankAccount->name;
@@ -137,8 +146,10 @@ class BusinessController extends Controller
             if ($bankAccount->type != 'revenue') {
                 if (count($bankAccount->allocations)) {
                     foreach ($bankAccount->allocations as $allocation) {
-                        if ($allocation->allocatable_type == "App\Models\BankAccount") {
-                            $result[$bankAccount->id][$allocation->allocation_date->format('Y-m-d')] = $allocation->amount;
+                        if ($allocation->allocatable_type == "App\Models\BankAccount"
+                            && $allocation->allocation_date->format('Y-m-d') == $today
+                        ) {
+                            $result[$bankAccount->type][$bankAccount->id][$allocation->allocation_date->format('Y-m-d')] = $allocation->amount;
                         }
                     }
                 } else {
@@ -147,12 +158,14 @@ class BusinessController extends Controller
             }
         }
 
-        foreach ($result as $bankAccountId => $allocationData) {
-            $balances[] = [
-                'title' => $bankAccountTitles[$bankAccountId],
-                'id' => $bankAccountId,
-                'amount' => $allocationData[$today] ?? 0.0
-            ];
+        foreach ($result as $typeDataResult) {
+            foreach ($typeDataResult as $bankAccountId => $allocationData) {
+                $balances[] = [
+                    'title' => $bankAccountTitles[$bankAccountId],
+                    'id' => $bankAccountId,
+                    'amount' => $allocationData[$today] ?? 0.0
+                ];
+            }
         }
 
         return view('business.balance', [
@@ -167,7 +180,7 @@ class BusinessController extends Controller
      */
     public function balanceStore(Business $business, Request $request): \Illuminate\Http\RedirectResponse
     {
-        $today = Timezone::convertToLocal(Carbon::now(),'Y-m-d');
+        $today = Timezone::convertToLocal(Carbon::now(), 'Y-m-d');
         $phaseId = $business->getPhaseIdByDate($today);
 
         //if more than 0 - we can laucnh recalculate
@@ -182,9 +195,12 @@ class BusinessController extends Controller
                 ],
             )->first();
 
-            if (!$allocation || (
-                $allocation && number_format($allocation->amount, 0) != floatval($amount)
-                )) {
+            if (
+                !$allocation || (
+                    $allocation
+                    && number_format($allocation->amount, 0) != floatval($amount)
+                )
+            ) {
                 //new record or update if amount not equal
                 $allocation = Allocation::updateOrCreate(
                     [
@@ -203,9 +219,6 @@ class BusinessController extends Controller
         }
 
         if ($howManyChanges > 0) {
-            $endDate = Carbon::parse($today)->addDays(31)->format('Y-m-d');
-            $allocationsCalendar = new AllocationsCalendar();
-            $allocationsCalendar->getGridData(31, $today, $endDate, $business->id);
             session()->flash('status', "Updated accounts: ".$howManyChanges);
         } else {
             session()->flash('status', "Nothing to update");
