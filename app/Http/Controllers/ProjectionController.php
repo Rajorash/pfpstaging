@@ -133,7 +133,7 @@ class ProjectionController extends BusinessAllocationsController
         }
 
         $title = Carbon::parse(Arr::last($periodDates))->format('d/m/Y')
-            .' - '.Carbon::parse(Arr::first($periodDates))
+            .' - '.Carbon::parse(Arr::last($periodDates))
                 ->addDays(($this->periodInterval * $this->forecastRowsPerPeriod) - 1)
                 ->format('d/m/Y');
         $this->tableAttributes .= "data-right-date='".(Arr::last($periodDates))."' data-right-date-title='".$title."'";
