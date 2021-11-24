@@ -1,4 +1,11 @@
 <x-app-layout>
+
+    <x-slot name="titleHeader">
+        {{$business->name}}
+        &gt;
+        {{__('Projection Forecast')}}
+    </x-slot>
+
     <x-slot name="header">
         <x-cta-workflow :business="$business" :step="'projections'"/>
         {{$business->name}}

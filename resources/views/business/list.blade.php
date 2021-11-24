@@ -1,5 +1,9 @@
 <x-app-layout>
 
+    <x-slot name="$titleHeader">
+        {{ __('Businesses') }}
+    </x-slot>
+
     <x-slot name="header">
         {{ __('Businesses') }}
     </x-slot>

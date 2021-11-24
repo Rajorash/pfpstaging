@@ -1,4 +1,9 @@
 <x-app-layout>
+
+    <x-slot name="titleHeader">
+        {{ __('Maintenance') }}
+    </x-slot>
+
     <x-slot name="header">
         {{ __('Maintenance') }}
     </x-slot>

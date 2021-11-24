@@ -229,17 +229,17 @@ class BusinessAllocationsController extends Controller
             '_dates' => [
                 'title' => '_self',
                 'class_tr' => 'bg-account',
-                'class_th' => 'pl-4'
+                'class_th' => 'pl-2',
             ],
             'transfer' => [
                 'title' => __('Transfer In'),
                 'class_tr' => 'bg-readonly',
-                'class_th' => 'pl-6',
+                'class_th' => 'pl-4',
             ],
             'total' => [
                 'title' => __('Flow Total'),
                 'class_tr' => 'bg-readonly',
-                'class_th' => 'pl-6',
+                'class_th' => 'pl-4',
             ],
         ];
     }

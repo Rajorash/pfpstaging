@@ -525,15 +525,21 @@ export class calculatorCore {
 
         switch ($('#' + $this.showRowsLevelID).val()) {
             case '1':
+                $('.level_1 .show_sub-elements').addClass('hidden');
+                $('.level_1 .hide_sub-elements').removeClass('hidden');
                 $('.level_2, .level_3').hide();
                 $showRowsLevelSelectorSpan.text($this.showRowsLevelTitles[1]);
                 break;
             case '2':
                 $('.level_2').show();
+                $('.level_2 .show_sub-elements').addClass('hidden');
+                $('.level_2 .hide_sub-elements').removeClass('hidden');
                 $('.level_3').hide();
                 $showRowsLevelSelectorSpan.text($this.showRowsLevelTitles[2]);
                 break;
             case '3':
+                $('.show_sub-elements').removeClass('hidden');
+                $('.hide_sub-elements').addClass('hidden');
                 $('.level_2, .level_3').show();
                 $showRowsLevelSelectorSpan.text($this.showRowsLevelTitles[3]);
                 break;

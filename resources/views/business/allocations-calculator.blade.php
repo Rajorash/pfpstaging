@@ -1,18 +1,29 @@
 <x-app-layout>
+
+    <x-slot name="titleHeader">
+        {{$business->name}}
+        &gt;
+        @if (request()->routeIs('projection-view'))
+            {{__('Projections')}}
+        @else
+            {{__('Allocations')}}
+        @endif
+    </x-slot>
+
     <x-slot name="header">
         <x-cta-workflow :business="$business"
-            @if (request()->routeIs('projection-view'))
-            step="projections"
-            @else
-            step="allocations"
+                        @if (request()->routeIs('projection-view'))
+                        step="projections"
+                        @else
+                        step="allocations"
             @endif
         />
         {{$business->name}}
         <x-icons.chevron-right :class="'h-4 w-auto inline-block px-2'"/>
         @if (request()->routeIs('projection-view'))
-        {{__('Projections')}}
+            {{__('Projections')}}
         @else
-        {{__('Allocations')}}
+            {{__('Allocations')}}
         @endif
     </x-slot>
 
@@ -40,7 +51,8 @@
             </div>
 
             @if (!request()->routeIs('projection-view'))
-            <x-ui.data-submit-controls class="items-center p-2" :heightController="true" :forecastController="true"/>
+                <x-ui.data-submit-controls class="items-center p-2" :heightController="true"
+                                           :forecastController="true"/>
             @endif
         </div>
     </x-slot>

@@ -1,4 +1,16 @@
 <x-app-layout>
+
+    <x-slot name="titleHeader">
+        @if (Auth::user()->isRegionalAdmin()
+             && !Auth::user()->isSuperAdmin()
+             && !Auth::user()->isAdvisor()
+             && !Auth::user()->isClient())
+            {{ __('Advisors') }}
+        @else
+            {{ __('Users') }}
+        @endif
+    </x-slot>
+
     <x-slot name="header">
         @if (Auth::user()->isRegionalAdmin()
              && !Auth::user()->isSuperAdmin()

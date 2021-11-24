@@ -41,6 +41,27 @@ $(function () {
             $(document).on('change', '#allocationsNewTablePlace input', function (event) {
                 $this.updateValue(event);
             });
+
+            $(document).on('click', '.show_hide_sub-elements', function () {
+                let $elementThis = $(this);
+
+                let $currentStateIsOpen = $elementThis.hasClass('opened');
+                let $accountId = $elementThis.data('account_id');
+
+                let $classNameToProcess = $elementThis.closest('tr').hasClass('level_1') ? '.level_2' : '.level_3';
+
+                if ($currentStateIsOpen) {
+                    $($classNameToProcess + '[data-account_id="' + $accountId + '"]').hide();
+                    $elementThis.find('.hide_sub-elements').removeClass('hidden');
+                    $elementThis.find('.show_sub-elements').addClass('hidden');
+                    $elementThis.removeClass('opened');
+                } else {
+                    $($classNameToProcess + '[data-account_id="' + $accountId + '"]').show();
+                    $elementThis.find('.hide_sub-elements').addClass('hidden');
+                    $elementThis.find('.show_sub-elements').removeClass('hidden');
+                    $elementThis.addClass('opened');
+                }
+            });
         }
 
         updateValue(event) {

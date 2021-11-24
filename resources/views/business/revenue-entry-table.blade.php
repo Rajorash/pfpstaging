@@ -23,7 +23,7 @@
 
     <x-ui.table-tbody>
         <tr class="divide-x border-light_blue level_1">
-            <x-ui.table-td padding="p-1 pl-2"
+            <x-ui.table-td padding="p-1 pl-4"
                            baseClass="text-dark_gray sticky left-0 z-10 bg-atlantis-200">
                 {{__('Revenue')}}
             </x-ui.table-td>

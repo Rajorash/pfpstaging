@@ -1,5 +1,11 @@
 <x-app-layout>
 
+    <x-slot name="titleHeader">
+        {{$business->name}}
+        &gt;
+        {{__('Create Account')}}
+    </x-slot>
+
     <x-slot name="header">
         {{$business->name}}
         <x-icons.chevron-right :class="'h-4 w-auto inline-block px-2'"/>

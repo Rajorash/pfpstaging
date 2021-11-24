@@ -65,17 +65,34 @@
             @if($accountType != \App\Models\BankAccount::ACCOUNT_TYPE_REVENUE)
                 @foreach ($accountsArray as $accountId => $accountData)
                     @foreach ($accountsSubTypes as $subType => $subTypeArray)
-                        <tr class="divide-x border-light_blue {{$subTypeArray['class_tr']}}
-                        @if($subType == '_dates') level_1 @else level_2 @endif">
+                        <tr data-account_id="{{$accountId}}"
+                            class="divide-x border-light_blue {{$subTypeArray['class_tr']}}
+                            @if($subType == '_dates') level_1 @else level_2 @endif">
                             <x-ui.table-td padding="p-1 {{$subTypeArray['class_tr']}} {{$subTypeArray['class_th']}}"
                                            baseClass="text-dark_gray sticky left-0 z-10">
                                 <div class="flex mr-auto">
+                                    @if ($subType == 'total' || $subType == '_dates')
+                                        <div data-account_id="{{$accountId}}"
+                                             class="inline-flex show_hide_sub-elements mr-2 opacity-50 hover:opacity-100 transition-all text-gray-700 opened">
+                                            <span class="show_sub-elements">
+                                                <x-icons.chevron-circle-down
+                                                    class="w-3 h-auto inline-block align-middle"/>
+                                            </span>
+                                            <span class="hide_sub-elements hidden">
+                                                <x-icons.chevron-circle-up
+                                                    class="w-3 h-auto inline-block align-middle"/>
+                                            </span>
+                                        </div>
+                                    @else
+                                        <div class="w-3 mr-2"></div>
+                                    @endif
+
                                     @if($subType == '_dates')
                                         <div class="inline-flex pr-4 whitespace-nowrap">
                                             {{$accountData['name']}}
                                         </div>
                                         @if ($projectionMode == 'expense')
-                                            <a onclick="Livewire.emit('openModal', 'modal-flow',  {{ json_encode(['accountId' => $accountId, 'flowId' => 0, 'defaultNegative' => true]) }})"
+                                            <a onclick="Livewire.emit('openModal', 'modal-flow', {{ json_encode(['accountId' => $accountId, 'flowId' => 0, 'defaultNegative' => true]) }})"
                                                title="Create new flow for {{$accountData['name']}}"
                                                class="ml-auto cursor-pointer add-flow-btn">
                                                 <x-icons.add-border class="inline-flex h-4"/>
@@ -144,9 +161,10 @@
                                     $rowIndex++;
                                     $columnIndex = 0;
                                 @endphp
-                                <tr class="divide-x bg-data-entry hover:bg-yellow-100 border-light_blue level_3">
+                                <tr data-account_id="{{$accountId}}"
+                                    class="divide-x bg-data-entry hover:bg-yellow-100 border-light_blue level_3">
                                     <x-ui.table-td padding="p-1 pr-2 pl-4"
-                                                   class="sticky left-0 z-10 text-left bg-data-entry whitespace-nowrap ">
+                                                   class="sticky left-0 z-10 text-left bg-data-entry whitespace-nowrap">
                                         <div class="flex mr-auto">
                                             <div
                                                 class="inline-flex

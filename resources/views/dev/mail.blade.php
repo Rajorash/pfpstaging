@@ -1,5 +1,9 @@
 <x-app-layout>
 
+    <x-slot name="titleHeader">
+        {{ __('Dev Mail List') }}
+    </x-slot>
+
     <x-slot name="header">
         {{ __('Dev Mail List') }}
     </x-slot>
