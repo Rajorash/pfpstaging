@@ -63,7 +63,7 @@
                                                 type="text"
                                                 class="w-full text-right"
                                                 autocomplete="off"
-                                                value="{{number_format($balance['amount'], 0)}}"
+                                                value="{{number_format($balance['amount'], 0, '', '')}}"
                                             />
                                         </div>
                                     </div>

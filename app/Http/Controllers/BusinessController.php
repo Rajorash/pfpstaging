@@ -153,18 +153,20 @@ class BusinessController extends Controller
                         }
                     }
                 } else {
-                    $result[$bankAccount->id][$today] = 0;
+                    $result[$bankAccount->type][$bankAccount->id][$today] = 0;
                 }
             }
         }
 
         foreach ($result as $typeDataResult) {
             foreach ($typeDataResult as $bankAccountId => $allocationData) {
-                $balances[] = [
-                    'title' => $bankAccountTitles[$bankAccountId],
-                    'id' => $bankAccountId,
-                    'amount' => $allocationData[$today] ?? 0.0
-                ];
+                if (array_key_exists($bankAccountId, $bankAccountTitles)) {
+                    $balances[] = [
+                        'title' => $bankAccountTitles[$bankAccountId],
+                        'id' => $bankAccountId,
+                        'amount' => $allocationData[$today] ?? 0.0
+                    ];
+                }
             }
         }
 

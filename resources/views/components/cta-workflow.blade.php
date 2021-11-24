@@ -36,7 +36,7 @@
             break;
     }
 @endphp
-<div class="absolute top-0 right-0 z-50 w-full px-4 sm:px-6 lg:px-8">
+<div class="absolute top-0 right-0 z-30 w-full px-4 sm:px-6 lg:px-8">
     @if($prev)
         <a href="{{$prev}}" title="@if($prevText) Back to {{$prevText}} @endif"
            class="float-left px-4 py-1 text-base text-white rounded-bl rounded-br opacity-70 hover:opacity-100 bg-blue hover:bg-dark_gray">
