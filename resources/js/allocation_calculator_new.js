@@ -48,15 +48,19 @@ $(function () {
                 let $currentStateIsOpen = $elementThis.hasClass('opened');
                 let $accountId = $elementThis.data('account_id');
 
-                let $classNameToProcess = $elementThis.closest('tr').hasClass('level_1') ? '.level_2' : '.level_3';
+                let $classNameToProcess = $elementThis.closest('tr').hasClass('level_1')
+                    ? '.level_2' + '[data-account_id="' + $accountId + '"],'
+                    : '';
+
+                $classNameToProcess += '.level_3' + '[data-account_id="' + $accountId + '"]';
 
                 if ($currentStateIsOpen) {
-                    $($classNameToProcess + '[data-account_id="' + $accountId + '"]').hide();
+                    $($classNameToProcess).hide();
                     $elementThis.find('.hide_sub-elements').removeClass('hidden');
                     $elementThis.find('.show_sub-elements').addClass('hidden');
                     $elementThis.removeClass('opened');
                 } else {
-                    $($classNameToProcess + '[data-account_id="' + $accountId + '"]').show();
+                    $($classNameToProcess).show();
                     $elementThis.find('.hide_sub-elements').addClass('hidden');
                     $elementThis.find('.show_sub-elements').removeClass('hidden');
                     $elementThis.addClass('opened');
