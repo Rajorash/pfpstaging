@@ -144,16 +144,15 @@ class BusinessController extends Controller
             $bankAccountTitles[$bankAccount->id] = $bankAccount->name;
             //TODO: check if we need this check
             if ($bankAccount->type != 'revenue') {
+                $result[$bankAccount->type][$bankAccount->id][$today] = 0;
                 if (count($bankAccount->allocations)) {
                     foreach ($bankAccount->allocations as $allocation) {
-                        if ($allocation->allocatable_type == "App\Models\BankAccount"
-                            && $allocation->allocation_date->format('Y-m-d') == $today
-                        ) {
-                            $result[$bankAccount->type][$bankAccount->id][$allocation->allocation_date->format('Y-m-d')] = $allocation->amount;
+                        if ($allocation->allocatable_type == "App\Models\BankAccount") {
+                            if ($allocation->allocation_date->format('Y-m-d') == $today) {
+                                $result[$bankAccount->type][$bankAccount->id][$allocation->allocation_date->format('Y-m-d')] = $allocation->amount;
+                            }
                         }
                     }
-                } else {
-                    $result[$bankAccount->type][$bankAccount->id][$today] = 0;
                 }
             }
         }

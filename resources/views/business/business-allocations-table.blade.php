@@ -14,8 +14,8 @@
 
         @foreach($period as $date)
             <x-ui.table-th
-                class="text-center {{ $date->isToday() ? 'text-blue': 'text-dark_gray' }} sticky top-0"
-                baseClass="min-w-24 font-normal bg-data-entry z-20">
+                class="text-center text-dark_gray sticky top-0 {{ $date->isToday() ? 'font-bold': '' }}"
+                baseClass="min-w-24 font-normal z-20 {{ $date->isToday() ? 'bg-light_blue': 'bg-data-entry' }}">
                 <span class="block text-xs font-normal">{{$date->format('M Y')}}</span>
                 <span class="block text-xl">{{$date->format('j')}}</span>
                 <span class="block text-xs font-normal">{{$date->format('D')}}</span>
