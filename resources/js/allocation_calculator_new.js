@@ -21,6 +21,8 @@ $(function () {
             this.heightMode = $.cookie('allocation_heightMode') !== undefined
                 ? $.cookie('allocation_heightMode')
                 : this.heightModeDefault;
+
+            this.openModalPreviousState = {};
         }
 
         events() {
@@ -36,6 +38,10 @@ $(function () {
 
             Livewire.on('reloadRevenueTable', function () {
                 $this.firstLoadData();
+            })
+
+            Livewire.on('openModal', function (type, params) {
+                $this.openModalPreviousState = params;
             })
 
             $(document).on('change', '#allocationsNewTablePlace input', function (event) {
@@ -196,6 +202,25 @@ $(function () {
             let $this = this;
 
             $this.dragAdnDropValues();
+            $this.scrollToLatestOpenModal();
+        }
+
+        scrollToLatestOpenModal() {
+            let $this = this;
+
+            if ($this.debug) {
+                console.log('scrollToLatestOpenModal');
+            }
+
+            if ($this.openModalPreviousState && $this.openModalPreviousState.hasOwnProperty('accountId')) {
+                let $accountOffset = $('tr[data-account_id="' + $this.openModalPreviousState.accountId + '"]').offset();
+
+                if ($accountOffset.hasOwnProperty('top')) {
+                    if ($this.heightMode === 'full') {
+                        $(window).scrollTop($accountOffset.top - 50);
+                    }
+                }
+            }
         }
     }
 
