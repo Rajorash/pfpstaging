@@ -6,13 +6,13 @@
             <span id="processCounter" class="hidden text-xs font-normal opacity-50"></span>
         </x-ui.table-th>
 
-        @foreach($period as $date)
+        @foreach($period as $dateRow)
             @php
-                $date = Carbon\Carbon::parse($date, 'Y-m-d H:i:s');
+                $date = Carbon\Carbon::parse($dateRow, 'Y-m-d');
             @endphp
             <x-ui.table-th
-                class="text-center text-dark_gray sticky top-0 {{ $date->isToday() ? 'font-bold': '' }}"
-                baseClass="min-w-24 font-normal z-20 {{ $date->isToday() ? 'bg-light_blue': 'bg-data-entry' }}">
+                class="text-center text-dark_gray sticky top-0 {{ $date == $todayShort ? 'font-bold': '' }}"
+                baseClass="min-w-24 font-normal z-20 {{ $date == $todayShort ? 'bg-light_blue': 'bg-data-entry' }}">
                 <span class="block text-xs font-normal">{{$date->format('M Y')}}</span>
                 <span class="block text-xl">{{$date->format('j')}}</span>
                 <span class="block text-xs font-normal">{{$date->format('D')}}</span>

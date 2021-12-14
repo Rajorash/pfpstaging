@@ -38,13 +38,13 @@ class ProjectionController extends BusinessAllocationsController
      */
     public function index(Request $request)
     {
-
         $businessId = $request->business ?? null;
         $this->business = Business::findOrFail($businessId);
         $this->authorize('view', $this->business);
 
-        $minDate = Carbon::now()->addWeek()->format('Y-m-d');
-        $maxDate = Carbon::now()->addMonths(($this->showEntries - 1) * 3)->format('Y-m-d');
+        $today = Timezone::convertToLocal(Carbon::now(), 'Y-m-d H:i:s');
+        $minDate = Carbon::parse($today)->addWeek()->format('Y-m-d');
+        $maxDate = Carbon::parse($today)->addMonths(($this->showEntries - 1) * 3)->format('Y-m-d');
 
         return view(
             'business.projections', [
@@ -207,10 +207,10 @@ class ProjectionController extends BusinessAllocationsController
             //default behaviour
 
             // start date is shown, so adjust end_date -1 to compensate
-            $end_date = Carbon::now()->$addDateStep($this->showEntries - 1);
+            $end_date = Carbon::parse($today)->$addDateStep($this->showEntries - 1);
 
             if ($rangeValue == self::RANGE_QUARTERLY) {
-                $end_date = Carbon::now()->addMonths(($this->showEntries - 1) * 3);
+                $end_date = Carbon::parse($today)->addMonths(($this->showEntries - 1) * 3);
             }
         }
 

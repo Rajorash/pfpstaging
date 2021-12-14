@@ -49,10 +49,12 @@ class BusinessAllocationsController extends Controller
         $this->business = Business::findOrFail($businessId);
         $this->authorize('view', $this->business);
 
+        $today = \JamesMills\LaravelTimezone\Timezone::convertToLocal(Carbon::now(), 'Y-m-d H:i:s');
 //        $maxDate = $this->business->rollout()->max('end_date');
-        $maxDate = Carbon::now()->addYears(5)->format('Y-m-d');
+        $maxDate = Carbon::parse($today)->addYears(5)->format('Y-m-d');
         $minDate = $this->business->rollout()->min('end_date');
-        $startDate = session()->get('startDate_'.$this->business->id, Timezone::convertToLocal(Carbon::now(), 'Y-m-d'));
+        $startDate = session()->get('startDate_'.$this->business->id,
+            Carbon::parse($today)->addDays(-4)->format('Y-m-d'));
 
         return view('business.business-allocations', [
             'business' => $this->business,
@@ -87,8 +89,15 @@ class BusinessAllocationsController extends Controller
             ->first();
 
         $returnType = $request->returnType ?? 'html';
+        $today = Timezone::convertToLocal(Carbon::now(), 'Y-m-d H:i:s');
+        $todayShort = Timezone::convertToLocal(Carbon::now(), 'Y-m-d').' 00:00:00';
 
-        $startDate = $request->startDate ?? Timezone::convertToLocal(Carbon::now(), 'Y-m-d');
+        if ($this->projectionMode == self::PROJECTION_MODE_FORECAST) {
+            $startDate = $request->startDate ?? Carbon::parse($today)->format('Y-m-d');
+        } else {
+            $startDate = $request->startDate ?? Carbon::parse($today)->addDays(-4)->format('Y-m-d');
+        }
+
 //        $startDate = $request->startDate ?? session()->get('startDate_'.$this->business->id,
 //                Timezone::convertToLocal(Carbon::now(), 'Y-m-d'));
 
@@ -210,7 +219,9 @@ class BusinessAllocationsController extends Controller
                     'rangeValue' => $rangeValue,
                     'accountsSubTypes' => $this->accountsSubTypes,
                     'projectionMode' => $this->projectionMode,
-                    'tableAttributes' => $this->tableAttributes
+                    'tableAttributes' => $this->tableAttributes,
+                    'today' => $today,
+                    'todayShort' => $todayShort
                 ])->render();
 
             return response()->json($response);

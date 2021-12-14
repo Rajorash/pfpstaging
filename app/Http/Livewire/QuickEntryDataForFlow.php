@@ -69,12 +69,13 @@ class QuickEntryDataForFlow extends Component
         $this->weekDaysArray = RecurringTransactions::getWeekDaysArray();
 
         $this->value = 0;
-        $this->date_start = Timezone::convertToLocal(Carbon::now(), 'Y-m-d');
-        $this->date_end = Timezone::convertToLocal(Carbon::now()->addMonths(3), 'Y-m-d');
+        $today = Timezone::convertToLocal(Carbon::now(), 'Y-m-d H:i:s');
+        $this->date_start = Carbon::parse($today)->format('Y-m-d');
+        $this->date_end = Timezone::convertToLocal(Carbon::parse($today)->addMonths(3), 'Y-m-d');
         $this->repeat_every_number = 1;
         $this->repeat_every_type = RecurringTransactions::REPEAT_DEFAULT;
         $this->repeat_rules_week_days = [
-            strtolower(Carbon::now()->format('l'))
+            strtolower(Carbon::parse($today)->format('l'))
         ];
 
         $recurring = $this->_updateRecurringObject();

@@ -14,8 +14,8 @@
 
         @foreach($period as $date)
             <x-ui.table-th
-                class="text-center text-dark_gray sticky top-0 {{ $date->isToday() ? 'font-bold': '' }}"
-                baseClass="min-w-24 font-normal z-20 {{ $date->isToday() ? 'bg-light_blue': 'bg-data-entry' }}">
+                class="text-center text-dark_gray sticky top-0 {{ $date == $todayShort ? 'font-bold': '' }}"
+                baseClass="min-w-24 font-normal z-20 {{ $date == $todayShort ? 'bg-light_blue': 'bg-data-entry' }}">
                 <span class="block text-xs font-normal">{{$date->format('M Y')}}</span>
                 <span class="block text-xl">{{$date->format('j')}}</span>
                 <span class="block text-xs font-normal">{{$date->format('D')}}</span>
@@ -38,7 +38,6 @@
 
                         @foreach($periodDates as $currentDate)
                             @php
-                                //$currentDate = $date->format('Y-m-d');
                                 $value = $accountData['total_db'][$currentDate] ?? 0;
                             @endphp
                             <x-ui.table-td class="text-right" padding="p-0" attr="disabled">
@@ -57,10 +56,6 @@
 
         @endif
 
-        @php
-            //$rowIndex++;
-        @endphp
-
         @foreach ($tableData as $accountType => $accountsArray)
             @if($accountType != \App\Models\BankAccount::ACCOUNT_TYPE_REVENUE)
                 @foreach ($accountsArray as $accountId => $accountData)
@@ -71,7 +66,7 @@
                             <x-ui.table-td padding="p-1 {{$subTypeArray['class_tr']}} {{$subTypeArray['class_th']}}"
                                            baseClass="text-dark_gray sticky left-0 z-10">
                                 <div class="flex mr-auto">
-                                    @if ($subType == 'total' || $subType == '_dates')
+                                    @if (($subType == 'total' || $subType == '_dates') && $projectionMode == 'expense')
                                         <div data-account_id="{{$accountId}}"
                                              class="inline-flex show_hide_sub-elements mr-2 opacity-50 hover:opacity-100 transition-all text-gray-700 opened">
                                             <span class="show_sub-elements">
@@ -84,7 +79,11 @@
                                             </span>
                                         </div>
                                     @else
-                                        <div class="w-3 mr-2"></div>
+                                        @if ($projectionMode == 'expense')
+                                            <div class="w-3 mr-2"></div>
+                                        @else
+                                            <div class="w-1 mr-0"></div>
+                                        @endif
                                     @endif
 
                                     @if($subType == '_dates')

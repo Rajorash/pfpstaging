@@ -72,12 +72,12 @@ class PipelineLivewire extends Component
         } else {
             $this->value = 0;
             $this->recurring = false;
-            $this->date_start = Timezone::convertToLocal(Carbon::now(), 'Y-m-d');
+            $this->date_start = $today = Timezone::convertToLocal(Carbon::now(), 'Y-m-d');
             $this->certainty = Pipeline::DEFAULT_CERTAINTY;
             $this->repeat_every_number = 1;
             $this->repeat_every_type = Pipeline::REPEAT_DEFAULT;
             $this->repeat_rules_week_days = [
-                strtolower(Carbon::now()->format('l'))
+                strtolower(Carbon::parse($today)->format('l'))
             ];
         }
 

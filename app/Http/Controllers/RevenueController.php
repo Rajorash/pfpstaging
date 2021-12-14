@@ -10,6 +10,7 @@ use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use JamesMills\LaravelTimezone\Timezone;
 
 class RevenueController extends Controller
 {
@@ -26,11 +27,13 @@ class RevenueController extends Controller
     {
         $this->business = Business::where('id', $request->business)->with('rollout')->first();
 
+        $today = Timezone::convertToLocal(Carbon::now(), 'Y-m-d H:i:s');
         $maxDate = $this->business->rollout()->max('end_date');
         $minDate = $this->business->rollout()->min('end_date');
 
         $startDate = $request->startDate
-            ?? session()->get('revenue_startDate'.$this->business->id, Carbon::now()->format('Y-m-d'));
+            ?? session()->get('revenue_startDate'.$this->business->id,
+                Carbon::parse($today)->addDays(-4)->format('Y-m-d'));
         $rangeValue = $request->rangeValue
             ?? session()->get('revenue_rangeValue_'.$this->business->id, $this->defaultCurrentRangeValue);
         $endDate = Carbon::parse($startDate)->addDays($rangeValue)->format('Y-m-d');
@@ -42,7 +45,8 @@ class RevenueController extends Controller
             'currentRangeValue' => $rangeValue,
             'period' => CarbonPeriod::create($startDate, $endDate),
             'minDate' => Carbon::parse($minDate)->subMonths(3)->format('Y-m-d'),
-            'maxDate' => Carbon::parse($maxDate)->subDays(31)->format('Y-m-d')
+            'maxDate' => Carbon::parse($maxDate)->subDays(31)->format('Y-m-d'),
+            'today' => $today
         ]);
     }
 
@@ -63,11 +67,15 @@ class RevenueController extends Controller
             $response['error'][] = 'BusinessId not found';
         }
 
+        $today = Timezone::convertToLocal(Carbon::now(), 'Y-m-d H:i:s');
+        $todayShort = Timezone::convertToLocal(Carbon::now(), 'Y-m-d').' 00:00:00';
+
         if ($businessId) {
             $this->business = Business::where('id', $businessId)->with('rollout')->first();
 
             $startDate = $request->startDate
-                ?? session()->get('revenue_startDate'.$this->business->id, Carbon::now()->format('Y-m-d'));
+                ?? session()->get('revenue_startDate'.$this->business->id,
+                    Carbon::parse($today)->addDays(-4)->format('Y-m-d'));
             $rangeValue = $request->rangeValue
                 ?? session()->get('revenue_rangeValue_'.$this->business->id, $this->defaultCurrentRangeValue);
             $endDate = Carbon::parse($startDate)->addDays($rangeValue)->format('Y-m-d');
@@ -113,11 +121,14 @@ class RevenueController extends Controller
                     'business' => $this->business,
                     'tableData' => $tableData,
                     'period' => CarbonPeriod::create($startDate, $endDate),
+                    'today' => $today,
+                    'todayShort' => $todayShort
                 ])->render();
         }
 
         return response()->json($response);
     }
+
     /**
      * @param  Request  $request
      * @return JsonResponse
