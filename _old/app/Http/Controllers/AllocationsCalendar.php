@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Business;
 use App\Traits\GettersTrait;
+use App\Traits\TablesTrait;
 use Carbon\Carbon;
 use Config;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -14,11 +15,9 @@ use Carbon\CarbonPeriod;
 use Illuminate\Support\Facades\Cache;
 use JamesMills\LaravelTimezone\Facades\Timezone;
 
-//use function PHPUnit\Framework\containsIdentical;
-
 class AllocationsCalendar extends Controller
 {
-    use GettersTrait;
+    use GettersTrait, TablesTrait;
 
     protected int $defaultCurrentRangeValue = 14;
     protected ?Business $business = null;
@@ -34,12 +33,12 @@ class AllocationsCalendar extends Controller
         $minDate = $this->business->rollout()->min('end_date');
         $startDate = session()->get('startDate_'.$this->business->id, Timezone::convertToLocal(Carbon::now(), 'Y-m-d'));
 
-        $this->pushRecurringTransactionData(
-            $this->business->id,
-            $startDate,
-            Carbon::now()->addMonths(13)->format('Y-m-d'),
-            true
-        );
+//        $this->pushRecurringTransactionData(
+//            $this->business->id,
+//            $startDate,
+//            Carbon::now()->addMonths(13)->format('Y-m-d'),
+//            true
+//        );
 
         $data = [
             'rangeArray' => $this->getRangeArray(),
@@ -53,65 +52,6 @@ class AllocationsCalendar extends Controller
         return view('business.allocations-calculator', $data);
     }
 
-    private function getRangeArray(): array
-    {
-        return [
-            7 => 'Weekly',
-            14 => 'Fortnightly',
-            31 => 'Monthly'
-        ];
-    }
-
-    public function store($cells, bool $checkIsValuePresent = false)
-    {
-        if (is_array($cells) && count($cells) > 0) {
-            foreach ($cells as $singleCell) {
-                preg_match('/(\w+)_(\d+)_(\d{4}-\d{2}-\d{2})/', $singleCell['cellId'], $matches);
-                $allocation_id = (integer) $matches[2];
-                $date = $matches[3];
-                $value = (float) $singleCell['cellValue'];
-
-                $this->storeSingle(
-                    $matches[1],
-                    $allocation_id,
-                    $value,
-                    $date,
-                    ($matches[1] == 'account'),
-                    $checkIsValuePresent
-                );
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * Validate and store the Allocation
-     * @param  string  $type
-     * @param  int  $allocation_id
-     * @param $amount
-     * @param  string  $date
-     * @param  bool  $manual_entry
-     * @param  bool  $checkIsValuePresent
-     */
-    public function storeSingle(
-        string $type,
-        int $allocation_id,
-        $amount,
-        string $date,
-        bool $manual_entry = false,
-        bool $checkIsValuePresent = false
-    ) {
-        $phaseId = $this->business->getPhaseIdByDate($date);
-
-        if ($type == 'flow') {
-            $account = $this->getFlowAccount($allocation_id);
-        } else {
-            $account = $this->getBankAccount($allocation_id);
-        }
-
-        $account->allocate($amount, $date, $phaseId, $manual_entry, $checkIsValuePresent);
-    }
 
     /**
      * @throws AuthorizationException
@@ -159,18 +99,18 @@ class AllocationsCalendar extends Controller
 
         $this->store($cells);
 
-        $RecurringTransactionsController = new RecurringTransactionsController();
-        $recurring = [];
-        $rawData = $this->getRawData($businessId, $startDate, $endDate);
-        foreach ($rawData as $account_item) {
-            foreach ($account_item->flows as $key => $value) {
-                $recurring[$value->id] = null;
-                if ($value->recurringTransactions->count()) {
-                    $recurring[$value->id] = $RecurringTransactionsController
-                        ->getAllFlowsForecasts($value->recurringTransactions, $startDate, $endDate);
-                }
-            }
-        }
+//        $RecurringTransactionsController = new RecurringTransactionsController();
+//        $recurring = [];
+//        $rawData = $this->getRawData($businessId, $startDate, $endDate);
+//        foreach ($rawData as $account_item) {
+//            foreach ($account_item->flows as $key => $value) {
+//                $recurring[$value->id] = null;
+//                if ($value->recurringTransactions->count()) {
+//                    $recurring[$value->id] = $RecurringTransactionsController
+//                        ->getAllFlowsForecasts($value->recurringTransactions, $startDate, $endDate);
+//                }
+//            }
+//        }
 
         $tableData = $this->getGridData($rangeValue, $startDate, $endDate, $businessId);
 
@@ -182,7 +122,7 @@ class AllocationsCalendar extends Controller
                 'startDate' => Carbon::parse($startDate),
                 'range' => $rangeValue,
                 'business' => $business,
-                'recurring' => $recurring
+//                'recurring' => $recurring
             ])->render();
 
         return response()->json($response);
@@ -199,7 +139,7 @@ class AllocationsCalendar extends Controller
 
         // Need accounts to be sorted as below
         $response = [
-            BankAccount::ACCOUNT_TYPE_REVENUE => [],
+//            BankAccount::ACCOUNT_TYPE_REVENUE => [],
             BankAccount::ACCOUNT_TYPE_PRETOTAL => [],
             BankAccount::ACCOUNT_TYPE_SALESTAX => [],
             BankAccount::ACCOUNT_TYPE_PREREAL => [],
@@ -215,9 +155,15 @@ class AllocationsCalendar extends Controller
             foreach ($account_item->account_values as $key => $value) {
                 $flat[$key] = $value;
             }
-        }
 
-//        dd($response);
+            if ($account_item->type == BankAccount::ACCOUNT_TYPE_REVENUE) {
+                $response[BankAccount::ACCOUNT_TYPE_REVENUE.'_total'][$account_item->id]
+                    = $account_item->getAdjustedFlowsTotalByDatePeriod($dateFrom, $dateTo);
+                $response[BankAccount::ACCOUNT_TYPE_REVENUE.'_total'][$account_item->id]['name'] = $account_item->name;
+                $response[BankAccount::ACCOUNT_TYPE_REVENUE.'_total'][$account_item->id]['negative'] = $account_item->negative;
+                $response[BankAccount::ACCOUNT_TYPE_REVENUE.'_total'][$account_item->id]['certainty'] = $account_item->certainty;
+            }
+        }
 
         $period = CarbonPeriod::create($dateFrom, $dateTo);
         $complete = $rangeValue + 1;
@@ -249,27 +195,27 @@ class AllocationsCalendar extends Controller
                         : 0;
 
                     switch ($type) {
-                        case BankAccount::ACCOUNT_TYPE_REVENUE:
-                            $totalRevenue = 0;
-                            foreach ($account_item as $key => $value) {
-                                if (is_integer($key)) {
-                                    $response[BankAccount::ACCOUNT_TYPE_REVENUE][$id][$key]['name'] = $value['name'];
-                                    $response[BankAccount::ACCOUNT_TYPE_REVENUE][$id][$key][$date_ymd]
-                                        = array_key_exists($date->format('Y-m-d 00:00:00'), $value)
-                                        ? $value[$date->format('Y-m-d 00:00:00')]
-                                        : 0;
-                                    $totalRevenue += $response[BankAccount::ACCOUNT_TYPE_REVENUE][$id][$key][$date_ymd];
-                                }
-                            }
-                            if ($response[BankAccount::ACCOUNT_TYPE_REVENUE][$id][$date_ymd] != $totalRevenue) {
-                                $response[BankAccount::ACCOUNT_TYPE_REVENUE][$id][$date_ymd] = $totalRevenue;
-                                $this->storeSingle('account', $id, $totalRevenue, $date_ymd);
-                                $key = 'getIncomeByDate_'.$businessId.'_'.$date_ymd;
-                                if (Config::get('app.pfp_cache')) {
-                                    Cache::forget($key);
-                                }
-                            }
-                            break;
+//                        case BankAccount::ACCOUNT_TYPE_REVENUE:
+//                            $totalRevenue = 0;
+//                            foreach ($account_item as $key => $value) {
+//                                if (is_integer($key)) {
+//                                    $response[BankAccount::ACCOUNT_TYPE_REVENUE][$id][$key]['name'] = $value['name'];
+//                                    $response[BankAccount::ACCOUNT_TYPE_REVENUE][$id][$key][$date_ymd]
+//                                        = array_key_exists($date->format('Y-m-d 00:00:00'), $value)
+//                                        ? $value[$date->format('Y-m-d 00:00:00')]
+//                                        : 0;
+//                                    $totalRevenue += $response[BankAccount::ACCOUNT_TYPE_REVENUE][$id][$key][$date_ymd];
+//                                }
+//                            }
+//                            if ($response[BankAccount::ACCOUNT_TYPE_REVENUE][$id][$date_ymd] != $totalRevenue) {
+//                                $response[BankAccount::ACCOUNT_TYPE_REVENUE][$id][$date_ymd] = $totalRevenue;
+//                                $this->storeSingle('account', $id, $totalRevenue, $date_ymd);
+//                                $key = 'getIncomeByDate_'.$businessId.'_'.$date_ymd;
+//                                if (Config::get('app.pfp_cache')) {
+//                                    Cache::forget($key);
+//                                }
+//                            }
+//                            break;
 
                         case BankAccount::ACCOUNT_TYPE_SALESTAX: // Tax amt
                             $response[BankAccount::ACCOUNT_TYPE_SALESTAX][$id]['transfer'][$date_ymd] =
@@ -280,13 +226,15 @@ class AllocationsCalendar extends Controller
                             foreach ($account_item as $key => $value) {
                                 if (is_integer($key)) {
                                     $flows[$id][$key]['name'] = $value['name'];
-                                    $flows[$id][$key][$date_ymd]
+                                    $certainty = $flows[$id][$key]['certainty'] = $value['certainty'];
+                                    $flows[$id][$key]['negative'] = $value['negative'];
+                                    $flow_value = $flows[$id][$key][$date_ymd]
                                         = array_key_exists($date->format('Y-m-d 00:00:00'), $value)
                                         ? $value[$date->format('Y-m-d 00:00:00')]
                                         : 0;
                                     $flow_total = $value['negative']
-                                        ? $flow_total - $flows[$id][$key][$date_ymd]
-                                        : $flow_total + $flows[$id][$key][$date_ymd];
+                                        ? $flow_total - ($flow_value * ($certainty / 100))
+                                        : $flow_total + ($flow_value * ($certainty / 100));
                                 } elseif ($key == $date->format('Y-m-d 00:00:00')) {
                                     $response[BankAccount::ACCOUNT_TYPE_SALESTAX][$id]['manual'][$date_ymd] = $value[1];
                                 }
@@ -331,7 +279,7 @@ class AllocationsCalendar extends Controller
 
                         case BankAccount::ACCOUNT_TYPE_PRETOTAL:
                             $salestax = data_get($percents, 'salestax');
-                            $salestax = count($salestax) > 0 ? $salestax[key($salestax)] : null;
+                            $salestax = count($salestax) > 0 ? floatval($salestax[key($salestax)]) : null;
                             $nsp = ($income > 0 && is_numeric($salestax)) ? $income / ($salestax / 100 + 1) : 0;
                             $response[BankAccount::ACCOUNT_TYPE_PRETOTAL][$id]['transfer'][$date_ymd]
                                 = (is_numeric($percents[$type][$id]))
@@ -341,25 +289,30 @@ class AllocationsCalendar extends Controller
                             foreach ($account_item as $key => $value) {
                                 if (is_integer($key)) {
                                     $flows[$id][$key]['name'] = $value['name'];
-                                    $flows[$id][$key][$date_ymd]
+                                    $certainty = $flows[$id][$key]['certainty'] = $value['certainty'];
+                                    $flows[$id][$key]['negative'] = $value['negative'];
+                                    $flow_value = $flows[$id][$key][$date_ymd]
                                         = array_key_exists($date->format('Y-m-d 00:00:00'), $value)
                                         ? $value[$date->format('Y-m-d 00:00:00')]
                                         : 0;
                                     $flow_total = $value['negative']
-                                        ? $flow_total - $flows[$id][$key][$date_ymd]
-                                        : $flow_total + $flows[$id][$key][$date_ymd];
+                                        ? $flow_total - ($flow_value * ($certainty / 100))
+                                        : $flow_total + ($flow_value * ($certainty / 100));
                                 } elseif ($key == $date->format('Y-m-d 00:00:00')) {
                                     $response[BankAccount::ACCOUNT_TYPE_PRETOTAL][$id]['manual'][$date_ymd] = $value[1];
                                 }
                             }
                             $response[BankAccount::ACCOUNT_TYPE_PRETOTAL][$id]['total'][$date_ymd] = $flow_total;
+
                             if (array_key_exists($key, $flows[$id]) && count($flows[$id][$key]) == $complete) {
                                 $response[BankAccount::ACCOUNT_TYPE_PRETOTAL][$id] += $flows[$id];
                             }
 
                             $actualValue = $flow_total +
                                 $response[BankAccount::ACCOUNT_TYPE_PRETOTAL][$id]['transfer'][$date_ymd];
+
                             $previousDate = Carbon::parse($date)->subDays(1)->format('Y-m-d');
+
                             if (array_key_exists($previousDate, $response[BankAccount::ACCOUNT_TYPE_PRETOTAL][$id])) {
                                 $actualValue += is_array($response[BankAccount::ACCOUNT_TYPE_PRETOTAL][$id][$previousDate])
                                     ? $response[BankAccount::ACCOUNT_TYPE_PRETOTAL][$id][$previousDate][0]
@@ -374,6 +327,9 @@ class AllocationsCalendar extends Controller
                             $stored_value = is_array($response[BankAccount::ACCOUNT_TYPE_PRETOTAL][$id][$date_ymd])
                                 ? $response[BankAccount::ACCOUNT_TYPE_PRETOTAL][$id][$date_ymd][0]
                                 : $response[BankAccount::ACCOUNT_TYPE_PRETOTAL][$id][$date_ymd];
+
+
+//                            $response[BankAccount::ACCOUNT_TYPE_PRETOTAL][$id][$date_ymd] = $actualValue;
 
                             if ($stored_value != $actualValue
                                 && (!isset($response[BankAccount::ACCOUNT_TYPE_PRETOTAL][$id]['manual'][$date_ymd])
@@ -395,37 +351,50 @@ class AllocationsCalendar extends Controller
                             foreach ($account_item as $key => $value) {
                                 if (is_integer($key)) {
                                     $flows[$id][$key]['name'] = $value['name'];
-                                    $flows[$id][$key][$date_ymd]
+                                    $certainty = $flows[$id][$key]['certainty'] = $value['certainty'];
+                                    $flows[$id][$key]['negative'] = $value['negative'];
+                                    $flow_value = $flows[$id][$key][$date_ymd]
                                         = array_key_exists($date->format('Y-m-d 00:00:00'), $value)
                                         ? $value[$date->format('Y-m-d 00:00:00')]
                                         : 0;
                                     $flow_total = $value['negative']
-                                        ? $flow_total - $flows[$id][$key][$date_ymd]
-                                        : $flow_total + $flows[$id][$key][$date_ymd];
+                                        ? $flow_total - ($flow_value * ($certainty / 100))
+                                        : $flow_total + ($flow_value * ($certainty / 100));
                                 } elseif ($key == $date->format('Y-m-d 00:00:00')) {
                                     $response[BankAccount::ACCOUNT_TYPE_PREREAL][$id]['manual'][$date_ymd] = $value[1];
                                 }
                             }
                             $response[BankAccount::ACCOUNT_TYPE_PREREAL][$id]['total'][$date_ymd] = $flow_total;
 
-                            if ( array_key_exists($id, $flows)
+                            if (array_key_exists($id, $flows)
                                 && array_key_exists($key, $flows[$id])
-                                && count($flows[$id][$key]) == $complete)
-                            {
+                                && count($flows[$id][$key]) == $complete) {
                                 $response[BankAccount::ACCOUNT_TYPE_PREREAL][$id] += $flows[$id];
                             }
 
                             $actualValue = $flow_total +
                                 $response[BankAccount::ACCOUNT_TYPE_PREREAL][$id]['transfer'][$date_ymd];
+
+//                            $response[BankAccount::ACCOUNT_TYPE_PREREAL][$id]['db'][$date_ymd]['actual'] =
+//                                $flow_total .' + '.
+//                                $response[BankAccount::ACCOUNT_TYPE_PREREAL][$id]['transfer'][$date_ymd];
+//                            $response[BankAccount::ACCOUNT_TYPE_PREREAL][$id]['db'][$date_ymd]['actualValue'] = $actualValue;
+
+
                             $previousDate = Carbon::parse($date->format('Y-m-d'))->subDays(1)->format('Y-m-d');
+
+//                            $response[BankAccount::ACCOUNT_TYPE_PREREAL][$id]['db'][$date_ymd]['previousDate'] = $previousDate;
+
                             if (array_key_exists($previousDate, $response[BankAccount::ACCOUNT_TYPE_PREREAL][$id])) {
                                 $actualValue += is_array($response[BankAccount::ACCOUNT_TYPE_PREREAL][$id][$previousDate])
                                     ? $response[BankAccount::ACCOUNT_TYPE_PREREAL][$id][$previousDate][0]
                                     : $response[BankAccount::ACCOUNT_TYPE_PREREAL][$id][$previousDate];
+//                                $response[BankAccount::ACCOUNT_TYPE_PREREAL][$id]['db'][$date_ymd]['actualValue2'] = $actualValue;
                             } else {
                                 $previousNonZero = $this->getPreviousNonZeroValue($id, $dateFrom);
                                 if (is_numeric($previousNonZero)) {
                                     $actualValue += $previousNonZero;
+//                                    $response[BankAccount::ACCOUNT_TYPE_PREREAL][$id]['db'][$date_ymd]['actualValue3'] = $actualValue;
                                 }
                             }
 
@@ -460,22 +429,23 @@ class AllocationsCalendar extends Controller
                             foreach ($account_item as $key => $value) {
                                 if (is_integer($key)) {
                                     $flows[$id][$key]['name'] = $value['name'];
-                                    $flows[$id][$key][$date_ymd]
+                                    $certainty = $flows[$id][$key]['certainty'] = $value['certainty'];
+                                    $flows[$id][$key]['negative'] = $value['negative'];
+                                    $flow_value = $flows[$id][$key][$date_ymd]
                                         = array_key_exists($date->format('Y-m-d 00:00:00'), $value)
                                         ? $value[$date->format('Y-m-d 00:00:00')]
                                         : 0;
                                     $flow_total = $value['negative']
-                                        ? $flow_total - $flows[$id][$key][$date_ymd]
-                                        : $flow_total + $flows[$id][$key][$date_ymd];
+                                        ? $flow_total - ($flow_value * ($certainty / 100))
+                                        : $flow_total + ($flow_value * ($certainty / 100));
                                 } elseif ($key == $date->format('Y-m-d 00:00:00')) {
                                     $response[BankAccount::ACCOUNT_TYPE_POSTREAL][$id]['manual'][$date_ymd] = $value[1];
                                 }
                             }
                             $response[BankAccount::ACCOUNT_TYPE_POSTREAL][$id]['total'][$date_ymd] = $flow_total;
-                            if ( array_key_exists($id, $flows)
+                            if (array_key_exists($id, $flows)
                                 && array_key_exists($key, $flows[$id])
-                                && count($flows[$id][$key]) == $complete)
-                            {
+                                && count($flows[$id][$key]) == $complete) {
                                 $response[BankAccount::ACCOUNT_TYPE_POSTREAL][$id] += $flows[$id];
                             }
 
@@ -526,7 +496,8 @@ class AllocationsCalendar extends Controller
         $transfer_amount = 0;
 
         if ($income > 0) {
-            $transfer_amount = round($income - $income / ($percents[BankAccount::ACCOUNT_TYPE_SALESTAX][$id] / 100 + 1),
+            $transfer_amount = round(
+                $income - $income / ($percents[BankAccount::ACCOUNT_TYPE_SALESTAX][$id] / 100 + 1),
                 4);
         }
 
@@ -571,6 +542,7 @@ class AllocationsCalendar extends Controller
                         $flow->id => $flow->allocations->pluck('amount', 'allocation_date')->toArray()
                             + ['negative' => (bool) $flow->negative_flow]
                             + ['name' => $flow->label]
+                            + ['certainty' => $flow->certainty]
                     ];
                 }
 
@@ -580,37 +552,40 @@ class AllocationsCalendar extends Controller
                 $item->account_values = [
                     $item->id => array_merge_recursive($amounts, $manuals) + $flows
                 ];
+
                 return $item;
             })->all();
     }
 
     private function getIncomeByDate($businessId, $date)
     {
-        $key = 'getIncomeByDate_'.$businessId.'_'.$date;
-        $getIncomeByDate = Cache::get($key);
+        // $key = 'getIncomeByDate_'.$businessId.'_'.$date;
+        // $getIncomeByDate = Cache::get($key);
 
-        if ($getIncomeByDate === null) {
-            $getIncomeByDate = BankAccount::where('type', 'revenue')->where('business_id', $businessId)
-                ->with('allocations', function ($query) use ($date) {
-                    return $query->where('allocation_date', $date);
-                })
-                ->get()
-                ->map(function ($item) {
-                    return collect($item->toArray())
-                        ->only('allocations')
-                        ->all();
-                })
-                ->map(function ($a_item) {
-                    return count($a_item['allocations']) > 0
-                        ? $a_item['allocations'][0]['amount']
-                        : 0;
-                })->sum();
-            if (Config::get('app.pfp_cache')) {
-                Cache::put($key, $getIncomeByDate, now()->addMinutes(10));
-            }
-        }
+        // if ($getIncomeByDate === null) {
+        //     $getIncomeByDate = BankAccount::where('type', 'revenue')->where('business_id', $businessId)
+        //         ->with('allocations', function ($query) use ($date) {
+        //             return $query->where('allocation_date', $date);
+        //         })
+        //         ->get()
+        //         ->map(function ($item) {
+        //             return collect($item->toArray())
+        //                 ->only('allocations')
+        //                 ->all();
+        //         })
+        //         ->map(function ($a_item) {
+        //             return count($a_item['allocations']) > 0
+        //                 ? $a_item['allocations'][0]['amount']
+        //                 : 0;
+        //         })->sum();
+        //     if (Config::get('app.pfp_cache')) {
+        //         Cache::put($key, $getIncomeByDate, now()->addMinutes(10));
+        //     }
+        // }
 
-        return $getIncomeByDate;
+        $revenue_id = Business::find($businessId)->getAccountIdByType('revenue');
+
+        return BankAccount::find($revenue_id)->getAdjustedFlowsTotalByDate($date);
     }
 
     private function getPreviousNonZeroValue($accountId, $dateFrom)

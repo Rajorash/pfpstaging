@@ -1,4 +1,9 @@
 <x-app-layout>
+
+    <x-slot name="titleHeader">
+        {{ __('Licenses of').' '.$user->name }}
+    </x-slot>
+
     <x-slot name="header">
         {{ __('Licenses of').' '.$user->name }}
     </x-slot>

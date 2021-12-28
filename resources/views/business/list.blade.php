@@ -1,5 +1,9 @@
 <x-app-layout>
 
+    <x-slot name="$titleHeader">
+        {{ __('Businesses') }}
+    </x-slot>
+
     <x-slot name="header">
         {{ __('Businesses') }}
     </x-slot>
@@ -38,24 +42,20 @@
                 <x-ui.table-th>License</x-ui.table-th>
                 {{-- Accounts Column header row --}}
                 <x-ui.table-th class="text-center">{{__('Accounts')}}</x-ui.table-th>
-                @if($currentUser->isAdvisor())
+                <x-ui.table-th padding="pl-2 pr-8">
                     {{-- Maintenance column header row --}}
-                    <x-ui.table-th></x-ui.table-th>
-                @endif
-                {{-- Accounts --}}
-                <x-ui.table-th></x-ui.table-th>
-                {{-- Pipelines column header row --}}
-                <x-ui.table-th padding="pl-2 pr-6"></x-ui.table-th>
-                {{-- Allocations Calculator column header row --}}
-                <x-ui.table-th></x-ui.table-th>
-                {{-- Data Entry column header row --}}
-                <x-ui.table-th></x-ui.table-th>
-                {{-- Account balance change manually --}}
-                <x-ui.table-th></x-ui.table-th>
-                {{-- Forecast column header row --}}
-                <x-ui.table-th></x-ui.table-th>
-                {{-- Percentages column header row --}}
-                <x-ui.table-th padding="pl-2 pr-12 py-4"></x-ui.table-th>
+                    {{-- Accounts --}}
+                    {{-- Pipelines column header row --}}
+                </x-ui.table-th>
+
+                <x-ui.table-th padding="pl-2 pr-12 py-4">
+                    {{-- Allocations Calculator column header row --}}
+                    {{-- Account balance change manually --}}
+                    {{-- Revenue Entry column header row --}}
+                    {{-- Expense Entry column header row --}}
+                    {{-- Forecast column header row --}}
+                    {{-- Percentages column header row --}}
+                </x-ui.table-th>
             </tr>
             </thead>
 
@@ -143,77 +143,75 @@
                             </a>
                         </x-ui.table-td>
 
-                        {{-- Maintenance column --}}
-                        @if(Auth::user()->isAdvisor())
-                            <x-ui.table-td>
-                                @if(
-                                (is_object($business->collaboration)
-                                && is_object($business->collaboration->advisor)
-                                && ($business->collaboration->advisor->user_id != auth()->user()->id))
-                                || !is_object($business->collaboration))
-                                    <x-ui.button-small title="Maintenance"
-                                                       href="{{route('maintenance.business', ['business' => $business])}}">
-                                        <x-icons.gear :class="'h-5 w-auto inline-block'"/>
-                                    </x-ui.button-small>
+                        <x-ui.table-td class="pl-4 pr-8">
+                            <div class="flex space-x-1">
+                                {{-- Maintenance column --}}
+                                @if(Auth::user()->isAdvisor())
+                                    @if(
+                                    (is_object($business->collaboration)
+                                    && is_object($business->collaboration->advisor)
+                                    && ($business->collaboration->advisor->user_id != auth()->user()->id))
+                                    || !is_object($business->collaboration))
+                                        <x-ui.button-small title="Maintenance"
+                                                            href="{{route('maintenance.business', ['business' => $business])}}">
+                                            <x-icons.gear :class="'h-5 w-auto inline-block'"/>
+                                        </x-ui.button-small>
+                                    @endif
                                 @endif
-                            </x-ui.table-td>
-                        @endif
 
-                        {{-- Accounts --}}
-                        <x-ui.table-td>
-                            <x-ui.button-small title="{{__('Accounts')}}"
-                                               href="{{url('/business/'.$business->id.'/accounts')}}">
-                                <x-icons.vallet :class="'h-5 w-auto inline-block'"/>
-                            </x-ui.button-small>
+                                {{-- Accounts --}}
+                                <x-ui.button-small title="{{__('Accounts')}}"
+                                    href="{{url('/business/'.$business->id.'/accounts')}}">
+                                    <x-icons.vallet :class="'h-5 w-auto inline-block'"/>
+                                </x-ui.button-small>
+
+
+                                {{-- Percentages column --}}
+                                <x-ui.button-small title="{{__('Rollout Percentages')}}"
+                                                href="{{route('allocations-percentages', ['business' => $business])}}">
+                                    <x-icons.percent :class="'h-5 w-auto inline-block'"/>
+                                </x-ui.button-small>
+
+                            </div>
                         </x-ui.table-td>
 
-                        {{-- Pipeline column --}}
-                        <x-ui.table-td padding="pl-2 pr-6">
-                            <x-ui.button-small title="{{__('Pipelines')}}"
-                                               href="{{route('pipelines.list', ['business' => $business])}}">
-                                <x-icons.chart :class="'h-5 w-auto inline-block'"/>
-                            </x-ui.button-small>
-                        </x-ui.table-td>
 
-                        {{-- Allocations Calculator column --}}
-                        <x-ui.table-td>
-                            <x-ui.button-small title="{{__('Allocations Calculator')}}"
-                                               href="{{route('allocation-calculator-with-id', ['business' => $business])}}">
-                                <x-icons.calculator :class="'h-5 w-auto inline-block'"/>
-
-                            </x-ui.button-small>
-                        </x-ui.table-td>
-
-                        {{-- Data Entry column --}}
-                        <x-ui.table-td>
-                            <x-ui.button-small title="Data Entry" class="whitespace-nowrap"
-                                               href="{{route('allocations-calendar', ['business' => $business])}}">
-                                <x-icons.table :class="'h-5 w-auto inline-block'"/>
-                            </x-ui.button-small>
-                        </x-ui.table-td>
-
-                        {{-- Manually change balances --}}
-                        <x-ui.table-td>
-                            <x-ui.button-small title="{{__('Manually change balances')}}"
-                                               href="{{url('/business/'.$business->id.'/balance')}}">
-                                <x-icons.balance :class="'h-5 w-auto inline-block'"/>
-                            </x-ui.button-small>
-                        </x-ui.table-td>
-
-                        {{-- Forecast column --}}
-                        <x-ui.table-td>
-                            <x-ui.button-small title="{{__('Projection Forecast')}}"
-                                               href="{{route('projections', ['business' => $business])}}">
-                                <x-icons.presentation-chart :class="'h-5 w-auto inline-block'"/>
-                            </x-ui.button-small>
-                        </x-ui.table-td>
-
-                        {{-- Percentages column --}}
                         <x-ui.table-td padding="pl-2 pr-12 py-4">
-                            <x-ui.button-small title="{{__('Rollout Percentages')}}"
-                                               href="{{route('allocations-percentages', ['business' => $business])}}">
-                                <x-icons.percent :class="'h-5 w-auto inline-block'"/>
-                            </x-ui.button-small>
+                            <div class="flex space-x-1">
+
+                                {{-- Allocations Calculator column --}}
+                                <x-ui.button-small title="{{__('Allocations Calculator')}}"
+                                                href="{{route('allocation-calculator-with-id', ['business' => $business])}}">
+                                    <x-icons.calculator :class="'h-5 w-auto inline-block'"/>
+
+                                </x-ui.button-small>
+
+                                {{-- Manually change balances --}}
+                                <x-ui.button-small title="{{__('Manually change balances')}}"
+                                                href="{{url('/business/'.$business->id.'/balance')}}">
+                                    <x-icons.balance :class="'h-5 w-auto inline-block'"/>
+                                </x-ui.button-small>
+
+                                {{-- Revenue Entry column --}}
+                                <x-ui.button-small title="Revenue Entry" class="whitespace-nowrap"
+                                                href="{{route('revenue-entry.table', ['business' => $business])}}">
+                                    <x-icons.dollar-fill :class="'h-5 w-auto inline-block'"/>
+                                </x-ui.button-small>
+
+                                {{-- Expense Entry column --}}
+                                <x-ui.button-small title="Expense Entry" class="whitespace-nowrap"
+                                                href="{{route('allocations-new', ['business' => $business])}}">
+                                    <x-icons.table :class="'h-5 w-auto inline-block'"/>
+                                </x-ui.button-small>
+
+                                {{-- Forecast column --}}
+                                <x-ui.button-small title="{{__('Projection Forecast')}}"
+                                                href="{{route('projection-view', ['business' => $business])}}">
+                                    <x-icons.presentation-chart :class="'h-5 w-auto inline-block'"/>
+                                </x-ui.button-small>
+
+                            </div>
+
                         </x-ui.table-td>
                     </tr>
                 @endforeach

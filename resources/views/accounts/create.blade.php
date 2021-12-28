@@ -1,5 +1,11 @@
 <x-app-layout>
 
+    <x-slot name="titleHeader">
+        {{$business->name}}
+        &gt;
+        {{__('Create Account')}}
+    </x-slot>
+
     <x-slot name="header">
         {{$business->name}}
         <x-icons.chevron-right :class="'h-4 w-auto inline-block px-2'"/>
@@ -14,7 +20,7 @@
 
     <x-ui.main>
         <x-ui.table-table>
-            <x-ui.table-caption class="pt-12 pb-6 px-48 lg:px-52 xl:px-60 2xl:px-72 relative relative">
+            <x-ui.table-caption class="relative px-48 pt-12 pb-6 lg:px-52 xl:px-60 2xl:px-72">
                 {{__('Create A New Account For')}} {{$business->name}}
 
                 <x-slot name="left">
@@ -57,7 +63,7 @@
                                                 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50
                                                 @error('type') bg-red-700 @enderror">
                                             <option value="">Select your account type</option>
-                                            @foreach (App\Models\BankAccount::type_list() as $account_index => $account_type)
+                                            @foreach ($account_types as $account_index => $account_type)
                                                 <option
                                                     value="{{ $account_index }}"{{ $account_type == old('account_type') ? ' selected' : '' }}>{{ $account_type }}</option>
                                             @endforeach

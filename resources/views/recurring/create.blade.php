@@ -1,5 +1,13 @@
 <x-app-layout>
 
+    <x-slot name="titleHeader">
+        @if(is_object($recurringTransactions) && is_a($recurringTransactions, 'App\Models\RecurringTransactions'))
+            {{ __('Edit Recurring Transactions') }}
+        @else
+            {{ __('Add Recurring Transactions') }}
+        @endif
+    </x-slot>
+
     <x-slot name="header">
         @if(is_object($recurringTransactions) && is_a($recurringTransactions, 'App\Models\RecurringTransactions'))
             {{ __('Edit Recurring Transactions') }}

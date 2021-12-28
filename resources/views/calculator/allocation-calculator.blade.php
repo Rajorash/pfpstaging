@@ -1,7 +1,15 @@
 <x-app-layout>
+
+    <x-slot name="titleHeader">
+        @isset($business)
+            {{$business->name}}
+            <x-icons.chevron-right :class="'h-4 w-auto inline-block px-2'"/>
+        @endisset
+        {{ __('Allocations Calculator') }}
+    </x-slot>
+
     <x-slot name="header">
         <x-cta-workflow :business="$business" :step="'allocation-calculator'" />
-
         @isset($business)
             {{$business->name}}
             <x-icons.chevron-right :class="'h-4 w-auto inline-block px-2'"/>

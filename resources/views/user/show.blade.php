@@ -1,4 +1,22 @@
 <x-app-layout>
+
+    <x-slot name="titleHeader">
+        @if (Auth::user()->isRegionalAdmin())
+            {{ __('Advisors') }}
+        @else
+            {{ __('Users') }}
+        @endif
+        &gt;
+        {{ $user->name }}
+        (
+        @if (Auth::user()->isRegionalAdmin())
+            {{ __('Advisors Details') }}
+        @else
+            {{ __('Users Details') }}
+        @endif
+        )
+    </x-slot>
+
     <x-slot name="header">
         @if (Auth::user()->isRegionalAdmin())
             {{ __('Advisors') }}
@@ -165,7 +183,8 @@
                                                         @if(count($user->notActiveLicenses))
                                                             @if (count($user->notActiveLicenses))
                                                                 <x-ui.badge background="bg-gray-500">
-                                                                    {{__('Disabled:')}}&nbsp;{{count($user->notActiveLicenses)}}
+                                                                    {{__('Disabled:')}}
+                                                                    &nbsp;{{count($user->notActiveLicenses)}}
                                                                 </x-ui.badge>
                                                             @endif
                                                             @if(Auth::user()->isSuperAdmin() || Auth::user()->isAdvisor() || Auth::user()->isClient())

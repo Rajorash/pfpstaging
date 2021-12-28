@@ -1,5 +1,9 @@
 <x-app-layout>
 
+    <x-slot name="titleHeader">
+        {{ __('Recurring Transactions') }}
+    </x-slot>
+
     <x-slot name="header">
         {{ __('Recurring Transactions') }}
     </x-slot>

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use JamesMills\LaravelTimezone\Timezone;
 
 /**
  * App\Models\License
@@ -127,7 +128,7 @@ class License extends Model
     public function revoke()
     {
         $this->active = false;
-        $this->revoked_ts = Carbon::now();
+        $this->revoked_ts = Carbon::parse(Timezone::convertToLocal(Carbon::now(), 'Y-m-d H:i:s'));
     }
 
     public function unRevoke()
@@ -150,8 +151,9 @@ class License extends Model
 
     public function getCheckLicenseAttribute(): bool
     {
+        $today = Timezone::convertToLocal(Carbon::now(), 'Y-m-d H:i:s');
         if (
-            Carbon::parse($this->expires_ts)->timestamp - Carbon::now()->timestamp > 0
+            Carbon::parse($this->expires_ts)->timestamp - Carbon::parse($today)->timestamp > 0
             && $this->active
         ) {
             return true;

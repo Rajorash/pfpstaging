@@ -2,9 +2,12 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
+use Carbon\CarbonPeriod;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 
 /**
  * App\Models\Business
@@ -23,8 +26,6 @@ use Illuminate\Support\Facades\Cache;
  * @property-read null|int $current_phase
  * @property-read \App\Models\License|null $license
  * @property-read \App\Models\User|null $owner
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Pipeline[] $pipelines
- * @property-read int|null $pipelines_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Phase[] $rollout
  * @property-read int|null $rollout_count
  * @method static \Illuminate\Database\Eloquent\Builder|Business newModelQuery()
@@ -137,6 +138,20 @@ class Business extends Model
         return $phase ? $phase->id : null;
     }
 
+    /**return phases by period range
+     * @param CarbonPeriod $period
+     * @return array
+     */
+    public function getPhasesIdByPeriod(CarbonPeriod $period):array
+    {
+        $phases = [];
+        foreach ($period as $date) {
+            $phases[$date->format('Y-m-d')] = $this->getPhaseIdByDate($date->format('Y-m-d'));
+        }
+
+        return $phases;
+    }
+
     /**
      * Utility function to get current phase, uses getPhaseIdByDate() with
      * parameter of todays date
@@ -201,9 +216,46 @@ class Business extends Model
 
         return $accountIds;
     }
+//
+//    public function pipelines(): \Illuminate\Database\Eloquent\Relations\HasMany
+//    {
+//        return $this->hasMany(Pipeline::class);
+//    }
 
-    public function pipelines(): \Illuminate\Database\Eloquent\Relations\HasMany
+
+    /**
+     * returns the last date an entry occurs for the given business
+     * will return null if no entries.
+     *
+     * @return Carbon|null
+     */
+    public function dateOfLatestEntry(): ?Carbon
     {
-        return $this->hasMany(Pipeline::class);
+        $account_ids = $this->accounts()->pluck('id')->toArray();
+
+        $flow_ids = DB::table('account_flows')
+            ->select('id')
+            ->where('account_id', 'in', $account_ids)
+            ->get()
+            ->pluck('id')
+            ->toArray();
+
+        $date = DB::table('allocations')
+            ->select('id', 'allocatable_id', 'amount', 'allocation_date')
+            ->where(function ($query) use ($account_ids) {
+                $query->where('allocatable_type', 'like', '%Account')
+                    ->whereIn('allocatable_id', $account_ids);
+            })
+            ->orWhere(function ($query) use ($flow_ids) {
+                $query->where('allocatable_type', 'like', '%Flow')
+                    ->whereIn('allocatable_id', $flow_ids);
+            })
+            ->max('allocation_date');
+
+
+        return $date
+            ? Carbon::createFromFormat('Y-m-d', $date)
+            : null;
+
     }
 }

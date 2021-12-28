@@ -91,6 +91,12 @@ $(function () {
             $.cookie('percentage_autoSubmitDataAllow', $this.autoSubmitDataAllow, {expires: 14});
         }
 
+        afterLoadingDataHook() {
+            let $this = this;
+
+            $this.dragAdnDropValues();
+        }
+
     }
 
     if ($('#percentagesTablePlace').length) {

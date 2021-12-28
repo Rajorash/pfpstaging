@@ -1,5 +1,6 @@
 import {pfpFunctions} from "./pfp_functions.js";
 
+// noinspection JSCheckFunctionSignatures
 export class calculatorCore {
     constructor() {
         this.debug = false;
@@ -37,11 +38,19 @@ export class calculatorCore {
         this.heightMode = this.heightModeDefault;
 
         this.copyMoveClassName = 'pfp_copy_move_element';
-        this.copyMoveCtrlKeyEnabled = false;
+        this.copyMoveAltKeyEnabled = false; //if ALt key is pressed
 
         this.windowCoordinates = {};
 
         this.hideTableDuringRecalculate = false;
+
+        this.showRowsLevelID = 'show_rows_level';
+
+        this.showRowsLevelTitles = {
+            1: 'Accounts',
+            2: 'Accounts with details',
+            3: 'All records'
+        };
     }
 
     init() {
@@ -60,7 +69,7 @@ export class calculatorCore {
         $(document).on('change', '#' + $this.autoSubmitDataDelayId, function (event) {
             $this.autoSubmitDataDelay = $(this).val();
             $this.updateSubmitDataDelay();
-            $this.timeOutSeconds = 1000 * parseInt($this.autoSubmitDataDelay);
+            $this.timeOutSeconds = 1000 * parseFloat($this.autoSubmitDataDelay);
         });
 
         $(document).on('change', '#' + $this.autoSubmitDataAllowId, function (event) {
@@ -81,38 +90,24 @@ export class calculatorCore {
             return false;
         });
 
-        $(document).on('dragend', '.' + $this.copyMoveClassName, function (event) {
-            let $sourceElement = $(this);
-            let $targetElement = $(document.elementFromPoint(event.clientX, event.clientY));
-
-            if ($targetElement.hasClass($this.copyMoveClassName)) {
-
-                let value = parseFloat($sourceElement.val());
-                if ($this.copyMoveCtrlKeyEnabled) {
-                    //add
-                    value += parseFloat($targetElement.val());
-                } else {
-                    //replace
-                }
-
-                $targetElement.val(value).change();
-            }
+        $(document).on('change', '#' + $this.showRowsLevelID, function (event) {
+            $this.changeDeepLevel();
         });
 
-        //check and save state of Control key
+        //check and save state of Alt key
         $(window).on("keydown", function (event) {
-            if (event.which === 17) {
-                $this.copyMoveCtrlKeyEnabled = true;
-                $('.'+$this.copyMoveClassName).addClass('cursor-copy bg-yellow-300').removeClass('cursor-move');
+            if (event.which === 18) {
+                $this.copyMoveAltKeyEnabled = true;
+                $('.' + $this.copyMoveClassName).removeClass('cursor-copy').addClass('cursor-move bg-yellow-300');
             }
         }).on("keyup", function (event) {
-            $this.copyMoveCtrlKeyEnabled = false;
-            $('.'+$this.copyMoveClassName).removeClass('cursor-copy bg-yellow-300').addClass('cursor-move');
+            $this.copyMoveAltKeyEnabled = false;
+            $('.' + $this.copyMoveClassName).addClass('cursor-copy').removeClass('cursor-move bg-yellow-300');
         });
 
         $(document).keyup(function (event) {
             if (event.which === 13 && !$this.autoSubmitDataAllow) {
-                $this.manualSubmitData();
+                $this.manualSubmitData(event);
             }
         });
 
@@ -210,7 +205,7 @@ export class calculatorCore {
         }
     }
 
-    manualSubmitData() {
+    manualSubmitData(event) {
         let $this = this;
 
         if ($this.debug) {
@@ -288,7 +283,9 @@ export class calculatorCore {
                 $this.resetData();
                 $this.scrollToLatestPoint();
                 //only for Allocations table
-                $this.forecastAutoFillValues();
+                // $this.forecastAutoFillValues();
+
+                $this.afterLoadingDataHook();
             }
         });
     }
@@ -463,11 +460,89 @@ export class calculatorCore {
         }
     }
 
-    forecastAutoFillValues() {
+    afterLoadingDataHook() {
+        let $this = this;
 
+        this.changeDeepLevel();
+    }
+
+    dragAdnDropValues() {
+        let $this = this;
+
+        if ($this.debug) {
+            console.log('dragAdnDropValues');
+        }
+
+        let coordinateX = 0, coordinateY = 0;
+
+        document.addEventListener("dragover", function (event) {
+            event.preventDefault();
+            coordinateX = event.pageX;
+            coordinateY = event.pageY;
+        }, false);
+
+        let copyMoveClassElement = document.getElementsByClassName($this.copyMoveClassName);
+        for (let i = 0; i < copyMoveClassElement.length; i++) {
+            copyMoveClassElement[i].addEventListener('dragend', function (event) {
+                let sourceElement = event.target;
+                let clientX = event.clientX, clientY = event.clientY;
+
+                //only for mozilla https://bugzilla.mozilla.org/show_bug.cgi?id=505521#c80
+                if (!clientX) {
+                    clientX = coordinateX
+                }
+                if (!clientY) {
+                    clientY = coordinateY
+                }
+
+                let targetElement = document.elementFromPoint(clientX, clientY);
+
+                if (targetElement.classList.contains($this.copyMoveClassName)) {
+                    let value = parseFloat(!!sourceElement.value ? sourceElement.value : 0);
+
+                    if (!$this.copyMoveAltKeyEnabled) {
+                        //sum of values
+                        value += parseFloat(!!targetElement.value ? targetElement.value : 0);
+                    }
+
+                    targetElement.value = value;
+                    sourceElement.value = 0;
+                    targetElement.dispatchEvent(new Event('change', {bubbles: true}));
+                    sourceElement.dispatchEvent(new Event('change', {bubbles: true}));
+                }
+            });
+        }
     }
 
     renderButtonForManualSubmit() {
         return '<a href="#" id="manualSubmitData" class="bg-white hover:bg-gray-100 font-bold p-2 rounded text-red-700">Submit data</a>';
+    }
+
+    changeDeepLevel() {
+        let $this = this;
+
+        let $showRowsLevelSelectorSpan = $('label[for="' + $this.showRowsLevelID + '"] span');
+
+        switch ($('#' + $this.showRowsLevelID).val()) {
+            case '1':
+                $('.level_1 .show_sub-elements').addClass('hidden');
+                $('.level_1 .hide_sub-elements').removeClass('hidden');
+                $('.level_2, .level_3').hide();
+                $showRowsLevelSelectorSpan.text($this.showRowsLevelTitles[1]);
+                break;
+            case '2':
+                $('.level_2').show();
+                $('.level_2 .show_sub-elements').addClass('hidden');
+                $('.level_2 .hide_sub-elements').removeClass('hidden');
+                $('.level_3').hide();
+                $showRowsLevelSelectorSpan.text($this.showRowsLevelTitles[2]);
+                break;
+            case '3':
+                $('.show_sub-elements').removeClass('hidden');
+                $('.hide_sub-elements').addClass('hidden');
+                $('.level_2, .level_3').show();
+                $showRowsLevelSelectorSpan.text($this.showRowsLevelTitles[3]);
+                break;
+        }
     }
 }

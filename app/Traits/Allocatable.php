@@ -23,7 +23,7 @@ trait Allocatable
      *  required. default $date is current date and default phase is 1
      *
      * @param  float  $amount
-     * @param  null  $date  $date
+     * @param  null|string  $date
      * @param  integer  $phase_id
      * @param  bool  $manual_entry
      * @param  bool  $checkIsValuePresent
@@ -49,7 +49,7 @@ trait Allocatable
             $allowOperation = true;
         }
 
-        if ($allowOperation) {
+        if ($allowOperation) { // @phpstan-ignore-line
             $allocation = Allocation::updateOrCreate(
                 [
                     'allocatable_id' => $this->id,
@@ -71,7 +71,7 @@ trait Allocatable
      * Return an allocation for the current Allocatable model for the given
      * date if one exists
      *
-     * @param  date|string  $date
+     * @param  string  $date
      * @return void
      * @deprecated 9th August 2021
      * Allocations from multiple different sources could all share
@@ -79,10 +79,8 @@ trait Allocatable
      * Used only in deprecated file from grep search
      * `grep -iR getAllocationByDate ./app`
      * ./app/Http/Livewire/Calculator/__AccountValue.php
-     *
-     *
      */
-    public function getAllocationByDate($date)
+    public function getAllocationByDate(string $date)
     {
         $key = 'getAllocationByDate_'.$date;
         $getAllocationByDate = \Config::get('app.pfp_cache') ? Cache::get($key) : null;

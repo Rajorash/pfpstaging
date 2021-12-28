@@ -42,11 +42,11 @@ trait UserLicenseFunctions
     /**
      * Returns the current maximum license an advisor user can hold
      *
-     * @return int
+     * @return int|boolean
      */
-    public function getSeatsAttribute() {
-        if ( $this->isAdvisor() )
-        {
+    public function getSeatsAttribute()
+    {
+        if ($this->isAdvisor()) {
             return Advisor::firstWhere('user_id', $this->id)->seats;
         }
 
@@ -60,11 +60,11 @@ trait UserLicenseFunctions
      * An advisor may have a specialised Niche, eg. an advisor may
      * specialise in looking after hospitality based businesses.
      *
-     * @return string
+     * @return string|boolean
      */
-    public function getNicheAttribute() {
-        if ( $this->isAdvisor() )
-        {
+    public function getNicheAttribute()
+    {
+        if ($this->isAdvisor()) {
             return Advisor::firstWhere('user_id', $this->id)->niche;
         }
 
@@ -80,11 +80,11 @@ trait UserLicenseFunctions
      * This will either be based ona future pricing system or
      * a metric based ranking system.
      *
-     * @return void
+     * @return string|null|boolean
      */
-    public function getTierAttribute() {
-        if ( $this->isAdvisor() )
-        {
+    public function getTierAttribute()
+    {
+        if ($this->isAdvisor()) {
             return Advisor::firstWhere('user_id', $this->id)->tier;
         }
 

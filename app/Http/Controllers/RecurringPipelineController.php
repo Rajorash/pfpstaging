@@ -62,13 +62,14 @@ class RecurringPipelineController
         //get dates from recurringTransactions
         $startDate = Carbon::parse($records->date_start);
         $endDate = $records->date_end ? Carbon::parse($records->date_end) : null;
+        $today = Timezone::convertToLocal(Carbon::now(), 'Y-m-d H:i:s');
 
         //if end date not set - use periodDateEnd or calculate from now
         if (!$endDate) {
             $endDate = $periodDateEnd ? Carbon::parse($periodDateEnd)
                 : ($records->repeat_every_type == self::REPEAT_YEAR
-                    ? Carbon::now()->addYears(3)
-                    : Carbon::now()->addMonths(3)
+                    ? Carbon::parse($today)->addYears(3)
+                    : Carbon::parse($today)->addMonths(3)
                 );
         }
 

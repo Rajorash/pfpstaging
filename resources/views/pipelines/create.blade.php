@@ -1,5 +1,13 @@
 <x-app-layout>
 
+    <x-slot name="titleHeader">
+        @if(is_object($pipeline) && is_a($pipeline, 'App\Models\Pipelines'))
+            {{ __('Edit Pipeline') }}
+        @else
+            {{ __('Add Pipeline') }}
+        @endif
+    </x-slot>
+
     <x-slot name="header">
         @if(is_object($pipeline) && is_a($pipeline, 'App\Models\Pipelines'))
             {{ __('Edit Pipeline') }}

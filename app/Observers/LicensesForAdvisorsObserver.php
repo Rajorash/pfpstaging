@@ -18,7 +18,7 @@ class LicensesForAdvisorsObserver
     public function created(LicensesForAdvisors $licensesForAdvisors)
     {
         $advisor = Advisor::where('user_id', $licensesForAdvisors->advisor_id)->firstOrFail();
-        if (!$advisor) {
+        if (!$advisor) { // @phpstan-ignore-line
             $advisor = Advisor::create(['user_id' => $licensesForAdvisors->advisor_id]);
         }
         $advisor->seats = $licensesForAdvisors->licenses;

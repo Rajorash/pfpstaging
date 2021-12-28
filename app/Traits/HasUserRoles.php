@@ -5,6 +5,7 @@ namespace App\Traits;
 use App\Models\Advisor;
 use App\Models\Role;
 use App\Models\User;
+
 trait HasUserRoles
 {
 
@@ -17,7 +18,7 @@ trait HasUserRoles
     {
         $this->roles()->sync($role, false);
 
-        if($role->name == 'advisor' && !Advisor::where('user_id', '=', $this->id)->first() ) {
+        if ($role->name == 'advisor' && !Advisor::where('user_id', '=', $this->id)->first()) {
             Advisor::create(['user_id' => $this->id]);
         }
     }
@@ -138,11 +139,10 @@ trait HasUserRoles
 
     /**
      * Returns true if the user has the passed role name
-     *
-     * @param [type] $role_name
-     * @return boolean
+     * @param string $role_name
+     * @return bool
      */
-    public function hasRole($role_name): bool
+    public function hasRole(string $role_name): bool
     {
         if (is_null($this->roles->firstWhere('name', $role_name))) {
             return false;

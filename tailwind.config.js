@@ -23,6 +23,11 @@ module.exports = {
             'bg-salestax',
             'bg-prereal',
             'bg-postreal',
+            'border-revenue',
+            'border-pretotal',
+            'border-salestax',
+            'border-prereal',
+            'border-postreal',
 
 
             'text-light_blue',
@@ -47,7 +52,38 @@ module.exports = {
             fontFamily: {
                 sans: ['Questrial', ...defaultTheme.fontFamily.sans],
             },
+            borderWidth: {
+               '12': '12px',
+               '16': '16px',
+               '20': '20px',
+            },
             colors: {
+                'san-marino': {
+                    DEFAULT: '#576FB7',
+                    '50': '#F8F9FC',
+                    '100': '#E6EAF4',
+                    '200': '#C2CBE5',
+                    '300': '#9FACD6',
+                    '400': '#7B8EC6',
+                    '500': '#576FB7',
+                    '600': '#42589A',
+                    '700': '#324376',
+                    '800': '#232F52',
+                    '900': '#141B2E'
+                },
+                'atlantis': {
+                    DEFAULT: '#B2CC33',
+                    '50': '#F7FAEB',
+                    '100': '#F0F5D6',
+                    '200': '#E0EBAD',
+                    '300': '#D1E085',
+                    '400': '#C2D65C',
+                    '500': '#B2CC33',
+                    '600': '#8FA329',
+                    '700': '#6B7A1F',
+                    '800': '#475214',
+                    '900': '#24290A'
+                },
                 light_blue: '#CED0E5',
                 light_purple: '#DBCEFF',
                 light_purple2: '#F6F4FE',
