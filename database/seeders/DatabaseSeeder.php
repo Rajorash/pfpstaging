@@ -16,8 +16,8 @@ class DatabaseSeeder extends Seeder
         $this->call([
             // RoleSeeder::class, // RoleSeeder called on table creation during migration now
             UserSeeder::class,
-            LicenseSeeder::class,
-            BusinessSeeder::class,
+//            LicenseSeeder::class,
+//            BusinessSeeder::class,
             // AccountSeeder::class,
             // PermissionsSeeder::class // PermissionsSeeder called on table creation during migration now
         ]);
