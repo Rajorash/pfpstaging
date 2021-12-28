@@ -16,29 +16,29 @@ class RecurringTransactionsController extends Controller
         $this->recurringPipelineController = new RecurringPipelineController();
     }
 
-    /**
-     * @param  int  $bankAccountId
-     * @param  int  $accountFlowId
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
-     */
-    public function list(int $bankAccountId, int $accountFlowId)
-    {
-        $bankAccount = BankAccount::findOrfail($bankAccountId);
-        $accountFlow = AccountFlow::findOrfail($accountFlowId);
-
-        $recurringTransactions = RecurringTransactions::where('account_id', $accountFlow->id)
-            ->orderBy('title')
-            ->get();
-
-        return view(
-            'recurring.list',
-            [
-                'bankAccount' => $bankAccount,
-                'accountFlow' => $accountFlow,
-                'recurringTransactions' => $recurringTransactions
-            ]
-        );
-    }
+//    /**
+//     * @param  int  $bankAccountId
+//     * @param  int  $accountFlowId
+//     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+//     */
+//    public function list(int $bankAccountId, int $accountFlowId)
+//    {
+//        $bankAccount = BankAccount::findOrfail($bankAccountId);
+//        $accountFlow = AccountFlow::findOrfail($accountFlowId);
+//
+//        $recurringTransactions = RecurringTransactions::where('account_id', $accountFlow->id)
+//            ->orderBy('title')
+//            ->get();
+//
+//        return view(
+//            'recurring.list',
+//            [
+//                'bankAccount' => $bankAccount,
+//                'accountFlow' => $accountFlow,
+//                'recurringTransactions' => $recurringTransactions
+//            ]
+//        );
+//    }
 
     /** Get compiled forecast for Flow
      * @param  Collection  $recurringTransactionsArray
@@ -81,23 +81,23 @@ class RecurringTransactionsController extends Controller
      * @param  int  $accountFlowId
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
      */
-    public function create(
-        int $bankAccountId,
-        int $accountFlowId
-    ) {
-        $bankAccount = BankAccount::findOrfail($bankAccountId);
-        $accountFlow = AccountFlow::findOrfail($accountFlowId);
-        $recurringTransactions = null;
-
-        return view(
-            'recurring.create',
-            [
-                'bankAccount' => $bankAccount,
-                'accountFlow' => $accountFlow,
-                'recurringTransactions' => $recurringTransactions
-            ]
-        );
-    }
+//    public function create(
+//        int $bankAccountId,
+//        int $accountFlowId
+//    ) {
+//        $bankAccount = BankAccount::findOrfail($bankAccountId);
+//        $accountFlow = AccountFlow::findOrfail($accountFlowId);
+//        $recurringTransactions = null;
+//
+//        return view(
+//            'recurring.create',
+//            [
+//                'bankAccount' => $bankAccount,
+//                'accountFlow' => $accountFlow,
+//                'recurringTransactions' => $recurringTransactions
+//            ]
+//        );
+//    }
 
     /**
      * @param  int  $bankAccountId
@@ -105,24 +105,24 @@ class RecurringTransactionsController extends Controller
      * @param  int  $recurringId
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
      */
-    public function edit(
-        int $bankAccountId,
-        int $accountFlowId,
-        int $recurringId
-    ) {
-        $bankAccount = BankAccount::findOrfail($bankAccountId);
-        $accountFlow = AccountFlow::findOrfail($accountFlowId);
-        $recurringTransactions = RecurringTransactions::findOrfail($recurringId);
-
-        return view(
-            'recurring.create',
-            [
-                'bankAccount' => $bankAccount,
-                'accountFlow' => $accountFlow,
-                'recurringTransactions' => $recurringTransactions
-            ]
-        );
-    }
+//    public function edit(
+//        int $bankAccountId,
+//        int $accountFlowId,
+//        int $recurringId
+//    ) {
+//        $bankAccount = BankAccount::findOrfail($bankAccountId);
+//        $accountFlow = AccountFlow::findOrfail($accountFlowId);
+//        $recurringTransactions = RecurringTransactions::findOrfail($recurringId);
+//
+//        return view(
+//            'recurring.create',
+//            [
+//                'bankAccount' => $bankAccount,
+//                'accountFlow' => $accountFlow,
+//                'recurringTransactions' => $recurringTransactions
+//            ]
+//        );
+//    }
 
     /**
      * @param  int  $bankAccountId
@@ -130,25 +130,25 @@ class RecurringTransactionsController extends Controller
      * @param  int  $recurringId
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function delete(
-        int $bankAccountId,
-        int $accountFlowId,
-        int $recurringId
-    ) {
-        $bankAccount = BankAccount::findOrfail($bankAccountId);
-        $accountFlow = AccountFlow::findOrfail($accountFlowId);
-        $recurringTransactions = RecurringTransactions::findOrfail($recurringId);
-
-        $recurringTransactions->delete();
-
-        return redirect(
-            route(
-                'recurring-list',
-                [
-                    'account' => $bankAccount,
-                    'flow' => $accountFlow
-                ]
-            )
-        );
-    }
+//    public function delete(
+//        int $bankAccountId,
+//        int $accountFlowId,
+//        int $recurringId
+//    ) {
+//        $bankAccount = BankAccount::findOrfail($bankAccountId);
+//        $accountFlow = AccountFlow::findOrfail($accountFlowId);
+//        $recurringTransactions = RecurringTransactions::findOrfail($recurringId);
+//
+//        $recurringTransactions->delete();
+//
+//        return redirect(
+//            route(
+//                'recurring-list',
+//                [
+//                    'account' => $bankAccount,
+//                    'flow' => $accountFlow
+//                ]
+//            )
+//        );
+//    }
 }

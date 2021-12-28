@@ -1,4 +1,9 @@
 <x-app-layout>
+
+    <x-slot name="titleHeader">
+        {!! __('Licenses by').' &quot;'.$business->name.'&quot;' !!}
+    </x-slot>
+
     <x-slot name="header">
         {!! __('Licenses by').' &quot;'.$business->name.'&quot;' !!}
     </x-slot>

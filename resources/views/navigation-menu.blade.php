@@ -17,10 +17,6 @@
                         {{ __('Dashboard') }}
                     </x-jet-nav-link>
                     @if(Auth::user()->isSuperAdmin() || Auth::user()->isAdvisor() || Auth::user()->isClient())
-                        <x-jet-nav-link href="{{ route('allocation-calculator') }}"
-                                        :active="request()->routeIs('allocation-calculator')">
-                            {{ __('Calculator') }}
-                        </x-jet-nav-link>
                         <x-jet-nav-link href="{{ route('businesses') }}"
                                         :active="request()->is('*business/*') || request()->is('business')">
                             {{ __('Businesses') }}

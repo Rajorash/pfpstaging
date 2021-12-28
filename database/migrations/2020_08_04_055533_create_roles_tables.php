@@ -56,6 +56,18 @@ class CreateRolesTables extends Migration
             ->onDelete('cascade'); // If a role is deleted, cascade to delete their pivot table rows
             $table->timestamps();
         });
+
+        // Call role and permissions seeders to create default table values
+        Artisan::call('db:seed', [
+            '--class' => 'RoleSeeder',
+            '--force' => true
+        ]);
+
+        Artisan::call('db:seed', [
+            '--class' => 'PermissionsSeeder',
+            '--force' => true
+        ]);
+
     }
 
     /**

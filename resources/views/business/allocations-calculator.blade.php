@@ -1,11 +1,30 @@
 <x-app-layout>
+
+    <x-slot name="titleHeader">
+        {{$business->name}}
+        &gt;
+        @if (request()->routeIs('projection-view'))
+            {{__('Projections')}}
+        @else
+            {{__('Allocations')}}
+        @endif
+    </x-slot>
+
     <x-slot name="header">
-
-        <x-cta-workflow :business="$business" :step="'allocations'" />
-
+        <x-cta-workflow :business="$business"
+                        @if (request()->routeIs('projection-view'))
+                        step="projections"
+                        @else
+                        step="allocations"
+            @endif
+        />
         {{$business->name}}
         <x-icons.chevron-right :class="'h-4 w-auto inline-block px-2'"/>
-        {{__('Allocations')}}
+        @if (request()->routeIs('projection-view'))
+            {{__('Projections')}}
+        @else
+            {{__('Allocations')}}
+        @endif
     </x-slot>
 
     <x-slot name="subMenu">
@@ -31,8 +50,10 @@
                 </select>
             </div>
 
-            <x-ui.data-submit-controls class="items-center p-2" :heightController="true" :forecastController="true"/>
-
+            @if (!request()->routeIs('projection-view'))
+                <x-ui.data-submit-controls class="items-center p-2" :heightController="true"
+                                           :forecastController="true"/>
+            @endif
         </div>
     </x-slot>
 
@@ -43,7 +64,7 @@
 
     <x-ui.main width="w-full">
         <div id="allocationTablePlace"
-             class="relative overflow-scroll global_nice_scroll block_different_height return_coordinates_table">
+             class="relative overflow-scroll global_nice_scroll block_different_height return_coordinates_table @if(request()->routeIs('projection-view')) projection-mode @endif">
             <div class="p-8 text-center opacity-50">...loading</div>
         </div>
     </x-ui.main>

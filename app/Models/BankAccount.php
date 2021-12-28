@@ -3,8 +3,10 @@
 namespace App\Models;
 
 use App\Traits\Allocatable;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 
 /**
  * App\Models\BankAccount
@@ -22,7 +24,6 @@ use Illuminate\Support\Facades\Cache;
  * @property-read int|null $flows_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\AllocationPercentage[] $percentages
  * @property-read int|null $percentages_count
- * @property-read \App\Models\TaxRate|null $taxRate
  * @method static \Illuminate\Database\Eloquent\Builder|BankAccount newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|BankAccount newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|BankAccount query()
@@ -302,13 +303,13 @@ class BankAccount extends Model
         return $nsp - $pretotal_amt;
     }
 
-    /**
-     * Return the tax rate for the account (if it has one)
-     */
-    public function taxRate(): \Illuminate\Database\Eloquent\Relations\HasOne
-    {
-        return $this->hasOne(TaxRate::class);
-    }
+//    /**
+//     * Return the tax rate for the account (if it has one)
+//     */
+//    public function taxRate(): \Illuminate\Database\Eloquent\Relations\HasOne
+//    {
+//        return $this->hasOne(TaxRate::class);
+//    }
 
     /**
      * returns true if the account type should be able to be deleted
@@ -327,5 +328,96 @@ class BankAccount extends Model
         }
 
         return true;
+    }
+
+    /**
+     * Returns the result of totalling all allocations weighted by the flow certainty for a given date.
+     *
+     * @param  string|date  $date
+     * @return float
+     */
+    public function getAdjustedFlowsTotalByDate($date): float
+    {
+        $adjusted_total = 0;
+        //TODO: using typical request
+        /**
+         * $flows = DB::table('allocations AS a')
+         * ->join('account_flows AS f', 'a.allocatable_id', '=', 'f.id')
+         * ->select('a.id', 'a.allocatable_id', 'a.amount', 'a.allocation_date', 'f.certainty', 'f.negative_flow')
+         * ->where('a.allocatable_type', 'like', '%Flow')
+         * ->where('f.account_id', '=', $this->id)
+         * ->whereDate('a.allocation_date', $date)
+         * ->get();
+         *
+         * foreach ($flows as $flow) {
+         * $adjusted_total += ($flow->negative_flow ? -1 : 1) * $flow->amount * ($flow->certainty / 100);
+         * }
+         */
+
+        //TODO: using mysql procedure
+        $adjusted = DB::select('CALL AdjustedFlowsTotalByDate ( '.$this->id.', \''.$date.'\' );');
+
+        foreach ($adjusted as $row) {
+            $adjusted_total = floatval($row->suma);
+        }
+
+        return $adjusted_total;
+    }
+
+    /**
+     * Returns the result of totalling all allocations weighted by the flow certainty for a given date.
+     *
+     * @return array
+     */
+    public function getAdjustedFlowsTotalByDatePeriod($dateStart, $dateEnd): array
+    {
+        $adjusted_total = [];
+        //TODO: using typical request
+        /**
+         * $flows = DB::table('allocations AS a')
+         * ->join('account_flows AS f', 'a.allocatable_id', '=', 'f.id')
+         * ->select('a.id', 'a.allocatable_id', 'a.amount', 'a.allocation_date', 'f.certainty', 'f.negative_flow')
+         * ->where('a.allocatable_type', 'like', '%Flow')
+         * ->where('f.account_id', '=', $this->id)
+         * ->whereDate('a.allocation_date', '>=', $dateStart)
+         * ->whereDate('a.allocation_date', '<=', $dateEnd)
+         * ->get();
+         *
+         * foreach ($flows as $flow) {
+         * if (!isset($adjusted_total[$flow->allocation_date])) {
+         * $adjusted_total[$flow->allocation_date] = 0;
+         * }
+         * $adjusted_total[$flow->allocation_date] += ($flow->negative_flow ? -1 : 1) * $flow->amount * ($flow->certainty / 100);
+         * }
+         *
+         * return $adjusted_total;
+         */
+
+        //TODO: using mysql procedure
+        $flowTotals = DB::select('CALL AdjustedFlowsTotalByDatePeriod ( '.$this->id.', \''.$dateStart.'\', \''.$dateEnd.'\' );');
+
+        foreach ($flowTotals as $row) {
+            $adjusted_total[$row->allocation_date] = floatval($row->suma);
+        }
+
+        return $adjusted_total;
+    }
+
+    /**
+     * returns a Carbon date instance of the last date an account balance was
+     * entered for the account
+     *
+     * @return Carbon
+     */
+    public function dateOfLastBalanceEntry(): Carbon
+    {
+        $date = DB::table('allocations')
+            ->select('id', 'allocatable_id', 'amount', 'allocation_date')
+            ->where('allocatable_type', 'like', '%BankAccount')
+            ->where('allocatable_id', '=', $this->id)
+            ->where('manual_entry', '=', 1)
+            ->max('allocation_date');
+
+        return Carbon::createFromFormat('Y-m-d', $date);
     }
 }

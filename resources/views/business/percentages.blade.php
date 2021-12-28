@@ -1,7 +1,12 @@
 <x-app-layout>
-    <x-slot name="header">
-        <x-cta-workflow :business="$business" :step="'percentages'" />
 
+    <x-slot name="titleHeader">
+        {{$business->name}}
+        &gt;
+        {{__('Percentages')}}
+    </x-slot>
+
+    <x-slot name="header">
         {{$business->name}}
         <x-icons.chevron-right :class="'h-4 w-auto inline-block px-2'"/>
         {{__('Percentages')}}
@@ -12,7 +17,7 @@
     </x-slot>
 
     <x-slot name="subHeader">
-        <x-ui.data-submit-controls/>
+        <x-ui.data-submit-controls :projectionMode="true" :deepRecords="false"/>
     </x-slot>
 
     @if(!optional($business->license)->checkLicense)

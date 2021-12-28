@@ -8,6 +8,7 @@ use App\Models\License;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use JamesMills\LaravelTimezone\Timezone;
 use Livewire\Component;
 
 class LicensesForBusiness extends Component
@@ -41,13 +42,15 @@ class LicensesForBusiness extends Component
     public function mount()
     {
         $this->freshData();
+        $today = Timezone::convertToLocal(Carbon::now(), 'Y-m-d H:i:s');
 
         if ($this->business->license) {
-            $this->expired = Carbon::parse($this->business->license->expires_ts ?? Carbon::now()->addMonths(3))->format('Y-m-d\TH:i');;
+            $this->expired = Carbon::parse($this->business->license->expires_ts
+                ?? Carbon::parse($today)->addMonths(3))->format('Y-m-d\TH:i');;
             $this->activeLicense = $this->business->license->checkLicense;
             $this->allowToSetLicense = true;
         } else {
-            $this->expired = Carbon::now()->addMonths(3)->format('Y-m-d\TH:i');;
+            $this->expired = Carbon::parse($today)->addMonths(3)->format('Y-m-d\TH:i');;
             if ($this->availableLicenses > 0) {
                 $this->allowToSetLicense = true;
             }
@@ -69,6 +72,7 @@ class LicensesForBusiness extends Component
     {
         $this->failure = false;
         $this->failureMessage = '';
+        $today = Timezone::convertToLocal(Carbon::now(), 'Y-m-d H:i:s');
 
         if (!$this->userId && !$this->email) {
             $this->failure = true;
@@ -109,7 +113,7 @@ class LicensesForBusiness extends Component
                     'account_number' => uniqid(),
                     'business_id' => $this->business->id,
                     'advisor_id' => Auth::user()->id,
-                    'assigned_ts' => Carbon::now()->format('Y-m-d H:i:s'),
+                    'assigned_ts' => Carbon::parse($today)->format('Y-m-d H:i:s'),
                     'expires_ts' => Carbon::parse($this->expired)->format('Y-m-d H:i:s')
                 ]);
                 $this->business->license()->save($license);

@@ -1,5 +1,9 @@
 <x-app-layout>
 
+    <x-slot name="titleHeader">
+        {{ __('Pipelines') }}
+    </x-slot>
+
     <x-slot name="header">
         {{ __('Pipelines') }}
     </x-slot>

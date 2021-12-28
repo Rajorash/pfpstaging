@@ -1,10 +1,16 @@
 <x-app-layout>
+
+    <x-slot name="titleHeader">
+        {{__('Users')}}
+        &gt;
+        {{__('Edit User')}}
+    </x-slot>
+
     <x-slot name="header">
         {{__('Users')}}
         <x-icons.chevron-right :class="'h-4 w-auto inline-block px-2'"/>
         {{__('Edit User')}}
     </x-slot>
-
 
     <x-ui.main>
 

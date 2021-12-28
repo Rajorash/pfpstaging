@@ -4,12 +4,11 @@ require('alpinejs');
 require('jquery.cookie');
 require('arrow-table');
 
-// require('./allocations');
-// require('./percentages');
 require('./pfp_functions');
-require('./allocation_calculator');
+require('./allocation_calculator_new');
 require('./percentages_calculator');
 require('./projections_calculator');
+require('./revenue_calculator');
 require('./jquery.floatThead.min');
 
 let resizeTimer;

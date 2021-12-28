@@ -79,9 +79,9 @@ class RecurringTransactions extends Model
         'repeat_rules' => 'json',
         'value' => 'float'
     ];
-
-    public function accountFlow(): \Illuminate\Database\Eloquent\Relations\BelongsTo
-    {
-        return $this->belongsTo(AccountFlow::class, 'account_id', 'id');
-    }
+//
+//    public function accountFlow(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+//    {
+//        return $this->belongsTo(AccountFlow::class, 'account_id', 'id');
+//    }
 }

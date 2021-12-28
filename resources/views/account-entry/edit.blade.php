@@ -1,4 +1,9 @@
 <x-app-layout>
+
+    <x-slot name="titleHeader">
+        {{ __('Balance Entry') }}
+    </x-slot>
+
     <x-slot name="header">
         {{ __('Balance Entry') }}
     </x-slot>

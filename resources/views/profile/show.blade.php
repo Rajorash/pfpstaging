@@ -1,4 +1,9 @@
 <x-app-layout>
+
+    <x-slot name="titleHeader">
+        {{ __('Profile') }}
+    </x-slot>
+
     <x-slot name="header">
         {{ __('Profile') }}
     </x-slot>

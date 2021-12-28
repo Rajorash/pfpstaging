@@ -36,7 +36,7 @@ use Laravel\Sanctum\HasApiTokens;
  * @property string|null $profile_photo_path
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property string|null $deleted_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property int $active
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Business[] $activeLicenses
  * @property-read int|null $active_licenses_count
@@ -54,10 +54,10 @@ use Laravel\Sanctum\HasApiTokens;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Collaboration[] $collaborations
  * @property-read int|null $collaborations_count
  * @property-read \App\Models\Team|null $currentTeam
- * @property-read string $niche
+ * @property-read string|boolean $niche
  * @property-read string $profile_photo_url
- * @property-read int $seats
- * @property-read void $tier
+ * @property-read int|boolean $seats
+ * @property-read string|null|boolean $tier
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Business[] $licenses
  * @property-read int|null $licenses_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Business[] $notActiveLicenses
@@ -77,6 +77,7 @@ use Laravel\Sanctum\HasApiTokens;
  * @method static \Database\Factories\UserFactory factory(...$parameters)
  * @method static \Illuminate\Database\Eloquent\Builder|User newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|User newQuery()
+ * @method static \Illuminate\Database\Query\Builder|User onlyTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|User query()
  * @method static \Illuminate\Database\Eloquent\Builder|User whereActive($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereCreatedAt($value)
@@ -98,10 +99,9 @@ use Laravel\Sanctum\HasApiTokens;
  * @method static \Illuminate\Database\Eloquent\Builder|User whereTwoFactorRecoveryCodes($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereTwoFactorSecret($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereUpdatedAt($value)
- * @mixin \Eloquent
- * @method static \Illuminate\Database\Query\Builder|User onlyTrashed()
  * @method static \Illuminate\Database\Query\Builder|User withTrashed()
  * @method static \Illuminate\Database\Query\Builder|User withoutTrashed()
+ * @mixin \Eloquent
  */
 class User extends Authenticatable implements RoleInterface, MustVerifyEmail
 {

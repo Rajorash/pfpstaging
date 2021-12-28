@@ -2,7 +2,6 @@
 
 namespace App\Traits;
 
-
 use App\Models\BankAccount;
 use App\Models\AccountFlow;
 use App\Models\Business;

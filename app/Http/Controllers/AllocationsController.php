@@ -25,71 +25,71 @@ class AllocationsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
-        $businesses = $this->getBusinessAll();
-
-        $filtered = $businesses->filter(function ($business) {
-            return Auth::user()->can('view', $business);
-        })->values();
-
-        return view('business.list', ['businesses' => $filtered]);
-    }
+//    public function index()
+//    {
+//        $businesses = $this->getBusinessAll();
+//
+//        $filtered = $businesses->filter(function ($business) {
+//            return Auth::user()->can('view', $business);
+//        })->values();
+//
+//        return view('business.list', ['businesses' => $filtered]);
+//    }
 
     /**
      * Show the allocations for the selected business
      *
      * @return \Illuminate\Http\Response
      */
-    public function allocations(Business $business)
-    {
-        $this->authorize('view', $business);
-        $today = Timezone::convertToLocal(Carbon::now(),'Y-m-d');
-        $start_date = Carbon::now()->addDays(-6);
-        $end_date = Carbon::now()->addDays(7);
-
-        $dates = array();
-        for ($date = $start_date; $date <= $end_date; $date->addDay(1)) {
-            $dates[] = $date->format('Y-m-j');
-        }
-
-//        $allocations = $business->allocations()->sortBy('allocation_date');
-
-        $businessObj = $this->getBusinessById($business->id);
-        $allocations = $businessObj->allocations()->sortBy('allocation_date');
-        $allocatables = array();
-        // $taxRates = array();
-
-        foreach ($businessObj->accounts as $account) {
-            $allocatables[] = ['label' => $account->name, 'type' => 'BankAccount', 'id' => $account->id];
-
-            // tax rates are the same as allocation percentages
-            // if ($account->taxRate)
-            // {
-            //     $taxRates[$account->id] = $account->taxRate->rate;
-            // }
-
-            foreach ($account->flows as $flow) {
-                $allocatables[] = ['label' => $flow->label, 'type' => 'AccountFlow', 'id' => $flow->id];
-            }
-        }
-
-        $allocationPercentages = self::buildAllocationPercentages($businessObj);
-        $phaseDates = self::buildPhaseDates($dates, $business);
-        $allocationValues = self::buildAllocationValues($dates, $allocatables);
-
-        // testing original view and livewire rebuild, comment out the one you don't want. WIP live wire version has some bugs I cannot diagnose, may be easier to remove and start again.
-        // $view = 'allocations.calculator';
-        $view = 'allocations.calculator-lw';
-
-        $data = [
-            'business', 'today', 'start_date', 'end_date', 'dates', 'allocations', 'allocatables', 'allocationValues',
-            'allocationPercentages', 'phaseDates'
-        ];
-
-        return view($view, compact($data));
-
-    }
+//    public function allocations(Business $business)
+//    {
+//        $this->authorize('view', $business);
+//        $today = Timezone::convertToLocal(Carbon::now(),'Y-m-d');
+//        $start_date = Carbon::now()->addDays(-6);
+//        $end_date = Carbon::now()->addDays(7);
+//
+//        $dates = array();
+//        for ($date = $start_date; $date <= $end_date; $date->addDay(1)) {
+//            $dates[] = $date->format('Y-m-j');
+//        }
+//
+////        $allocations = $business->allocations()->sortBy('allocation_date');
+//
+//        $businessObj = $this->getBusinessById($business->id);
+//        $allocations = $businessObj->allocations()->sortBy('allocation_date');
+//        $allocatables = array();
+//        // $taxRates = array();
+//
+//        foreach ($businessObj->accounts as $account) {
+//            $allocatables[] = ['label' => $account->name, 'type' => 'BankAccount', 'id' => $account->id];
+//
+//            // tax rates are the same as allocation percentages
+//            // if ($account->taxRate)
+//            // {
+//            //     $taxRates[$account->id] = $account->taxRate->rate;
+//            // }
+//
+//            foreach ($account->flows as $flow) {
+//                $allocatables[] = ['label' => $flow->label, 'type' => 'AccountFlow', 'id' => $flow->id];
+//            }
+//        }
+//
+//        $allocationPercentages = self::buildAllocationPercentages($businessObj);
+//        $phaseDates = self::buildPhaseDates($dates, $business);
+//        $allocationValues = self::buildAllocationValues($dates, $allocatables);
+//
+//        // testing original view and livewire rebuild, comment out the one you don't want. WIP live wire version has some bugs I cannot diagnose, may be easier to remove and start again.
+//        // $view = 'allocations.calculator';
+//        $view = 'allocations.calculator-lw';
+//
+//        $data = [
+//            'business', 'today', 'start_date', 'end_date', 'dates', 'allocations', 'allocatables', 'allocationValues',
+//            'allocationPercentages', 'phaseDates'
+//        ];
+//
+//        return view($view, compact($data));
+//
+//    }
 
     public static function buildPhaseDates(array $dates, Business $business)
     {
@@ -140,66 +140,66 @@ class AllocationsController extends Controller
     /**
      * Used to update or create allocations
      */
-    public function updateAllocation(Request $request)
-    {
-
-        $valid = $request->validate([
-            'id' => 'required|integer',
-            'allocation_type' => 'required',
-            'allocation_date' => 'required',
-            'amount' => 'present|numeric|nullable'
-        ]);
-
-        // find allocation matching type and id
-        $allocations = Allocation::where('allocatable_id', '=', $valid['id'])
-            ->where('allocatable_type', 'like', "%".$valid['allocation_type'])
-            ->where('allocation_date', '=', $valid['allocation_date'])
-            ->get();
-
-        // if there is no existing allocation, insert one.
-        if ($allocations->count() < 1) {
-
-            $new_allocation = new Allocation();
-
-            $new_allocation->phase_id = 1;
-            $new_allocation->allocatable_id = $valid['id'];
-            $new_allocation->allocatable_type = "App"."\\Models\\".$valid['allocation_type'];
-            $new_allocation->amount = $valid['amount'];
-            $new_allocation->allocation_date = $valid['allocation_date'];
-
-            if (!$new_allocation->save()) {
-                return response(["msg" => "allocation not created"], 400);
-            }
-
-            return response()->JSON([
-                "msg" => "created new allocation",
-                "new allocation" => $new_allocation
-            ]);
-
-        }
-
-        $allocation = $allocations->first();
-        // if amount is empty remove the allocation -- please note that 0 is a valid amount
-        if (!$valid['amount']) {
-            $allocation->delete();
-
-            return response()->JSON([
-                "msg" => "allocation successfully deleted."
-            ]);
-        }
-        // removed auth check to finish writing logic
-        // $this->authorize('view', $allocation->phase->business);
-
-
-        // otherwise if allocation exists and amount is valid, update the allocation
-        $allocation->amount = $valid['amount'];
-        $allocation->save();
-
-        return response()->JSON([
-            "msg" => "allocation successfully updated.",
-            "allocation" => $allocation
-        ]);
-    }
+//    public function updateAllocation(Request $request)
+//    {
+//
+//        $valid = $request->validate([
+//            'id' => 'required|integer',
+//            'allocation_type' => 'required',
+//            'allocation_date' => 'required',
+//            'amount' => 'present|numeric|nullable'
+//        ]);
+//
+//        // find allocation matching type and id
+//        $allocations = Allocation::where('allocatable_id', '=', $valid['id'])
+//            ->where('allocatable_type', 'like', "%".$valid['allocation_type'])
+//            ->where('allocation_date', '=', $valid['allocation_date'])
+//            ->get();
+//
+//        // if there is no existing allocation, insert one.
+//        if ($allocations->count() < 1) {
+//
+//            $new_allocation = new Allocation();
+//
+//            $new_allocation->phase_id = 1;
+//            $new_allocation->allocatable_id = $valid['id'];
+//            $new_allocation->allocatable_type = "App"."\\Models\\".$valid['allocation_type'];
+//            $new_allocation->amount = $valid['amount'];
+//            $new_allocation->allocation_date = $valid['allocation_date'];
+//
+//            if (!$new_allocation->save()) {
+//                return response(["msg" => "allocation not created"], 400);
+//            }
+//
+//            return response()->JSON([
+//                "msg" => "created new allocation",
+//                "new allocation" => $new_allocation
+//            ]);
+//
+//        }
+//
+//        $allocation = $allocations->first();
+//        // if amount is empty remove the allocation -- please note that 0 is a valid amount
+//        if (!$valid['amount']) {
+//            $allocation->delete();
+//
+//            return response()->JSON([
+//                "msg" => "allocation successfully deleted."
+//            ]);
+//        }
+//        // removed auth check to finish writing logic
+//        // $this->authorize('view', $allocation->phase->business);
+//
+//
+//        // otherwise if allocation exists and amount is valid, update the allocation
+//        $allocation->amount = $valid['amount'];
+//        $allocation->save();
+//
+//        return response()->JSON([
+//            "msg" => "allocation successfully updated.",
+//            "allocation" => $allocation
+//        ]);
+//    }
 
     public static function buildAllocationValues(array $dates, array $allocatables)
     {
@@ -340,60 +340,60 @@ class AllocationsController extends Controller
     /**
      * Used to update or create allocations
      */
-    public function updatePercentage(Request $request)
-    {
-        $valid = $request->validate([
-            'phase_id' => 'required|numeric',
-            'bank_account_id' => 'required|numeric',
-            'percent' => 'present|numeric|min:0|max:100|nullable'
-        ]);
-
-        // find allocation matching type and id
-        $percentages = AllocationPercentage::where('phase_id', '=', $valid['phase_id'])
-            ->where('bank_account_id', '=',
-                $valid['bank_account_id'])
-            ->get();
-
-        // if there is no existing allocation, insert one.
-        if ($percentages->isEmpty()) {
-
-            $new_percentage = new AllocationPercentage();
-
-            $new_percentage->phase_id = $valid['phase_id'];
-            $new_percentage->bank_account_id = $valid['bank_account_id'];
-            $new_percentage->percent = $valid['percent'];
-
-            if (!$new_percentage->save()) {
-                return response(["msg" => "percentage not created"], 400);
-            }
-
-            return response()->JSON([
-                "msg" => "created new percentage value"
-            ]);
-        }
-
-        // return response()->JSON($percentages);
-        $percentage = $percentages->first();
-
-        // if percent is empty remove the percentage -- please note that 0 is a valid percent
-        if (!$valid['percent']) {
-            $percentage->delete();
-
-            return response()->JSON([
-                "msg" => "percentage successfully deleted."
-            ]);
-        }
-        // removed auth check to finish writing logic
-        // $this->authorize('view', $percentage->phase->business);
-
-        // otherwise if percentage exists and percent is valid, update the percentage
-        $percentage->percent = $valid['percent'];
-        $percentage->save();
-
-        return response()->JSON([
-            "msg" => "percentage successfully updated."
-        ]);
-    }
+//    public function updatePercentage(Request $request)
+//    {
+//        $valid = $request->validate([
+//            'phase_id' => 'required|numeric',
+//            'bank_account_id' => 'required|numeric',
+//            'percent' => 'present|numeric|min:0|max:100|nullable'
+//        ]);
+//
+//        // find allocation matching type and id
+//        $percentages = AllocationPercentage::where('phase_id', '=', $valid['phase_id'])
+//            ->where('bank_account_id', '=',
+//                $valid['bank_account_id'])
+//            ->get();
+//
+//        // if there is no existing allocation, insert one.
+//        if ($percentages->isEmpty()) {
+//
+//            $new_percentage = new AllocationPercentage();
+//
+//            $new_percentage->phase_id = $valid['phase_id'];
+//            $new_percentage->bank_account_id = $valid['bank_account_id'];
+//            $new_percentage->percent = $valid['percent'];
+//
+//            if (!$new_percentage->save()) {
+//                return response(["msg" => "percentage not created"], 400);
+//            }
+//
+//            return response()->JSON([
+//                "msg" => "created new percentage value"
+//            ]);
+//        }
+//
+//        // return response()->JSON($percentages);
+//        $percentage = $percentages->first();
+//
+//        // if percent is empty remove the percentage -- please note that 0 is a valid percent
+//        if (!$valid['percent']) {
+//            $percentage->delete();
+//
+//            return response()->JSON([
+//                "msg" => "percentage successfully deleted."
+//            ]);
+//        }
+//        // removed auth check to finish writing logic
+//        // $this->authorize('view', $percentage->phase->business);
+//
+//        // otherwise if percentage exists and percent is valid, update the percentage
+//        $percentage->percent = $valid['percent'];
+//        $percentage->save();
+//
+//        return response()->JSON([
+//            "msg" => "percentage successfully updated."
+//        ]);
+//    }
 
     public static function buildPercentageValues(Business $business)
     {

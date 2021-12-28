@@ -1,4 +1,16 @@
 <x-app-layout>
+
+    <x-slot name="titleHeader">
+        @if (Auth::user()->isRegionalAdmin()
+             && !Auth::user()->isSuperAdmin()
+             && !Auth::user()->isAdvisor()
+             && !Auth::user()->isClient())
+            {{ __('Advisors') }}
+        @else
+            {{ __('Users') }}
+        @endif
+    </x-slot>
+
     <x-slot name="header">
         @if (Auth::user()->isRegionalAdmin()
              && !Auth::user()->isSuperAdmin()
@@ -57,6 +69,7 @@
                 <x-ui.table-th>{{__('Roles')}}</x-ui.table-th>
                 @if(Auth::user()->isRegionalAdmin() && Auth::user()->isAdvisor())
                     <x-ui.table-th class="mr-12"></x-ui.table-th>
+                    <x-ui.table-th></x-ui.table-th>
                 @endif
                 <x-ui.table-th></x-ui.table-th>
                 <x-ui.table-th></x-ui.table-th>
