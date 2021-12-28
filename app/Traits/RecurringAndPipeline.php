@@ -2,11 +2,6 @@
 
 namespace App\Traits;
 
-use App\Models\Pipeline;
-use App\Models\RecurringTransactions;
-use Carbon\Carbon;
-use Illuminate\Support\Arr;
-
 trait RecurringAndPipeline
 {
     public static function getRepeatTimeArray(): array
