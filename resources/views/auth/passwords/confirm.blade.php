@@ -1,6 +1,4 @@
-@extends('layouts.app')
-
-@section('content')
+<x-guest-layout>
     <div class="container mx-auto sm:px-4">
         <div class="flex flex-wrap  justify-center">
             <div class="md:w-2/3 pr-4 pl-4">
@@ -53,4 +51,4 @@
             </div>
         </div>
     </div>
-@endsection
+</x-guest-layout>
