@@ -8,6 +8,7 @@ use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Arr;
+use JamesMills\LaravelTimezone\Timezone;
 
 class RecurringPipelineController
 {
