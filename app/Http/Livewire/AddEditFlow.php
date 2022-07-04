@@ -39,7 +39,7 @@ class AddEditFlow extends Component
         return [
             'label' => ['required', 'min:3'],
             'negative_flow' => ['required'],
-            'certainty' => ['required', 'integer', 'min:5', 'max:500']
+            'certainty' => ['required', 'integer', 'min:0', 'max:500']
         ];
     }
 
