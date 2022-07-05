@@ -28,7 +28,16 @@
                     </div>
                 @endif
 
+                
                 <x-slot name="right">
+                <div class="flex justify-center">
+                    <div class="mb-3 xl:w-96">
+                        <div class="input-group relative flex flex-wrap items-stretch w-full mb-4 rounded">
+                                <input type="text" id="search" style="text-align: center;
+    padding: 9px;" class="form-control relative flex-auto min-w-0 block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none" placeholder="Search" aria-label="Search" aria-describedby="button-addon2">
+                        </div>
+                    </div>
+                </div>
                     @livewire('business.create-business-form')
                 </x-slot>
             </x-ui.table-caption>
@@ -223,3 +232,18 @@
     </x-ui.main>
 
 </x-app-layout>
+<script>
+    $(document).ready(function(){
+            var rows = $('tbody tr');
+            $(document).on('keyup keypress blur change click','#search',function() {
+        // console.log(rows,"cc");
+
+                var val = $.trim($(this).val()).replace(/ +/g, ' ').toLowerCase();
+
+                rows.show().filter(function() {
+                    var text = $(this).text().replace(/\s+/g, ' ').toLowerCase();
+                    return !~text.indexOf(val);
+                }).hide();
+            });
+});
+    </script>
