@@ -71,7 +71,7 @@ class QuickEntryDataForFlow extends Component
         $this->value = 0;
         $today = Timezone::convertToLocal(Carbon::now(), 'Y-m-d H:i:s');
         $this->date_start = Carbon::parse($today)->format('Y-m-d');
-        $this->date_end = Timezone::convertToLocal(Carbon::parse($today)->addMonths(3), 'Y-m-d');
+        $this->date_end = Timezone::convertToLocal(Carbon::parse($today)->addYears(5), 'Y-m-d');
         $this->repeat_every_number = 1;
         $this->repeat_every_type = RecurringTransactions::REPEAT_DEFAULT;
         $this->repeat_rules_week_days = [
