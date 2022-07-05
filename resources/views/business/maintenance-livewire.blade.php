@@ -150,6 +150,7 @@
                     <div class="table-cell w-3/4 pb-4 text-left pt-8">
                         <input type="checkbox"
                                wire:model="iWouldLikeToDelete"
+                               onclick="Livewire.emit('openModal', 'modal-confirm-delete')"
                                id="iWouldLikeToDelete"/>
                         <label for="iWouldLikeToDelete"
                                class="pl-2">{{__('Mark this, if you would like to delete current Business')}}</div>
@@ -188,3 +189,15 @@
 {{__('Access denied')}}
 @endif
 </div>
+
+<script>
+
+    $(document).on('click','.uncheckbox',function () {
+        if ($('#iWouldLikeToDelete').is(':checked')) {
+            $('#iWouldLikeToDelete').prop('checked', false);
+        }
+    }).on('click','.checkbox',function () {
+            $('#iWouldLikeToDelete').prop('checked', true);
+    });
+
+</script>

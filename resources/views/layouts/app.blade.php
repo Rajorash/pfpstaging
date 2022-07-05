@@ -26,6 +26,8 @@
 @livewireStyles
 
     <script src="{{ url('js/app.js') }}" defer></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
 </head>
 <body class="relative font-sans antialiased text-light_gray">
 
@@ -66,7 +68,6 @@
 {{-- commented below line, removes small box at bottom of layout. --}}
 {{-- <div id="ddd" class="absolute z-50 w-2 h-2 bg-red-600"></div> --}}
 </body>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 <script type="text/javascript" >
         
     $(document).on("keydown",'.pfp_copy_move_element', function (e) {
