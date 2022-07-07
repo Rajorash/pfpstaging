@@ -151,3 +151,8 @@
         {{__('Access denied')}}
     @endif
 </div>
+<script>
+    $(document).keydown(function(objEvent) {
+        $('#livewire-error').css({'display': 'none' });
+    })
+</script>

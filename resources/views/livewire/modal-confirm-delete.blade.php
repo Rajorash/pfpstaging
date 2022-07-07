@@ -6,7 +6,7 @@
             {{__('Error, Flow not found')}}
         @endif
     </div>
-
+    <form wire:submit.prevent="store">
     <div class="table w-full mt-4">
         <div class="table-row">
             <div class="table-cell w-1/2 pb-4 text-left">
@@ -22,4 +22,5 @@
             </div>
         </div>
     </div>
+</form>
 </div>
