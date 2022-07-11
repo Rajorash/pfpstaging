@@ -70,3 +70,35 @@
         </div>
     @endif
 </div>
+
+<script>
+
+    $(document).ready(function(){
+        $('#height_window').prop('checked', true);
+        $('#height_full+label').css({'background-color':'rgba(243,244,246,var(--tw-bg-opacity))','color':'rgba(14,23,71,var(--tw-text-opacity))'});
+        $('#revenueTablePlace,#allocationsNewTablePlace').css('height','280px');
+       
+        $('#height_window:checked+label').css({'background-color':'rgba(14,23,71,var(--tw-bg-opacity))','color':'rgba(255,255,255,var(--tw-text-opacity))'});
+    });
+
+    
+    $('input:radio[name=block_different_height]').click(function(){
+        setcssrevenue();
+    });
+
+    function setcssrevenue() {
+        
+        if($('#height_full').is(':checked') === true) {
+           $('#revenueTablePlace,#allocationsNewTablePlace').css('height','auto');
+           $('#height_full:checked+label').css({'background-color':'rgba(14,23,71,var(--tw-bg-opacity))','color':'rgba(255,255,255,var(--tw-text-opacity))'});
+           $('#height_window+label').removeAttr('style');
+        //    $('#height_window+label').addClass('style');
+        }else if($('#height_window').is(':checked') === true) {
+           $('#revenueTablePlace,#allocationsNewTablePlace').css('height','280px');
+           $('#height_window:checked+label').css({'background-color':'rgba(14,23,71,var(--tw-bg-opacity))','color':'rgba(255,255,255,var(--tw-text-opacity))'});
+           $('#height_full+label').removeAttr('style');
+        //    $('#height_full+label').addClass('style');
+        }
+    }
+
+</script>

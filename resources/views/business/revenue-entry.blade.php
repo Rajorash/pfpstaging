@@ -36,7 +36,7 @@
                 </select>
             </div>
 
-            <x-ui.data-submit-controls class="items-center p-2" :heightController="false" :autoSubmit="false"/>
+            <x-ui.data-submit-controls class="items-center p-2" :heightController="true" :autoSubmit="false"/>
         </div>
     </x-slot>
 
