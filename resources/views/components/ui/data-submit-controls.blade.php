@@ -75,10 +75,11 @@
 
     $(document).ready(function(){
         $('#height_window').prop('checked', true);
-        $('#height_full+label').css({'background-color':'rgba(243,244,246,var(--tw-bg-opacity))','color':'rgba(14,23,71,var(--tw-text-opacity))'});
-        $('#revenueTablePlace,#allocationsNewTablePlace').css('height','280px');
-       
+        $('#height_full+label').css({'background-color':'rgba(243,244,246,var(--tw-bg-opacity))','color':'rgba(14,23,71,var(--tw-text-opacity))'});       
         $('#height_window:checked+label').css({'background-color':'rgba(14,23,71,var(--tw-bg-opacity))','color':'rgba(255,255,255,var(--tw-text-opacity))'});
+        $.cookie('allocation_heightMode','window');
+        $('#revenueTablePlace,#allocationsNewTablePlace').css('height','280px');
+
     });
 
     

@@ -88,7 +88,7 @@ class QuickEntryDataForFlow extends Component
     public function rules(): array
     {
         return [
-            'value' => 'required|numeric|gt:0',
+            'value' => 'required|numeric',
             'date_start' => 'required|date',
             'date_end' => 'nullable|date|after:date_start',
             'repeat_rules_week_days' => 'required_if:repeat_every_type,'.RecurringTransactions::REPEAT_WEEK
