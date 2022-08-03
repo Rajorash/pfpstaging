@@ -17,7 +17,7 @@ class RevenueController extends Controller
     use GettersTrait, TablesTrait;
 
     protected ?Business $business = null;
-    protected int $defaultCurrentRangeValue = 14;
+    protected int $defaultCurrentRangeValue = 31;
 
     /**
      * @param  Request  $request

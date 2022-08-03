@@ -152,7 +152,7 @@
     @endif
 </div>
 <script>
-    $(document).keydown(function(objEvent) {
-        $('#livewire-error').css({'display': 'none' });
+    $(document).on("keydown keypress","#livewire-error", function () {       
+            $(document).find('#livewire-error').css({'display': 'none' });
     })
 </script>
