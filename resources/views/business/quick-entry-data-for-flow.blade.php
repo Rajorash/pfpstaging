@@ -38,7 +38,7 @@
                             class="w-full"
                             type="date"
                             name="date_start"
-                            wire:model.lazy="date_start"
+                            wire:model.debounce.4000ms="date_start"
                         />
                         <x-jet-input-error for="date_start" class="mt-2 text-left"/>
                     </div>
@@ -151,8 +151,3 @@
         {{__('Access denied')}}
     @endif
 </div>
-<script>
-    $(document).on("keydown keypress","#livewire-error", function () {       
-            $(document).find('#livewire-error').css({'display': 'none' });
-    })
-</script>

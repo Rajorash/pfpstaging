@@ -102,7 +102,7 @@ class QuickEntryDataForFlow extends Component
     {
         $this->validate();
 
-        if ($this->value > 0) {
+        if ($this->value >= 0) {
             $this->description = $this->accountFlow->isNegative()
                 ? __('Subtraction')
                 : __('Addition');
@@ -187,7 +187,7 @@ class QuickEntryDataForFlow extends Component
             $this->description = '';
         }
 
-        if ($this->value) {
+        if ($this->value >= 0) {
             $recurring = $this->_updateRecurringObject();
             $this->forecast = $this->RecurringTransactionsController->getForecast($recurring);
         }
@@ -223,7 +223,7 @@ class QuickEntryDataForFlow extends Component
     {
         $this->validate();
 
-        if ($this->value) {
+        if ($this->value >= 0) {
             $recurring = $this->_updateRecurringObject();
 
             $this->forecast = $this->RecurringTransactionsController->getForecast($recurring);

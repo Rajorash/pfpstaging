@@ -157,7 +157,7 @@ class RecurringPipelineController
         Carbon $endDate,
         float $value
     ) {
-        if ($value) {
+        if ($value >= 0) {
             $startDate = Carbon::parse($startDate);
 
             if ($intervalType == self::REPEAT_DAY) {

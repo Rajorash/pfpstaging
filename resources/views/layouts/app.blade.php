@@ -24,6 +24,11 @@
     <link rel="stylesheet" href="{{ url('css/all.css') }}">
 
 @livewireStyles
+<style>
+    #livewire-error {
+        display:none;
+    }
+</style>
 
     <script src="{{ url('js/app.js') }}" defer></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
