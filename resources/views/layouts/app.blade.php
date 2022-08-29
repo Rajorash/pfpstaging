@@ -20,8 +20,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Questrial&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="{{ url('css/app.css') }}">
-    <link rel="stylesheet" href="{{ url('css/all.css') }}">
+    <link rel="stylesheet" href="{{ mix('css/app.css') }}">
+    <link rel="stylesheet" href="{{ mix('css/all.css') }}">
 
 @livewireStyles
 <style>
@@ -30,14 +30,14 @@
     }
 </style>
 
-    <script src="{{ url('js/app.js') }}" defer></script>
+    <script src="{{ mix('js/app.js') }}" defer></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 
 </head>
 <body class="relative font-sans antialiased text-light_gray">
 
 <div class="min-h-screen bg-right-bottom bg-no-repeat bg-light_purple2"
-     style="background-image: url({{url('images/bg.svg')}})">
+     style="background-image: url({{mix('images/bg.svg')}})">
     <div class="bg-white shadow-shadow4">
         <livewire:navigation-menu/>
     </div>
@@ -75,7 +75,7 @@
 </body>
 <script type="text/javascript" >
         
-    $(document).on("keydown",'.pfp_copy_move_element', function (e) {
+    $(document).on("keydown",'body', function (e) {
       if(e.altKey){
          $('.pfp_copy_move_element').removeClass('pfp_copy_move_element bg-yellow-300');
       }

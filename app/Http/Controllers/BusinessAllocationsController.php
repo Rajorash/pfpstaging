@@ -264,6 +264,7 @@ class BusinessAllocationsController extends Controller
     protected function fillMissingDateValue(CarbonPeriod $period, array $data, string $startDate): array
     {
         $id = $data['id'];
+        // $id = 60;
 
         switch ($data['type']) {
             case BankAccount::ACCOUNT_TYPE_REVENUE:
@@ -460,7 +461,6 @@ class BusinessAllocationsController extends Controller
             $result = BankAccount::where('id', $accountId)
                 ->with('allocations', function ($query) use ($dateFrom) {
                     return $query->where('allocation_date', '<', $dateFrom)
-                        ->where('amount', '>', 0)
                         ->orderBy('allocation_date', 'desc');
                 })
                 ->get()//;
@@ -468,7 +468,9 @@ class BusinessAllocationsController extends Controller
                     return $item->allocations->slice(0, 1)->pluck(['amount']);
                 })->pop()->toArray();
 
-            $this->previousNonZeroValueCache[$key] = (count($result) > 0) ? $result[0] : null;
+                // print_r($result);die("cc");
+
+            $this->previousNonZeroValueCache[$key] = (count($result) > 0) ? $result[0] : 0;
         }
 
         return $this->previousNonZeroValueCache[$key];
@@ -630,10 +632,16 @@ class BusinessAllocationsController extends Controller
                 ? $data['_dates'][$previousDate][0]
                 : $data['_dates'][$previousDate];
         } else {
+            // \DB::enableQueryLog(); 
+
+
+            
             $previousNonZero = $this->getPreviousNonZeroValue($id, $startDate);
             if (is_numeric($previousNonZero)) {
                 $actualValue += $previousNonZero;
             }
+        // dd(\DB::getQueryLog()); 
+
         }
 
         $stored_value = is_array($data['_dates'][$currentDate])

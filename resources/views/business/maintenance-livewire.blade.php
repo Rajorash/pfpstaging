@@ -149,7 +149,6 @@
                     </div>
                     <div class="table-cell w-3/4 pb-4 text-left pt-8">
                         <input type="checkbox"
-                               wire:model="iWouldLikeToDelete"
                                onclick="Livewire.emit('openModal', 'modal-confirm-delete')"
                                id="iWouldLikeToDelete"/>
                         <label for="iWouldLikeToDelete"

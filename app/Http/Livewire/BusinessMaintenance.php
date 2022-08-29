@@ -183,12 +183,20 @@ class BusinessMaintenance extends Component
                 Collaboration::where('business_id', '=', $this->business->id)->delete();
                 event(new BusinessProcessed('collaborationRevoke', $this->business, Auth::user()));
             }
+            $checkWouldLikeToDelete = session('iWouldLikeToDelete') ? session('iWouldLikeToDelete') : $this->iWouldLikeToDelete ;
 
-            if ($this->iWouldLikeToDelete) {
+            if(isset($checkWouldLikeToDelete))
+            {
+                $this->iWouldLikeToDelete = $checkWouldLikeToDelete;
+            }
+            
+            if ($this->iWouldLikeToDelete == 1) {
                 event(new BusinessProcessed('delete', $this->business, Auth::user()));
                 $this->business->delete();
+                session()->forget('iWouldLikeToDelete');
             }
 
+            
             return redirect("business");
         }
     }

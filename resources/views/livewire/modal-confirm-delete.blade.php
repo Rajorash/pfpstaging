@@ -3,14 +3,14 @@
         @if ($flowMessage)
             {{ $flowMessage }}
         @else
-            {{__('Error, Flow not found')}}
+            {{__('Error, Message not found')}}
         @endif
     </div>
     <form wire:submit.prevent="store">
     <div class="table w-full mt-4">
         <div class="table-row">
             <div class="table-cell w-1/2 pb-4 text-left">
-                <x-ui.button-secondary class="mr-4 uppercase uncheckbox" wire:click="$emit('closeModal')" type="button">
+                <x-ui.button-secondary class="mr-4 uppercase uncheckbox" wire:click="$emit('falseModal')" type="button">
                     {{__('Cancel')}}
                 </x-ui.button-secondary>
             </div>

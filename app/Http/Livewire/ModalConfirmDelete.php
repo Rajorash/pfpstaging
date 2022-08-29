@@ -9,10 +9,11 @@ use LivewireUI\Modal\ModalComponent;
 class ModalConfirmDelete extends ModalComponent
 {
     public string $flowMessage;
- 
+    public $iWouldLikeToDelete = false;
 
     protected $listeners = [
-        'confirmDelete' => 'confirmDelete'
+        'confirmDelete' => 'confirmDelete',
+        'falseModal' => 'falseModal'
     ];
 
     /**
@@ -21,7 +22,6 @@ class ModalConfirmDelete extends ModalComponent
      */
     public function mount()
     {
-       
         $this->flowMessage = "Are You Sure You Want To Delete Your Business!!";
     }
 
@@ -30,9 +30,18 @@ class ModalConfirmDelete extends ModalComponent
      */
     public function confirmDelete()
     {
+        $this->iWouldLikeToDelete = 1;
+        session(['iWouldLikeToDelete' => $this->iWouldLikeToDelete]);
         $this->closeModal();
-        // $this->forceClose()->closeModal();
     }
+
+    public function falseModal()
+    {
+        $this->iWouldLikeToDelete = 0;
+        session(['iWouldLikeToDelete' => $this->iWouldLikeToDelete]);
+        $this->closeModal();
+    }
+
 
     /**
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
