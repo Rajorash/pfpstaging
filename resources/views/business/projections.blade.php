@@ -46,6 +46,10 @@
                     <x-icons.chevron-right :class="'ml-3 h-3 w-auto inline-block'"/>
                 </button>
             </div>
+            <div class= "py-2 pl-12 text-xl" >
+                Last Date For Updated Bank Account Balance : <b> {{$updated_today}} </b>
+            </div>
+
         </div>
     </x-slot>
 

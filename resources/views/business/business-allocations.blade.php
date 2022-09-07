@@ -52,6 +52,10 @@
         <div class="font-bold text-center text-red-500">{{__('License is inactive. Edit data forbidden.')}}</div>
     @endif
 
+    <div class= "pl-12 text-xl" >
+        Last Date For Updated Bank Account Balance : <b> {{$updated_today}} </b>
+    </div>
+
     <x-ui.main width="w-full">
         <div id="allocationsNewTablePlace"
              class="relative overflow-scroll global_nice_scroll block_different_height return_coordinates_table">

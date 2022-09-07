@@ -41,6 +41,16 @@ class ProjectionController extends BusinessAllocationsController
         $businessId = $request->business ?? null;
         $this->business = Business::findOrFail($businessId);
         $this->authorize('view', $this->business);
+ 
+        $checkUpdate = new BankAccount;
+
+        $accounts = $this->business->accounts;
+        foreach ($accounts as $key => $account) {
+             $updated_today[$key] = $checkUpdate->dateOfUpdateBalanceEntry($account->id);
+             if($updated_today[$key] !== ''){
+                $update_bal_date = $updated_today[$key];
+             }
+        }
 
         $today = Timezone::convertToLocal(Carbon::now(), 'Y-m-d H:i:s');
         $minDate = Carbon::parse($today)->addWeek()->format('Y-m-d');
@@ -50,6 +60,8 @@ class ProjectionController extends BusinessAllocationsController
             'business.projections', [
                 'business' => $this->business,
                 'rangeArray' => $this->getRangeArray(),
+                'updated_today' => $update_bal_date ? $update_bal_date : Timezone::convertToLocal(Carbon::now(), 'Y-m-d'),
+                
 //                'endDate' => session()->get(
 //                    'endDate_'.$this->business->id,
 //                    Timezone::convertToLocal(Carbon::now()->addMonths(1), 'Y-m-d')

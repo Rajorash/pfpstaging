@@ -47,8 +47,10 @@
                 <x-ui.table-th padding="pl-12 pr-2 py-4">{{__('Business Name')}}</x-ui.table-th>
                 {{-- Owner Column header row --}}
                 <x-ui.table-th>Owner</x-ui.table-th>
+                @if($currentUser->isAdvisor())
                 {{-- License Column header row --}}
                 <x-ui.table-th>License</x-ui.table-th>
+                @endif
                 {{-- Accounts Column header row --}}
                 <x-ui.table-th class="text-center">{{__('Accounts')}}</x-ui.table-th>
                 <x-ui.table-th padding="pl-2 pr-8">
@@ -98,6 +100,7 @@
                         </x-ui.table-td>
 
                         {{-- License Column --}}
+                        @if($currentUser->isAdvisor())
                         <x-ui.table-td>
                             @if ( is_object($business->license) )
                                 {{$business->license->advisor->name}}
@@ -144,6 +147,7 @@
                                 </div>
                             @endif
                         </x-ui.table-td>
+                        @endif
 
                         {{-- Accounts Column --}}
                         <x-ui.table-td class="text-center">

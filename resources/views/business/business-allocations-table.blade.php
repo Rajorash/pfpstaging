@@ -232,6 +232,57 @@
             @endif
         @endforeach
 
+        @if ($projectionMode == 'forecast' && $business->flag == 1)
+        <tr class="total_row">
+                        <x-ui.table-td class="pl-5" padding="pl-0" attr="disabled"> 
+                                        <?php  echo "Total"; ?>
+                                    </x-ui.table-td>
+                        
+                       
+         </tr>
+         @endif
+
     </x-ui.table-tbody>
 
 </x-ui.table-table>
+
+<script>
+
+    $(document).ready(function(){
+        var checktrid = [];
+        var checktdid = [];
+        var total = 0;
+        var periodDates = '<?php echo json_encode($periodDates); ?>';
+        periodDates = JSON.parse(periodDates);
+
+        var i = 0;
+
+        $('tbody tr').each(function() {
+            if($(this).attr('data-account_id') !== undefined){
+                checktrid.push($(this).attr('data-account_id'));
+            }
+         })
+
+
+              for(var k = 0; k < periodDates.length; k++){
+                for(var l = 0; l < checktrid.length; l++){
+                    if($('#account_'+checktrid[l]+'_'+periodDates[k]).val() !== undefined){
+                        total = total + parseInt($('#account_'+checktrid[l]+'_'+periodDates[k]).val());
+                        i++;
+                    }
+                }
+
+               var div_html =  "<td class='pr-2 text-right text-dark_gray' padding='p-0' attr='disabled'>"+ total +
+                 "</td>";
+
+                 if(i == checktrid.length){
+                    total = 0;
+                    i = 0;
+                    }
+                
+                $(".total_row").append(div_html);
+                   
+             }
+            
+    })
+</script>

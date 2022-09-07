@@ -16,6 +16,7 @@ class BusinessAllocationsController extends Controller
     private array $phases = [];
     private array $percentages = [];
     private array $incomeByPeriod = [];
+    private array $updated_today = [];
     private array $rawData;
     private int $complete;
 
@@ -50,6 +51,18 @@ class BusinessAllocationsController extends Controller
         $this->authorize('view', $this->business);
 
         $today = \JamesMills\LaravelTimezone\Timezone::convertToLocal(Carbon::now(), 'Y-m-d H:i:s');
+
+        $checkUpdate = new BankAccount;
+
+        $accounts = $this->business->accounts;
+        foreach ($accounts as $key => $account) {
+             $updated_today[$key] = $checkUpdate->dateOfUpdateBalanceEntry($account->id);
+             if($updated_today[$key] !== ''){
+                $update_bal_date = $updated_today[$key];
+             }
+        }
+       
+        // $updated_today = Timezone::convertToLocal(Carbon::now(), 'Y-m-d');
 //        $maxDate = $this->business->rollout()->max('end_date');
         $maxDate = Carbon::parse($today)->addYears(5)->format('Y-m-d');
         $minDate = $this->business->rollout()->min('end_date');
@@ -62,6 +75,7 @@ class BusinessAllocationsController extends Controller
             'startDate' => $startDate,
             'minDate' => Carbon::parse($minDate)->subMonths(3)->format('Y-m-d'),
             'maxDate' => $maxDate,
+            'updated_today' => $update_bal_date ? $update_bal_date : Timezone::convertToLocal(Carbon::now(), 'Y-m-d'),
             'currentRangeValue' => session()->get('rangeValue_'.$this->business->id, $this->defaultCurrentRangeValue),
         ]);
     }

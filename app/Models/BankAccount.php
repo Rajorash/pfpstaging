@@ -420,4 +420,16 @@ class BankAccount extends Model
 
         return Carbon::createFromFormat('Y-m-d', $date);
     }
+
+    public function dateOfUpdateBalanceEntry($allocid)
+    {
+        $date = DB::table('allocations')
+            ->select('id', 'allocatable_id', 'amount', 'allocation_date')
+            ->where('allocatable_type', 'like', '%BankAccount')
+            ->where('allocatable_id', '=', $allocid)
+            ->where('manual_entry', '=', 1)
+            ->max('allocation_date');
+
+        return  $date ? $date : '';
+    }
 }

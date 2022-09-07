@@ -8,6 +8,7 @@ use App\Models\Advisor;
 use App\Models\Collaboration;
 use App\Models\License;
 use App\Models\User;
+use App\Models\Business;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
@@ -20,6 +21,7 @@ class BusinessMaintenance extends Component
     public $advisorsClients = null;
     public $availableLicenses = 0;
     public $iWouldLikeToDelete = false;
+    public $checkTotalProjection = false;
     public string $businessName = '';
     public $iWouldLikeToChangeStartDate = false;
     public $businessStartDate;
@@ -50,6 +52,14 @@ class BusinessMaintenance extends Component
 
         $this->businessName = $this->business->name;
         $this->businessStartDate = $this->business->start_date;
+
+        $business_flag = Business::find($this->business->id);
+
+        if($business_flag->flag){
+            $this->checkTotalProjection = true;
+        }else{
+            $this->checkTotalProjection = false;
+        }
 
         if ($this->business->license) {
             $this->activeLicense = $this->business->license->active;
@@ -183,6 +193,25 @@ class BusinessMaintenance extends Component
                 Collaboration::where('business_id', '=', $this->business->id)->delete();
                 event(new BusinessProcessed('collaborationRevoke', $this->business, Auth::user()));
             }
+       
+                // session(['business_id_'.$this->business->id => $this->business->id]);
+            
+                $business_flag = Business::find($this->business->id);
+
+                if($this->checkTotalProjection){
+                        if($business_flag) {
+                            $business_flag->flag = 1;
+                            $business_flag->save();
+                        }
+                }else{
+                        if($business_flag) {
+                            $business_flag->flag = 0;
+                            $business_flag->save();
+                        }
+                }
+
+
+       
             $checkWouldLikeToDelete = session('iWouldLikeToDelete') ? session('iWouldLikeToDelete') : $this->iWouldLikeToDelete ;
 
             if(isset($checkWouldLikeToDelete))

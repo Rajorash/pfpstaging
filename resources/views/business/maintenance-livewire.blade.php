@@ -25,7 +25,7 @@
                         {{ __('Current Client (owner)') }}
                     </div>
                     <div class="table-cell w-3/4 pb-4 text-left pt-8">
-                        {{$business->owner->name}}
+                        {{$business->owner ? $business->owner->name : ''}}
                     </div>
                 </div>
 
@@ -190,6 +190,15 @@
 </div>
 
 <script>
+
+    //  $(document).ready(function(){
+    //     var business_flag  = <?php// echo $business->flag ?>;
+    //     if (business_flag) {
+    //         $('#checkTotalProjection').prop('checked', true);
+    //     }else{
+    //         $('#checkTotalProjection').prop('checked', false);
+    //     }   
+    //  })
 
     $(document).on('click','.uncheckbox',function () {
         if ($('#iWouldLikeToDelete').is(':checked')) {
