@@ -43,7 +43,7 @@ class ProjectionController extends BusinessAllocationsController
         $this->authorize('view', $this->business);
  
         $checkUpdate = new BankAccount;
-
+        $update_bal_date = '';
         $accounts = $this->business->accounts;
         foreach ($accounts as $key => $account) {
              $updated_today[$key] = $checkUpdate->dateOfUpdateBalanceEntry($account->id);

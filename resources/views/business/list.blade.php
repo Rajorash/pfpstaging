@@ -47,10 +47,8 @@
                 <x-ui.table-th padding="pl-12 pr-2 py-4">{{__('Business Name')}}</x-ui.table-th>
                 {{-- Owner Column header row --}}
                 <x-ui.table-th>Owner</x-ui.table-th>
-                @if($currentUser->isAdvisor())
                 {{-- License Column header row --}}
                 <x-ui.table-th>License</x-ui.table-th>
-                @endif
                 {{-- Accounts Column header row --}}
                 <x-ui.table-th class="text-center">{{__('Accounts')}}</x-ui.table-th>
                 <x-ui.table-th padding="pl-2 pr-8">
@@ -71,7 +69,8 @@
             </thead>
 
             <x-ui.table-tbody>
-                @foreach ($businesses as $business)
+            @foreach ($businesses as $business)
+                @if($business->license->advisor_id == $currentUser->id && $currentUser->isAdvisor())
                     <tr>
                         {{-- Business Column --}}
                         <x-ui.table-td padding="pl-12 pr-2 py-4">
@@ -100,7 +99,6 @@
                         </x-ui.table-td>
 
                         {{-- License Column --}}
-                        @if($currentUser->isAdvisor())
                         <x-ui.table-td>
                             @if ( is_object($business->license) )
                                 {{$business->license->advisor->name}}
@@ -147,7 +145,6 @@
                                 </div>
                             @endif
                         </x-ui.table-td>
-                        @endif
 
                         {{-- Accounts Column --}}
                         <x-ui.table-td class="text-center">
@@ -227,6 +224,161 @@
 
                         </x-ui.table-td>
                     </tr>
+                    @elseif(!$currentUser->isAdvisor())
+                    <tr>
+                        {{-- Business Column --}}
+                        <x-ui.table-td padding="pl-12 pr-2 py-4">
+                            {{ $business->name }}
+                        </x-ui.table-td>
+
+                        {{-- Owner Column --}}
+                        <x-ui.table-td>
+                            <div class="flex items-center">
+                                @if($business->owner)
+                                    <div class="flex-shrink-0 w-10 h-10">
+                                        <img class="w-10 h-10 rounded-full"
+                                             src="{{ $business->owner->profile_photo_url }}"
+                                             alt="">
+                                    </div>
+                                    <div class="ml-4">
+                                        <div class="">
+                                            {{ $business->owner->name }}
+                                        </div>
+                                        <div class="text-sm text-light_gray">
+                                            {{ $business->owner->email }}
+                                        </div>
+                                    </div>
+                                @endif
+                            </div>
+                        </x-ui.table-td>
+
+                        {{-- License Column --}}
+                        <x-ui.table-td>
+                            @if ( is_object($business->license) )
+                                {{$business->license->advisor->name}}
+                                @if($business->license->advisor->id == $currentUser->id)
+                                    <span class="text-light_gray">{{__('(You)')}}</span>
+                                @endif <br>
+                                <span class="text-sm text-light_gray">
+                                <span class="flex items-center whitespace-nowrap">
+                                @if ($business->license->checkLicense)
+                                        <x-icons.active :class="'h-4 w-auto text-green mr-1 align-text-bottom'"/>
+                                    @else
+                                        <x-icons.inactive :class="'h-4 w-auto text-gray-500 mr-1 align-text-bottom'"/>
+                                    @endif
+                                    <span>
+                                        {{ $business->license->account_number }}
+                                        @if( $currentUser->isAdvisor() )
+                                            <a class="text-blue hover:text-dark_gray2"
+                                               href="{{route('licenses.business', ['business' => $business])}}"
+                                            >
+                                        <x-icons.link class="inline w-auto h-4 mr-2 align-text-bottom"/>
+                                        </a>
+                                        @endif
+                                    </span>
+                                </span>
+                            </span>
+                            @else
+                                {{__('Not licensed')}}
+                            @endif
+                            @if ( is_object($business->collaboration) && is_object($business->collaboration->advisor))
+                                <div class="text-sm text-light_gray">
+                                    @if($business->collaboration->advisor->user_id != auth()->user()->id)
+                                        {{__('In collaboration with')}}
+                                        <b>{{$business->collaboration->advisor->user->name}}</b>
+                                    @else
+                                        @if(is_object($business->license))
+                                            {{__('As collaborationist with')}}
+                                            <b>{{$business->license->advisor->name}}</b>
+                                        @endif
+                                    @endif
+
+                                    @if (($expire = new \DateTime($business->collaboration->expires_at))->getTimestamp() > time())
+                                        {{__('till')}} {{$expire->format('Y-m-d')}}
+                                    @endif
+                                </div>
+                            @endif
+                        </x-ui.table-td>
+
+                        {{-- Accounts Column --}}
+                        <x-ui.table-td class="text-center">
+                            <a href="{{url('/business/'.$business->id.'/accounts')}}">
+                                <x-ui.badge>{{$business->accounts_count}}</x-ui.badge>
+                            </a>
+                        </x-ui.table-td>
+
+                        <x-ui.table-td class="pl-4 pr-8">
+                            <div class="flex space-x-1">
+                                {{-- Maintenance column --}}
+                                @if(Auth::user()->isAdvisor())
+                                    @if(
+                                    (is_object($business->collaboration)
+                                    && is_object($business->collaboration->advisor)
+                                    && ($business->collaboration->advisor->user_id != auth()->user()->id))
+                                    || !is_object($business->collaboration))
+                                        <x-ui.button-small title="Maintenance"
+                                                            href="{{route('maintenance.business', ['business' => $business])}}">
+                                            <x-icons.gear :class="'h-5 w-auto inline-block'"/>
+                                        </x-ui.button-small>
+                                    @endif
+                                @endif
+
+                                {{-- Accounts --}}
+                                <x-ui.button-small title="{{__('Accounts')}}"
+                                    href="{{url('/business/'.$business->id.'/accounts')}}">
+                                    <x-icons.vallet :class="'h-5 w-auto inline-block'"/>
+                                </x-ui.button-small>
+
+
+                                {{-- Percentages column --}}
+                                <x-ui.button-small title="{{__('Rollout Percentages')}}"
+                                                href="{{route('allocations-percentages', ['business' => $business])}}">
+                                    <x-icons.percent :class="'h-5 w-auto inline-block'"/>
+                                </x-ui.button-small>
+
+                            </div>
+                        </x-ui.table-td>
+
+
+                        <x-ui.table-td padding="pl-2 pr-12 py-4">
+                            <div class="flex space-x-1">
+
+                                {{-- Allocations Calculator column --}}
+                                <x-ui.button-small title="{{__('Allocations Calculator')}}"
+                                                href="{{route('allocation-calculator-with-id', ['business' => $business])}}">
+                                    <x-icons.calculator :class="'h-5 w-auto inline-block'"/>
+
+                                </x-ui.button-small>
+
+                                {{-- Manually change balances --}}
+                                <x-ui.button-small title="{{__('Manually change balances')}}"
+                                                href="{{url('/business/'.$business->id.'/balance')}}">
+                                    <x-icons.balance :class="'h-5 w-auto inline-block'"/>
+                                </x-ui.button-small>
+
+                                {{-- Revenue Entry column --}}
+                                <x-ui.button-small title="Revenue Entry" class="whitespace-nowrap"
+                                                href="{{route('revenue-entry.table', ['business' => $business])}}">
+                                    <x-icons.dollar-fill :class="'h-5 w-auto inline-block'"/>
+                                </x-ui.button-small>
+
+                                {{-- Expense Entry column --}}
+                                <x-ui.button-small title="Expense Entry" class="whitespace-nowrap"
+                                                href="{{route('allocations-new', ['business' => $business])}}">
+                                    <x-icons.table :class="'h-5 w-auto inline-block'"/>
+                                </x-ui.button-small>
+
+                                {{-- Forecast column --}}
+                                <x-ui.button-small title="{{__('Projection Forecast')}}"
+                                                href="{{route('projection-view', ['business' => $business])}}">
+                                    <x-icons.presentation-chart :class="'h-5 w-auto inline-block'"/>
+                                </x-ui.button-small>
+
+                            </div>
+
+                        </x-ui.table-td>
+                    </tr>
+                    @endif
                 @endforeach
 
             </x-ui.table-tbody>

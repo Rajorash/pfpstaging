@@ -143,6 +143,19 @@
                     </div>
                 </div>
 
+                
+                <div class="table-row">
+                    <div class="table-cell w-1/4 pb-4 text-left pt-8">
+                        {{ __('Total Projection') }}
+                    </div>
+                    <div class="table-cell w-3/4 pb-4 text-left pt-8">
+                        <input type="checkbox"
+                               wire:model="checkTotalProjection" 
+                               id="checkTotalProjection" />
+                        <label for="checkTotalProjection"
+                               class="pl-2">{{__('Mark this, if you would like to Show Total in Projection Calculation')}}</div>
+                </div>
+
                 <div class="table-row">
                     <div class="table-cell w-1/4 pb-4 text-left pt-8">
                         {{ __('Delete business') }}
@@ -191,14 +204,6 @@
 
 <script>
 
-    //  $(document).ready(function(){
-    //     var business_flag  = <?php// echo $business->flag ?>;
-    //     if (business_flag) {
-    //         $('#checkTotalProjection').prop('checked', true);
-    //     }else{
-    //         $('#checkTotalProjection').prop('checked', false);
-    //     }   
-    //  })
 
     $(document).on('click','.uncheckbox',function () {
         if ($('#iWouldLikeToDelete').is(':checked')) {

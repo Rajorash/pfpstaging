@@ -369,7 +369,7 @@ class BankAccount extends Model
      *
      * @return array
      */
-    public function getAdjustedFlowsTotalByDatePeriod($dateStart, $dateEnd): array
+    public function getAdjustedFlowsTotalByDatePeriod($accountid,$dateStart, $dateEnd): array
     {
         $adjusted_total = [];
         //TODO: using typical request
@@ -394,7 +394,7 @@ class BankAccount extends Model
          */
 
         //TODO: using mysql procedure
-        $flowTotals = DB::select('CALL AdjustedFlowsTotalByDatePeriod ( '.$this->id.', \''.$dateStart.'\', \''.$dateEnd.'\' );');
+        $flowTotals = DB::select('CALL AdjustedFlowsTotalByDatePeriod ( '.$accountid.', \''.$dateStart.'\', \''.$dateEnd.'\' );');
 
         foreach ($flowTotals as $row) {
             $adjusted_total[$row->allocation_date] = floatval($row->suma);

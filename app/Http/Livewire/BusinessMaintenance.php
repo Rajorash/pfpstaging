@@ -12,6 +12,8 @@ use App\Models\Business;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
+// use Excel;
+// use App\Exports\ExpenseExport;
 
 class BusinessMaintenance extends Component
 {
@@ -72,6 +74,8 @@ class BusinessMaintenance extends Component
         if ($this->business->collaboration) {
             $this->emailCollaborate = $this->business->collaboration->advisor->user->email;
         }
+
+        session(['currentid' => $this->business->id]);
 
         if ((is_object($this->business->collaboration)
                 && $this->business->collaboration->advisor->user_id != auth()->user()->id)

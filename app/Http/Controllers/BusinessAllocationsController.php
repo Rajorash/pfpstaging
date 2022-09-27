@@ -53,7 +53,7 @@ class BusinessAllocationsController extends Controller
         $today = \JamesMills\LaravelTimezone\Timezone::convertToLocal(Carbon::now(), 'Y-m-d H:i:s');
 
         $checkUpdate = new BankAccount;
-
+        $update_bal_date = '';
         $accounts = $this->business->accounts;
         foreach ($accounts as $key => $account) {
              $updated_today[$key] = $checkUpdate->dateOfUpdateBalanceEntry($account->id);
@@ -171,11 +171,15 @@ class BusinessAllocationsController extends Controller
             $tableData[$account->type][$account->id] = $accountAllData;
 
             if ($account->type == BankAccount::ACCOUNT_TYPE_REVENUE) {
-                $this->incomeByPeriod = $account->getAdjustedFlowsTotalByDatePeriod($startDate, $endDate);
+                session(['acccountTransferId' => $account->id]);
+                $this->incomeByPeriod = $account->getAdjustedFlowsTotalByDatePeriod($account->id,$startDate, $endDate);
+            }else{
+                $accccid = session('acccountTransferId') ? session('acccountTransferId') : $account->id;
+                $this->incomeByPeriod = $account->getAdjustedFlowsTotalByDatePeriod($accccid,$startDate, $endDate);
             }
 
             $tableData[$account->type][$account->id]['total_db'] =
-                $account->getAdjustedFlowsTotalByDatePeriod($startDate, $endDate);
+                $account->getAdjustedFlowsTotalByDatePeriod($account->id,$startDate, $endDate);
 
             if (array_key_exists('flows', $tableData[$account->type][$account->id])) {
                 //reorder flows data
@@ -216,6 +220,7 @@ class BusinessAllocationsController extends Controller
             $tableData = $this->optimizationTableData($tableData, $period);
         }
 
+        // dd("chedking");
         $periodDates = [];
         foreach ($period as $date) {
             $periodDates[] = $date->format('Y-m-d');

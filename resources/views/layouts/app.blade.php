@@ -73,6 +73,42 @@
 {{-- commented below line, removes small box at bottom of layout. --}}
 {{-- <div id="ddd" class="absolute z-50 w-2 h-2 bg-red-600"></div> --}}
 </body>
+<script type="text/javascript" src="{{ url('js/table-to-excel/dist/tableToExcel.js') }}"></script>
+    <script>
+         function exportTableToExcel(){
+            var inputval = [];
+            $('tbody td').each(function() {
+                if($(this).find('input').val() !== undefined){
+                     $(this).append('<div style="display:none;">'+$(this).find('input').val()+'</div>');
+                }
+            })
+
+            // console.log(inputval);
+            TableToExcel.convert(document.getElementById("projectionsTablePlace"), {
+            name: "projection.xlsx",
+            sheet: {
+                name: "Sheet 1"
+            }
+            });
+         }
+
+         function exportTableExpenseExcel(){
+            var inputval = [];
+            $('tbody td').each(function() {
+                if($(this).find('input').val() !== undefined){
+                     $(this).append('<div style="display:none;">'+$(this).find('input').val()+'</div>');
+                }
+            })
+
+            // console.log(inputval);
+            TableToExcel.convert(document.getElementById("allocationsNewTablePlace"), {
+            name: "expense.xlsx",
+            sheet: {
+                name: "Sheet 1"
+            }
+            });
+         }
+</script>
 <script type="text/javascript" >
         
     $(document).on("keydown",'body', function (e) {

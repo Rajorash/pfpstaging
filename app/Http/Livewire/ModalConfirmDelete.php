@@ -22,7 +22,7 @@ class ModalConfirmDelete extends ModalComponent
      */
     public function mount()
     {
-        $this->flowMessage = "Are You Sure You Want To Delete Your Business!!";
+        $this->flowMessage = "Do you want to export any data before you delete the business?";
     }
 
     /**
