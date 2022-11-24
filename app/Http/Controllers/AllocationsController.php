@@ -327,6 +327,31 @@ class AllocationsController extends Controller
                 return $item;
             });
 
+            $account_order = ['revenue','pretotal','salestax','prereal','postreal'];
+            $accounts = $business->accounts;
+            $sorted = $accounts->sortBy( function($account) use ($account_order) {
+                return array_search($account->type, $account_order);
+            });
+
+            foreach($sorted as $acc){
+                foreach($rollout as $phase){
+                    $percentage[$acc->id] = $percentages
+                            ->where('phase_id', '=', $phase->id)
+                            ->where('bank_account_id', '=', $acc->id)
+                            ->pluck('percent')
+                            ->first()
+                            ?? null;
+
+                            if($percentage[$acc->id] == null){
+                                AllocationPercentage::updateOrCreate([
+                                    'phase_id' => $phase->id,
+                                    'bank_account_id' => $acc->id,
+                                    'percent' => 0 
+                                ]);
+                            }
+                }
+            }
+
         $response['html'] = view('business.percentages-table')
             ->with([
                 'percentages' => $percentages,

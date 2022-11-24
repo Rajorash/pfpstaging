@@ -308,6 +308,10 @@ Route::group(['middleware' => 'auth'], function () {
         '/business/allocations/ajax/update',
         [BusinessAllocationsController::class, 'updateData']
     )->name('allocations-new-update'); //++
+    Route::post(
+        '/business/allocations/ajax/updatedrag',
+        [BusinessAllocationsController::class, 'updateDragRow']
+    ); //++
 
 });
 

@@ -62,18 +62,18 @@
                     @foreach ($accountsSubTypes as $subType => $subTypeArray)
                         <tr data-account_id="{{$accountId}}"
                             class="divide-x border-light_blue {{$subTypeArray['class_tr']}}
-                            @if($subType == '_dates') level_1 @else level_2 @endif">
+                            @if($subType == '_dates') level_1 @elseif( $subType  == 'sub_total') sub_level @else level_2 @endif">
                             <x-ui.table-td padding="p-1 {{$subTypeArray['class_tr']}} {{$subTypeArray['class_th']}}"
                                            baseClass="text-dark_gray sticky left-0 z-10">
                                 <div class="flex mr-auto">
-                                    @if (($subType == 'total' || $subType == '_dates') && $projectionMode == 'expense')
+                                    @if (($subType == 'total' || $subType == '_dates' || $subType  == 'sub_total') && $projectionMode == 'expense')
                                         <div data-account_id="{{$accountId}}"
                                              class="inline-flex show_hide_sub-elements mr-2 opacity-50 hover:opacity-100 transition-all text-gray-700 opened">
-                                            <span class="show_sub-elements">
+                                            <span class="show_sub-elements @if( $subType  == 'sub_total') ml-4 @endif">
                                                 <x-icons.chevron-circle-down
                                                     class="w-3 h-auto inline-block align-middle"/>
                                             </span>
-                                            <span class="hide_sub-elements hidden">
+                                            <span class="hide_sub-elements hidden @if( $subType  == 'sub_total') ml-4 @endif">
                                                 <x-icons.chevron-circle-up
                                                     class="w-3 h-auto inline-block align-middle"/>
                                             </span>
@@ -160,8 +160,8 @@
                                     $rowIndex++;
                                     $columnIndex = 0;
                                 @endphp
-                                <tr data-account_id="{{$accountId}}"
-                                    class="divide-x bg-data-entry hover:bg-yellow-100 border-light_blue level_3">
+                                <tr  @if($checkLicense) draggable="true" drag-root @endif  data-account_id="{{$accountId}}" 
+                                flowId="{{$flowId}}"  class="divide-x bg-data-entry hover:bg-yellow-100 border-light_blue level_3">
                                     <x-ui.table-td padding="p-1 pr-2 pl-4"
                                                    class="sticky left-0 z-10 text-left bg-data-entry whitespace-nowrap">
                                         <div class="flex mr-auto">
@@ -203,7 +203,7 @@
                                                 @else pfp_copy_move_element hover:bg-yellow-50 focus:bg-yellow-50
                                                 @endif
                                                 "
-                                                   @if($checkLicense) draggable="true" @endif
+                                                   @if($checkLicense) draggable="true" drag-input @endif
 
                                                    id="flow_{{$flowId}}_{{$currentDate}}"
                                                    type="text" pattern="[0-9]{10}"
@@ -284,5 +284,91 @@
                    
              }
             
+    })   
+</script>
+
+<script>
+
+document.querySelectorAll('[drag-input]').forEach(el => {
+    el.addEventListener('dragstart', e => {
+        e.target.closest("tr").setAttribute('dragging', false);
     })
+});
+
+document.querySelectorAll('[drag-root]').forEach(el => {
+    el.addEventListener('dragstart', e => {
+        e.target.setAttribute('dragging', true);
+        e.target.classList.add('dropclass');
+    })
+    el.addEventListener('drop', e => {
+        e.target.classList.remove('bg-yellow-100');
+        let draggingEl = document.querySelector('[dragging]');
+        e.target.closest("tr").after(draggingEl);
+
+        // let data_accountId = Array.from(document.querySelectorAll('[data-account_id]')).map(itemEl =>
+        //         itemEl.getAttribute('data-account_id')
+        // );
+
+        var drop_accountId = $(".dropclass").attr('data-account_id');
+        var drop_flowId = $(".dropclass").attr('flowId');
+        var current_accountId = e.target.closest("tr").getAttribute('data-account_id');
+        var current_flowId = e.target.closest("tr").getAttribute('flowId');
+
+        var getAllFlowId = [];
+
+        $('tbody tr').each(function() {
+            if($(this).attr('data-account_id') == current_accountId && $(this).attr('flowid') !== undefined|| $(this).attr('flowid') == drop_flowId && $(this).attr('data-account_id') == drop_accountId && $(this).attr('flowid') !== undefined){
+                getAllFlowId.push($(this).attr('flowid'));
+            }
+         })
+
+         console.log(getAllFlowId , "flow if chal ");
+
+        updateAccount(drop_accountId, drop_flowId, current_accountId, current_flowId,getAllFlowId);
+       
+    })
+    el.addEventListener('dragenter', e => {
+        e.target.classList.add('bg-yellow-100');
+        e.preventDefault();
+    })
+
+    el.addEventListener('dragover', e => { e.preventDefault(); })
+
+    el.addEventListener('dragleave', e => {
+        e.target.classList.remove('bg-yellow-100');
+        e.target.classList.remove('dropclass');
+    })
+    el.addEventListener('dragend', e => {
+        e.target.removeAttribute('dragging');
+        e.target.classList.remove('dropclass');
+    })
+})
+
+
+function updateAccount(drop_accountId, drop_flowId, current_accountId, current_flowId, getAllFlowId){
+
+    if(drop_accountId !== undefined){
+        // console.log(drop_accountId , "drop_accountId");
+        // console.log(drop_flowId , "drop_flowId");
+        // console.log(current_accountId , "current_accountId");
+        // console.log(current_flowId , "current_flowId");
+    
+        $.ajax({
+            url: "{{ url('/business/allocations/ajax/updatedrag') }}", 
+            type: "POST",
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify({ drop_accountId: drop_accountId, drop_flowId: drop_flowId, current_accountId: current_accountId, current_flowId: current_flowId, getAllFlowId : getAllFlowId, returnType: "json" , businessId: "{{ session('businessId') }}" }),
+            success: function (result) {
+                    if(result.return){
+                        window.location.reload();
+                    }
+                },
+                error: function (err) {
+                    console.log(err,"error");
+                }
+        }); 
+    }
+   
+}
 </script>

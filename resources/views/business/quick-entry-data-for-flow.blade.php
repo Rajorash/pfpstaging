@@ -5,12 +5,12 @@
     <div class="table-row">
         <div class="table-cell w-1/4 text-lg text-left text-center text-black pt-4" id="tab1">
                 <x-ui.button-secondary class="mr-4 {{ $tab1 ? 'bg-gray-300 text-gray-100 border-blue' : '' }} bg-slate-500 text-white  uppercase inline-flex items-center px-1 pt-1  border-transparent font-medium leading-5 text-gray-500 hover:text-gray-700 hover:border-blue focus:outline-none focus:text-gray-700 focus:blue transition duration-150 ease-in-out"  wire:click="$emit('checktab1')" type="button">
-                            {{__('Recuring Entry')}}
+                            {{__('RECURRING ENTRY')}}
                 </x-ui.button-secondary>
         </div>
         <div class="table-cell w-1/4 text-lg text-left text-center text-black pt-4" id="tab2">
                 <x-ui.button-secondary class="{{ $tab2 ? 'bg-gray-300 text-gray-100 border-blue' : '' }} uppercase inline-flex items-center px-1 pt-1  border-transparent font-medium leading-5 text-gray-500 hover:text-gray-700 hover:border-blue focus:outline-none focus:text-gray-700 focus:blue transition duration-150 ease-in-out"  wire:click="$emit('checktab2')" type="button">
-                            {{__('One Of Entry')}}
+                            {{__('ONE-OFF ENTRY')}}
                 </x-ui.button-secondary>
         </div>
     </div>

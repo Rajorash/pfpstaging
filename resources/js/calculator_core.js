@@ -49,7 +49,8 @@ export class calculatorCore {
         this.showRowsLevelTitles = {
             1: 'Accounts',
             2: 'Accounts with details',
-            3: 'All records'
+            3: 'Sub Flows Total',
+            4: 'All records'
         };
     }
 
@@ -527,7 +528,7 @@ export class calculatorCore {
             case '1':
                 $('.level_1 .show_sub-elements').addClass('hidden');
                 $('.level_1 .hide_sub-elements').removeClass('hidden');
-                $('.level_2, .level_3').hide();
+                $('.level_2, .level_3, .sub_level').hide();
                 $showRowsLevelSelectorSpan.text($this.showRowsLevelTitles[1]);
                 break;
             case '2':
@@ -535,13 +536,21 @@ export class calculatorCore {
                 $('.level_2 .show_sub-elements').addClass('hidden');
                 $('.level_2 .hide_sub-elements').removeClass('hidden');
                 $('.level_3').hide();
+                $('.sub_level').hide();
                 $showRowsLevelSelectorSpan.text($this.showRowsLevelTitles[2]);
                 break;
             case '3':
+                $('.sub_level').show();
+                $('.sub_level .show_sub-elements').addClass('hidden');
+                $('.sub_level .hide_sub-elements').removeClass('hidden');
+                $('.level_3').hide();
+                $showRowsLevelSelectorSpan.text($this.showRowsLevelTitles[3]);
+                break;
+            case '4':
                 $('.show_sub-elements').removeClass('hidden');
                 $('.hide_sub-elements').addClass('hidden');
-                $('.level_2, .level_3').show();
-                $showRowsLevelSelectorSpan.text($this.showRowsLevelTitles[3]);
+                $('.level_2, .level_3, .sub_level').show();
+                $showRowsLevelSelectorSpan.text($this.showRowsLevelTitles[4]);
                 break;
         }
     }

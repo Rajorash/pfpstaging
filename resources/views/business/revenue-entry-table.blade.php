@@ -58,7 +58,7 @@
         </tr>
 
         @foreach($tableData as $accountId => $accountData)
-            @if (isset($accountData['flows']) && !empty($accountData['flows']))
+            @if (isset($accountData['flows']))
                 <tr class="divide-x border-light_blue level_2">
                     <x-ui.table-td padding="p-1 pl-2"
                                    baseClass="text-dark_gray sticky left-0 z-10 bg-account">

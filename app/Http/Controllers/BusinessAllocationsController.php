@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use Illuminate\Http\Request;
 use JamesMills\LaravelTimezone\Facades\Timezone;
+use Illuminate\Support\Facades\DB;
 
 class BusinessAllocationsController extends Controller
 {
@@ -47,6 +48,7 @@ class BusinessAllocationsController extends Controller
     public function index(Request $request)
     {
         $businessId = $request->business ?? null;
+        session(['businessId' => $businessId]);
         $this->business = Business::findOrFail($businessId);
         $this->authorize('view', $this->business);
 
@@ -80,13 +82,34 @@ class BusinessAllocationsController extends Controller
         ]);
     }
 
-    public function updateData(Request $request): \Illuminate\Http\JsonResponse
+    public function updateDragRow(Request $request)
     {
+        if($request->drop_accountId != null && $request->drop_flowId != null && $request->current_accountId != null && $request->current_flowId != null && $request->getAllFlowId != null){
+
+            $dropUser = AccountFlow::where('account_id',$request->drop_accountId)->where('id',$request->drop_flowId)->update([ 'account_id' => $request->current_accountId]);
+
+            $verifyAcountId =  $request->getAllFlowId;
+
+            for($i = 0; $i < count($verifyAcountId); $i++ ){
+                    $user = AccountFlow::where('account_id',$request->current_accountId)->where('id',$verifyAcountId[$i])->update([ 'flow_position' => $i + 1]);   
+            }
+
+            
+                if($user){
+                    return  json_encode(["result"=>"update sucessfully!","return" => true]);
+                }
+
+        }
+    }
+
+    public function updateData(Request $request): \Illuminate\Http\JsonResponse
+    {    
         $response = [
             'error' => [],
             'html' => [],
         ];
 
+        
         $tableData = [
             BankAccount::ACCOUNT_TYPE_REVENUE => [],
             BankAccount::ACCOUNT_TYPE_PRETOTAL => [],
@@ -185,7 +208,7 @@ class BusinessAllocationsController extends Controller
                 //reorder flows data
                 $newFlows = [];
                 foreach ($tableData[$account->type][$account->id]['flows'] as $flowArray) {
-                    $newFlows[$flowArray['id']] = $flowArray;
+                        $newFlows[$flowArray['id']] = $flowArray;
                 }
                 $tableData[$account->type][$account->id]['flows'] = $newFlows;
             }
@@ -220,7 +243,7 @@ class BusinessAllocationsController extends Controller
             $tableData = $this->optimizationTableData($tableData, $period);
         }
 
-        // dd("chedking");
+        // dd($tableData);
         $periodDates = [];
         foreach ($period as $date) {
             $periodDates[] = $date->format('Y-m-d');
@@ -271,6 +294,11 @@ class BusinessAllocationsController extends Controller
                 'class_tr' => 'bg-readonly',
                 'class_th' => 'pl-4',
             ],
+            'sub_total' => [
+                'title' => __('Sub Flow Total'),
+                'class_tr' => 'bg-readonly',
+                'class_th' => 'pl-4',
+            ]
         ];
     }
 
@@ -289,6 +317,7 @@ class BusinessAllocationsController extends Controller
             case BankAccount::ACCOUNT_TYPE_REVENUE:
                 foreach ($period as $date) {
                     $data['total'][$date->format('Y-m-d')] = $data['total'][$date->format('Y-m-d')] ?? 0;
+                    $data['sub_total'][$date->format('Y-m-d')] = $data['sub_total'][$date->format('Y-m-d')] ?? 0;
                 }
                 break;
 
@@ -614,6 +643,7 @@ class BusinessAllocationsController extends Controller
             : 0;
 
         $flow_total = 0;
+        $flow_sub_total = 0;
 
         //key as date string 'YYY-MM-DD 00:00:00'
         foreach ($this->rawData[$id] as $key => $value) {
@@ -624,6 +654,8 @@ class BusinessAllocationsController extends Controller
                     : 0;
                 $flow_total += ($value['negative'] ? -1 : 1)
                     * ($flows[$id][$key][$currentDate] * $value['certainty'] / 100);
+
+                $flow_sub_total +=  ($flows[$id][$key][$currentDate]);
             } elseif ($key == $currentDateTime) {
 
                 $data['manual'][$currentDate] = $value[1];
@@ -631,6 +663,7 @@ class BusinessAllocationsController extends Controller
         }
 
         $data['total'][$currentDate] = $flow_total;
+        $data['sub_total'][$currentDate] = $flow_sub_total;
 
         if (
             array_key_exists($id, $flows)

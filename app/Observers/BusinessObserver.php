@@ -101,75 +101,134 @@ class BusinessObserver
         }
     }
 
+    // private function getDefaultAccounts(): array
+    // {
+    //     return array(
+    //         [
+    //             'name' => 'Revenue',
+    //             'type' => 'revenue',
+    //             'flows' => [
+    //                 ['label' => "Accounts Receivable", 'negative' => false],
+    //                 ['label' => "Estimated Activity", 'negative' => false],
+    //             ]
+    //         ],
+    //         [
+    //             'name' => 'Profit',
+    //             'type' => 'postreal',
+    //             'flows' => [
+    //                 ['label' => "Distributions", 'negative' => true],
+    //                 ['label' => "Debt pay down", 'negative' => true],
+    //             ]
+
+    //         ],
+    //         [
+    //             'name' => 'Owners Pay',
+    //             'type' => 'postreal',
+    //             'flows' => [
+    //                 ['label' => "Wages", 'negative' => true],
+    //                 ['label' => "Downturn", 'negative' => true],
+    //             ]
+
+    //         ],
+    //         [
+    //             'name' => 'Mats & Subs',
+    //             'type' => 'prereal',
+    //             'flows' => [
+    //                 ['label' => "Purchases", 'negative' => true],
+    //                 ['label' => "Subcontractors", 'negative' => true],
+    //             ]
+    //         ],
+    //         [
+    //             'name' => 'Opex',
+    //             'type' => 'postreal',
+    //             'flows' => [
+    //                 ['label' => "Rent", 'negative' => true],
+    //                 ['label' => "Education & Training", 'negative' => true],
+    //                 ['label' => "Promotions", 'negative' => true],
+    //                 ['label' => "Software Expenses", 'negative' => true],
+    //                 ['label' => "Website", 'negative' => true],
+    //                 ['label' => "Consulting/Accounting", 'negative' => true],
+    //                 ['label' => "Interest Expenses", 'negative' => true],
+    //                 ['label' => "Bank Fees", 'negative' => true],
+    //                 ['label' => "Insurance", 'negative' => true],
+    //                 ['label' => "General Monthly Costs", 'negative' => true],
+    //             ]
+    //         ],
+    //         [
+    //             'name' => 'Tax',
+    //             'type' => 'postreal',
+    //             'flows' => [
+    //                 ['label' => "BAS - Current", 'negative' => true],
+    //                 ['label' => "Super Payments", 'negative' => true],
+    //                 ['label' => "Payment Plans", 'negative' => true],
+    //             ]
+    //         ],
+    //         [
+    //             'name' => 'G.S.T.',
+    //             'type' => 'salestax',
+    //             'flows' => [
+    //                 ['label' => "BAS - Payment", 'negative' => true],
+    //             ]
+    //         ],
+    //     );
+    // }
+
+
+
     private function getDefaultAccounts(): array
     {
         return array(
             [
                 'name' => 'Revenue',
                 'type' => 'revenue',
+                'flows' => []
+            ],
+            [
+                'name' => 'G.S.T.',
+                'type' => 'salestax',
                 'flows' => [
-                    ['label' => "Accounts Receivable", 'negative' => false],
-                    ['label' => "Estimated Activity", 'negative' => false],
+                    ['label' => "BAS - GST Payments", 'negative' => true],
                 ]
             ],
             [
                 'name' => 'Profit',
                 'type' => 'postreal',
                 'flows' => [
-                    ['label' => "Distributions", 'negative' => true],
-                    ['label' => "Debt pay down", 'negative' => true],
+                    ['label' => "Celebration Spend", 'negative' => true],
+                    ['label' => "Debt Pay-down", 'negative' => true],
+                    ['label' => "Vault Payment", 'negative' => true],
                 ]
 
-            ],
-            [
-                'name' => 'Owners Pay',
-                'type' => 'postreal',
-                'flows' => [
-                    ['label' => "Wages", 'negative' => true],
-                    ['label' => "Downturn", 'negative' => true],
-                ]
-
-            ],
-            [
-                'name' => 'Mats & Subs',
-                'type' => 'prereal',
-                'flows' => [
-                    ['label' => "Purchases", 'negative' => true],
-                    ['label' => "Subcontractors", 'negative' => true],
-                ]
-            ],
-            [
-                'name' => 'Opex',
-                'type' => 'postreal',
-                'flows' => [
-                    ['label' => "Rent", 'negative' => true],
-                    ['label' => "Education & Training", 'negative' => true],
-                    ['label' => "Promotions", 'negative' => true],
-                    ['label' => "Software Expenses", 'negative' => true],
-                    ['label' => "Website", 'negative' => true],
-                    ['label' => "Consulting/Accounting", 'negative' => true],
-                    ['label' => "Interest Expenses", 'negative' => true],
-                    ['label' => "Bank Fees", 'negative' => true],
-                    ['label' => "Insurance", 'negative' => true],
-                    ['label' => "General Monthly Costs", 'negative' => true],
-                ]
             ],
             [
                 'name' => 'Tax',
                 'type' => 'postreal',
                 'flows' => [
-                    ['label' => "BAS - Current", 'negative' => true],
-                    ['label' => "Super Payments", 'negative' => true],
-                    ['label' => "Payment Plans", 'negative' => true],
+                    ['label' => "BAS - PAYG (Staff Withholding)", 'negative' => true],
+                    ['label' => "PAYG - Instalment (year-end)", 'negative' => true],
+                    ['label' => "Year-end Tax (Balance/Refund)", 'negative' => true],
+                    ['label' => "Superannuation", 'negative' => true],
                 ]
             ],
             [
-                'name' => 'G.S.T.',
-                'type' => 'salestax',
+                'name' => 'Owners Pay',
+                'type' => 'postreal',
                 'flows' => [
-                    ['label' => "BAS - Payment", 'negative' => true],
+                    ['label' => "Owner Distribution", 'negative' => true],
                 ]
+
             ],
+            [
+                'name' => 'Opex',
+                'type' => 'postreal',
+                'flows' => []
+            ],
+            [
+                'name' => 'Mats & Subs',
+                'type' => 'prereal',
+                'flows' => []
+            ],
+                                   
         );
     }
 }

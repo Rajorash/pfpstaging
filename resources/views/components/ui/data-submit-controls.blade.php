@@ -54,10 +54,10 @@
 
     @if ($deepRecords)
         <div
-            title="{{__('How deep show table. 1: Accounts Only; 2: + Transfer In & Flow total; 3: + Flows (Show all)')}}"
+            title="{{__('How deep show table. 1: Accounts Only; 2: + Transfer In & Flow total; 3: +Sub Flows Total; 4: + Flows (Show all)')}}"
             class="flex items-center ml-3">
             <input type="range" id="show_rows_level" list="step_levels"
-                   class="py-2 mx-3 my-3 rounded form-input" min="1" max="3" value="3"/>
+                   class="py-2 mx-3 my-3 rounded form-input" min="1" max="4" value="4"/>
             <label class="inline-flex justify-between w-48 space-x-4" for="show_rows_level">
                 <span>{{__('Detailed view')}}</span>
                 <x-icons.question/>
@@ -65,7 +65,8 @@
             <datalist id="step_levels">
                 <option value="1" label="1">{{__('Accounts Only')}}</option>
                 <option value="2" label="2">{{__('+ Transfer In & Flow total')}}</option>
-                <option value="3" label="all">{{__('+ Flows (Show all)')}}</option>
+                <option value="3" label="3">{{__('+ Sub Flows Total')}}</option>
+                <option value="4" label="all">{{__('+ Flows (Show all)')}}</option>
             </datalist>
         </div>
     @endif

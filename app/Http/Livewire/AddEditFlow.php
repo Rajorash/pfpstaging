@@ -5,19 +5,33 @@ namespace App\Http\Livewire;
 use App\Models\AccountFlow;
 use App\Models\BankAccount;
 use Livewire\Component;
+use Livewire\WithFileUploads;
+use App\Imports\ImportFlows;
+use Excel;
 
 class AddEditFlow extends Component
 {
+    use WithFileUploads;
+    
     public int $flowId = 0;
     public int $accountId = 0;
     public bool $defaultNegative = false;
     public string $routeName = '';
 
     public string $label = '';
+    public string $errormessege = '';
     public bool $negative_flow = false;
     public int $certainty = 100;
 
     public bool $modalMode = false;
+    public int $tab1 = 1;
+    public int $tab2 = 0;
+    public $flowscsv;
+    protected $listeners = [
+        'checktab1' => 'checktab1',
+        'checktab2' => 'checktab2'
+    ];
+    
 
     public function mount()
     {
@@ -32,15 +46,34 @@ class AddEditFlow extends Component
         } else {
             $this->negative_flow = $this->defaultNegative;
         }
+        $this->errormessege = '';
     }
 
     protected function rules()
     {
-        return [
-            'label' => ['required', 'min:3'],
-            'negative_flow' => ['required'],
-            'certainty' => ['required', 'integer', 'min:0', 'max:500']
-        ];
+        if($this->tab2){
+            return ['flowscsv' =>  'required|file|mimes:xls,xlsx,csv'];
+        }else{
+            return [
+                'label' => ['required', 'min:3'],
+                'negative_flow' => ['required'],
+                'certainty' => ['required', 'integer', 'min:0', 'max:500']
+            ];
+        }
+        
+    }
+
+    public function checktab1()
+    {
+       $this->tab1 = 1;
+       $this->tab2 = 0;
+    }
+
+
+    public function checktab2()
+    {
+        $this->tab2 = 1;
+        $this->tab1 = 0;
     }
 
     public function store()
@@ -66,6 +99,29 @@ class AddEditFlow extends Component
         } else {
             return redirect("business/".$account->business->id."/accounts");
         }
+    }
+
+    public function import()
+    {
+        if($this->flowscsv == null){
+            $this->errormessege =  'Please Select xls,xlsx,csv File.';
+        }else{
+                $this->errormessege = '';
+                $filename = $this->flowscsv->getRealPath();
+
+                
+                    $checkexcelstatus = new ImportFlows($this->flowId , $this->accountId);
+                    $checkexcelstatus->import($filename);
+                        
+                   
+                            if ($this->modalMode) {
+                                $this->emit('reloadRevenueTable');
+                            } else {
+                                 return redirect("business/".$account->business->id."/accounts");
+                            }
+                        
+        }        
+        
     }
 
     public function render()
