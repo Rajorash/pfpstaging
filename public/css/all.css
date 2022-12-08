@@ -121,19 +121,7 @@ html {
 }
 
 .allocation-highlight {
-  -webkit-animation: pulseFrame 1s linear;
-          animation: pulseFrame 1s linear;
-}
-
-@-webkit-keyframes pulseFrame {
-  from {
-    background-color: transparent;
-  }
-
-  to {
-    --tw-bg-opacity: 1;
-    background-color: rgba(253, 230, 138, var(--tw-bg-opacity));
-  }
+  animation: pulseFrame 1s linear;
 }
 
 @keyframes pulseFrame {
