@@ -27,9 +27,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
 
 </head>
-<body class="relative font-sans antialiased text-light_gray overflow-hidden">
-<div class="max-h-screen bg-right-bottom bg-no-repeat bg-light_purple2">
+<body class="relative font-sans antialiased text-light_gray ">
     {{ $slot }}
-</div>
 </body>
 </html>

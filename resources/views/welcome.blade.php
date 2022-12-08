@@ -7,7 +7,7 @@
 
         @if (Route::has('login'))
             <div>
-                <div class="w-48 px-6 pt-24 mx-auto space-x-6 text-center">
+                <div class="w-48 px-6 pt-10 mx-auto space-x-6 text-center">
                     @auth
                         <x-ui.button-normal href="{{ url('/dashboard') }}">{{__('Dashboard')}}</x-ui.button-normal>
                     @else
@@ -20,6 +20,23 @@
                 </div>
             </div>
         @endif
+
+        
+        
+        <div class="text-center pt-8">
+            <a target="_blank" class="underline text-lg mr-4 text-blue hover:text-gray-900"
+            href="{{url('/advisor-subscriber-terms-and-conditions')}}">
+                {{ __('Advisor Terms & Conditions') }}
+            </a>
+            <a target="_blank"  class="underline text-lg text-blue hover:text-gray-900"
+            href="{{url('/privacy-policy')}}">
+                {{ __('Website Privacy policy') }}
+            </a>
+            <a target="_blank" class="underline text-lg ml-4 text-blue hover:text-gray-900"
+            href="{{url('/client-subscriber-terms-and-conditions')}}">
+                {{ __('Client Terms & Conditions') }}
+            </a>
+        </div>
 
     </div>
 </x-guest-layout>

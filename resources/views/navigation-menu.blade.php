@@ -36,6 +36,12 @@
                     @endif
                 </div>
                 <div class="relative flex items-center flex-shrink-0 ml-auto">
+                        <x-jet-nav-link class="float-right mx-4" target="_blank" href="https://forms.clickup.com/6928238/f/6kdve-6802/I8W7DD5G04HV3XQFYD" >
+                            {{ __('Feature Request') }}
+                        </x-jet-nav-link>
+                        <x-jet-nav-link class="float-right mx-4" target="_blank" href="https://forms.clickup.com/6928238/f/6kdve-6762/X353TZHGFRDD23R1IT" >
+                            {{ __('Report Bug') }}
+                        </x-jet-nav-link>
                     <div class="text-xs">
                         <div class="-mt-4 text-right opacity-50">{{Auth::user()->timezone}}</div>
                         Your local time: <span id="your_time"
@@ -194,6 +200,22 @@
                                     {{ __('API Tokens') }}
                                 </x-jet-dropdown-link>
                             @endif
+
+                            <x-jet-dropdown-link  target="_blank" href="{{url('/advisor-subscriber-terms-and-conditions')}}">
+                                <span class="inline-block mr-4 pt-0.5 w-4 text-center"><x-icons.policy
+                                        :class="'w-4 h-auto'"/></span>
+                                        {{ __('Advisor Terms & Conditions') }}
+                            </x-jet-dropdown-link>
+                            <x-jet-dropdown-link  target="_blank" href="{{url('/privacy-policy')}}">
+                                <span class="inline-block mr-4 pt-0.5 w-4 text-center"><x-icons.policy
+                                        :class="'w-4 h-auto'"/></span>
+                                        {{ __('Website Privacy policy') }}
+                            </x-jet-dropdown-link>
+                            <x-jet-dropdown-link  target="_blank" href="{{url('/client-subscriber-terms-and-conditions')}}">
+                                <span class="inline-block mr-4 pt-0.5 w-4 text-center"><x-icons.policy
+                                        :class="'w-4 h-auto'"/></span>
+                                        {{ __('Client Terms & Conditions') }}
+                            </x-jet-dropdown-link>
 
                             <div class="border-t border-gray-100"></div>
 

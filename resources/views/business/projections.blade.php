@@ -50,7 +50,7 @@
                 Last Date For Updated Bank Account Balance : <b> {{$updated_today}} </b>
             </div>
             <div class="py-2 pl-12 text-xl">
-                <button  class="bg-blue-500 hover:bg-blue-700 text-blue font-bold  px-4 rounded-full"  onclick="exportTableToExcel()">Export Table</button>
+                <button  class=" text-blue font-bold  px-4 rounded-full"  onclick="exportTableToExcel()">Export Table</button>
             </div>
 
 

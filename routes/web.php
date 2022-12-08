@@ -44,6 +44,19 @@ Route::get(
     return view('welcome');
 });
 
+Route::get(
+    '/privacy-policy', function () {
+    return view('website-privacy-policy');
+});
+Route::get(
+    '/advisor-subscriber-terms-and-conditions', function () {
+    return view('advisor-privacy-policy');
+});
+Route::get(
+    '/client-subscriber-terms-and-conditions', function () {
+    return view('client-privacy-policy');
+});
+
 Route::get('/home', 'HomeController@index')->name('home');
 
 Route::group(['middleware' => 'auth'], function () {

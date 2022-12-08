@@ -68,7 +68,7 @@
             </div>
 
             <div class="flex items-center justify-end mt-8">
-                <x-jet-button class="w-full text-center py-4 uppercase font-normal bg-blue text-base">
+                <x-jet-button class="w-full text-center py-4 uppercase font-normal bg-blue-800 text-base">
                     {{ __('Login now') }}
                 </x-jet-button>
             </div>

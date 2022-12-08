@@ -40,7 +40,7 @@
 
             
             <div class="py-2 pl-12 text-xl">
-                <button class="bg-blue-500 hover:bg-blue-700 text-blue font-bold py-2 px-4 rounded-full" onclick="exportTableExpenseExcel()">Export Table</button>
+                <button class="text-blue font-bold py-2 px-4 rounded-full" onclick="exportTableExpenseExcel()">Export Table</button>
             </div>
 
             <x-ui.data-submit-controls class="items-center p-2"

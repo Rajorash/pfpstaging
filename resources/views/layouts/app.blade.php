@@ -31,13 +31,15 @@
 </style>
 
     <script src="{{ mix('js/app.js') }}" defer></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 
 </head>
 <body class="relative font-sans antialiased text-light_gray">
 
 <div class="min-h-screen bg-right-bottom bg-no-repeat bg-light_purple2"
-     style="background-image: url({{mix('images/bg.svg')}})">
+     >
     <div class="bg-white shadow-shadow4">
         <livewire:navigation-menu/>
     </div>
