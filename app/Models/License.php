@@ -151,7 +151,9 @@ class License extends Model
 
     public function getCheckLicenseAttribute(): bool
     {
-        $today = Timezone::convertToLocal(Carbon::now(), 'Y-m-d H:i:s');
+        // $today = Timezone::convertToLocal(Carbon::now(), 'Y-m-d H:i:s');
+        $today = new Timezone();
+        $today = $today->convertToLocal(Carbon::now(), 'Y-m-d H:i:s');
         if (
             Carbon::parse($this->expires_ts)->timestamp - Carbon::parse($today)->timestamp > 0
             && $this->active

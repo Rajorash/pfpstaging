@@ -4628,7 +4628,7 @@ var calculatorCore = /*#__PURE__*/function () {
     this.timeOutSeconds = 1000 * parseInt(this.autoSubmitDataDelay); //default delay before send data to server
 
     this.heightModeDefaultSelector = '[name="block_different_height"]';
-    this.heightModeDefault = 'full';
+    this.heightModeDefault = 'window';
     this.heightMode = this.heightModeDefault;
     this.copyMoveClassName = 'pfp_copy_move_element';
     this.copyMoveAltKeyEnabled = false; //if ALt key is pressed

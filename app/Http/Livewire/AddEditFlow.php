@@ -3,11 +3,13 @@
 namespace App\Http\Livewire;
 
 use App\Models\AccountFlow;
+use App\Models\AccountCategory;
 use App\Models\BankAccount;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use App\Imports\ImportFlows;
 use Excel;
+use Illuminate\Support\Facades\DB;
 
 class AddEditFlow extends Component
 {
@@ -31,6 +33,14 @@ class AddEditFlow extends Component
         'checktab1' => 'checktab1',
         'checktab2' => 'checktab2'
     ];
+    public $category_name = [];
+    public $catId = '';
+
+    
+    public function __construct()
+    {
+        $this->category_name = AccountCategory::get();
+    }
     
 
     public function mount()
@@ -43,6 +53,7 @@ class AddEditFlow extends Component
             $this->label = $flow->label;
             $this->negative_flow = $flow->negative_flow;
             $this->certainty = $flow->certainty;
+            $this->catId = $flow->cat_id;
         } else {
             $this->negative_flow = $this->defaultNegative;
         }
@@ -57,6 +68,7 @@ class AddEditFlow extends Component
             return [
                 'label' => ['required', 'min:3'],
                 'negative_flow' => ['required'],
+                'catId' => ['required'],
                 'certainty' => ['required', 'integer', 'min:0', 'max:500']
             ];
         }
@@ -84,6 +96,7 @@ class AddEditFlow extends Component
         $flow->label = $validateValues['label'];
         $flow->negative_flow = $validateValues['negative_flow'];
         $flow->certainty = $validateValues['certainty'];
+        $flow->cat_id = $validateValues['catId'] ? $validateValues['catId'] : 1;
 
         $account = null;
 

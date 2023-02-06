@@ -157,16 +157,10 @@
                             <div class="flex space-x-1">
                                 {{-- Maintenance column --}}
                                 @if(Auth::user()->isAdvisor())
-                                    @if(
-                                    (is_object($business->collaboration)
-                                    && is_object($business->collaboration->advisor)
-                                    && ($business->collaboration->advisor->user_id != auth()->user()->id))
-                                    || !is_object($business->collaboration))
                                         <x-ui.button-small title="Maintenance"
                                                             href="{{route('maintenance.business', ['business' => $business])}}">
                                             <x-icons.gear :class="'h-5 w-auto inline-block'"/>
                                         </x-ui.button-small>
-                                    @endif
                                 @endif
 
                                 {{-- Accounts --}}

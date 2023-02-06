@@ -34,6 +34,23 @@
 
                 <div class="table-row">
                     <div class="table-cell w-1/4 pb-4 text-left">
+                    Category
+                    </div>
+                    <div class="table-cell w-3/4 pb-4">
+                        <select name="catId" id="catId" wire:model="catId" class="w-full form-input border-light_blue
+                                focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50
+                                rounded-md shadow-sm">
+                            <option value="" >Select Category</option>
+                            @foreach($category_name as $cat)
+                                <option value="{{ $cat->id }}" >{{ $cat->category_name }}</option>
+                            @endforeach
+                        </select>
+                        <x-jet-input-error for="catId" class="mt-2"/>
+                    </div>
+                </div>
+
+                <div class="table-row">
+                    <div class="table-cell w-1/4 pb-4 text-left">
                         {{ __('Certainty') }}
                     </div>
                     <div class="table-cell w-3/4 pb-4">

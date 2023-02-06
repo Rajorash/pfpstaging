@@ -57,19 +57,38 @@
                                     <div class="table-cell w-1/4 pb-4 text-left">
                                         {{ __('Account Type') }}
                                     </div>
-                                    <div class="table-cell w-3/4 pb-4">
-                                        <select name="type" id="type" class="form-select rounded p-2 my-0 w-full
+                                    <!-- <div class="table-cell w-3/4 pb-4">
+                                        <select  name="type" id="type" class="form-select bg-readonly rounded p-2 my-0 w-full
                                                 form-input border-light_blue
                                                 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50
                                                 @error('type') bg-red-700 @enderror">
                                             <option value="">Select your account type</option>
                                             @foreach (App\Models\BankAccount::type_list() as $account_index => $account_type)
+                                            @if($account_type == $curr_type)
                                                 <option
-                                                    value="{{ $account_index }}"{{ $account_type == $curr_type ? ' selected' : '' }}>{{ $account_type }}</option>
+                                                    value="{{ $account_index }}" selected>{{ $account_type }}</option>
+                                            @endif
                                             @endforeach
                                         </select>
                                         <x-jet-input-error for="type" class="mt-2"/>
-                                    </div>
+                                    </div> -->
+                                    <div class="table-cell w-3/4 pb-4">
+                                        <select  @if($curr_type == App\Models\BankAccount::ACCOUNT_TYPE_SALESTAX) disabled @endif name="type" id="type" class="form-select  rounded p-2 my-0 w-full @if($curr_type == App\Models\BankAccount::ACCOUNT_TYPE_SALESTAX) bg-readonly @endif 
+                                                form-input border-light_blue
+                                                focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50
+                                                @error('type') bg-red-700 @enderror">
+                                            <option value="">Select your account type</option>
+                                            @foreach (App\Models\BankAccount::type_list() as $account_index => $account_type)
+                                         
+                                                <option
+                                                    value="{{ $account_index }}"{{ $account_type == $curr_type ? ' selected' : '' }}>
+                                                    {{ $account_type }}
+                                                </option>
+                                                
+                                            @endforeach
+                                        </select>
+                                        <x-jet-input-error for="type" class="mt-2"/>
+                                    </div> 
                                 </div>
 
 

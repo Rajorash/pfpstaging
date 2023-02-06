@@ -174,6 +174,12 @@ class BusinessAllocationsController extends Controller
         $accounts = $this->business->accounts;
         foreach ($accounts as $account) {
 
+            // $checkUniqueCatId  = DB::table('account_flows')->where('account_id', $account->id)->distinct('cat_id')->pluck('cat_id')->toArray();
+
+            // $checkUniqueCat[$account->id]['name'] = DB::table('account_categories')->select('category_name')->whereIn('id',$checkUniqueCatId)->get();
+
+            // dd($checkUniqueCat);
+
             //during return json - recalculate only Account which related to changed cell
             if ($returnType != 'html' && $updatedAccountId && $updatedAccountId != $account->id) {
                 continue;
@@ -190,6 +196,8 @@ class BusinessAllocationsController extends Controller
                     }
                 );
             }
+
+            // $allAccounts = AccountFlow::where('account_id', $account->id)->get();
 
             $tableData[$account->type][$account->id] = $accountAllData;
 
@@ -295,7 +303,7 @@ class BusinessAllocationsController extends Controller
                 'class_th' => 'pl-4',
             ],
             'sub_total' => [
-                'title' => __('Sub Flow Total'),
+                'title' => __('Others Flow Total'),
                 'class_tr' => 'bg-readonly',
                 'class_th' => 'pl-4',
             ]

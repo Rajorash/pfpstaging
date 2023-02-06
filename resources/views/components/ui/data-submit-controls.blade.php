@@ -108,3 +108,46 @@
     }
 
 </script>
+
+<!-- <script>
+
+    $(document).ready(function(){
+        $('#height_window').prop('checked', true);
+        $('#height_full+label').css({'background-color':'rgba(243,244,246,var(--tw-bg-opacity))','color':'rgba(14,23,71,var(--tw-text-opacity))'});       
+        $('#height_window:checked+label').css({'background-color':'rgba(14,23,71,var(--tw-bg-opacity))','color':'rgba(255,255,255,var(--tw-text-opacity))'});
+        $.cookie('allocation_heightMode','window');
+
+        // var upper_height = ($('.shadow-shadow4').height() + $('header').height());
+        // var main_height = ($(window).height()) - upper_height;
+
+        // $('#revenueTablePlace,#allocationsNewTablePlace').css('height',+main_height+'px');
+        $('#revenueTablePlace,#allocationsNewTablePlace').css('height','300px');
+
+    });
+
+    
+    $('input:radio[name=block_different_height]').click(function(){
+        setcssrevenue();
+    });
+
+    function setcssrevenue() {
+        
+        if($('#height_full').is(':checked') === true) {
+           $('#revenueTablePlace,#allocationsNewTablePlace').css('height','auto');
+           $('#height_full:checked+label').css({'background-color':'rgba(14,23,71,var(--tw-bg-opacity))','color':'rgba(255,255,255,var(--tw-text-opacity))'});
+           $('#height_window+label').removeAttr('style');
+        }else if($('#height_window').is(':checked') === true) {
+            $('#height_full+label').css({'background-color':'rgba(243,244,246,var(--tw-bg-opacity))','color':'rgba(14,23,71,var(--tw-text-opacity))'});       
+            $('#height_window:checked+label').css({'background-color':'rgba(14,23,71,var(--tw-bg-opacity))','color':'rgba(255,255,255,var(--tw-text-opacity))'});
+            $.cookie('allocation_heightMode','window');
+
+            // var upper_height = ($('.shadow-shadow4').height() + $('header').height());
+            // var main_height = ($(window).height()) - upper_height;
+
+            // $('#revenueTablePlace,#allocationsNewTablePlace').css('height',+main_height+'px');
+            $('#revenueTablePlace,#allocationsNewTablePlace').css('height','300px');
+           $('#height_full+label').removeAttr('style');
+        }
+    }
+
+</script> -->

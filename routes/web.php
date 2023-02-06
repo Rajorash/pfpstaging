@@ -247,6 +247,11 @@ Route::group(['middleware' => 'auth'], function () {
         [AllocationCalculatorController::class, 'indexWithId']
     )->name('allocation-calculator-with-id'); //++
 
+    Route::post(
+        '/calculating',
+        [AllocationCalculatorController::class, 'calculatBusiness']
+    ); 
+
     // Projection forecast tool
     //
     // Projection Forecast data entry routing (formerly labeled as allocation calculator) routing.

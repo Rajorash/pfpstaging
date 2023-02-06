@@ -26,7 +26,10 @@
                 <td class="px-2 py-1 border border-gray-300">{{__('Top line revenue - Account')}} "{{$account['name']}}"</td>
                 <td class="px-2 py-1 border border-gray-300"></td>
                 <td class="w-32 px-2 py-1 bg-yellow-100 border border-gray-300">
-                    <x-ui.input type="text" wire:model.lazy="revenue"/>
+                    <x-ui.input type="text" wire:loading.attr="disabled" wire:loading.class="bg-readonly" wire:model.lazy="revenue"/>
+                    <div wire:loading wire:target="revenue">
+                        Please Wait...
+                    </div>
                 </td>
                 <td class="px-2 py-1 bg-gray-200 border border-gray-300"></td>
                 <td class="px-2 py-1 bg-gray-200 border border-gray-300"></td>

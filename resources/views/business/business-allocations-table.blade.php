@@ -164,7 +164,7 @@
                                 flowId="{{$flowId}}"  class="divide-x bg-data-entry hover:bg-yellow-100 border-light_blue level_3">
                                     <x-ui.table-td padding="p-1 pr-2 pl-4"
                                                    class="sticky left-0 z-10 text-left bg-data-entry whitespace-nowrap">
-                                        <div class="flex mr-auto">
+                                        <div class="flex mr-auto" onmousedown="mouseDown()">
                                             <div
                                                 class="inline-flex
                                                     text-{{$flowData['negative_flow'] ? 'red-500' : 'green' }}
@@ -288,61 +288,60 @@
 </script>
 
 <script>
+// var isdraggable = true;
+// document.querySelectorAll('[drag-input]').forEach(el => {
+// });
 
-document.querySelectorAll('[drag-input]').forEach(el => {
-    el.addEventListener('dragstart', e => {
-        e.target.closest("tr").setAttribute('dragging', false);
+function mouseDown(){
+    document.querySelectorAll('[drag-root]').forEach(el => {
+        el.addEventListener('dragstart', e => {
+                e.target.setAttribute('dragging', true);
+                e.target.classList.add('dropclass');
+        })
+        el.addEventListener('drop', e => {
+            e.target.classList.remove('bg-yellow-100');
+            let draggingEl = document.querySelector('[dragging]');
+            e.target.closest("tr").after(draggingEl);
+
+            // let data_accountId = Array.from(document.querySelectorAll('[data-account_id]')).map(itemEl =>
+            //         itemEl.getAttribute('data-account_id')
+            // );
+
+            var drop_accountId = $(".dropclass").attr('data-account_id');
+            var drop_flowId = $(".dropclass").attr('flowId');
+            var current_accountId = e.target.closest("tr").getAttribute('data-account_id');
+            var current_flowId = e.target.closest("tr").getAttribute('flowId');
+
+            var getAllFlowId = [];
+
+            $('tbody tr').each(function() {
+                if($(this).attr('data-account_id') == current_accountId && $(this).attr('flowid') !== undefined|| $(this).attr('flowid') == drop_flowId && $(this).attr('data-account_id') == drop_accountId && $(this).attr('flowid') !== undefined){
+                    getAllFlowId.push($(this).attr('flowid'));
+                }
+            })
+
+            // console.log(getAllFlowId , "flow if chal ");
+
+            updateAccount(drop_accountId, drop_flowId, current_accountId, current_flowId,getAllFlowId);
+        
+        })
+        el.addEventListener('dragenter', e => {
+            e.target.classList.add('bg-yellow-100');
+            e.preventDefault();
+        })
+
+        el.addEventListener('dragover', e => { e.preventDefault(); })
+
+        el.addEventListener('dragleave', e => {
+            e.target.classList.remove('bg-yellow-100');
+            e.target.classList.remove('dropclass');
+        })
+        el.addEventListener('dragend', e => {
+            e.target.removeAttribute('dragging');
+            e.target.classList.remove('dropclass');
+        })
     })
-});
-
-document.querySelectorAll('[drag-root]').forEach(el => {
-    el.addEventListener('dragstart', e => {
-        e.target.setAttribute('dragging', true);
-        e.target.classList.add('dropclass');
-    })
-    el.addEventListener('drop', e => {
-        e.target.classList.remove('bg-yellow-100');
-        let draggingEl = document.querySelector('[dragging]');
-        e.target.closest("tr").after(draggingEl);
-
-        // let data_accountId = Array.from(document.querySelectorAll('[data-account_id]')).map(itemEl =>
-        //         itemEl.getAttribute('data-account_id')
-        // );
-
-        var drop_accountId = $(".dropclass").attr('data-account_id');
-        var drop_flowId = $(".dropclass").attr('flowId');
-        var current_accountId = e.target.closest("tr").getAttribute('data-account_id');
-        var current_flowId = e.target.closest("tr").getAttribute('flowId');
-
-        var getAllFlowId = [];
-
-        $('tbody tr').each(function() {
-            if($(this).attr('data-account_id') == current_accountId && $(this).attr('flowid') !== undefined|| $(this).attr('flowid') == drop_flowId && $(this).attr('data-account_id') == drop_accountId && $(this).attr('flowid') !== undefined){
-                getAllFlowId.push($(this).attr('flowid'));
-            }
-         })
-
-         console.log(getAllFlowId , "flow if chal ");
-
-        updateAccount(drop_accountId, drop_flowId, current_accountId, current_flowId,getAllFlowId);
-       
-    })
-    el.addEventListener('dragenter', e => {
-        e.target.classList.add('bg-yellow-100');
-        e.preventDefault();
-    })
-
-    el.addEventListener('dragover', e => { e.preventDefault(); })
-
-    el.addEventListener('dragleave', e => {
-        e.target.classList.remove('bg-yellow-100');
-        e.target.classList.remove('dropclass');
-    })
-    el.addEventListener('dragend', e => {
-        e.target.removeAttribute('dragging');
-        e.target.classList.remove('dropclass');
-    })
-})
+}
 
 
 function updateAccount(drop_accountId, drop_flowId, current_accountId, current_flowId, getAllFlowId){

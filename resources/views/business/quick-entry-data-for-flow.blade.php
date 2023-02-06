@@ -56,7 +56,7 @@
                                 class="w-full"
                                 type="date"
                                 name="date_start"
-                                wire:model.debounce.4000ms="date_start"
+                                wire:model.debounce.2000ms="date_start"
                             />
                             <x-jet-input-error for="date_start" class="mt-2 text-left"/>
                         </div>
