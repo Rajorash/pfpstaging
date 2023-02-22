@@ -65,6 +65,10 @@ Route::group(['middleware' => 'auth'], function () {
         [BusinessController::class, 'index']
     )->name('businesses'); //++
 
+    Route::get('/graph',
+        [BusinessController::class, 'graph']
+    )->name('graph'); //++
+
     Route::get(
         '/business/{business}',
         [BusinessController::class, 'show']
