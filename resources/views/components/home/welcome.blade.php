@@ -56,7 +56,7 @@
                     :linkTitle="'Go to graph'"
                 >    
                 <x-slot name="icon">
-                        <x-icons.case :class="'w-auto h-6 text-blue'"/>
+                        <x-icons.dashboard :class="'w-auto h-6 text-blue'"/>
                     </x-slot>
                 </x-ui.dashboard-card>
                 
