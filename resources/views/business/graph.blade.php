@@ -10,7 +10,44 @@
 
   <x-ui.main>
 
+<style>
 
+/* .chart_row .chart_child canvas:only-child {
+  width:100%;
+  height:300px;
+} */
+
+.chart_row{
+  display: flex;
+    gap: 30px;
+    justify-content: center;
+    margin: 10px 0px;
+    flex-wrap: wrap;
+}
+
+.chart_child{
+    width:48%;
+}
+canvas{
+  width: 580px !important;
+    height: 350px !important;
+}
+@media screen and (max-width:960px)
+{
+    .chart_row{
+        flex-direction: column;
+    }
+    .chart_child{
+        width:100%;
+        padding: 10px 100px;
+    }
+}
+
+
+.chart_scrollbar{
+overflow-x:scroll !important;
+}
+  </style>
     <!-- Required chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -33,11 +70,11 @@
 
 
 
-    <div class="overflow-hidden rounded-lg shadow-lg">
+    <!-- <div class="overflow-hidden rounded-lg shadow-lg"> -->
       <!-- <div class="bg-neutral-50 py-3 px-5 dark:bg-neutral-700 dark:text-neutral-200">
       Line chart
     </div> -->
-      <div class="chart">
+      <!-- <div class="chart">
 
         <canvas class="p-10" id="materials_bank_account" width="400" height="150" aria-label="Materials Bank Account" role="img"></canvas>
         <canvas class="p-10" id="commissions_bank_account" width="400" height="150" aria-label="Commissions Bank Account" role="img"></canvas>
@@ -47,15 +84,63 @@
         <canvas class="p-10" id="tax_bank_account" width="400" height="150" aria-label="Tax Bank Account" role="img"></canvas>
         <canvas class="p-10" id="gst_bank_account" width="400" height="150" aria-label="GST Bank Account" role="img"></canvas>
 
-      </div>
+      </div> -->
 
 
+<div class="chart_row">
+<div class="chart_child">
+  <div class="chart_scrollbar">
+<canvas  id="materials_bank_account"  aria-label="Materials Bank Account" role="img"></canvas>
     </div>
+</div>
+
+<div class="chart_child">
+<div class="chart_scrollbar">
+<canvas id="commissions_bank_account" aria-label="Commissions Bank Account" role="img"></canvas>
+    </div>
+</div>
+
+<div class="chart_child">
+<div class="chart_scrollbar">
+<canvas  id="profit"  aria-label="Profit" role="img"></canvas>
+    </div>
+</div>
+<div class="chart_child">
+<div class="chart_scrollbar">
+<canvas id="ownerspay" aria-label="Owners Pay" role="img"></canvas>
+    </div>
+</div>
+
+
+<div class="chart_child">
+<div class="chart_scrollbar">
+<canvas  id="opex_bank_account" aria-label="Opex Bank Account" role="img"></canvas>
+    </div>
+</div>
+<div class="chart_child">
+<div class="chart_scrollbar">
+<canvas id="tax_bank_account"  aria-label="Tax Bank Account" role="img"></canvas>
+    </div>
+</div>
+
+<div class="chart_child">
+<div class="chart_scrollbar">
+   <canvas id="gst_bank_account" aria-label="GST Bank Account" role="img"></canvas>
+    </div>
+</div>
+</div>
+
+
+
+
+
 
 
 
 
     <script>
+
+
 
       /****************** Materials Bank Account Start ******************/
       const labels_materials_bank = [
@@ -93,8 +178,10 @@
       const data_materials_bank = {
         labels: labels_materials_bank,
         datasets: [{
-          label: "Materials",
+        label: "Materials",
 
+         pointRadius:0,
+         pointHoverRadius:0,
           backgroundColor: "orange",
           borderColor: "hsl(217, 57%, 51%)",
           data: [
@@ -181,7 +268,7 @@
           scales: {
             x: {
               title: {
-                color: 'red',
+                 color: 'red',
                 display: true,
                 text: 'Peace of Mind',
 
@@ -280,7 +367,8 @@
         labels: labels_commissions_bank,
         datasets: [{
           label: "Commissions",
-
+          pointRadius:0,
+         pointHoverRadius:0,
           backgroundColor: "orange",
           borderColor: "hsl(217, 57%, 51%)",
           data: [
@@ -316,7 +404,7 @@
             },
             subtitle: {
                 display: true,
-                text: 'Custom Chart Subtitle',
+                text: 'Commission Bank POM',
                 position:"bottom"
             },
             legend: {
@@ -400,7 +488,8 @@
         labels: labels_profit_bank,
         datasets: [{
           label: "Profit",
-
+          pointRadius:0,
+         pointHoverRadius:0,
           backgroundColor: "orange",
           borderColor: "hsl(217, 57%, 51%)",
           data: [
@@ -484,7 +573,8 @@
         labels: labels_owners_pay_bank,
         datasets: [{
           label: "Peace of Mind 0",
-
+          pointRadius:0,
+         pointHoverRadius:0,
           backgroundColor: "blue",
           borderColor: "orange",
           data: [
@@ -632,6 +722,8 @@
         labels: labels_opex_bank,
         datasets: [{
           label: "Opex Bank A/C",
+          pointRadius:0,
+         pointHoverRadius:0,
           backgroundColor: "orange",
           borderColor: "hsl(217, 57%, 51%)",
           data: [
@@ -756,7 +848,8 @@
         labels: labels_tax_bank,
         datasets: [{
           label: "Tax",
-
+          pointRadius:0,
+         pointHoverRadius:0,
           backgroundColor: "orange",
           borderColor: "hsl(217, 57%, 51%)",
           data: [
@@ -883,6 +976,8 @@
         labels: labels_gst_bank,
         datasets: [{
           label: "GST",
+          pointRadius:0,
+         pointHoverRadius:0,
           backgroundColor: "orange",
           borderColor: "hsl(217, 57%, 51%)",
           data: [
