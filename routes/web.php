@@ -65,9 +65,6 @@ Route::group(['middleware' => 'auth'], function () {
         [BusinessController::class, 'index']
     )->name('businesses'); //++
 
-    Route::get('/graph',
-        [BusinessController::class, 'graph']
-    )->name('graph'); //++
 
     Route::get(
         '/business/{business}',
@@ -87,6 +84,15 @@ Route::group(['middleware' => 'auth'], function () {
         '/business/{business}/maintenance',
         [BusinessController::class, 'maintenance']
     )->name('maintenance.business'); //++
+
+    Route::get('/business/{business}/graph-view',
+    [BusinessAllocationsController::class, 'graph']
+)->name('graph'); //++
+
+Route::post(
+    '/business/graph/ajax/data',
+    [BusinessAllocationsController::class, 'getGraphData']
+)->name('getGraphData'); //--
 
     //--
 //    Route::get(
@@ -136,10 +142,16 @@ Route::group(['middleware' => 'auth'], function () {
         [ProjectionController::class, 'index']
 //        [BusinessAllocationsController::class, 'projectionForecast']
     )->name('projection-view'); //++
+
+
+
         Route::post(
         '/business/projections/ajax/update',
         [ProjectionController::class, 'updateData']
     )->name('projections-controller-update'); //--
+
+    
+
 
 
 //    Route::get(

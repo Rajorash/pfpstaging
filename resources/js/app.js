@@ -8,6 +8,7 @@ require('./pfp_functions');
 require('./allocation_calculator_new');
 require('./percentages_calculator');
 require('./projections_calculator');
+require('./graph');
 require('./revenue_calculator');
 require('./jquery.floatThead.min');
 

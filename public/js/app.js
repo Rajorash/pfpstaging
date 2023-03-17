@@ -4518,6 +4518,7 @@ __webpack_require__(/*! ./pfp_functions */ "./resources/js/pfp_functions.js");
 __webpack_require__(/*! ./allocation_calculator_new */ "./resources/js/allocation_calculator_new.js");
 __webpack_require__(/*! ./percentages_calculator */ "./resources/js/percentages_calculator.js");
 __webpack_require__(/*! ./projections_calculator */ "./resources/js/projections_calculator.js");
+__webpack_require__(/*! ./graph */ "./resources/js/graph.js");
 __webpack_require__(/*! ./revenue_calculator */ "./resources/js/revenue_calculator.js");
 __webpack_require__(/*! ./jquery.floatThead.min */ "./resources/js/jquery.floatThead.min.js");
 var resizeTimer;
@@ -5094,6 +5095,285 @@ var calculatorCore = /*#__PURE__*/function () {
   }]);
   return calculatorCore;
 }();
+
+/***/ }),
+
+/***/ "./resources/js/graph.js":
+/*!*******************************!*\
+  !*** ./resources/js/graph.js ***!
+  \*******************************/
+/***/ (() => {
+
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
+function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
+function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
+function _get() { if (typeof Reflect !== "undefined" && Reflect.get) { _get = Reflect.get.bind(); } else { _get = function _get(target, property, receiver) { var base = _superPropBase(target, property); if (!base) return; var desc = Object.getOwnPropertyDescriptor(base, property); if (desc.get) { return desc.get.call(arguments.length < 3 ? target : receiver); } return desc.value; }; } return _get.apply(this, arguments); }
+function _superPropBase(object, property) { while (!Object.prototype.hasOwnProperty.call(object, property)) { object = _getPrototypeOf(object); if (object === null) break; } return object; }
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+$(function () {
+  $.ajaxSetup({
+    headers: {
+      'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    }
+  });
+  var Graph = /*#__PURE__*/function () {
+    function Graph(businessId) {
+      _classCallCheck(this, Graph);
+      this.businessId = $('#businessId').val();
+      this.elementLoadingSpinner = $('#loadingSpinner');
+      this.ajaxUrl = window.getGraphData;
+      this.debug = false;
+      // $this.data.businessId = $('#businessId').val();
+    }
+    _createClass(Graph, [{
+      key: "init",
+      value: function init() {
+        var $this = this;
+        $this.showSpinner();
+        $this.hideSpinner();
+        $this.renderData();
+        $this.events();
+      }
+    }, {
+      key: "events",
+      value: function events() {
+        _get(_getPrototypeOf(Graph.prototype), "events", this).call(this);
+        $this.ajaxGraphLoadWorker();
+      }
+    }, {
+      key: "showSpinner",
+      value: function showSpinner() {
+        var $this = this;
+        if ($this.debug) {
+          console.log('showSpinner');
+        }
+        $('html, body').css({
+          overflow: 'hidden',
+          height: '100%'
+        });
+        $this.elementLoadingSpinner.show();
+      }
+    }, {
+      key: "hideSpinner",
+      value: function hideSpinner() {
+        var $this = this;
+        $('html, body').css({
+          overflow: 'auto',
+          height: 'auto'
+        });
+        if ($this.debug) {
+          console.log('hideSpinner');
+        }
+        $this.elementLoadingSpinner.hide();
+      }
+    }, {
+      key: "renderData",
+      value: function renderData(data) {
+        var $this = this;
+        if ($this.debug) {
+          console.log('renderData', data);
+        }
+        console.log(data);
+        // if (data.error.length === 0) {
+        //     $this.elementTablePlace.html(data.html);
+
+        //     if ($this.lastCoordinatesElementId) {
+        //         $('#' + $this.lastCoordinatesElementId).focus();
+        //         $('#' + $this.lastCoordinatesElementId).select();
+        //     }
+
+        //     $this.pfpFunctions.tableStickyHeader();
+        //     $this.pfpFunctions.tableStickyFirstColumn();
+        // } else {
+        //     $this.elementTablePlace.html('<p class="p-8 text-red-700 text-bold">' + data.error.join('<br/>') + '</p>');
+        // }
+      }
+    }, {
+      key: "ajaxGraphLoadWorker",
+      value: function ajaxGraphLoadWorker() {
+        var $this = this;
+        $.ajax({
+          type: 'POST',
+          url: $this.ajaxUrl,
+          data: {
+            'id': $('#businessId').val()
+          },
+          dataType: 'json',
+          beforeSend: function beforeSend() {
+            $this.showSpinner();
+          },
+          success: function success(data) {
+            var newDataSetArr = [];
+            for (var i = 0; i < data.data.length; i++) {
+              if (i == 0) for (var key in data.data[i].dates) {
+                var dataSet = {};
+                if (data.data[i].dates.hasOwnProperty(key)) {
+                  dataSet.x = key;
+                  dataSet.y = Math.round(data.data[i].dates[key]);
+                  newDataSetArr.push(dataSet);
+                }
+              }
+            }
+            new Chart('myChart', {
+              type: 'line',
+              data: {
+                labels: createLabels(),
+                datasets: [{
+                  label: 'Data',
+                  fill: false,
+                  data: newDataSetArr,
+                  borderColor: 'grey',
+                  borderWidth: 1,
+                  pointRadius: 0
+                }]
+              },
+              options: {
+                scales: {
+                  xAxes: [{
+                    type: 'time',
+                    time: {
+                      displayFormats: {
+                        quarter: 'MMM YYYY'
+                      }
+                    },
+                    ticks: {
+                      source: 'labels'
+                    }
+                  }],
+                  yAxes: [{
+                    ticks: {
+                      beginAtZero: true
+                    }
+                  }],
+                  y: {
+                    stacked: true
+                  }
+                },
+                tooltips: {
+                  mode: 'index'
+                },
+                hover: {
+                  mode: 'index',
+                  intersect: false
+                }
+              }
+            });
+            new Chart('myChart1', {
+              type: 'line',
+              data: {
+                labels: createLabels(),
+                datasets: [{
+                  label: 'Data',
+                  fill: false,
+                  data: newDataSetArr,
+                  borderColor: 'grey',
+                  borderWidth: 1,
+                  pointRadius: 0
+                }]
+              },
+              options: {
+                scales: {
+                  xAxes: [{
+                    type: 'time',
+                    time: {
+                      displayFormats: {
+                        quarter: 'MMM YYYY'
+                      }
+                    },
+                    ticks: {
+                      source: 'labels'
+                    }
+                  }],
+                  yAxes: [{
+                    ticks: {
+                      beginAtZero: true
+                    }
+                  }],
+                  y: {
+                    stacked: true
+                  }
+                },
+                tooltips: {
+                  mode: 'index'
+                },
+                hover: {
+                  mode: 'index',
+                  intersect: false
+                }
+              }
+            });
+            new Chart('myChart2', {
+              type: 'line',
+              data: {
+                labels: createLabels(),
+                datasets: [{
+                  label: 'Data',
+                  fill: false,
+                  data: newDataSetArr,
+                  borderColor: 'grey',
+                  borderWidth: 1,
+                  pointRadius: 0
+                }]
+              },
+              options: {
+                scales: {
+                  xAxes: [{
+                    type: 'time',
+                    time: {
+                      displayFormats: {
+                        quarter: 'MMM YYYY'
+                      }
+                    },
+                    ticks: {
+                      source: 'labels'
+                    }
+                  }],
+                  yAxes: [{
+                    ticks: {
+                      beginAtZero: true
+                    }
+                  }],
+                  y: {
+                    stacked: true
+                  }
+                },
+                tooltips: {
+                  mode: 'index'
+                },
+                hover: {
+                  mode: 'index',
+                  intersect: false
+                }
+              }
+            });
+            console.log("check the data", newDataSetArr);
+          },
+          complete: function complete() {
+            $this.hideSpinner();
+          }
+        });
+      }
+    }]);
+    return Graph;
+  }();
+  var labels = [];
+
+  //Creating labels here for graph
+  function createLabels() {
+    var formattedStartDate = new Date("2023-01-01");
+    var formattedEndDate = new Date(formattedStartDate.getFullYear(), 11, 31);
+    while (formattedStartDate < formattedEndDate) {
+      labels.push(formattedStartDate.toISOString().substring(0, 10));
+      formattedStartDate.setMonth(formattedStartDate.getMonth() + 3);
+    }
+    return labels;
+  }
+  var GraphClass = new Graph();
+  GraphClass.ajaxGraphLoadWorker();
+});
 
 /***/ }),
 

@@ -24,7 +24,6 @@ class BusinessController extends Controller
      */
     public function index()
     {
-        dd('dddd');
         $businesses = $this->getBusinessAll();
         $filtered = $businesses->filter(function ($business) {
             return Auth::user()->can('view', $business);
@@ -37,11 +36,6 @@ class BusinessController extends Controller
                 'currentUser' => Auth::user(),
             ]
         );
-    }
-
-    public function graph()
-    {
-        return view('business.graph');
     }
 
     /**
