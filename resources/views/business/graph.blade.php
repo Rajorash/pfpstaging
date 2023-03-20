@@ -13,26 +13,35 @@
   <script type="text/javascript">
         window.getGraphData = "{{route('getGraphData')}}";
   </script>
-
+<style>
+  .graph-child {
+    width:49%;
+    margin-bottom:40px;
+  }
+  .graph-child:nth-child(odd):last-child{
+  width: 100%;
+}
+</style>
 </head>
 
-<div class="row">
-  <div class="col-md-6">
-      <canvas id="myChart" height="90"></canvas>
+<div class="graph-container flex flex-wrap justify-between gap-2 p-5">
+  <div class="graph-child ">
+      <canvas id="myChart"></canvas>
   </div>
-  <div class="col-md-6">
-    <canvas id="myChart1" height="90"></canvas>
+  <div class="graph-child ">
+    <canvas id="myChart1"></canvas>
   </div>
+  <div class="graph-child ">
+    <canvas id="myChart2"></canvas>
+  </div>
+  <div class="graph-child  ">
+    <canvas id="myChart3"></canvas>
+  </div>
+
 </div>
 
-<div class="row">
-  <div class="col-md-6">
-      <canvas id="myChart2" height="90"></canvas>
-  </div>
-  <div class="col-md-6">
-    <canvas id="myChart3" height="90"></canvas>
-  </div>
-</div>
+
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.bundle.min.js"></script>
 
 </x-ui.main>
