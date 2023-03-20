@@ -49,17 +49,6 @@
                     </x-slot>
                     {{__('View all businesses you own, advise or are collaborating on. From here you can adjust accounts, rollout percentages and allocations.')}}
                 </x-ui.dashboard-card>
-
-                <x-ui.dashboard-card
-                    :route="route('graph')"
-                    :title="'graph'"
-                    :linkTitle="'Go to graph'"
-                >    
-                <x-slot name="icon">
-                        <x-icons.dashboard :class="'w-auto h-6 text-blue'"/>
-                    </x-slot>
-                </x-ui.dashboard-card>
-                
             </div>
         </div>
     @endif

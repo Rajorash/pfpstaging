@@ -16,23 +16,10 @@
 
 </head>
 
-<div class="row">
-  <div class="col-md-6">
-      <canvas id="myChart" height="90"></canvas>
-  </div>
-  <div class="col-md-6">
-    <canvas id="myChart1" height="90"></canvas>
-  </div>
+<div class="row business">
+ 
 </div>
 
-<div class="row">
-  <div class="col-md-6">
-      <canvas id="myChart2" height="90"></canvas>
-  </div>
-  <div class="col-md-6">
-    <canvas id="myChart3" height="90"></canvas>
-  </div>
-</div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.bundle.min.js"></script>
 
 </x-ui.main>

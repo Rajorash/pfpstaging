@@ -58,6 +58,19 @@ $(function () {
             $this.elementLoadingSpinner.hide();
         }
 
+        makeArray(data,i){
+            var newDataArr=[]
+            for (var key in data[i].dates) {
+                var dataSet={};
+                if (data[i].dates.hasOwnProperty(key)) {
+                    dataSet.x=key;
+                    dataSet.y=Math.round(data[i].dates[key]);
+                    newDataArr.push(dataSet);
+                }
+            }
+            return newDataArr;
+        }
+
         
         renderData(data) {
             let $this = this;
@@ -92,155 +105,69 @@ $(function () {
                     $this.showSpinner();
                 },
                 success: function (data) {
-                    var newDataSetArr=[];
                     for(var i=0; i<data.data.length; i++){
-                        if(i==0)
-                            for (var key in data.data[i].dates) {
-                                var dataSet={};
-                                if (data.data[i].dates.hasOwnProperty(key)) {
-                                    dataSet.x=key;
-                                    dataSet.y=Math.round(data.data[i].dates[key]);
-                                    newDataSetArr.push(dataSet);
-                                }
-                            }
-                    }
+                        console.log("data",data);
+                            var dataArray=data.data;
+                            
+                            $(".business").append('<canvas id="myChart'+i+'" height="90"></canvas>');
 
-                      new Chart('myChart', {
-                            type: 'line',
-                                data: {
-                                labels: createLabels(),
-                                datasets: [{
-                                    label: 'Data',
-                                    fill: false,
-                                    data: newDataSetArr,
-                                    borderColor: 'grey',
-                                    borderWidth:1,
-                                    pointRadius: 0,
-                                }]
-                                },
-                                options: {
-                                scales: {
-                                    xAxes: [{
-                                    type: 'time',
-                                    time: {
-                                        displayFormats: {
-                                            quarter: 'MMM YYYY'
+                            var newDataArray=$this.makeArray(dataArray,i);
+
+                              new Chart('myChart'+i, {
+                                    type: 'line',
+                                        data: {
+                                        labels: createLabels(),
+                                        datasets: [{
+                                            label: 'Data',
+                                            fill: false,
+                                            data: newDataArray,
+                                            borderColor: 'blue',
+                                            borderWidth:1,
+                                            pointRadius: 0,
+                                        }]
+                                        },
+                                        options: {
+                                        scales: {
+                                            xAxes: [{
+                                            type: 'time',
+                                            time: {
+                                                displayFormats: 
+                                                {
+                                                    quarter: 'MMM YYYY'
+                                                }
+                                            },
+                                            ticks: {
+                                                source: 'labels'
+                                            },      
+                                            }],
+                                            yAxes: [{
+                                            ticks: {
+                                                beginAtZero: true
+                                            }
+                                            }],
+                                            y: {
+                                                stacked: true
+                                            }
+                                        },
+                                        tooltips: {
+                                            mode: 'index'
+                                        },
+                                        hover: {
+                                            mode: 'index',
+                                            intersect: false
+                                        },
+                                        plugins: {
+                                            legend: {
+                                                display: true,
+                                                position:'bottom',
+                                                labels: {
+                                                    color: 'rgb(255, 99, 132)'
+                                                }
+                                            }
                                         }
-                                    },
-                                    ticks: {
-                                        source: 'labels'
-                                    },      
-                                    }],
-                                    yAxes: [{
-                                    ticks: {
-                                        beginAtZero: true
-                                    }
-                                    }],
-                                    y: {
-                                        stacked: true
-                                    }
-                                },
-                                tooltips: {
-                                    mode: 'index'
-                                },
-                                hover: {
-                                    mode: 'index',
-                                    intersect: false
-                                },
-                                }
-                      });
-
-                      new Chart('myChart1', {
-                        type: 'line',
-                            data: {
-                            labels: createLabels(),
-                            datasets: [{
-                                label: 'Data',
-                                fill: false,
-                                data: newDataSetArr,
-                                borderColor: 'grey',
-                                borderWidth:1,
-                                pointRadius: 0,
-                            }]
-                            },
-                            options: {
-                            scales: {
-                                xAxes: [{
-                                type: 'time',
-                                time: {
-                                    displayFormats: {
-                                        quarter: 'MMM YYYY'
-                                    }
-                                },
-                                ticks: {
-                                    source: 'labels'
-                                },      
-                                }],
-                                yAxes: [{
-                                ticks: {
-                                    beginAtZero: true
-                                }
-                                }],
-                                y: {
-                                    stacked: true
-                                }
-                            },
-                            tooltips: {
-                                mode: 'index'
-                            },
-                            hover: {
-                                mode: 'index',
-                                intersect: false
-                            },
-                            }
-                      });
-
-                      new Chart('myChart2', {
-                        type: 'line',
-                            data: {
-                            labels: createLabels(),
-                            datasets: [{
-                                label: 'Data',
-                                fill: false,
-                                data: newDataSetArr,
-                                borderColor: 'grey',
-                                borderWidth:1,
-                                pointRadius: 0,
-                            }]
-                            },
-                            options: {
-                            scales: {
-                                xAxes: [{
-                                type: 'time',
-                                time: {
-                                    displayFormats: {
-                                        quarter: 'MMM YYYY'
-                                    }
-                                },
-                                ticks: {
-                                    source: 'labels'
-                                },      
-                                }],
-                                yAxes: [{
-                                ticks: {
-                                    beginAtZero: true
-                                }
-                                }],
-                                y: {
-                                    stacked: true
-                                }
-                            },
-                            tooltips: {
-                                mode: 'index'
-                            },
-                            hover: {
-                                mode: 'index',
-                                intersect: false
-                            },
-                            }
-                      });
-                      
-                    console.log("check the data",newDataSetArr);
+                                        }
+                              });
+                    }
                 },
                 complete: function () {
                     $this.hideSpinner();
