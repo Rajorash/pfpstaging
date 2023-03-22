@@ -902,6 +902,8 @@ class BusinessAllocationsController extends Controller
 
         $this->phases = $this->business->getPhasesIdByPeriod($period);
 
+      
+
         //update value of cell
         $cellId = $request->cellId ?? null;
         $cellValue = $request->cellValue ?? null;
@@ -929,6 +931,7 @@ class BusinessAllocationsController extends Controller
             if ($returnType != 'html' && $updatedAccountId && $updatedAccountId != $account->id) {
                 continue;
             }
+           
 
             $accountAllData = $account->toArray();
 
@@ -1002,6 +1005,7 @@ class BusinessAllocationsController extends Controller
 
         }
 
+        
         $newArray=array();
         $newTableData=array();
         foreach($accounts as $account){

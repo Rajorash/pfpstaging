@@ -103,7 +103,7 @@ $(function () {
                     $this.showSpinner();
                 },
                 success: function (data) {
-                    for(var i=0; i<data.data.length; i++){
+                    for(var i=0; i<2; i++){
                             var dataArray=data.data;
                             $(".graph-container").append('<div class="graph-child "><canvas id="myChart'+i+'" style="height:370px;"></canvas></div>');
                             var newDataArray=$this.makeArray(dataArray,i);
