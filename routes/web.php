@@ -89,6 +89,10 @@ Route::group(['middleware' => 'auth'], function () {
     [BusinessAllocationsController::class, 'graph']
 )->name('graph'); //++
 
+Route::get('/business/{business}/graph-view',
+[BusinessAllocationsController::class, 'graph']
+)->name('graph'); //++
+
 Route::post(
     '/business/graph/ajax/data',
     [BusinessAllocationsController::class, 'getGraphData']

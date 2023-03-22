@@ -27,7 +27,7 @@ class BusinessAllocationsController extends Controller
     private array $bankAccountCache = [];
     private array $previousNonZeroValueCache = [];
     public array $accountsSubTypes = [];
-    protected int $defaultCurrentRangeValue = 180;
+    protected int $defaultCurrentRangeValue = 365;
 
     public const RANGE_DAILY = 1;
     public const RANGE_WEEKLY = 7;
@@ -846,10 +846,7 @@ class BusinessAllocationsController extends Controller
         $today = Timezone::convertToLocal(Carbon::now(), 'Y-m-d H:i:s');
         $todayShort = Timezone::convertToLocal(Carbon::now(), 'Y-m-d').' 00:00:00';
 
-        $todayShort = "2023-01-01";
-        $startDate  = "2023-01-01"; 
-
-
+      
         if ($this->projectionMode == self::PROJECTION_MODE_FORECAST) {
             $startDate = $request->startDate ?? Carbon::parse($today)->format('Y-m-d');
         } else {
@@ -863,7 +860,7 @@ class BusinessAllocationsController extends Controller
         } elseif ($this->projectionMode == self::PROJECTION_MODE_FORECAST) {
             $this->complete = $this->periodInterval * $this->forecastRowsPerPeriod;
         }
-
+        
         $endDate = Carbon::parse($startDate)->addDays($this->complete - 1)->format('Y-m-d');
 
         $period = CarbonPeriod::create($startDate, $endDate);

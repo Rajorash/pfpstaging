@@ -77,7 +77,6 @@ $(function () {
             if ($this.debug) {
                 console.log('renderData',data);
             }
-            console.log(data);
             // if (data.error.length === 0) {
             //     $this.elementTablePlace.html(data.html);
 
@@ -93,7 +92,6 @@ $(function () {
             // }
         }
 
-       
         ajaxGraphLoadWorker() {
             let $this = this;
             $.ajax({
@@ -106,19 +104,15 @@ $(function () {
                 },
                 success: function (data) {
                     for(var i=0; i<data.data.length; i++){
-                        console.log("data",data);
                             var dataArray=data.data;
-                            
-                            $(".business").append('<canvas id="myChart'+i+'" height="90"></canvas>');
-
+                            $(".graph-container").append('<div class="graph-child "><canvas id="myChart'+i+'" style="height:370px;"></canvas></div>');
                             var newDataArray=$this.makeArray(dataArray,i);
-
                               new Chart('myChart'+i, {
                                     type: 'line',
                                         data: {
                                         labels: createLabels(),
                                         datasets: [{
-                                            label: 'Data',
+                                            label: data.data[i].name,
                                             fill: false,
                                             data: newDataArray,
                                             borderColor: 'blue',
@@ -127,22 +121,22 @@ $(function () {
                                         }]
                                         },
                                         options: {
+                                        legend: {
+                                            position: 'bottom',
+                                        },
                                         scales: {
                                             xAxes: [{
                                             type: 'time',
                                             time: {
-                                                displayFormats: 
-                                                {
-                                                    quarter: 'MMM YYYY'
-                                                }
-                                            },
+                                                unit: 'month'
+                                              },
                                             ticks: {
                                                 source: 'labels'
                                             },      
                                             }],
                                             yAxes: [{
                                             ticks: {
-                                                beginAtZero: true
+                                                beginAtZero: true,
                                             }
                                             }],
                                             y: {
@@ -156,15 +150,6 @@ $(function () {
                                             mode: 'index',
                                             intersect: false
                                         },
-                                        plugins: {
-                                            legend: {
-                                                display: true,
-                                                position:'bottom',
-                                                labels: {
-                                                    color: 'rgb(255, 99, 132)'
-                                                }
-                                            }
-                                        }
                                         }
                               });
                     }
@@ -180,13 +165,18 @@ $(function () {
 
     //Creating labels here for graph
     function createLabels() {
-    var formattedStartDate = new Date("2023-01-01");
-    var formattedEndDate = new Date(formattedStartDate.getFullYear(), 11, 31);
-
-    while (formattedStartDate < formattedEndDate) {
-        labels.push(formattedStartDate.toISOString().substring(0, 10));
-        formattedStartDate.setMonth(formattedStartDate.getMonth() + 3);
-    }
+        var todayDate = new Date().toISOString().slice(0, 10);
+        var firstMonthDate = new Date(todayDate);
+        labels.push(firstMonthDate);
+        firstMonthDate.setMonth(firstMonthDate.getMonth() +4);
+        var secondMonthDate=firstMonthDate.toISOString().slice(0, 10);
+        labels.push(secondMonthDate);
+        firstMonthDate.setMonth(firstMonthDate.getMonth() +5);
+        var thirdMonthDate=firstMonthDate.toISOString().slice(0, 10);
+        labels.push(thirdMonthDate);
+        firstMonthDate.setMonth(firstMonthDate.getMonth() +4);
+        var fourthMonthDate=firstMonthDate.toISOString().slice(0, 10);
+        labels.push(fourthMonthDate);
     return labels;
     }
 

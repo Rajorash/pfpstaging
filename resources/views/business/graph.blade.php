@@ -18,30 +18,14 @@
     width:49%;
     margin-bottom:40px;
   }
-  .graph-child:nth-child(odd):last-child{
-  width: 100%;
-}
+  /* .graph-child:nth-child(odd):last-child{
+    width:100% !important;
+    height:440px !important
+  } */
 </style>
 </head>
 
-<div class="row business">
- 
-</div>
-
 <div class="graph-container flex flex-wrap justify-between gap-2 p-5">
-  <div class="graph-child ">
-      <canvas id="myChart"></canvas>
-  </div>
-  <div class="graph-child ">
-    <canvas id="myChart1"></canvas>
-  </div>
-  <div class="graph-child ">
-    <canvas id="myChart2"></canvas>
-  </div>
-  <div class="graph-child  ">
-    <canvas id="myChart3"></canvas>
-  </div>
-
 </div>
 
 
