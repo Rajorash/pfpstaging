@@ -176,6 +176,11 @@
                                     <x-icons.percent :class="'h-5 w-auto inline-block'"/>
                                 </x-ui.button-small>
 
+                                <x-ui.button-small title="{{__('Graph')}}"
+                                                href="{{route('graph', ['business' => $business])}}">
+                                    <x-icons.dashboard :class="'h-5 w-auto inline-block'"/>
+                                </x-ui.button-small>
+
                             </div>
                         </x-ui.table-td>
 
