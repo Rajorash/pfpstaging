@@ -507,6 +507,7 @@ class BusinessAllocationsController extends Controller
 
         $result = [];
 
+       
         foreach ($raw as $account_item) {
             if (isset($account_item->account_values)) {
                 foreach ($account_item->account_values as $key => $value) {
@@ -952,18 +953,18 @@ class BusinessAllocationsController extends Controller
                 $this->incomeByPeriod = $account->getAdjustedFlowsTotalByDatePeriod($accccid,$startDate, $endDate);
             }
 
-            $tableData[$account->type][$account->id]['total_db'] =
-                $account->getAdjustedFlowsTotalByDatePeriod($account->id,$startDate, $endDate);
+            // $tableData[$account->type][$account->id]['total_db'] =
+            //     $account->getAdjustedFlowsTotalByDatePeriod($account->id,$startDate, $endDate);
 
         
-            if (array_key_exists('flows', $tableData[$account->type][$account->id])) {
-                //reorder flows data
-                $newFlows = [];
-                foreach ($tableData[$account->type][$account->id]['flows'] as $flowArray) {
-                        $newFlows[$flowArray['id']] = $flowArray;
-                }
-                $tableData[$account->type][$account->id]['flows'] = $newFlows;
-            }
+            // if (array_key_exists('flows', $tableData[$account->type][$account->id])) {
+            //     //reorder flows data
+            //     $newFlows = [];
+            //     foreach ($tableData[$account->type][$account->id]['flows'] as $flowArray) {
+            //             $newFlows[$flowArray['id']] = $flowArray;
+            //     }
+            //     $tableData[$account->type][$account->id]['flows'] = $newFlows;
+            // }
            
 
             $tableData[$account->type][$account->id] = $this->fillMissingDateValue(
