@@ -13,6 +13,8 @@
 
                 <p class="pt-4 text-sm text-gray-700">The Profit First Prophet Platform is owned by Profit First Prophet and in these Terms, references to<strong> ‘We’, ‘Us, ‘Our’</strong> and <strong>‘Profit First Prophet’</strong> refer to Profit First Prophet (unless otherwise indicated). </p>
 
+                <p class="pt-4 text-sm text-gray-700">The Profit First Prophet is licensed to use the Profit First trademark .</p>
+
                 <p class="pt-4 text-sm text-gray-700">In these Terms, references to <strong> ‘Client Subscriber’’, ‘You’</strong> and <strong>‘Your’</strong>refer to Client Subscribers of the Profit First Prophet Platform (unless otherwise indicated). References to  <strong>Advisor Subscribers’</strong> refer to professional advisors who are subscribers of the Profit First Prophet Platform who as part of their subscription with US are able to grant access to the Profit First Prophet Platform to Client Subscribers.</p>
 
                 <p class="pt-4 text-sm text-gray-700">Your use of the Profit First Prophet Platform constitutes acceptance of these Terms (as revised from time to time) and these Terms constitute a binding agreement between You and Profit First Prophet which governs Your use of the Profit First Prophet Platform.  

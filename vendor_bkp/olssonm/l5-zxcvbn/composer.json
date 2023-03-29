@@ -1,0 +1,56 @@
+{
+    "name": "olssonm/laravel-zxcvbn",
+    "description": "Implementation of the zxcvbn project by @dropbox for Laravel. Uses zxcvbn-php by @bjeavons.",
+    "keywords": [
+        "olssonm",
+        "zxcvbn",
+        "staple horse battery",
+        "passwords",
+        "security",
+        "validation",
+        "laravel"
+    ],
+    "homepage": "https://github.com/olssonm/laravel-zxcvbn",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Marcus Olsson",
+            "email": "contact@marcusolsson.me",
+            "homepage": "https://marcusolsson.me"
+        }
+    ],
+    "require": {
+        "php": "^7.3|^8.0",
+        "illuminate/support": "^7.0|^8.0|^9.0",
+        "bjeavons/zxcvbn-php": "^1.2"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^8.0|^9.0",
+        "orchestra/testbench": ">=4.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Olssonm\\Zxcvbn\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Olssonm\\Zxcvbn\\Test\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": "phpunit"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "4.x-dev"
+        },
+        "laravel": {
+            "providers": [
+                "Olssonm\\Zxcvbn\\ZxcvbnServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

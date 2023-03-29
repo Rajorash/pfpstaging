@@ -57,7 +57,7 @@
 
             <x-slot name="footer">
                 <x-ui.button-secondary
-                    class="ml-2"
+                    class="ml-2   bg-blue-800 text-white "
                     wire:click="$toggle('isOpen')"
                     wire:loading.attr="disabled">
                     {{ __('Nevermind') }}
@@ -65,7 +65,7 @@
 
                 @if (!$failure)
                     <x-ui.button-primary
-                        class="ml-2"
+                        class="ml-2 bg-blue-800 text-white "
                         wire:click="submitForm"
                         wire:loading.attr="disabled">
                         {{ __('Create Business') }}

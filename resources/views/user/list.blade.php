@@ -79,6 +79,7 @@
             <x-ui.table-tbody>
                 @if (count($users))
                     @foreach ($users as $user)
+                    @if(Auth::user()->isAdvisor() && Auth::user()->email == $user->email || !$user->isAdvisor())
                         <tr>
                             <x-ui.table-td class="whitespace-nowrap"
                                            padding="pl-12 pr-2 py-4">
@@ -233,6 +234,7 @@
                                 </x-ui.button-small>
                             </x-ui.table-td>
                         </tr>
+                        @endif
                     @endforeach
                 @endif
             </x-ui.table-tbody>

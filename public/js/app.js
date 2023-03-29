@@ -6038,6 +6038,7 @@ $(function () {
       _this.elementTablePlace = $('#revenueTablePlace');
       _this.autoSubmitDataAllow = true;
       _this.timeOutSeconds = 2000;
+      _this.heightMode = $.cookie('allocation_heightMode') !== undefined ? $.cookie('allocation_heightMode') : _this.heightModeDefault;
       _this.showRowsLevelTitles = {
         1: 'Totals only',
         2: 'Totals with Accounts',
@@ -6084,6 +6085,40 @@ $(function () {
         if ($this.debug) {
           console.log('collectData', $this.data);
         }
+      }
+    }, {
+      key: "heightModeDataLoadData",
+      value: function heightModeDataLoadData() {
+        _get(_getPrototypeOf(RevenueCalculator.prototype), "heightModeDataLoadData", this).call(this);
+        var $this = this;
+        $this.switchHeightMode();
+      }
+    }, {
+      key: "switchHeightMode",
+      value: function switchHeightMode() {
+        var $this = this;
+        if ($this.heightMode === 'full') {
+          $('.block_different_height').height('auto');
+        } else {
+          var height = $(window).height() - 50;
+          var blockDifferentHeight = $('.block_different_height');
+          if (blockDifferentHeight.offset()) {
+            height -= blockDifferentHeight.offset().top;
+          }
+          blockDifferentHeight.height(height);
+        }
+        setTimeout(function () {
+          $(".global_nice_scroll").getNiceScroll().resize();
+        }, 500);
+      }
+    }, {
+      key: "updateHeightMode",
+      value: function updateHeightMode() {
+        var $this = this;
+        $this.switchHeightMode();
+        $.cookie('allocation_heightMode', $this.heightMode, {
+          expires: 14
+        });
       }
     }, {
       key: "getTargetSelectorForForecast",

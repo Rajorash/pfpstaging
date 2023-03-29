@@ -17,7 +17,7 @@ class AddEditFlow extends Component
     
     public int $flowId = 0;
     public int $accountId = 0;
-    public bool $defaultNegative = false;
+    public bool $defaultNegative = true;
     public string $routeName = '';
 
     public string $label = '';
@@ -55,7 +55,12 @@ class AddEditFlow extends Component
             $this->certainty = $flow->certainty;
             $this->catId = $flow->cat_id;
         } else {
-            $this->negative_flow = $this->defaultNegative;
+            if($account->type == BankAccount::ACCOUNT_TYPE_REVENUE){
+                $this->defaultNegative = false;
+                $this->negative_flow = $this->defaultNegative;
+            }else{
+                 $this->negative_flow = $this->defaultNegative;
+            }
         }
         $this->errormessege = '';
     }
@@ -103,6 +108,10 @@ class AddEditFlow extends Component
         if ($this->accountId) {
             $account = BankAccount::findOrFail($this->accountId);
             $flow->account_id = $account->id;
+            $flowIds = AccountFlow::where("account_id",$this->accountId)->get()->all();
+            if(count($flowIds) > 0){
+                $flow->flow_position =   count($flowIds) + 1;
+            }
         }
 
         $flow->save();

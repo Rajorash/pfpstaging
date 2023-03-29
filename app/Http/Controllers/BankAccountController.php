@@ -49,11 +49,13 @@ class BankAccountController extends Controller
      */
     private function creatableAccountTypes(): array
     {
-        return Arr::where(BankAccount::type_list(), function ($value) {
-            $filter_out = [BankAccount::ACCOUNT_TYPE_REVENUE, BankAccount::ACCOUNT_TYPE_SALESTAX];
-
-            return !in_array($value, $filter_out);
-        });
+       
+            return Arr::where(BankAccount::type_list(), function ($value) {
+                $filter_out = [BankAccount::ACCOUNT_TYPE_REVENUE, BankAccount::ACCOUNT_TYPE_SALESTAX];
+    
+                return !in_array($value, $filter_out);
+            });
+        
     }
 
     /**
@@ -143,8 +145,9 @@ class BankAccountController extends Controller
     public function edit(Business $business, BankAccount $account)
     {
         $this->authorize('update', $account);
+        $account_list = $this->creatableAccountTypes();
 
-        return view('accounts.edit', ['business' => $business, 'account' => $account, 'curr_type' => $account->type]);
+        return view('accounts.edit', ['business' => $business, 'account' => $account, 'account_list' => $account_list ,'curr_type' => $account->type]);
     }
 
     /**
