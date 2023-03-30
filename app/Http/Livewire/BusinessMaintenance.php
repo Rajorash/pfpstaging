@@ -40,15 +40,15 @@ class BusinessMaintenance extends Component
     {
         parent::__construct($id);
 
-        // $this->advisorsClients = User::whereIn('id', Auth::user()->clientsByAdvisor->pluck('id'))
-        //     ->orderBy('name')
-        //     ->with('roles')
-        //     ->get();
+        $this->advisorsClients = User::whereIn('id', Auth::user()->clientsByAdvisor->pluck('id'))
+            ->orderBy('name')
+            ->with('teams')
+            ->get();
 
-        $this->advisorsClients = User::whereIn('id', Auth::user()->pluck('id'))
-        ->orderBy('name')
-        ->with('roles')
-        ->get();
+        // $this->advisorsClients = User::whereIn('id', Auth::user()->pluck('id'))
+        // ->orderBy('name')
+        // ->with('roles')
+        // ->get();
 
         $this->UserController = new UserController();
     }

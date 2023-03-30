@@ -55,7 +55,7 @@ class BankAccount extends Model
 
     public function flows(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
-        return $this->hasMany(AccountFlow::class, 'account_id')->orderBy('flow_position', 'ASC');;
+        return $this->hasMany(AccountFlow::class, 'account_id')->orderBy('flow_position', 'ASC');
     }
 
     public function percentages(): \Illuminate\Database\Eloquent\Relations\HasMany

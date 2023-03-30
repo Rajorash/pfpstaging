@@ -57,12 +57,14 @@ class BusinessAllocationsController extends Controller
         $checkUpdate = new BankAccount;
         $update_bal_date = '';
         $accounts = $this->business->accounts;
+
         foreach ($accounts as $key => $account) {
-             $updated_today[$key] = $checkUpdate->dateOfUpdateBalanceEntry($account->id);
-             if($updated_today[$key] !== ''){
-                $update_bal_date = $updated_today[$key];
-             }
-        }
+            $updated_today[$key] = $checkUpdate->dateOfUpdateBalanceEntry($account->id);
+       }
+       
+            if(isset($updated_today) && !empty(max($updated_today))){
+               $update_bal_date = max($updated_today);
+            }
        
         // $updated_today = Timezone::convertToLocal(Carbon::now(), 'Y-m-d');
 //        $maxDate = $this->business->rollout()->max('end_date');
