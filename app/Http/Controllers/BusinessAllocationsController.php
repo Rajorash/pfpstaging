@@ -835,8 +835,8 @@ class BusinessAllocationsController extends Controller
             BankAccount::ACCOUNT_TYPE_POSTREAL => []
         ];
 
-        // $businessId = $request->businessId ?? null;
-        $businessId=3;
+        $businessId = $request->id ?? null;
+        // $businessId=3;
         $this->business = Business::where('id', $businessId)
             ->with([
                 'accounts',
@@ -847,7 +847,7 @@ class BusinessAllocationsController extends Controller
         $today = Timezone::convertToLocal(Carbon::now(), 'Y-m-d H:i:s');
         $todayShort = Timezone::convertToLocal(Carbon::now(), 'Y-m-d').' 00:00:00';
 
-      
+
         if ($this->projectionMode == self::PROJECTION_MODE_FORECAST) {
             $startDate = $request->startDate ?? Carbon::parse($today)->format('Y-m-d');
         } else {

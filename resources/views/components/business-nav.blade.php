@@ -88,6 +88,7 @@
         <span class="ml-2 text-lg inline-block @if(!$active) hidden @endif">{{__('Expense Entry')}}</span>
     </a>
 
+    
     @php
         $active = request()->routeIs('projection-view');
     @endphp
@@ -98,6 +99,21 @@
         <x-icons.presentation-chart class="inline-block w-auto h-6"/>
         <span
             class="ml-2 text-lg inline-block @if(!$active) hidden @endif">{{__('Projection Forecast')}}</span>
+    </a>&nbsp;
+
+    @php
+        $active = request()->routeIs('graph');
+    @endphp
+    <a href="{{route('graph', ['business' => $business])}}" title="{{__('Graph')}}"
+       class="busnav-btn
+        @if($active) text-blue @else text-gray-700 @endif
+           ">
+       <x-icons.dashboard :class="'h-5 w-auto inline-block'"/>
+
+        <span
+            class="ml-2 text-lg inline-block @if(!$active) hidden @endif">{{__('Graph')}}</span>
     </a>
 
 </div>
+
+

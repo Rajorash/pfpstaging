@@ -5238,7 +5238,10 @@ $(function () {
                 },
                 options: {
                   legend: {
-                    position: 'bottom'
+                    position: 'bottom',
+                    labels: {
+                      fontSize: 18
+                    }
                   },
                   scales: {
                     xAxes: [{
@@ -5247,6 +5250,9 @@ $(function () {
                         unit: 'month'
                       },
                       ticks: {
+                        autoSkip: false,
+                        maxRotation: 0,
+                        minRotation: 0,
                         source: 'labels'
                       }
                     }],

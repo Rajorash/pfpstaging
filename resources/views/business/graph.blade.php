@@ -7,6 +7,17 @@
     {{ __('Graph') }}
   </x-slot>
 
+  <x-slot name="header">
+        <x-cta-workflow :business="$business" :step="'graph'" />
+        {{$business->name }}
+        <x-icons.chevron-right :class="'h-4 w-auto inline-block px-2'"/>
+        {{ __('Graph')}}
+    </x-slot>
+
+  <x-slot name="subMenu">
+      <x-business-nav businessId="{{$business->id}}" :business="$business"/>
+  </x-slot>
+
   <x-ui.main>
     <input type="hidden" id="businessId" name="businessId" value="{{$business->id}}"/>
 

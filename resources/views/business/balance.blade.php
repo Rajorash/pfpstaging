@@ -6,6 +6,7 @@
         {{ __('Change balance')}}
     </x-slot>
 
+    
     <x-slot name="header">
         <x-cta-workflow :business="$business" :step="'balance'" />
         {{$business->name }}

@@ -107,7 +107,7 @@ $(function () {
                             var dataArray=data.data;
                             $(".graph-container").append('<div class="graph-child "><canvas id="myChart'+i+'" style="height:370px;"></canvas></div>');
                             var newDataArray=$this.makeArray(dataArray,i);
-                              new Chart('myChart'+i, {
+                            new Chart('myChart'+i, {
                                     type: 'line',
                                         data: {
                                         labels: createLabels(),
@@ -123,14 +123,20 @@ $(function () {
                                         options: {
                                         legend: {
                                             position: 'bottom',
+                                            labels: {
+                                                fontSize: 18
+                                            },
                                         },
                                         scales: {
                                             xAxes: [{
                                             type: 'time',
                                             time: {
                                                 unit: 'month'
-                                              },
+                                            },
                                             ticks: {
+                                                autoSkip: false,
+                                                maxRotation: 0,
+                                                minRotation: 0,
                                                 source: 'labels'
                                             },      
                                             }],
@@ -151,7 +157,7 @@ $(function () {
                                             intersect: false
                                         },
                                         }
-                              });
+                            });
                     }
                 },
                 complete: function () {
