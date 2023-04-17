@@ -5291,15 +5291,18 @@ $(function () {
     var todayDate = new Date().toISOString().slice(0, 10);
     var firstMonthDate = new Date(todayDate);
     labels.push(firstMonthDate);
-    firstMonthDate.setMonth(firstMonthDate.getMonth() + 4);
+    firstMonthDate.setMonth(firstMonthDate.getMonth() + 3);
     var secondMonthDate = firstMonthDate.toISOString().slice(0, 10);
     labels.push(secondMonthDate);
-    firstMonthDate.setMonth(firstMonthDate.getMonth() + 5);
+    firstMonthDate.setMonth(firstMonthDate.getMonth() + 3);
     var thirdMonthDate = firstMonthDate.toISOString().slice(0, 10);
     labels.push(thirdMonthDate);
-    firstMonthDate.setMonth(firstMonthDate.getMonth() + 4);
+    firstMonthDate.setMonth(firstMonthDate.getMonth() + 3);
     var fourthMonthDate = firstMonthDate.toISOString().slice(0, 10);
     labels.push(fourthMonthDate);
+    firstMonthDate.setMonth(firstMonthDate.getMonth() + 3);
+    var fifthMonthDate = firstMonthDate.toISOString().slice(0, 10);
+    labels.push(fifthMonthDate);
     return labels;
   }
   var GraphClass = new Graph();
