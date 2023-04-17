@@ -29,6 +29,6 @@ class AppServiceProvider extends ServiceProvider
     {
         Business::observe(BusinessObserver::class);
         LicensesForAdvisors::observe(LicensesForAdvisorsObserver::class);
-        \Debugbar::disable();
+        // \Debugbar::disable();
     }
 }
