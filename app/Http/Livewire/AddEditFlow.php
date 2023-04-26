@@ -109,9 +109,9 @@ class AddEditFlow extends Component
             $account = BankAccount::findOrFail($this->accountId);
             $flow->account_id = $account->id;
             $flowIds = AccountFlow::where("account_id",$this->accountId)->get()->all();
-            // if(count($flowIds) > 0){
-            //     $flow->flow_position =   count($flowIds) + 1;
-            // }
+            if($this->flowId == 0){
+                $flow->flow_position =   count($flowIds) + 1;
+            }
         }
 
         $flow->save();
