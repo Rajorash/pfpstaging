@@ -211,7 +211,7 @@ class BusinessController extends Controller
                     ],
                     [
                         'phase_id' => $phaseId,
-                        'amount' => $amount,
+                        'amount' => $amount ?? 0,
                         'manual_entry' => 1
                     ]
                 );
