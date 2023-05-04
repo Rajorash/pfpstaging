@@ -101,9 +101,11 @@
         }else if($('#height_window').is(':checked') === true) {
             var upper_height = ($('.shadow-shadow4').height() + $('header').height());
             var main_height = ($(window).height()) - upper_height;
-        $('#revenueTablePlace,#allocationsNewTablePlace').css('height',+main_height+'px');
+            $('#revenueTablePlace,#allocationsNewTablePlace').css('height',+main_height+'px');
            $('#height_window:checked+label').css({'background-color':'rgba(14,23,71,var(--tw-bg-opacity))','color':'rgba(255,255,255,var(--tw-text-opacity))'});
            $('#height_full+label').removeAttr('style');
+            $.cookie('allocation_heightMode','window');
+
         }
     }
 

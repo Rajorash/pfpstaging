@@ -19,9 +19,6 @@ $(function () {
             this.elementTablePlace = $('#revenueTablePlace');
             this.autoSubmitDataAllow = true;
             this.timeOutSeconds = 2000;
-            this.heightMode = $.cookie('allocation_heightMode') !== undefined
-            ? $.cookie('allocation_heightMode')
-            : this.heightModeDefault;
 
             this.showRowsLevelTitles = {
                 1: 'Totals only',
@@ -76,42 +73,6 @@ $(function () {
             if ($this.debug) {
                 console.log('collectData', $this.data);
             }
-        }
-
-        heightModeDataLoadData() {
-            super.heightModeDataLoadData();
-            let $this = this;
-
-            $this.switchHeightMode();
-        }
-
-        switchHeightMode() {
-            let $this = this;
-
-            if ($this.heightMode === 'full') {
-                $('.block_different_height').height('auto');
-            } else {
-                let height = $(window).height() - 50;
-                let blockDifferentHeight = $('.block_different_height');
-
-                if (blockDifferentHeight.offset()) {
-                    height -= blockDifferentHeight.offset().top;
-                }
-
-                blockDifferentHeight.height(height);
-            }
-
-            setTimeout(function () {
-                $(".global_nice_scroll").getNiceScroll().resize();
-            }, 500);
-        }
-
-        updateHeightMode() {
-            let $this = this;
-
-            $this.switchHeightMode();
-
-            $.cookie('allocation_heightMode', $this.heightMode, {expires: 14});
         }
 
         getTargetSelectorForForecast(row, col) {

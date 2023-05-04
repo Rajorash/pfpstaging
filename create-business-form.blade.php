@@ -57,7 +57,7 @@
 
             <x-slot name="footer">
                 <x-ui.button-secondary
-                    class="ml-2   bg-blue-800 text-white "
+                    class="ml-2 bg-blue-800 text-white "
                     wire:click="$toggle('isOpen')"
                     wire:loading.attr="disabled">
                     {{ __('Nevermind') }}

@@ -83,10 +83,10 @@
                         $rowIndex++;
                         $columnIndex = 0;
                     @endphp
-                    <tr class="divide-x border-light_blue level_3">
+                    <tr class="divide-x border-light_blue level_3" @if($business->license->checkLicense) draggable="true" drag-root @endif data-account_id="{{$accountId}}"  flowId="{{$flowId}}">
                         <x-ui.table-td padding="p-1 pl-2 pr-2"
                                        baseClass="text-dark_gray whitespace-nowrap sticky left-0 bg-data-entry z-10 text-left">
-                            <div class="flex mr-auto">
+                            <div class="flex mr-auto" onmousedown="mouseDown()">
                                 <div
                                     class="inline-flex text-{{$flowData['negative'] ? 'red-500' : 'green' }} text-2xl pr-2 w-5 leading-none">
                                     {!! $flowData['negative'] ? '&ndash;' : '+' !!}

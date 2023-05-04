@@ -67,7 +67,7 @@
                                         <div class="table-cell w-3/5 pb-4">
                                             <x-jet-input
                                                 name="balance[{{$balance['id']}}]"
-                                                type="text"
+                                                type="number"
                                                 class="w-full text-right"
                                                 autocomplete="off"
                                                 value="{{number_format($balance['amount'], 0, '', '')}}"
