@@ -40,10 +40,13 @@
 
                             <div class="flex flex-wrap mb-4">
                                 <div class="pl-4 ml-auto md:w-1/2">
-                                    <button type="submit"
+                                    <!-- <button type="submit"
                                             class="inline-block px-3 py-1 ml-auto font-normal leading-normal text-center text-white no-underline whitespace-no-wrap align-middle border rounded select-none bg-blue hover:bg-dark_gray2">
                                         {{ __('Send Password Reset Link') }}
-                                    </button>
+                                    </button> -->
+                                    <x-jet-button class="w-full text-center py-4 uppercase font-normal bg-blue-800 text-base" style="padding: 7px; max-width: 240px;">
+                                            {{ __('Send Password Reset Link') }}
+                                    </x-jet-button>
                                 </div>
                             </div>
                         </form>
