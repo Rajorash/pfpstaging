@@ -96,11 +96,16 @@
                     {{ __('Nevermind') }}
                 </x-jet-secondary-button>
 
-                <x-jet-button class="ml-2"
+                <!-- <x-jet-button class="ml-2"
                               wire:click="logoutOtherBrowserSessions"
                               wire:loading.attr="disabled">
                     {{ __('Logout Other Browser Sessions') }}
-                </x-jet-button>
+                </x-jet-button> -->
+                <x-ui.button-normal class="ml-2"
+                              wire:click="logoutOtherBrowserSessions"
+                              wire:loading.attr="disabled">
+                    {{ __('Logout Other Browser Sessions') }}
+                </x-ui.button-normal>
             </x-slot>
         </x-jet-dialog-modal>
     </x-slot>
