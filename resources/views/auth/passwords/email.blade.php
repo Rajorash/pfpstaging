@@ -31,7 +31,7 @@
                                            autofocus>
 
                                     @error('email')
-                                    <span class="hidden mt-1 text-sm text-red" role="alert">
+                                    <span class="mt-1 text-sm text-red-600" role="alert">
                                 <strong>{{ $message }}</strong>
                             </span>
                                     @enderror
