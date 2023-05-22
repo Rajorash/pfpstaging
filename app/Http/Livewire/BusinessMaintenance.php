@@ -107,10 +107,12 @@ class BusinessMaintenance extends Component
         $validator = Validator::make([
             'businessName' => $this->businessName,
             'emailCollaborate' => $this->emailCollaborate,
-            'businessStartDate' => $this->businessStartDate
+            'businessStartDate' => $this->businessStartDate,
+            'email' => $this->email
         ], [
             'businessName' => 'required',
             'emailCollaborate' => 'nullable|email',
+            'email' => 'nullable|email|exists:users,email',
             'businessStartDate' => 'nullable|date'
         ]);
 

@@ -34,6 +34,12 @@
     <x-ui.main>
 
         <x-ui.table-table>
+        @php
+        $url = url()->previous();
+        if(!isset($_GET['more_details'])){
+            $url = route('users');
+        }
+        @endphp
             <x-ui.table-caption class="pt-12 pb-6 px-48 lg:px-52 xl:px-60 2xl:px-72 relative">
                 @if (Auth::user()->isRegionalAdmin())
                     {{ __('Advisors Details') }}
@@ -43,7 +49,7 @@
 
                 <x-slot name="left">
                     <div class="absolute left-12 top-12">
-                        <x-ui.button-normal href="{{route('users')}}">
+                        <x-ui.button-normal href="{{ $url }}">
                             <x-icons.chevron-left :class="'h-3 w-auto'"/>
                             <span class="ml-2">{{__('Go back')}}</span>
                         </x-ui.button-normal>
@@ -79,7 +85,7 @@
                                                     @if($user->advisorsByRegionalAdmin)
                                                         <ol class="list-disc">
                                                             @foreach ($user->advisorsByRegionalAdmin as $advisor_row)
-                                                                <li><a href="/user/{{$advisor_row->id}}">
+                                                                <li><a href="/user/{{$advisor_row->id}}?more_details=yes">
                                                                         {{$advisor_row->name}}</a></li>
                                                             @endforeach
                                                         </ol>
@@ -96,7 +102,7 @@
                                                 <div class="table-cell pb-2">
                                                     @if($user->regionalAdminByAdvisor)
                                                         <span><a
-                                                                href="/user/{{$user->regionalAdminByAdvisor->pluck('id')->first()}}">
+                                                                href="/user/{{$user->regionalAdminByAdvisor->pluck('id')->first()}}?more_details=yes">
                                                                 {{$user->regionalAdminByAdvisor->pluck('name')->first()}}</a></span>
                                                     @else
                                                         <span class="text-red-700">{{__('Error!')}}</span>
@@ -110,7 +116,7 @@
                                                     @if($user->clientsByAdvisor)
                                                         <ol class="list-disc">
                                                             @foreach ($user->clientsByAdvisor as $client_row)
-                                                                <li><a href="/user/{{$client_row->id}}">
+                                                                <li><a href="/user/{{$client_row->id}}?more_details=yes">
                                                                         {{$client_row->name}}</a></li>
                                                             @endforeach
                                                         </ol>
@@ -127,7 +133,7 @@
                                                 <div class="table-cell pb-2">
                                                     @if($user->advisorByClient)
                                                         <span><a
-                                                                href="/user/{{$user->advisorByClient->pluck('id')->first()}}">
+                                                                href="/user/{{$user->advisorByClient->pluck('id')->first()}}?more_details=yes">
                                                                 {{$user->advisorByClient->pluck('name')->first()}}</a></span>
                                                     @else
                                                         <span class="text-red-700">{{__('Error!')}}</span>

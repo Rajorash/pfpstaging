@@ -72,7 +72,7 @@ class BusinessController extends Controller
     {
         $this->authorize('view', $business);
 
-        return view('business.show', ['business' => $business]);
+        return view('accounts.show', ['business' => $business]);
     }
 
     /**
