@@ -815,22 +815,17 @@ class BusinessAllocationsController extends Controller
 
     public function graph(Request $request)
     {
-        $currentMonth = Carbon::now()->month;
-        $months = [];
-        for ($i = $currentMonth; $i <= 12; $i++) {
-            $months[] = Carbon::createFromDate(null, $i, 1)->format('F');
-        }
-        if (count($months) < 12) {
-            for ($i = 1; $i <= $currentMonth; $i++) {
-                $months[] = Carbon::createFromDate(null, $i, 1)->format('F');
-            }
-        }
         $businessId = $request->business ?? null;
+        $months = $this->getMonths();
+        $calculations = $this->getTableData($businessId);
+        
         $this->business = Business::findOrFail($businessId);
+        
         return  view('business.graph')
             ->with([
                 'business' => $this->business,
                 'months' => $months,
+                'calculations' => $calculations,
             ]);
     }
 
@@ -1074,19 +1069,10 @@ class BusinessAllocationsController extends Controller
 
     public function getData($businessId, $rangeValue)
     {
-        $currentMonthStartDate = Carbon::now()->startOfMonth();
-        $startDate = $currentMonthStartDate->toDateString();
-        $startMonth = now()->startOfMonth();
-        $months = [];
+        $newTableData = array();
+        $newArray = array();
 
-        for ($i = 0; $i < 12; $i++) {
-            $month = [
-                'name' => $startMonth->format('F'),
-                'start_date' => $startMonth->format('Y-m-d'),
-            ];
-            $months[] = $month;
-            $startMonth->addMonth();
-        }
+        $months = $this->getMonths();
 
         foreach($months as $month){
             $startDate = $month['start_date'];
@@ -1175,93 +1161,52 @@ class BusinessAllocationsController extends Controller
                     $tableData[$account->type][$account->id],
                     $startDate
                 );
-
-                
-
             }
             
             //reset period for Forecast
             if ($this->projectionMode == self::PROJECTION_MODE_FORECAST) {
                 $tableData = $this->optimizationTableData($tableData, $period);
             }
-    
-            // dd($tableData);
-            // return $tableData;
             
-
-            // foreach ($accounts as $account) {
-            //     if (array_key_exists("_dates", $tableData[$account->type][$account->id])) {
-            //         $month_date = $month['start_date'] . ' - ' . $month['name'];
-            //         $newArray['name'] = $tableData[$account->type][$account->id]['name'];
-            //         $newArray[$month_date] = array_sum($tableData[$account->type][$account->id]['_dates']);
-            //         $newTableData[] = $newArray;
-            //     }
-            // }
-            $newTableData = array();
-            $newArray = array();
-            $month_date = $month['start_date'] . ' - ' . $month['name'];
-            $newArray['name'] = $tableData[$account->type][$account->id]['name'];
-            $newArray[$month_date] = array_sum($tableData[$account->type][$account->id]['_dates']);
-            $newTableData[] = $newArray;
+            foreach ($accounts as $account) {
+                if (array_key_exists("_dates", $tableData[$account->type][$account->id])) {
+                    $newArray['name'] = $tableData[$account->type][$account->id]['name'];
+                    foreach($months as $month){
+                        // $month_date = $month['start_date'] . '-' . $month['name'];
+                        $newArray[$month['name']] = array_sum($tableData[$account->type][$account->id]['_dates']);
+                    }
+                    $newTableData[] = $newArray;
+                }
+            }
+            
+            return $newTableData;
         }
-        
-        return $newTableData;
     }
 
-    public function getTableData(Request $request)
+    public function getTableData($businessId)
     {
-        $businessId = "10";
         $rangeValue = "31";
-
         $data = self::getData($businessId, $rangeValue);
 
         return $data;
     }
 
-    public function getTableData_old(Request $request)
+    public function getMonths()
     {
-        $currentMonth = Carbon::now()->month;
+        $currentMonthStartDate = Carbon::now()->startOfMonth();
+        $startDate = $currentMonthStartDate->toDateString();
+        $startMonth = now()->startOfMonth();
         $months = [];
-        for ($i = $currentMonth; $i <= 12; $i++) {
-            $months[] = Carbon::createFromDate(null, $i, 1)->format('F');
+
+        for ($i = 0; $i < 12; $i++) {
+            $month = [
+                'name' => $startMonth->format('F'),
+                'start_date' => $startMonth->format('Y-m-d'),
+            ];
+            $months[] = $month;
+            $startMonth->addMonth();
         }
-        if (count($months) < 12) {
-            for ($i = 1; $i <= $currentMonth; $i++) {
-                $months[] = Carbon::createFromDate(null, $i, 1)->format('F');
-            }
-        }
 
-        $businessId = $request->id ?? null;
-        $getBusiness = Business::find($businessId);
-        $getBankAccountNames = BankAccount::where('business_id', $getBusiness->id)->pluck('id')->toArray();
-        $getAccountFlowsID = AccountFlow::whereIn('account_id', $getBankAccountNames)->orderby('flow_position', 'asc')->get();
-        DB::enableQueryLog();
-        $getAllocations = Allocation::whereIn('allocatable_id', $getBankAccountNames)->get();
-        dd(DB::getQueryLog());
-        return $getAllocations;
-        die;
-        // return $getBusiness;
-
-        // DB::enableQueryLog();
-        // $this->business = Business::where('id', $businessId)
-        //     ->with([
-        //         'accounts',
-        //     ])
-        //     ->first();
-        // dd(DB::getQueryLog());
-
-        // echo "<pre>";
-        // print_r($this->business->accounts);
-        // die;
-
-        $html = '<table><tr class="border-b divide-x border-light_blue"><th class=" px-2 py-4 min-w-24 w-32 text-dark_gray font-normal bg-data-entry z-30 sticky top-0 left-0 text-center"><span id="processCounter" class="hidden text-xs font-normal opacity-50"></span></th>';
-        foreach ($months as $month) {
-            $html .= '<th class=" px-2 py-4 min-w-24 font-normal z-20 text-left text-dark_gray sticky top-0"><span class="block text-xs font-normal">' . $month . '</span></th>';
-        }
-        $html .= '</tr>';
-        $html .= '<tr><td>Hello: </td>';
-        $html .= '<td>10000</td><td>10000</td><td>10000</td><td>10000</td><td>10000</td><td>10000</td><td>10000</td><td>10000</td><td>10000</td><td>10000</td><td>10000</td><td>10000</td></tr>';
-        $html .= '</table>';
-        return $html;
+        return $months;
     }
 }
