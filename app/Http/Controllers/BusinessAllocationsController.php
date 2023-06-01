@@ -266,9 +266,7 @@ class BusinessAllocationsController extends Controller
 
             $tableData = $this->optimizationTableData($tableData, $period);
         }
-
-        dd($tableData);
-
+        
         $periodDates = [];
         foreach ($period as $date) {
             $periodDates[] = $date->format('Y-m-d');
