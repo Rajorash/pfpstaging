@@ -98,6 +98,9 @@ Route::post(
     [BusinessAllocationsController::class, 'getGraphData']
 )->name('getGraphData'); //--
 
+
+Route::post('business/table/ajax/data', [BusinessAllocationsController::class, 'getTableData'])->name('getTableData');
+Route::get('/business/{business}/testview', [BusinessAllocationsController::class, 'getTableData']);
     //--
 //    Route::get(
 //        '/business/{business}/tax', 'TaxRateController@index'

@@ -63,18 +63,20 @@ class BusinessAllocationsController extends Controller
 
         foreach ($accounts as $key => $account) {
             $updated_today[$key] = $checkUpdate->dateOfUpdateBalanceEntry($account->id);
-       }
-       
-            if(isset($updated_today) && !empty(max($updated_today))){
-               $update_bal_date = max($updated_today);
-            }
-       
+        }
+
+        if (isset($updated_today) && !empty(max($updated_today))) {
+            $update_bal_date = max($updated_today);
+        }
+
         // $updated_today = Timezone::convertToLocal(Carbon::now(), 'Y-m-d');
-//        $maxDate = $this->business->rollout()->max('end_date');
+        //        $maxDate = $this->business->rollout()->max('end_date');
         $maxDate = Carbon::parse($today)->addYears(5)->format('Y-m-d');
         $minDate = $this->business->rollout()->min('end_date');
-        $startDate = session()->get('startDate_'.$this->business->id,
-            Carbon::parse($today)->addDays(-4)->format('Y-m-d'));
+        $startDate = session()->get(
+            'startDate_' . $this->business->id,
+            Carbon::parse($today)->addDays(-4)->format('Y-m-d')
+        );
 
         return view('business.business-allocations', [
             'business' => $this->business,
@@ -83,39 +85,38 @@ class BusinessAllocationsController extends Controller
             'minDate' => Carbon::parse($minDate)->subMonths(3)->format('Y-m-d'),
             'maxDate' => $maxDate,
             'updated_today' => $update_bal_date ? $update_bal_date : Timezone::convertToLocal(Carbon::now(), 'Y-m-d'),
-            'currentRangeValue' => session()->get('rangeValue_'.$this->business->id, $this->defaultCurrentRangeValue),
+            'currentRangeValue' => session()->get('rangeValue_' . $this->business->id, $this->defaultCurrentRangeValue),
         ]);
     }
 
     public function updateDragRow(Request $request)
     {
-        if($request->drop_accountId != null && $request->drop_flowId != null && $request->current_accountId != null && $request->current_flowId != null && $request->getAllFlowId != null){
+        if ($request->drop_accountId != null && $request->drop_flowId != null && $request->current_accountId != null && $request->current_flowId != null && $request->getAllFlowId != null) {
 
-            $dropUser = AccountFlow::where('account_id',$request->drop_accountId)->where('id',$request->drop_flowId)->update([ 'account_id' => $request->current_accountId]);
+            $dropUser = AccountFlow::where('account_id', $request->drop_accountId)->where('id', $request->drop_flowId)->update(['account_id' => $request->current_accountId]);
 
             $verifyAcountId =  $request->getAllFlowId;
 
-            for($i = 0; $i < count($verifyAcountId); $i++ ){
-                    $user = AccountFlow::where('account_id',$request->current_accountId)->where('id',$verifyAcountId[$i])->update([ 'flow_position' => $i + 1]);   
+            for ($i = 0; $i < count($verifyAcountId); $i++) {
+                $user = AccountFlow::where('account_id', $request->current_accountId)->where('id', $verifyAcountId[$i])->update(['flow_position' => $i + 1]);
             }
 
-            
-                if($user){
-                    return  json_encode(["result"=>"update sucessfully!","return" => true]);
-                }
 
+            if ($user) {
+                return  json_encode(["result" => "update sucessfully!", "return" => true]);
+            }
         }
     }
 
     public function updateData(Request $request): \Illuminate\Http\JsonResponse
-    {    
-        
+    {
+
         $response = [
             'error' => [],
             'html' => [],
         ];
 
-        
+
         $tableData = [
             BankAccount::ACCOUNT_TYPE_REVENUE => [],
             BankAccount::ACCOUNT_TYPE_PRETOTAL => [],
@@ -133,7 +134,7 @@ class BusinessAllocationsController extends Controller
 
         $returnType = $request->returnType ?? 'html';
         $today = Timezone::convertToLocal(Carbon::now(), 'Y-m-d H:i:s');
-        $todayShort = Timezone::convertToLocal(Carbon::now(), 'Y-m-d').' 00:00:00';
+        $todayShort = Timezone::convertToLocal(Carbon::now(), 'Y-m-d') . ' 00:00:00';
 
         if ($this->projectionMode == self::PROJECTION_MODE_FORECAST) {
             $startDate = $request->startDate ?? Carbon::parse($today)->format('Y-m-d');
@@ -141,12 +142,12 @@ class BusinessAllocationsController extends Controller
             $startDate = $request->startDate ?? Carbon::parse($today)->addDays(-4)->format('Y-m-d');
         }
 
-//        $startDate = $request->startDate ?? session()->get('startDate_'.$this->business->id,
-//                Timezone::convertToLocal(Carbon::now(), 'Y-m-d'));
+        //        $startDate = $request->startDate ?? session()->get('startDate_'.$this->business->id,
+        //                Timezone::convertToLocal(Carbon::now(), 'Y-m-d'));
 
         $rangeValue = $request->rangeValue ?? $this->defaultCurrentRangeValue;
 
-    
+
 
         if ($this->projectionMode == 'expense') {
             $this->complete = $rangeValue;
@@ -160,7 +161,7 @@ class BusinessAllocationsController extends Controller
 
         $this->phases = $this->business->getPhasesIdByPeriod($period);
 
-        
+
 
         //update value of cell
         $cellId = $request->cellId ?? null;
@@ -213,20 +214,20 @@ class BusinessAllocationsController extends Controller
 
             if ($account->type == BankAccount::ACCOUNT_TYPE_REVENUE) {
                 session(['acccountTransferId' => $account->id]);
-                $this->incomeByPeriod = $account->getAdjustedFlowsTotalByDatePeriod($account->id,$startDate, $endDate);
-            }else{
+                $this->incomeByPeriod = $account->getAdjustedFlowsTotalByDatePeriod($account->id, $startDate, $endDate);
+            } else {
                 $accccid = session('acccountTransferId') ? session('acccountTransferId') : $account->id;
-                $this->incomeByPeriod = $account->getAdjustedFlowsTotalByDatePeriod($accccid,$startDate, $endDate);
+                $this->incomeByPeriod = $account->getAdjustedFlowsTotalByDatePeriod($accccid, $startDate, $endDate);
             }
 
             $tableData[$account->type][$account->id]['total_db'] =
-                $account->getAdjustedFlowsTotalByDatePeriod($account->id,$startDate, $endDate);
+                $account->getAdjustedFlowsTotalByDatePeriod($account->id, $startDate, $endDate);
 
             if (array_key_exists('flows', $tableData[$account->type][$account->id])) {
                 //reorder flows data
                 $newFlows = [];
                 foreach ($tableData[$account->type][$account->id]['flows'] as $flowArray) {
-                        $newFlows[$flowArray['id']] = $flowArray;
+                    $newFlows[$flowArray['id']] = $flowArray;
                 }
                 $tableData[$account->type][$account->id]['flows'] = $newFlows;
             }
@@ -256,17 +257,18 @@ class BusinessAllocationsController extends Controller
                 case self::RANGE_QUARTERLY:
                     $period = CarbonPeriod::since($startDate)->months(3)->until($endDate);
                     break;
-                 case self::RANGE_YEARLT:
+                case self::RANGE_YEARLT:
                     $period = CarbonPeriod::since($startDate)->months(6)->until($endDate);
                     break;
             }
 
-       
+
 
             $tableData = $this->optimizationTableData($tableData, $period);
         }
 
-        // dd($tableData);
+        dd($tableData);
+
         $periodDates = [];
         foreach ($period as $date) {
             $periodDates[] = $date->format('Y-m-d');
@@ -291,7 +293,8 @@ class BusinessAllocationsController extends Controller
 
             return response()->json($response);
         } else {
-            return response()->json([
+            return response()->json(
+                [
                     'error' => $response['error'],
                     'data' => $this->convertTableDataToFlatArrayForJSONUpdate($tableData)
                 ]
@@ -349,7 +352,7 @@ class BusinessAllocationsController extends Controller
                 $flows = [];
                 foreach ($period as $date) {
                     $currentDate = $date->format('Y-m-d');
-                    $currentDateTime = $date->format('Y-m-d').' 00:00:00';
+                    $currentDateTime = $date->format('Y-m-d') . ' 00:00:00';
                     $phaseId = $this->phases[$currentDate];
                     $percents = $this->percentages[$phaseId];
                     $salesTax = data_get($percents, 'salestax');
@@ -369,7 +372,7 @@ class BusinessAllocationsController extends Controller
             case BankAccount::ACCOUNT_TYPE_SALESTAX:
                 foreach ($period as $date) {
                     $currentDate = $date->format('Y-m-d');
-                    $currentDateTime = $date->format('Y-m-d').' 00:00:00';
+                    $currentDateTime = $date->format('Y-m-d') . ' 00:00:00';
                     $phaseId = $this->phases[$currentDate];
                     $percents = $this->percentages[$phaseId];
 
@@ -377,7 +380,6 @@ class BusinessAllocationsController extends Controller
                     $data['transfer'][$currentDate] = $this->calculateSalestaxTransfer($id, $income, $percents);
 
                     $this->fillFlowsAndData($flows, $data, $id, $currentDate, $currentDateTime, $startDate);
-
                 }
                 break;
 
@@ -385,7 +387,7 @@ class BusinessAllocationsController extends Controller
                 $flows = [];
                 foreach ($period as $date) {
                     $currentDate = $date->format('Y-m-d');
-                    $currentDateTime = $date->format('Y-m-d').' 00:00:00';
+                    $currentDateTime = $date->format('Y-m-d') . ' 00:00:00';
                     $phaseId = $this->phases[$currentDate];
                     $percents = $this->percentages[$phaseId];
                     $income = $this->incomeByPeriod[$currentDate] ?? 0;
@@ -397,7 +399,6 @@ class BusinessAllocationsController extends Controller
                         : 0;
 
                     $this->fillFlowsAndData($flows, $data, $id, $currentDate, $currentDateTime, $startDate);
-
                 }
                 break;
 
@@ -405,7 +406,7 @@ class BusinessAllocationsController extends Controller
                 $flows = [];
                 foreach ($period as $date) {
                     $currentDate = $date->format('Y-m-d');
-                    $currentDateTime = $date->format('Y-m-d').' 00:00:00';
+                    $currentDateTime = $date->format('Y-m-d') . ' 00:00:00';
                     $phaseId = $this->phases[$currentDate];
                     $percents = $this->percentages[$phaseId];
                     $income = $this->incomeByPeriod[$currentDate] ?? 0;
@@ -419,7 +420,7 @@ class BusinessAllocationsController extends Controller
                     $data['transfer'][$currentDate] = (is_numeric($percent))
                         ? round(
                             ($prereal - $prereal * ($prereal_percents / 100))
-                            * ($percents[BankAccount::ACCOUNT_TYPE_POSTREAL][$id] / 100),
+                                * ($percents[BankAccount::ACCOUNT_TYPE_POSTREAL][$id] / 100),
                             4
                         )
                         : 0;
@@ -509,7 +510,7 @@ class BusinessAllocationsController extends Controller
 
         $result = [];
 
-       
+
         foreach ($raw as $account_item) {
             if (isset($account_item->account_values)) {
                 foreach ($account_item->account_values as $key => $value) {
@@ -528,7 +529,7 @@ class BusinessAllocationsController extends Controller
      */
     private function getPreviousNonZeroValue(int $accountId, string $dateFrom)
     {
-        $key = $accountId.'_'.$dateFrom;
+        $key = $accountId . '_' . $dateFrom;
 
         if (!key_exists($key, $this->previousNonZeroValueCache)) {
             $result = BankAccount::where('id', $accountId)
@@ -536,12 +537,12 @@ class BusinessAllocationsController extends Controller
                     return $query->where('allocation_date', '<', $dateFrom)
                         ->orderBy('allocation_date', 'desc');
                 })
-                ->get()//;
+                ->get() //;
                 ->map(function ($item) {
                     return $item->allocations->slice(0, 1)->pluck(['amount']);
                 })->pop()->toArray();
 
-                // print_r($result);die("cc");
+            // print_r($result);die("cc");
 
             $this->previousNonZeroValueCache[$key] = (count($result) > 0) ? $result[0] : 0;
         }
@@ -608,7 +609,8 @@ class BusinessAllocationsController extends Controller
         if ($income > 0) {
             $transfer_amount = round(
                 $income - $income / ($percents[BankAccount::ACCOUNT_TYPE_SALESTAX][$id] / 100 + 1),
-                4);
+                4
+            );
         }
 
         return $transfer_amount;
@@ -712,12 +714,12 @@ class BusinessAllocationsController extends Controller
             // \DB::enableQueryLog(); 
 
 
-            
+
             $previousNonZero = $this->getPreviousNonZeroValue($id, $startDate);
             if (is_numeric($previousNonZero)) {
                 $actualValue += $previousNonZero;
             }
-        // dd(\DB::getQueryLog()); 
+            // dd(\DB::getQueryLog()); 
 
         }
 
@@ -725,7 +727,8 @@ class BusinessAllocationsController extends Controller
             ? $data['_dates'][$currentDate][0]
             : $data['_dates'][$currentDate];
 
-        if ($stored_value != $actualValue &&
+        if (
+            $stored_value != $actualValue &&
             !$this->hasManualEntry($data, $currentDate)
         ) {
             $data['_dates'][$currentDate] = $actualValue;
@@ -758,8 +761,8 @@ class BusinessAllocationsController extends Controller
                     if (array_key_exists($subType, $accountData)) {
                         foreach ($accountData[$subType] as $currentDate => $value) {
                             $key = ($subType == '_dates')
-                                ? 'account_'.$accountId.'_'.$currentDate
-                                : $subType.'_'.$accountId.'_'.$currentDate;
+                                ? 'account_' . $accountId . '_' . $currentDate
+                                : $subType . '_' . $accountId . '_' . $currentDate;
                             $newTableData[$key] = number_format($value, 0, '.', '');
                         }
                     }
@@ -768,7 +771,7 @@ class BusinessAllocationsController extends Controller
                     foreach ($accountData['flows'] as $flowId => $flowData) {
                         if (array_key_exists('_dates', $flowData)) {
                             foreach ($flowData['_dates'] as $currentDate => $value) {
-                                $key = 'flow_'.$flowId.'_'.$currentDate;
+                                $key = 'flow_' . $flowId . '_' . $currentDate;
                                 $newTableData[$key] = number_format($value, 0, '.', '');
                             }
                         }
@@ -813,22 +816,28 @@ class BusinessAllocationsController extends Controller
     public function graph(Request $request)
     {
         $businessId = $request->business ?? null;
+        $months = $this->getMonths();
+        $calculations = $this->getTableData($businessId);
+        
         $this->business = Business::findOrFail($businessId);
+        
         return  view('business.graph')
-        ->with([
-            'business' => $this->business,
-        ]);
+            ->with([
+                'business' => $this->business,
+                'months' => $months,
+                'calculations' => $calculations,
+            ]);
     }
 
 
     public function getGraphData(Request $request)
-    {    
+    {
 
         $response = [
             'error' => [],
             'html' => [],
         ];
-        
+
         $tableData = [
             BankAccount::ACCOUNT_TYPE_REVENUE => [],
             BankAccount::ACCOUNT_TYPE_PRETOTAL => [],
@@ -839,15 +848,16 @@ class BusinessAllocationsController extends Controller
 
         $businessId = $request->id ?? null;
         // $businessId=3;
+
         $this->business = Business::where('id', $businessId)
             ->with([
                 'accounts',
             ])
             ->first();
-        
+
         $returnType = $request->returnType ?? 'html';
         $today = Timezone::convertToLocal(Carbon::now(), 'Y-m-d H:i:s');
-        $todayShort = Timezone::convertToLocal(Carbon::now(), 'Y-m-d').' 00:00:00';
+        $todayShort = Timezone::convertToLocal(Carbon::now(), 'Y-m-d') . ' 00:00:00';
 
 
         if ($this->projectionMode == self::PROJECTION_MODE_FORECAST) {
@@ -863,7 +873,7 @@ class BusinessAllocationsController extends Controller
         } elseif ($this->projectionMode == self::PROJECTION_MODE_FORECAST) {
             $this->complete = $this->periodInterval * $this->forecastRowsPerPeriod;
         }
-        
+
         $endDate = Carbon::parse($startDate)->addDays($this->complete - 1)->format('Y-m-d');
 
         $period = CarbonPeriod::create($startDate, $endDate);
@@ -878,7 +888,7 @@ class BusinessAllocationsController extends Controller
             $returnCellAttributes = $this->storeCellValue($cellId, floatVal($cellValue));
             $updatedAccountId = optional(optional(AccountFlow::find($returnCellAttributes['accountId']))->account)->id;
         }
-        
+
         $this->rawData = $this->getRawData($this->business->id, $startDate, $endDate, $updatedAccountId);
 
         $this->percentages = $this->getPercentagesByPhasesId(
@@ -904,7 +914,7 @@ class BusinessAllocationsController extends Controller
 
         $this->phases = $this->business->getPhasesIdByPeriod($period);
 
-      
+
 
         //update value of cell
         $cellId = $request->cellId ?? null;
@@ -917,7 +927,7 @@ class BusinessAllocationsController extends Controller
 
         $this->rawData = $this->getRawData($this->business->id, $startDate, $endDate, $updatedAccountId);
 
-    
+
         $this->percentages = $this->getPercentagesByPhasesId(
             $this->business->id,
             array_unique(array_values($this->phases))
@@ -928,14 +938,16 @@ class BusinessAllocationsController extends Controller
         }
 
         $accounts = $this->business->accounts;
-
+        // dd($tableData);
+        // echo "demo graph";
         foreach ($accounts as $account) {
             if ($returnType != 'html' && $updatedAccountId && $updatedAccountId != $account->id) {
                 continue;
             }
-           
+
 
             $accountAllData = $account->toArray();
+            // dd($accountAllData);
 
             //filter only data between $startDate and $endDate
             if (isset($accountAllData['allocations'])) {
@@ -949,19 +961,20 @@ class BusinessAllocationsController extends Controller
 
             // $allAccounts = AccountFlow::where('account_id', $account->id)->get();
             $tableData[$account->type][$account->id] = $accountAllData;
+            // dd($tableData);
 
             if ($account->type == BankAccount::ACCOUNT_TYPE_REVENUE) {
                 session(['acccountTransferId' => $account->id]);
-                $this->incomeByPeriod = $account->getAdjustedFlowsTotalByDatePeriod($account->id,$startDate, $endDate);
-            }else{
+                $this->incomeByPeriod = $account->getAdjustedFlowsTotalByDatePeriod($account->id, $startDate, $endDate);
+            } else {
                 $accccid = session('acccountTransferId') ? session('acccountTransferId') : $account->id;
-                $this->incomeByPeriod = $account->getAdjustedFlowsTotalByDatePeriod($accccid,$startDate, $endDate);
+                $this->incomeByPeriod = $account->getAdjustedFlowsTotalByDatePeriod($accccid, $startDate, $endDate);
             }
 
             // $tableData[$account->type][$account->id]['total_db'] =
             //     $account->getAdjustedFlowsTotalByDatePeriod($account->id,$startDate, $endDate);
 
-        
+
             // if (array_key_exists('flows', $tableData[$account->type][$account->id])) {
             //     //reorder flows data
             //     $newFlows = [];
@@ -970,18 +983,15 @@ class BusinessAllocationsController extends Controller
             //     }
             //     $tableData[$account->type][$account->id]['flows'] = $newFlows;
             // }
-           
+
 
             $tableData[$account->type][$account->id] = $this->fillMissingDateValue(
                 $period,
                 $tableData[$account->type][$account->id],
                 $startDate
             );
-
-           
-        
         }
-      
+
         //reset period for Forecast
         if ($this->projectionMode == self::PROJECTION_MODE_FORECAST) {
             switch ($rangeValue) {
@@ -1002,32 +1012,33 @@ class BusinessAllocationsController extends Controller
                     break;
             }
 
-       
-            $tableData = $this->optimizationTableData($tableData, $period);
 
+            $tableData = $this->optimizationTableData($tableData, $period);
         }
 
-        
-        $newArray=array();
-        $newTableData=array();
-        foreach($accounts as $account){
-            
 
-           if (array_key_exists("_dates",$tableData[$account->type][$account->id]))
-            {
-              $newArray['name']=$tableData[$account->type][$account->id]['name'];
-              $newArray['dates']=$tableData[$account->type][$account->id]['_dates'];
-              $newTableData[]=$newArray;
+        $newArray = array();
+        $newTableData = array();
+        foreach ($accounts as $account) {
+
+
+            if (array_key_exists("_dates", $tableData[$account->type][$account->id])) {
+                $newArray['name'] = $tableData[$account->type][$account->id]['name'];
+                $newArray['dates'] = $tableData[$account->type][$account->id]['_dates'];
+                $newTableData[] = $newArray;
             }
         }
-        
+        // dd($newTableData);
+
         $periodDates = [];
         foreach ($period as $date) {
             $periodDates[] = $date->format('Y-m-d');
         }
 
-        return response()->json(['data'=>$newTableData]);
-       
+        // dd($newTableData);
+
+        return response()->json(['data' => $newTableData]);
+
 
         // if ($returnType == 'html') {
         //     $response['html'] = view('business.business-allocations-table')
@@ -1055,5 +1066,147 @@ class BusinessAllocationsController extends Controller
         //     );
         // }
     }
-}
 
+    public function getData($businessId, $rangeValue)
+    {
+        $newTableData = array();
+        $newArray = array();
+
+        $months = $this->getMonths();
+
+        foreach($months as $month){
+            $startDate = $month['start_date'];
+            $tableData = [
+                BankAccount::ACCOUNT_TYPE_REVENUE => [],
+                BankAccount::ACCOUNT_TYPE_PRETOTAL => [],
+                BankAccount::ACCOUNT_TYPE_SALESTAX => [],
+                BankAccount::ACCOUNT_TYPE_PREREAL => [],
+                BankAccount::ACCOUNT_TYPE_POSTREAL => []
+            ];
+    
+            $businessId = $businessId ?? null;
+            $this->business = Business::where('id', $businessId)
+                ->with([
+                    'accounts',
+                ])
+                ->first();
+            $rangeValue = $rangeValue ?? $this->defaultCurrentRangeValue;
+            
+            if ($this->projectionMode == 'expense') {
+                $this->complete = $rangeValue;
+            } elseif ($this->projectionMode == self::PROJECTION_MODE_FORECAST) {
+                $this->complete = $this->periodInterval * $this->forecastRowsPerPeriod;
+            }
+            $endDate = Carbon::parse($startDate)->addDays($this->complete - 1)->format('Y-m-d');
+    
+            $period = CarbonPeriod::create($startDate, $endDate);
+    
+            $this->phases = $this->business->getPhasesIdByPeriod($period);
+            
+            //update value of cell
+            $cellId = $cellId ?? null;
+            $cellValue = $cellValue ?? null;
+            $updatedAccountId = null;
+            if ($cellId && $cellValue !== null) {
+                $returnCellAttributes = $this->storeCellValue($cellId, floatVal($cellValue));
+                $updatedAccountId = optional(optional(AccountFlow::find($returnCellAttributes['accountId']))->account)->id;
+            }
+    
+            $this->rawData = $this->getRawData($this->business->id, $startDate, $endDate, $updatedAccountId);
+            $this->percentages = $this->getPercentagesByPhasesId(
+                $this->business->id,
+                array_unique(array_values($this->phases))
+            );
+    
+            if (empty($this->accountsSubTypes)) {
+                $this->accountsSubTypes = $this->getAccountsSubTypes();
+            }
+    
+            $accounts = $this->business->accounts;
+            foreach ($accounts as $account) {
+                $accountAllData = $account->toArray();
+    
+                //filter only data between $startDate and $endDate
+                if (isset($accountAllData['allocations'])) {
+                    $accountAllData['allocations'] = array_filter(
+                        $accountAllData['allocations'],
+                        function ($element) use ($startDate, $endDate) {
+                            return Carbon::parse($element['allocation_date'])->betweenIncluded($startDate, $endDate);
+                        }
+                    );
+                }
+                $tableData[$account->type][$account->id] = $accountAllData;
+    
+                if ($account->type == BankAccount::ACCOUNT_TYPE_REVENUE) {
+                    session(['acccountTransferId' => $account->id]);
+                    $this->incomeByPeriod = $account->getAdjustedFlowsTotalByDatePeriod($account->id, $startDate, $endDate);
+                } else {
+                    $accccid = session('acccountTransferId') ? session('acccountTransferId') : $account->id;
+                    $this->incomeByPeriod = $account->getAdjustedFlowsTotalByDatePeriod($accccid, $startDate, $endDate);
+                }
+    
+                $tableData[$account->type][$account->id]['total_db'] =
+                    $account->getAdjustedFlowsTotalByDatePeriod($account->id, $startDate, $endDate);
+    
+                if (array_key_exists('flows', $tableData[$account->type][$account->id])) {
+                    $newFlows = [];
+                    foreach ($tableData[$account->type][$account->id]['flows'] as $flowArray) {
+                        $newFlows[$flowArray['id']] = $flowArray;
+                    }
+                    $tableData[$account->type][$account->id]['flows'] = $newFlows;
+                }
+    
+                $tableData[$account->type][$account->id] = $this->fillMissingDateValue(
+                    $period,
+                    $tableData[$account->type][$account->id],
+                    $startDate
+                );
+            }
+            
+            //reset period for Forecast
+            if ($this->projectionMode == self::PROJECTION_MODE_FORECAST) {
+                $tableData = $this->optimizationTableData($tableData, $period);
+            }
+            
+            foreach ($accounts as $account) {
+                if (array_key_exists("_dates", $tableData[$account->type][$account->id])) {
+                    $newArray['name'] = $tableData[$account->type][$account->id]['name'];
+                    foreach($months as $month){
+                        // $month_date = $month['start_date'] . '-' . $month['name'];
+                        $newArray[$month['name']] = array_sum($tableData[$account->type][$account->id]['_dates']);
+                    }
+                    $newTableData[] = $newArray;
+                }
+            }
+            
+            return $newTableData;
+        }
+    }
+
+    public function getTableData($businessId)
+    {
+        $rangeValue = "31";
+        $data = self::getData($businessId, $rangeValue);
+
+        return $data;
+    }
+
+    public function getMonths()
+    {
+        $currentMonthStartDate = Carbon::now()->startOfMonth();
+        $startDate = $currentMonthStartDate->toDateString();
+        $startMonth = now()->startOfMonth();
+        $months = [];
+
+        for ($i = 0; $i < 12; $i++) {
+            $month = [
+                'name' => $startMonth->format('F'),
+                'start_date' => $startMonth->format('Y-m-d'),
+            ];
+            $months[] = $month;
+            $startMonth->addMonth();
+        }
+
+        return $months;
+    }
+}
