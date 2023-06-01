@@ -155,8 +155,13 @@
                                 <div class="text-sm text-dark_gray2">{{ $user->title }}</div>
                                 <div class="text-sm text-light_gray">{{ $user->responsibility }}</div>
                             </x-ui.table-td>
+                            <!-- status section -->
                             <x-ui.table-td class="text-center">
+                                <?php
+                                /*
                                 @if($user->isActive())
+                                */?>
+                                @if(checkActiveInactive($user))
                                     <x-ui.badge>{{__('Active')}}</x-ui.badge>
                                 @else
                                     <x-ui.badge background="bg-light_gray">{{__('Inactive')}}</x-ui.badge>

@@ -163,7 +163,7 @@ class UserController extends Controller
     public function show(User $user)
     {
         $this->authorize('view', $user);
-
+        
         return view('user.show', ['user' => $user]);
     }
 
