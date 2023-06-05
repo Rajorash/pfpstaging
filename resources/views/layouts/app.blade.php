@@ -63,7 +63,9 @@
         </header>
     @endif
 
-    {{ $slot }}
+    @if(isset($slot))
+        {{ $slot }}
+    @endif
 
 </div>
 
@@ -190,7 +192,7 @@ function updateAccount(drop_accountId, drop_flowId, current_accountId, current_f
             type: "POST",
             dataType: "json",
             contentType: "application/json; charset=utf-8",
-            data: JSON.stringify({ drop_accountId: drop_accountId, drop_flowId: drop_flowId, current_accountId: current_accountId, current_flowId: current_flowId, getAllFlowId : getAllFlowId, returnType: "json" , businessId: "{{ session('businessId') }}" }),
+            data: JSON.stringify({ drop_accountId: drop_accountId, drop_flowId: drop_flowId, current_accountId: current_accountId, current_flowId: current_flowId, getAllFlowId : getAllFlowId, returnType: "json" , businessId: "{{ session('businessId') !== null ? session('businessId') : null }}" }),
             success: function (result) {
                     if(result.return){
                         window.location.reload();
