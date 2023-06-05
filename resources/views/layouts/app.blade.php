@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Mints CD Consulting') }} :: {!! isset($titleHeader) ? $titleHeader : (isset($header) ? strip_tags($header) : '') !!}</title>
+    <title>{{ config('app.name', 'Mints CD Consulting') }} :: {!! $titleHeader ?? strip_tags($header) !!}</title>
 
     <link rel="apple-touch-icon" sizes="180x180" href="{{url('/favicons/apple-touch-icon.png')}}">
     <link rel="icon" type="image/png" sizes="32x32" href="{{url('/favicons/favicon-32x32.png')}}">
@@ -63,9 +63,7 @@
         </header>
     @endif
 
-    @if(isset($slot))
-        {{ $slot }}
-    @endif
+    {{ $slot }}
 
 </div>
 
@@ -192,7 +190,7 @@ function updateAccount(drop_accountId, drop_flowId, current_accountId, current_f
             type: "POST",
             dataType: "json",
             contentType: "application/json; charset=utf-8",
-            data: JSON.stringify({ drop_accountId: drop_accountId, drop_flowId: drop_flowId, current_accountId: current_accountId, current_flowId: current_flowId, getAllFlowId : getAllFlowId, returnType: "json" , businessId: "{{ session('businessId') !== null ? session('businessId') : null }}" }),
+            data: JSON.stringify({ drop_accountId: drop_accountId, drop_flowId: drop_flowId, current_accountId: current_accountId, current_flowId: current_flowId, getAllFlowId : getAllFlowId, returnType: "json" , businessId: "{{ session('businessId') }}" }),
             success: function (result) {
                     if(result.return){
                         window.location.reload();
