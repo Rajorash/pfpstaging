@@ -270,8 +270,9 @@ class AllocationsController extends Controller
     public function percentages(Business $business)
     {
         $this->authorize('view', $business);
+        $checklicense = $this->checklicense(Auth::user());
 
-        return view('business.percentages', ['business' => $business]);
+        return view('business.percentages', ['business' => $business,'currentUser' => $checklicense]);
     }
 
     public function updatePercentages(Request $request)
@@ -351,15 +352,28 @@ class AllocationsController extends Controller
                             }
                 }
             }
+        $checklicense = $this->checklicense(Auth::user());
 
         $response['html'] = view('business.percentages-table')
             ->with([
                 'percentages' => $percentages,
                 'rollout' => $rollout,
-                'business' => $business
+                'business' => $business,
+                'currentUser' => $checklicense
             ])->render();
 
         return response()->json($response);
+    }
+
+    public function checklicense($business){
+        $seats = $business->seats;
+        $activeLicenses = $business->activeLicenses->count();
+        if($activeLicenses >  $seats){
+            return false;
+        }
+        else{
+            return true;
+        }
     }
 
     /**

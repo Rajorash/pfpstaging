@@ -20,7 +20,7 @@
         <x-ui.data-submit-controls :projectionMode="true" :deepRecords="false"/>
     </x-slot>
 
-    @if(!optional($business->license)->checkLicense)
+    @if(!$currentUser)
         <div class="font-bold text-center text-red-500">{{__('License is inactive. Edit data forbidden.')}}</div>
     @endif
 

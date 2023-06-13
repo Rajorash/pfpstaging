@@ -89,7 +89,7 @@
                                type="text" pattern="[0-9]{10}"
                                id="{{$acc->type}}_{{$phase->id}}_{{$acc->id}}"
                                value="{{$percentage ?? number_format(0, 2, '.', ''); }}"
-                               @if(!$business->license->checkLicense) disabled @endif
+                               @if(!$currentUser) disabled @endif
                         >
                     </x-ui.table-td>
                 @empty
