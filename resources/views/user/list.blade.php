@@ -227,7 +227,7 @@
                                 @endif
                             </x-ui.table-td>
                             <x-ui.table-td class="pr-12">
-                                <x-ui.button-small href="{{url('/user/'.$user->id)}}">
+                                <x-ui.button-small href="{{ url('/user/'.$user->id.'?page='.$users->currentPage()) }}">
                                     @if (Auth::user()->isRegionalAdmin()
                                          && !Auth::user()->isSuperAdmin()
                                          && !Auth::user()->isAdvisor()
@@ -383,7 +383,7 @@
                                 @endif
                             </x-ui.table-td>
                             <x-ui.table-td class="pr-12">
-                                <x-ui.button-small href="{{url('/user/'.$user->id)}}">
+                                <x-ui.button-small href="{{ url('/user/'.$user->id.'?page='.$users->currentPage()) }}">
                                     @if (Auth::user()->isRegionalAdmin()
                                          && !Auth::user()->isSuperAdmin()
                                          && !Auth::user()->isAdvisor()

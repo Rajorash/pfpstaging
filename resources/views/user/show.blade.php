@@ -36,8 +36,9 @@
         <x-ui.table-table>
         @php
         $url = url()->previous();
+        $page = request()->query('page');
         if(!isset($_GET['more_details'])){
-            $url = route('users');
+            $url = route('users', ['page' => $page]);
         }
         @endphp
             <x-ui.table-caption class="pt-12 pb-6 px-48 lg:px-52 xl:px-60 2xl:px-72 relative">

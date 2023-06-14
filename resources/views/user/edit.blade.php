@@ -20,7 +20,7 @@
 
                 <x-slot name="left">
                     <div class="absolute left-12 top-12">
-                        <x-ui.button-normal href="{{route('users')}}">
+                        <x-ui.button-normal href="{{ URL::previous() }}">
                             <x-icons.chevron-left :class="'h-3 w-auto'"/>
                             <span class="ml-2">{{__('Go back')}}</span>
                         </x-ui.button-normal>
