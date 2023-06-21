@@ -42,9 +42,39 @@ $(function () {
 
             $(document).on('change', 'input.flow_cell', function (event) {
                 $this.autoSubmitDataAllow = false;
-                $this.recalculateRevenueTable();
+                // $this.recalculateRevenueTable();
                 $this.saveData(event);
             });
+
+
+
+            $(document).on('click', 'input.flow_cell', function (event) {
+                if($(this).val()==0)
+                {
+                    $(this).val("");
+                }
+                
+            });
+
+
+            $(document).on('keypress', 'input.flow_cell', function (event) {
+                if($(this).val()==0)
+                {
+                    $(this).val("");
+                }
+                
+            });
+
+              $(document).on('blur', 'input.flow_cell', function (event) {
+                if($(this).val()=="")
+                {
+                    $(this).val(0);
+                }
+                
+            });
+
+
+
 
             Livewire.on('reloadRevenueTable', function () {
                 $this.firstLoadData();
@@ -118,54 +148,54 @@ $(function () {
             return '[data-row="' + row + '"][data-column="' + col + '"]';
         }
 
-        recalculateRevenueTable() {
-            let $this = this;
+        // recalculateRevenueTable() {
+        //     let $this = this;
 
-            //let array for other types
-            $.each(['flow'], function (i, $class) {
-                // console.log("Class " + $class);
-                if ($('.' + $class + '_total').length) {
-                    $('.' + $class + '_total').each(function () {
-                        let $result = 0;
+        //     //let array for other types
+        //     $.each(['flow'], function (i, $class) {
+        //         // console.log("Class " + $class);
+        //         if ($('.' + $class + '_total').length) {
+        //             $('.' + $class + '_total').each(function () {
+        //                 let $result = 0;
 
-                        $('.' + $class + '_cell[data-column="' + $(this).data('column') + '"]').each(function () {
-                            // preven NaN error on deleting value
-                            let value = $(this).val().length == 0 ? 0 : $(this).val();
+        //                 $('.' + $class + '_cell[data-column="' + $(this).data('column') + '"]').each(function () {
+        //                     // preven NaN error on deleting value
+        //                     let value = $(this).val().length == 0 ? 0 : $(this).val();
 
-                            $result += ($(this).data('negative') ? -1 : 1)
-                                * parseFloat(($(this).data('certainty') ?? 100)) / 100
-                                * parseFloat(value);
-                        });
+        //                     $result += ($(this).data('negative') ? -1 : 1)
+        //                         * parseFloat(($(this).data('certainty') ?? 100)) / 100
+        //                         * parseFloat(value);
+        //                 });
 
-                        $(this).val($result.toFixed(0));
-                    });
-                }
+        //                 $(this).val($result.toFixed(0));
+        //             });
+        //         }
 
-            });
+        //     });
 
-            $('.revenue_total').each(function () {
-                let $revenue = 0;
-                let $column = $(this).data('column');
+        //     $('.revenue_total').each(function () {
+        //         let $revenue = 0;
+        //         let $column = $(this).data('column');
 
-                $.each(['flow'], function (i, $class) {
-                    let $selector = '.' + $class + '_total[data-column="' + $column + '"]';
-                    if ($($selector).length) {
-                        $revenue += parseFloat($($selector).val() ?? 0);
-                    } else {
-                        $revenue += 0;
-                    }
-                });
+        //         $.each(['flow'], function (i, $class) {
+        //             let $selector = '.' + $class + '_total[data-column="' + $column + '"]';
+        //             if ($($selector).length) {
+        //                 $revenue += parseFloat($($selector).val() ?? 0);
+        //             } else {
+        //                 $revenue += 0;
+        //             }
+        //         });
 
-                $(this).val($revenue.toFixed(0));
-            });
+        //         $(this).val($revenue.toFixed(0));
+        //     });
 
-        }
+        // }
 
-        renderData(data) {
-            super.renderData(data);
+        // renderData(data) {
+        //     super.renderData(data);
 
-            this.recalculateRevenueTable();
-        }
+        //     // this.recalculateRevenueTable();
+        // }
 
         //rewrite basically usage
         manualSubmitData(event) {
@@ -200,15 +230,12 @@ $(function () {
                 }
             });
 
-
             $this.resetData();
         }
 
         afterLoadingDataHook() {
             super.afterLoadingDataHook();
-
             let $this = this;
-
             $this.dragAdnDropValues();
         }
     }

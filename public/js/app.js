@@ -4518,7 +4518,6 @@ __webpack_require__(/*! ./pfp_functions */ "./resources/js/pfp_functions.js");
 __webpack_require__(/*! ./allocation_calculator_new */ "./resources/js/allocation_calculator_new.js");
 __webpack_require__(/*! ./percentages_calculator */ "./resources/js/percentages_calculator.js");
 __webpack_require__(/*! ./projections_calculator */ "./resources/js/projections_calculator.js");
-__webpack_require__(/*! ./graph */ "./resources/js/graph.js");
 __webpack_require__(/*! ./revenue_calculator */ "./resources/js/revenue_calculator.js");
 __webpack_require__(/*! ./jquery.floatThead.min */ "./resources/js/jquery.floatThead.min.js");
 var resizeTimer;
@@ -4629,7 +4628,7 @@ var calculatorCore = /*#__PURE__*/function () {
     this.timeOutSeconds = 1000 * parseInt(this.autoSubmitDataDelay); //default delay before send data to server
 
     this.heightModeDefaultSelector = '[name="block_different_height"]';
-    this.heightModeDefault = 'window';
+    this.heightModeDefault = 'full';
     this.heightMode = this.heightModeDefault;
     this.copyMoveClassName = 'pfp_copy_move_element';
     this.copyMoveAltKeyEnabled = false; //if ALt key is pressed
@@ -5036,12 +5035,17 @@ var calculatorCore = /*#__PURE__*/function () {
           var targetElement = document.elementFromPoint(clientX, clientY);
           if (targetElement.classList.contains($this.copyMoveClassName)) {
             var value = parseFloat(!!sourceElement.value ? sourceElement.value : 0);
+            var pre_val = value;
             if (!$this.copyMoveAltKeyEnabled) {
               //sum of values
               value += parseFloat(!!targetElement.value ? targetElement.value : 0);
             }
             targetElement.value = value;
-            sourceElement.value = 0;
+            if (value == pre_val * 2) {
+              sourceElement.value = pre_val;
+            } else {
+              sourceElement.value = 0;
+            }
             targetElement.dispatchEvent(new Event('change', {
               bubbles: true
             }));
@@ -5095,219 +5099,6 @@ var calculatorCore = /*#__PURE__*/function () {
   }]);
   return calculatorCore;
 }();
-
-/***/ }),
-
-/***/ "./resources/js/graph.js":
-/*!*******************************!*\
-  !*** ./resources/js/graph.js ***!
-  \*******************************/
-/***/ (() => {
-
-function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
-function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
-function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
-function _get() { if (typeof Reflect !== "undefined" && Reflect.get) { _get = Reflect.get.bind(); } else { _get = function _get(target, property, receiver) { var base = _superPropBase(target, property); if (!base) return; var desc = Object.getOwnPropertyDescriptor(base, property); if (desc.get) { return desc.get.call(arguments.length < 3 ? target : receiver); } return desc.value; }; } return _get.apply(this, arguments); }
-function _superPropBase(object, property) { while (!Object.prototype.hasOwnProperty.call(object, property)) { object = _getPrototypeOf(object); if (object === null) break; } return object; }
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-$(function () {
-  $.ajaxSetup({
-    headers: {
-      'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-    }
-  });
-  var Graph = /*#__PURE__*/function () {
-    function Graph(businessId) {
-      _classCallCheck(this, Graph);
-      this.businessId = $('#businessId').val();
-      this.elementLoadingSpinner = $('#loadingSpinner');
-      this.ajaxUrl = window.getGraphData;
-      this.debug = false;
-      // $this.data.businessId = $('#businessId').val();
-    }
-    _createClass(Graph, [{
-      key: "init",
-      value: function init() {
-        var $this = this;
-        $this.showSpinner();
-        $this.hideSpinner();
-        $this.renderData();
-        $this.events();
-      }
-    }, {
-      key: "events",
-      value: function events() {
-        _get(_getPrototypeOf(Graph.prototype), "events", this).call(this);
-        $this.ajaxGraphLoadWorker();
-      }
-    }, {
-      key: "showSpinner",
-      value: function showSpinner() {
-        var $this = this;
-        if ($this.debug) {
-          console.log('showSpinner');
-        }
-        $('html, body').css({
-          overflow: 'hidden',
-          height: '100%'
-        });
-        $this.elementLoadingSpinner.show();
-      }
-    }, {
-      key: "hideSpinner",
-      value: function hideSpinner() {
-        var $this = this;
-        $('html, body').css({
-          overflow: 'auto',
-          height: 'auto'
-        });
-        if ($this.debug) {
-          console.log('hideSpinner');
-        }
-        $this.elementLoadingSpinner.hide();
-      }
-    }, {
-      key: "makeArray",
-      value: function makeArray(data, i) {
-        var newDataArr = [];
-        for (var key in data[i].dates) {
-          var dataSet = {};
-          if (data[i].dates.hasOwnProperty(key)) {
-            dataSet.x = key;
-            dataSet.y = Math.round(data[i].dates[key]);
-            newDataArr.push(dataSet);
-          }
-        }
-        return newDataArr;
-      }
-    }, {
-      key: "renderData",
-      value: function renderData(data) {
-        var $this = this;
-        if ($this.debug) {
-          console.log('renderData', data);
-        }
-        // if (data.error.length === 0) {
-        //     $this.elementTablePlace.html(data.html);
-
-        //     if ($this.lastCoordinatesElementId) {
-        //         $('#' + $this.lastCoordinatesElementId).focus();
-        //         $('#' + $this.lastCoordinatesElementId).select();
-        //     }
-
-        //     $this.pfpFunctions.tableStickyHeader();
-        //     $this.pfpFunctions.tableStickyFirstColumn();
-        // } else {
-        //     $this.elementTablePlace.html('<p class="p-8 text-red-700 text-bold">' + data.error.join('<br/>') + '</p>');
-        // }
-      }
-    }, {
-      key: "ajaxGraphLoadWorker",
-      value: function ajaxGraphLoadWorker() {
-        var $this = this;
-        $.ajax({
-          type: 'POST',
-          url: $this.ajaxUrl,
-          data: {
-            'id': $('#businessId').val()
-          },
-          dataType: 'json',
-          beforeSend: function beforeSend() {
-            $this.showSpinner();
-          },
-          success: function success(data) {
-            for (var i = 0; i < data.data.length; i++) {
-              var dataArray = data.data;
-              $(".graph-container").append('<div class="graph-child "><canvas id="myChart' + i + '" style="height:370px;"></canvas></div>');
-              var newDataArray = $this.makeArray(dataArray, i);
-              new Chart('myChart' + i, {
-                type: 'line',
-                data: {
-                  labels: createLabels(),
-                  datasets: [{
-                    label: data.data[i].name,
-                    fill: false,
-                    data: newDataArray,
-                    borderColor: 'blue',
-                    borderWidth: 1,
-                    pointRadius: 0
-                  }]
-                },
-                options: {
-                  legend: {
-                    position: 'bottom',
-                    labels: {
-                      fontSize: 18
-                    }
-                  },
-                  scales: {
-                    xAxes: [{
-                      type: 'time',
-                      time: {
-                        unit: 'month'
-                      },
-                      ticks: {
-                        autoSkip: false,
-                        maxRotation: 0,
-                        minRotation: 0,
-                        source: 'labels'
-                      }
-                    }],
-                    yAxes: [{
-                      ticks: {
-                        beginAtZero: true
-                      }
-                    }],
-                    y: {
-                      stacked: true
-                    }
-                  },
-                  tooltips: {
-                    mode: 'index'
-                  },
-                  hover: {
-                    mode: 'index',
-                    intersect: false
-                  }
-                }
-              });
-            }
-          },
-          complete: function complete() {
-            $this.hideSpinner();
-          }
-        });
-      }
-    }]);
-    return Graph;
-  }();
-  var labels = [];
-
-  //Creating labels here for graph
-  function createLabels() {
-    var todayDate = new Date().toISOString().slice(0, 10);
-    var firstMonthDate = new Date(todayDate);
-    labels.push(firstMonthDate);
-    firstMonthDate.setMonth(firstMonthDate.getMonth() + 3);
-    var secondMonthDate = firstMonthDate.toISOString().slice(0, 10);
-    labels.push(secondMonthDate);
-    firstMonthDate.setMonth(firstMonthDate.getMonth() + 3);
-    var thirdMonthDate = firstMonthDate.toISOString().slice(0, 10);
-    labels.push(thirdMonthDate);
-    firstMonthDate.setMonth(firstMonthDate.getMonth() + 3);
-    var fourthMonthDate = firstMonthDate.toISOString().slice(0, 10);
-    labels.push(fourthMonthDate);
-    firstMonthDate.setMonth(firstMonthDate.getMonth() + 3);
-    var fifthMonthDate = firstMonthDate.toISOString().slice(0, 10);
-    labels.push(fifthMonthDate);
-    return labels;
-  }
-  var GraphClass = new Graph();
-  GraphClass.ajaxGraphLoadWorker();
-});
 
 /***/ }),
 
@@ -6272,8 +6063,23 @@ $(function () {
         });
         $(document).on('change', 'input.flow_cell', function (event) {
           $this.autoSubmitDataAllow = false;
-          $this.recalculateRevenueTable();
+          // $this.recalculateRevenueTable();
           $this.saveData(event);
+        });
+        $(document).on('click', 'input.flow_cell', function (event) {
+          if ($(this).val() == 0) {
+            $(this).val("");
+          }
+        });
+        $(document).on('keypress', 'input.flow_cell', function (event) {
+          if ($(this).val() == 0) {
+            $(this).val("");
+          }
+        });
+        $(document).on('blur', 'input.flow_cell', function (event) {
+          if ($(this).val() == "") {
+            $(this).val(0);
+          }
         });
         Livewire.on('reloadRevenueTable', function () {
           $this.firstLoadData();
@@ -6339,48 +6145,55 @@ $(function () {
       value: function getTargetSelectorForForecast(row, col) {
         return '[data-row="' + row + '"][data-column="' + col + '"]';
       }
-    }, {
-      key: "recalculateRevenueTable",
-      value: function recalculateRevenueTable() {
-        var $this = this;
 
-        //let array for other types
-        $.each(['flow'], function (i, $class) {
-          // console.log("Class " + $class);
-          if ($('.' + $class + '_total').length) {
-            $('.' + $class + '_total').each(function () {
-              var $result = 0;
-              $('.' + $class + '_cell[data-column="' + $(this).data('column') + '"]').each(function () {
-                var _$$data;
-                // preven NaN error on deleting value
-                var value = $(this).val().length == 0 ? 0 : $(this).val();
-                $result += ($(this).data('negative') ? -1 : 1) * parseFloat((_$$data = $(this).data('certainty')) !== null && _$$data !== void 0 ? _$$data : 100) / 100 * parseFloat(value);
-              });
-              $(this).val($result.toFixed(0));
-            });
-          }
-        });
-        $('.revenue_total').each(function () {
-          var $revenue = 0;
-          var $column = $(this).data('column');
-          $.each(['flow'], function (i, $class) {
-            var $selector = '.' + $class + '_total[data-column="' + $column + '"]';
-            if ($($selector).length) {
-              var _$$val;
-              $revenue += parseFloat((_$$val = $($selector).val()) !== null && _$$val !== void 0 ? _$$val : 0);
-            } else {
-              $revenue += 0;
-            }
-          });
-          $(this).val($revenue.toFixed(0));
-        });
-      }
-    }, {
-      key: "renderData",
-      value: function renderData(data) {
-        _get(_getPrototypeOf(RevenueCalculator.prototype), "renderData", this).call(this, data);
-        this.recalculateRevenueTable();
-      }
+      // recalculateRevenueTable() {
+      //     let $this = this;
+
+      //     //let array for other types
+      //     $.each(['flow'], function (i, $class) {
+      //         // console.log("Class " + $class);
+      //         if ($('.' + $class + '_total').length) {
+      //             $('.' + $class + '_total').each(function () {
+      //                 let $result = 0;
+
+      //                 $('.' + $class + '_cell[data-column="' + $(this).data('column') + '"]').each(function () {
+      //                     // preven NaN error on deleting value
+      //                     let value = $(this).val().length == 0 ? 0 : $(this).val();
+
+      //                     $result += ($(this).data('negative') ? -1 : 1)
+      //                         * parseFloat(($(this).data('certainty') ?? 100)) / 100
+      //                         * parseFloat(value);
+      //                 });
+
+      //                 $(this).val($result.toFixed(0));
+      //             });
+      //         }
+
+      //     });
+
+      //     $('.revenue_total').each(function () {
+      //         let $revenue = 0;
+      //         let $column = $(this).data('column');
+
+      //         $.each(['flow'], function (i, $class) {
+      //             let $selector = '.' + $class + '_total[data-column="' + $column + '"]';
+      //             if ($($selector).length) {
+      //                 $revenue += parseFloat($($selector).val() ?? 0);
+      //             } else {
+      //                 $revenue += 0;
+      //             }
+      //         });
+
+      //         $(this).val($revenue.toFixed(0));
+      //     });
+
+      // }
+
+      // renderData(data) {
+      //     super.renderData(data);
+
+      //     // this.recalculateRevenueTable();
+      // }
 
       //rewrite basically usage
     }, {

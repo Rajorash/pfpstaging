@@ -34,7 +34,7 @@ export class calculatorCore {
         this.timeOutSeconds = 1000 * parseInt(this.autoSubmitDataDelay);  //default delay before send data to server
 
         this.heightModeDefaultSelector = '[name="block_different_height"]';
-        this.heightModeDefault = 'window';
+        this.heightModeDefault = 'full';
         this.heightMode = this.heightModeDefault;
 
         this.copyMoveClassName = 'pfp_copy_move_element';
@@ -487,7 +487,7 @@ export class calculatorCore {
             copyMoveClassElement[i].addEventListener('dragend', function (event) {
                 let sourceElement = event.target;
                 let clientX = event.clientX, clientY = event.clientY;
-
+              
                 //only for mozilla https://bugzilla.mozilla.org/show_bug.cgi?id=505521#c80
                 if (!clientX) {
                     clientX = coordinateX
@@ -498,19 +498,30 @@ export class calculatorCore {
 
                 let targetElement = document.elementFromPoint(clientX, clientY);
 
+
                 if (targetElement.classList.contains($this.copyMoveClassName)) {
                     let value = parseFloat(!!sourceElement.value ? sourceElement.value : 0);
-
+                    let pre_val = value;
                     if (!$this.copyMoveAltKeyEnabled) {
                         //sum of values
                         value += parseFloat(!!targetElement.value ? targetElement.value : 0);
                     }
 
                     targetElement.value = value;
-                    sourceElement.value = 0;
+
+                    if(value== (pre_val *2) )
+                    {
+                        sourceElement.value = pre_val;
+                    }else{
+                         sourceElement.value = 0;
+                    }
+                   
+
+
                     targetElement.dispatchEvent(new Event('change', {bubbles: true}));
                     sourceElement.dispatchEvent(new Event('change', {bubbles: true}));
                 }
+
             });
         }
     }
