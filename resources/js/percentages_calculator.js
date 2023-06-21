@@ -103,4 +103,41 @@ $(function () {
         let PercentagesCalculatorClass = new PercentagesCalculator();
         PercentagesCalculatorClass.init();
     }
+
+
+          
+    $(document).on('click', 'input.percentage-value', function (event) {
+        if($(this).val()==0)
+        {
+            $(this).val("");
+        }
+        
+    });
+
+
+    $(document).on('keypress', 'input.percentage-value', function (event) {
+
+        
+        // console.log(convertToASCII($(this).val()));
+        // if(typeof($(this).val()) === 'string') 
+        // {
+        //     $(this).val("");
+        // }
+
+        if($(this).val()==0)
+        {
+            $(this).val("");
+        }
+        
+    });
+
+      $(document).on('blur', 'input.percentage-value', function (event) {
+        if($(this).val()=="")
+        {
+            $(this).val(0);
+        }
+        
+    });
+
+
 });
