@@ -8,6 +8,8 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Env;
 use Illuminate\Support\HigherOrderTapProxy;
 use Illuminate\Support\Optional;
+use JamesMills\LaravelTimezone\Timezone;
+use Carbon\Carbon;
 
 if (!function_exists('checkActiveInactive')) {
     function checkActiveInactive($user)
@@ -69,5 +71,29 @@ if (!function_exists('checkActiveInactive')) {
         } else {
             return false;
         }
+    }
+}
+
+if(!function_exists('checkLicenseStatus')) {
+    function checkLicenseStatus($licenseId)
+    {
+        $checkStatus = License::find($licenseId);
+        
+        if($checkStatus->active == 1){
+            $today = new Timezone();
+            $today = $today->convertToLocal(Carbon::now(), 'Y-m-d H:i:s');
+            if (
+                Carbon::parse($checkStatus->expires_ts)->timestamp - Carbon::parse($today)->timestamp > 0
+                && $checkStatus->active
+            ) {
+                return true;
+            }
+
+            return false;
+        } else {
+            return false;
+        }
+
+        return $status;
     }
 }

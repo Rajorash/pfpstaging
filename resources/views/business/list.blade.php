@@ -22,8 +22,14 @@
                 {{__('Businesses Visible To You')}}
 
                 @if($currentUser->isAdvisor())
+                <?php /*
                     <div class="pl-2 text-xl">
                         {{__('Available seats:')}} {{$currentUser->seats - count($currentUser->activeLicenses)}}
+                        / {{$currentUser->seats}}
+                    </div>
+                    */?>
+                    <div class="pl-2 text-xl">
+                        {{__('Available seats:')}} {{ $available_seats }}
                         / {{$currentUser->seats}}
                     </div>
                 @endif
@@ -107,7 +113,14 @@
                                 @endif <br>
                                 <span class="text-sm text-light_gray">
                                 <span class="flex items-center whitespace-nowrap">
-                                @if ($business->license->checkLicense)
+                                    <?php /*
+                                    @if ($business->license->checkLicense)
+                                        <x-icons.active :class="'h-4 w-auto text-green mr-1 align-text-bottom'"/>
+                                    @else
+                                        <x-icons.inactive :class="'h-4 w-auto text-gray-500 mr-1 align-text-bottom'"/>
+                                    @endif
+                                    */?>
+                                    @if (checkLicenseStatus($business->license->id))
                                         <x-icons.active :class="'h-4 w-auto text-green mr-1 align-text-bottom'"/>
                                     @else
                                         <x-icons.inactive :class="'h-4 w-auto text-gray-500 mr-1 align-text-bottom'"/>

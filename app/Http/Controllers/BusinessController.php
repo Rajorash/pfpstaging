@@ -8,6 +8,7 @@ use App\Traits\GettersTrait;
 
 //use Auth;
 use App\Models\Business;
+use App\Models\License;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -25,6 +26,23 @@ class BusinessController extends Controller
     public function index()
     {
         $businesses = $this->getBusinessAll();
+        
+        // new code 270623 start
+        $currentUser = Auth::user();
+        $seat_count = 0;
+        foreach($businesses as $bus){
+            if($bus->license->advisor_id == $currentUser->id && $currentUser->isAdvisor()){
+                if ( is_object($bus->license) ){
+                    if(checkLicenseStatus($bus->license->id) == true){
+                        $seat_count++;
+                    }
+                }
+            }
+        }
+        
+        $available_seats = $currentUser->seats - $seat_count;
+        // new code 270623 end
+        
         $filtered = $businesses->filter(function ($business) {
             return Auth::user()->can('view', $business);
         })->values();
@@ -34,6 +52,7 @@ class BusinessController extends Controller
             [
                 'businesses' => $filtered,
                 'currentUser' => Auth::user(),
+                'available_seats' => $available_seats,
             ]
         );
     }
