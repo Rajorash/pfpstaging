@@ -97,3 +97,23 @@ if(!function_exists('checkLicenseStatus')) {
         return $status;
     }
 }
+
+if(!function_exists('checkNegativeLicense')) {
+    function checkNegativeLicense($seats_count, $license_id) 
+    {
+        if(!$seats_count) {
+            $checkSeatNegPos = false;
+        } else {
+            $checkSeatNegPos = true;
+        }
+        
+        $licenseActiveInactive = checkLicenseStatus($license_id);
+
+        $response = [
+            'seats_count' => $checkSeatNegPos,
+            'licenseActiveInactive' => $licenseActiveInactive,
+        ];
+
+        return $response;
+    }
+}

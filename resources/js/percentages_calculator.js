@@ -42,7 +42,8 @@ $(function () {
             $this.changesCounter++;
 
             $this.data.businessId = window.percentagesBusinessId;
-
+            $this.data.seatsCount = window.seatsCount;
+            
             if (event && typeof event.target.id === 'string') {
 
                 $this.lastCoordinatesElementId = event.target.id;

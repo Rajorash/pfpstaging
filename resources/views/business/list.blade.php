@@ -184,8 +184,15 @@
 
 
                                 {{-- Percentages column --}}
+                                @php
+                                    if($available_seats < 0){
+                                        $seats_count = false;
+                                    } else {
+                                        $seats_count = true;
+                                    }
+                                @endphp
                                 <x-ui.button-small title="{{__('Rollout Percentages')}}"
-                                                href="{{route('allocations-percentages', ['business' => $business])}}">
+                                                href="{{route('allocations-percentages', ['business' => $business, 'seats_count' => $seats_count])}}">
                                     <x-icons.percent :class="'h-5 w-auto inline-block'"/>
                                 </x-ui.button-small>
 

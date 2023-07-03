@@ -283,6 +283,7 @@ class AllocationsController extends Controller
         ];
 
         $businessId = $request->businessId;
+        $seatsCount = $request->seatsCount;
 
         if (isset($request->cells) && count($request->cells) > 0) {
             foreach ($request->cells as $cell) {
@@ -359,7 +360,8 @@ class AllocationsController extends Controller
                 'percentages' => $percentages,
                 'rollout' => $rollout,
                 'business' => $business,
-                'currentUser' => $checklicense
+                'currentUser' => $checklicense,
+                'seatsCount' => $seatsCount
             ])->render();
 
         return response()->json($response);

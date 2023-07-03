@@ -73,6 +73,11 @@
                             ?? null
                     @endphp
                     <x-ui.table-td padding="p-0" class="text-right relative">
+                        @php
+                            $conditions = checkNegativeLicense($seatsCount, $business->license->id);
+                            $checkSeatNegPos = $conditions['seats_count'];
+                            $licenseActiveInactive = $conditions['licenseActiveInactive'];
+                        @endphp
                         <input draggable="true" class="percentage-value {{$acc->type}}
                             pfp_copy_move_element
                             border-0 border-transparent bg-transparent
@@ -89,9 +94,10 @@
                                type="text" pattern="[0-9]{10}"
                                id="{{$acc->type}}_{{$phase->id}}_{{$acc->id}}"
                                value="{{$percentage ?? number_format(0, 2, '.', ''); }}"
-                               @if($currentUser && $business->license->checkLicense) @else disabled @endif
+                               @if($checkSeatNegPos && $licenseActiveInactive) @else disabled @endif
                         >
                     </x-ui.table-td>
+                    <?php /* // new @if($checkSeatNegPos && $licenseActiveInactive) @else disabled @endif // old  @if($currentUser && $business->license->checkLicense) @else disabled @endif */?>
                 @empty
                     <x-ui.table-td padding="p-1 pr-2 pl-6" class="text-center">N/A</x-ui.table-td>
                 @endforelse
