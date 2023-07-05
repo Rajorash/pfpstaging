@@ -23,7 +23,6 @@
 
     <script type="text/javascript">
       window.getGraphData = "{{route('getGraphData')}}";
-      window.getTableData = "{{route('getTableData')}}";
     </script>
     <style>
       .graph-child {
@@ -49,7 +48,7 @@
   } */
     </style>
     </head>
-    
+
     <div id="rolling-sum-table" style="display: none;">
       <x-ui.table-table class="relative mb-2 cursor-fill-data">
         <thead>
@@ -63,15 +62,11 @@
           </tr>
         </thead>
         <x-ui.table-tbody id="table-data" class="text-xs font-normal">
-
-          @foreach($calculations as $key => $account)
-       
+          @foreach($calculations as $data)
           <tr>
-            <td class="px-2 py-4 min-w-24 text-xs font-normal account-color"><b>{{ $key }}: </b></td>
-          
+            <td class="px-2 py-4 min-w-24 text-xs font-normal account-color"><b>{{ $data['name']; }}: </b></td>
             @foreach($months as $month)
-           
-            <td class="px-2 py-4 min-w-24 text-xs font-normal">{{ round($account[$month['name']]) }}</td>
+            <td class="px-2 py-4 min-w-24 text-xs font-normal">{{ round($data[$month['name']]) }}</td>
             @endforeach
           </tr>
           @endforeach
@@ -84,9 +79,7 @@
 
     <div class="graph-container flex flex-wrap justify-between gap-2 p-5">
     </div>
-
-
-
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.bundle.min.js"></script>
 
     <script>

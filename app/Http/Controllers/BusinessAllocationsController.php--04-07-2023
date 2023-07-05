@@ -132,8 +132,6 @@ class BusinessAllocationsController extends Controller
             ])
             ->first();
 
-        
-
         $returnType = $request->returnType ?? 'html';
         $today = Timezone::convertToLocal(Carbon::now(), 'Y-m-d H:i:s');
         $todayShort = Timezone::convertToLocal(Carbon::now(), 'Y-m-d') . ' 00:00:00';
@@ -268,19 +266,13 @@ class BusinessAllocationsController extends Controller
 
             $tableData = $this->optimizationTableData($tableData, $period);
         }
-        
+
+        dd($tableData);
+
         $periodDates = [];
         foreach ($period as $date) {
             $periodDates[] = $date->format('Y-m-d');
         }
-
-        // $t = [
-        //     'period' => $periodDates,
-        //     'tableData' => $tableData,
-        // ];
-
-        // return response()->json($t);
-        // die;
 
         if ($returnType == 'html') {
             $response['html'] = view('business.business-allocations-table')
@@ -826,8 +818,7 @@ class BusinessAllocationsController extends Controller
         $businessId = $request->business ?? null;
         $months = $this->getMonths();
         $calculations = $this->getTableData($businessId);
-        // return $calculations;
-        // die;
+        
         $this->business = Business::findOrFail($businessId);
         
         return  view('business.graph')
@@ -1177,15 +1168,7 @@ class BusinessAllocationsController extends Controller
                 $tableData = $this->optimizationTableData($tableData, $period);
             }
             
-            // return $accounts;
-            // echo "<pre>";
-            // print_r($accounts);
-            // return $tableData;
-            // die;
-
             foreach ($accounts as $account) {
-                // return $account[1];
-                // die;
                 if (array_key_exists("_dates", $tableData[$account->type][$account->id])) {
                     $newArray['name'] = $tableData[$account->type][$account->id]['name'];
                     foreach($months as $month){
@@ -1196,234 +1179,14 @@ class BusinessAllocationsController extends Controller
                 }
             }
             
-
-            // @foreach ($tableData as $accountType => $accountsArray)
-            // @if($accountType != \App\Models\BankAccount::ACCOUNT_TYPE_REVENUE)
-            //     @foreach ($accountsArray as $accountId => $accountData)
-            //         @foreach ($accountsSubTypes as $subType => $subTypeArray)
-            // revenue = $tableData[\App\Models\BankAccount::ACCOUNT_TYPE_REVENUE] as $accountId => $accountData
-            // $value = $accountData[$subType][$currentDate] ?? 0;
             return $newTableData;
         }
-    }
-
-    public function getData_15062023($businessId, $rangeValue)
-    {
-        $businessId = $businessId;
-        $rangeValue = "31";
-        $a = array();
-        $newTableData = array();
-        $newArray = array();
-        $cal_date_amt = array();
-        $ab = array();
-        $ad = array();
-
-        $months = $this->getMonths();
-        
-        foreach($months as $month){
-            $startDate = $month['start_date'];
-            $endDate = $month['end_date'];
-
-            $tableData = [
-                BankAccount::ACCOUNT_TYPE_REVENUE => [],
-                BankAccount::ACCOUNT_TYPE_PRETOTAL => [],
-                BankAccount::ACCOUNT_TYPE_SALESTAX => [],
-                BankAccount::ACCOUNT_TYPE_PREREAL => [],
-                BankAccount::ACCOUNT_TYPE_POSTREAL => []
-            ];
-    
-            $businessId = $businessId ?? null;
-            $this->business = Business::where('id', $businessId)
-                ->with([
-                    'accounts',
-                ])
-                ->first();
-            
-            $rangeValue = $rangeValue ?? $this->defaultCurrentRangeValue;
-            
-            if ($this->projectionMode == 'expense') {
-                $this->complete = $rangeValue;
-            } elseif ($this->projectionMode == self::PROJECTION_MODE_FORECAST) {
-                $this->complete = $this->periodInterval * $this->forecastRowsPerPeriod;
-            }
-            $period = CarbonPeriod::create($startDate, $endDate);
-    
-            $this->phases = $this->business->getPhasesIdByPeriod($period);
-            
-            //update value of cell
-            $cellId = $cellId ?? null;
-            $cellValue = $cellValue ?? null;
-            $updatedAccountId = null;
-            if ($cellId && $cellValue !== null) {
-                $returnCellAttributes = $this->storeCellValue($cellId, floatVal($cellValue));
-                $updatedAccountId = optional(optional(AccountFlow::find($returnCellAttributes['accountId']))->account)->id;
-            }
-    
-            $this->rawData = $this->getRawData($this->business->id, $startDate, $endDate, $updatedAccountId);
-            $this->percentages = $this->getPercentagesByPhasesId(
-                $this->business->id,
-                array_unique(array_values($this->phases))
-            );
-    
-            if (empty($this->accountsSubTypes)) {
-                $this->accountsSubTypes = $this->getAccountsSubTypes();
-            }
-    
-            $accounts = $this->business->accounts;
-            foreach ($accounts as $account) {
-                $accountAllData = $account->toArray();
-    
-                //filter only data between $startDate and $endDate
-                if (isset($accountAllData['allocations'])) {
-                    $accountAllData['allocations'] = array_filter(
-                        $accountAllData['allocations'],
-                        function ($element) use ($startDate, $endDate) {
-                            return Carbon::parse($element['allocation_date'])->betweenIncluded($startDate, $endDate);
-                        }
-                    );
-                }
-                
-                $tableData[$account->type][$account->id] = $accountAllData;
-    
-                if ($account->type == BankAccount::ACCOUNT_TYPE_REVENUE) {
-                    session(['acccountTransferId' => $account->id]);
-                    $this->incomeByPeriod = $account->getAdjustedFlowsTotalByDatePeriod($account->id, $startDate, $endDate);
-                } else {
-                    $accccid = session('acccountTransferId') ? session('acccountTransferId') : $account->id;
-                    $this->incomeByPeriod = $account->getAdjustedFlowsTotalByDatePeriod($accccid, $startDate, $endDate);
-                }
-    
-                $tableData[$account->type][$account->id]['total_db'] =
-                    $account->getAdjustedFlowsTotalByDatePeriod($account->id, $startDate, $endDate);
-    
-                if (array_key_exists('flows', $tableData[$account->type][$account->id])) {
-                    //reorder flows data
-                    $newFlows = [];
-                    foreach ($tableData[$account->type][$account->id]['flows'] as $flowArray) {
-                        $newFlows[$flowArray['id']] = $flowArray;
-                    }
-                    $tableData[$account->type][$account->id]['flows'] = $newFlows;
-                }
-    
-                $tableData[$account->type][$account->id] = $this->fillMissingDateValue(
-                    $period,
-                    $tableData[$account->type][$account->id],
-                    $startDate
-                );
-            }
-    
-            //reset period for Forecast
-            if ($this->projectionMode == self::PROJECTION_MODE_FORECAST) {
-                switch ($rangeValue) {
-                    case self::RANGE_DAILY:
-                        //left as is
-                        break;
-                    case self::RANGE_WEEKLY:
-                        $period = CarbonPeriod::since($startDate)->week()->until($endDate);
-                        break;
-                    case self::RANGE_FORTNIGHTLY:
-                        $period = CarbonPeriod::since($startDate)->weeks(2)->until($endDate);
-                        break;
-                    case self::RANGE_MONTHLY:
-                        $period = CarbonPeriod::since($startDate)->month()->until($endDate);
-                        break;
-                    case self::RANGE_QUARTERLY:
-                        $period = CarbonPeriod::since($startDate)->months(3)->until($endDate);
-                        break;
-                    case self::RANGE_YEARLT:
-                        $period = CarbonPeriod::since($startDate)->months(6)->until($endDate);
-                        break;
-                }
-    
-    
-    
-                $tableData = $this->optimizationTableData($tableData, $period);
-            }
-            
-            $periodDates = [];
-            foreach ($period as $date) {
-                $periodDates[] = $date->format('Y-m-d');
-            }
-            
-            $ab[$month['name']] = $tableData;
-        }
-
-        $ad[] = $ab;
-        echo "<pre>";
-        print_r($ad);
-        die;
-        // return $ad[0];
-        // die;
-        $e = [];
-        foreach($ad[0] as $key => $l){
-            $xz = 'account';
-            // $zx = $d['name'] . ' ' . $key;
-            $zx = 'total_amount';
-            $dt = 'date';
-            $custmArr = ['revenue','postreal','salestax','prereal'];
-          
-            foreach($custmArr as $cust){
-                foreach($l[$cust] as $d){
-                    if($cust == 'revenue'){
-                        $totalsum = array_sum($d['total_db']);
-                    }else{
-                        $totalsum = array_sum($d['_dates']);
-                    }
-                    $uzi[] = $e[$d['name']] = [
-                        $xz => $d['name'],
-                        $zx => $totalsum,
-                        $dt => $key,
-                    ];
-                }
-            }
-
-        }
-    //   echo "<pre>";
-    //     print_r($uzi);
-    //     die;  
-        foreach($uzi as $k => $v) {
-            $new_arr[$v['account']][$v['date']]= $v['total_amount'];
-        }
-       
-        return $new_arr;
-        die;
-
-        foreach($months as $month){
-            $v[] = [
-                'month' => $month['name'],
-            ];
-        }
-
-        return $v;
-        die;
-        
-        // foreach($ad as $z){
-        //     foreach($months as $month){
-        //         foreach($z[$month['name'] . '-' . $month['start_date']]['postreal'] as $table){
-        //             $newArray['name'] = $table['name'];
-        //             foreach($months as $month){
-        //                 $mergedArray = array_sum($table['_dates']);
-        //                 $newArray[$month['name'] . '-' . $month['start_date']] = $mergedArray;
-        //             }
-        //             $newTableData[] = $newArray;
-        //         }
-        //     }
-        // }
-
-        // return $newTableData;
-        // die;
-    }
-
-    public function getRevenueData()
-    {
-
     }
 
     public function getTableData($businessId)
     {
         $rangeValue = "31";
-        $data = self::getData_15062023($businessId, $rangeValue);
-        $revenue_data = self::getRevenueData($businessId, $rangeValue);
+        $data = self::getData($businessId, $rangeValue);
 
         return $data;
     }
@@ -1436,11 +1199,9 @@ class BusinessAllocationsController extends Controller
         $months = [];
 
         for ($i = 0; $i < 12; $i++) {
-            $endMonth = $startMonth->copy()->endOfMonth();
             $month = [
                 'name' => $startMonth->format('F'),
                 'start_date' => $startMonth->format('Y-m-d'),
-                'end_date' => $endMonth->format('Y-m-d'),
             ];
             $months[] = $month;
             $startMonth->addMonth();
