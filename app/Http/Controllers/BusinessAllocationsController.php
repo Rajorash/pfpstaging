@@ -50,6 +50,7 @@ class BusinessAllocationsController extends Controller
      */
     public function index(Request $request)
     {
+        
         $businessId = $request->business ?? null;
         session(['businessId' => $businessId]);
         $this->business = Business::findOrFail($businessId);
@@ -126,6 +127,7 @@ class BusinessAllocationsController extends Controller
         ];
 
         $businessId = $request->businessId ?? null;
+        $seatsCount = $request->seatsCount;
         $this->business = Business::where('id', $businessId)
             ->with([
                 'accounts',
@@ -286,7 +288,8 @@ class BusinessAllocationsController extends Controller
                     'projectionMode' => $this->projectionMode,
                     'tableAttributes' => $this->tableAttributes,
                     'today' => $today,
-                    'todayShort' => $todayShort
+                    'todayShort' => $todayShort,
+                    'seatsCount' => $seatsCount
                 ])->render();
 
             return response()->json($response);

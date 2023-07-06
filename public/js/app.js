@@ -4360,10 +4360,13 @@ $(function () {
     }, {
       key: "updateValue",
       value: function updateValue(event) {
+        console.log("hello there");
         var $this = this;
         $this.updateData.businessId = $('#businessId').val();
         $this.updateData.startDate = $('#startDate').val();
         $this.updateData.rangeValue = $('#currentRangeValue').val();
+        $this.updateData.seatCountId = $('#seatCountId').val();
+        console.log($this.updateData.seatCountId);
         $this.updateData.cellId = event.target.id;
         $this.updateData.cellValue = parseFloat($('#' + event.target.id).val());
         $this.updateData.returnType = 'json';
@@ -4424,6 +4427,7 @@ $(function () {
         $this.data.businessId = $('#businessId').val();
         $this.data.startDate = $('#startDate').val();
         $this.data.rangeValue = $('#currentRangeValue').val();
+        $this.updateData.seatCountId = $('#seatCountId').val();
         if (event && typeof event.target.id === 'string') {
           $this.lastCoordinatesElementId = event.target.id;
           $this.windowCoordinates = {

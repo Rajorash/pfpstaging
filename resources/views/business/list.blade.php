@@ -225,8 +225,15 @@
                                 </x-ui.button-small>
 
                                 {{-- Expense Entry column --}}
+                                @php
+                                    if($available_seats < 0){
+                                        $seats_count = false;
+                                    } else {
+                                        $seats_count = true;
+                                    }
+                                @endphp
                                 <x-ui.button-small title="Expense Entry" class="whitespace-nowrap"
-                                                href="{{route('allocations-new', ['business' => $business])}}">
+                                                href="{{route('allocations-new', ['business' => $business, 'seats_count' => $seats_count])}}">
                                     <x-icons.table :class="'h-5 w-auto inline-block'"/>
                                 </x-ui.button-small>
 
