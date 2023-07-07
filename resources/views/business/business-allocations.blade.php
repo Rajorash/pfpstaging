@@ -85,6 +85,6 @@
     <script type="text/javascript">
         window.allocationsNewControllerUpdate = "{{route('allocations-new-update')}}";
         window.seatCount = "{{request()->get('seats_count')}}";
-       
+        
     </script>
 </x-app-layout>

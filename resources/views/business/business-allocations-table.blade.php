@@ -261,7 +261,7 @@
 <script>
 
     $(document).ready(function(){
-        var licenceStatus = '{{$licenseActiveInactive}}'
+        var licenceStatus = '{{$licenseActiveInactive}}';
         if(window.seatCount>=0 && licenceStatus==1){
             $('.validseatcount').removeAttr('disabled');
         }

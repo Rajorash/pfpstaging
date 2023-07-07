@@ -122,7 +122,8 @@ class RevenueController extends Controller
                     'tableData' => $tableData,
                     'period' => CarbonPeriod::create($startDate, $endDate),
                     'today' => $today,
-                    'todayShort' => $todayShort
+                    'todayShort' => $todayShort,
+                    'seatsCount' => $request->seatsCount
                 ])->render();
         }
 

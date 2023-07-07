@@ -1,3 +1,9 @@
+@php
+    $conditions = checkNegativeLicense($seatsCount, $business->license->id);
+   
+    $checkSeatNegPos = $conditions['seats_count'];
+    $licenseActiveInactive = $conditions['licenseActiveInactive'];
+@endphp
 <x-ui.table-table class="relative mb-2 cursor-fill-data">
     <thead>
     <tr class="border-b divide-x border-light_blue">
@@ -112,7 +118,7 @@
                                 $columnIndex++;
                             @endphp
                             <x-ui.table-td class="text-right " padding="p-0">
-                                <input draggable="true" class="flow_cell px-2 py-1 w-full text-right bg-transparent border-0
+                                <input draggable="true" class="validseatcount flow_cell px-2 py-1 w-full text-right bg-transparent border-0
                                             border-transparent outline-none pfp_copy_move_element
                                             focus:outline-none focus:ring-1 focus:shadow-none disabled:opacity-90
                                             @if(!$business->license->checkLicense)
@@ -142,3 +148,12 @@
 
     </x-ui.table-tbody>
 </x-ui.table-table>
+<script>
+
+    $(document).ready(function(){
+        var licenceStatus = '{{$licenseActiveInactive}}';
+        if(window.seatCount>=0 && licenceStatus==1){
+            $('.validseatcount').removeAttr('disabled');
+        }
+    });
+</script>

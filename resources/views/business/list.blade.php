@@ -220,7 +220,7 @@
 
                                 {{-- Revenue Entry column --}}
                                 <x-ui.button-small title="Revenue Entry" class="whitespace-nowrap"
-                                                href="{{route('revenue-entry.table', ['business' => $business])}}">
+                                                href="{{route('revenue-entry.table', ['business' => $business, 'seats_count' => $seats_count])}}">
                                     <x-icons.dollar-fill :class="'h-5 w-auto inline-block'"/>
                                 </x-ui.button-small>
 
