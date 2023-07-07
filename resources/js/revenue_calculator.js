@@ -89,6 +89,7 @@ $(function () {
             $this.data.businessId = $('#revenueBusinessId').val();
             $this.data.startDate = $('#revenueStartDate').val();
             $this.data.rangeValue = $('#revenueCurrentRangeValue').val();
+            $this.data.seatsCount = window.seatsCount;
 
             if (event && typeof event.target.id === 'string') {
 

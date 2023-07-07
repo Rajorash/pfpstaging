@@ -2,9 +2,17 @@
     $checkLicense = $business->license->checkLicense;
     $rowIndex = 0;
     $columnIndex = 0;
+
+    $seats_count = 0;
+    
+    $conditions = checkNegativeLicense($seatsCount, $business->license->id);
+  
+    $checkSeatNegPos = $conditions['seats_count'];
+    $licenseActiveInactive = $conditions['licenseActiveInactive'];
 @endphp
 
 <x-ui.table-table class="relative mb-2 cursor-fill-data">
+
     <thead {!! $tableAttributes !!}>
     <tr class="border-b divide-x border-light_blue">
         <x-ui.table-th class="sticky top-0 left-0 text-center"
@@ -23,7 +31,7 @@
         @endforeach
     </tr>
     </thead>
-
+   
     <x-ui.table-tbody>
 
         @if ($projectionMode == 'expense')
@@ -194,16 +202,20 @@
                                             $columnIndex++;
                                             //$currentDate = $date->format('Y-m-d');
                                             $value = $flowData['_dates'][$currentDate] ?? 0;
+                                            $conditions = checkNegativeLicense($seatsCount, $business->license->id);
+                                            
+                                            $checkSeatNegPos = $conditions['seats_count'];
+                                            $licenseActiveInactive = $conditions['licenseActiveInactive'];
                                         @endphp
                                         <x-ui.table-td padding="p-0" class="text-right hover:bg-yellow-200">
-                                            <input class="px-2 py-1 w-full text-right bg-transparent border-0
+                                            <input class="validseatcount px-2 py-1 w-full text-right bg-transparent border-0
                                                 border-transparent outline-none
                                                 focus:outline-none focus:ring-1 focus:shadow-none disabled:opacity-90
-                                                @if(!$checkLicense) focus:bg-gray-100
+                                                @if($checkSeatNegPos && $licenseActiveInactive) focus:bg-gray-100
                                                 @else pfp_copy_move_element hover:bg-yellow-50 focus:bg-yellow-50
                                                 @endif
                                                 "
-                                                   @if($checkLicense) draggable="true" drag-input @endif
+                                                   @if($checkSeatNegPos && $licenseActiveInactive) draggable="true" drag-input @endif
 
                                                    id="flow_{{$flowId}}_{{$currentDate}}"
                                                    type="text" pattern="[0-9]{10}"
@@ -212,7 +224,7 @@
                                                    data-certainty="{{$flowData['certainty']}}"
                                                    data-negative="{{$flowData['negative_flow']}}"
                                                    value="{{$value}}"
-                                                   @if(!$checkLicense) disabled @endif/>
+                                                   @if($checkSeatNegPos && $licenseActiveInactive) @else disabled @endif/>
                                         </x-ui.table-td>
                                     @endforeach
                                 </tr>
@@ -249,6 +261,11 @@
 <script>
 
     $(document).ready(function(){
+        var licenceStatus = '{{$licenseActiveInactive}}';
+        if(window.seatCount>=0 && licenceStatus==1){
+            $('.validseatcount').removeAttr('disabled');
+        }
+      
         var checktrid = [];
         var checktdid = [];
         var total = 0;

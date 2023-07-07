@@ -44,7 +44,12 @@
         <div class="font-bold text-center text-red-500">{{__('License is inactive. Edit data forbidden.')}}</div>
     @endif
 
-
+    @php
+        $seats_count = 0;
+        if(request()->has('seats_count')){
+            $seats_count = request()->input('seats_count');
+        }
+    @endphp
     <x-ui.main width="w-full">
         <div id="revenueTablePlace"
              class="relative overflow-scroll global_nice_scroll block_different_height return_coordinates_table">
@@ -52,10 +57,12 @@
     </x-ui.main>
 
     <x-spinner-block/>
-
+   
     <script type="text/javascript">
         window.revenueControllerUpdate = "{{route('revenue-entry.loadData')}}";
         window.revenueControllerSave = "{{route('revenue-entry.saveData')}}";
+        window.seatsCount = "{{request()->get('seats_count')}}";
+        
     </script>
 
 </x-app-layout>
