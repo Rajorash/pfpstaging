@@ -146,6 +146,7 @@ class BusinessController extends Controller
      */
     public function balance(Business $business)
     {
+        
         $this->authorize('update', $business);
         $today = Timezone::convertToLocal(Carbon::now(), 'Y-m-d');
 
@@ -188,10 +189,15 @@ class BusinessController extends Controller
             }
         }
 
+        $businesses = $this->getBusinessAll();
+        $currentUser = Auth::user();
+        $seatscount = getAvailable_seats($currentUser,$businesses);
+
         return view('business.balance', [
             'business' => $business,
             'balances' => $balances,
             'today' => $today,
+            'countseats' => $seatscount,
         ]);
     }
 

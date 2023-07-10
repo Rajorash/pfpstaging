@@ -31,14 +31,19 @@
                         </x-ui.button-normal>
                     </div>
                 </x-slot>
-
                 @php
                     $checkLicense = $business->license->checkLicense;
                 @endphp
-
-                @if(!$checkLicense)
-                    <div
-                        class="font-bold text-center text-red-500">{{__('License is inactive. Edit data forbidden.')}}</div>
+                @php
+                    
+                    $conditions = checkNegativeLicense($countseats, $business->license->id);
+                    $checkSeatNegPos = $conditions['seats_count'];
+                    $licenseActiveInactive = $conditions['licenseActiveInactive'];
+                    
+                @endphp
+                @if($checkSeatNegPos && $licenseActiveInactive)
+                @else
+                    <div class="font-bold text-center text-red-500">{{__('License is inactive. Edit data forbidden.')}}</div>
                 @endif
 
                 @if (session('status'))
@@ -60,6 +65,7 @@
                                     <div class="table-cell w-1/5 px-4 pb-4 font-semibold text-right text-gray-600 uppercase">Expected</div>
                                     <div class="table-cell w-3/5 pb-4 font-semibold uppercase">Input Actual Balance</div>
                                 </div>
+                                
                                 @foreach ($balances as $balance)
                                     <div class="table-row">
                                         <div class="table-cell w-1/5 pb-4 text-left">{{$balance['title']}}</div>
@@ -68,7 +74,7 @@
                                             <x-jet-input
                                                 name="balance[{{$balance['id']}}]"
                                                 type="number"
-                                                class="w-full text-right"
+                                                class="w-full text-right validInput"
                                                 autocomplete="off"
                                                 value="{{number_format($balance['amount'], 0, '', '')}}"
                                             />
@@ -81,7 +87,7 @@
                                         <div class="table-cell w-1/5 pb-4 text-left"></div>
                                         <div class="table-cell w-1/5 px-4 pb-4 text-left"></div>
                                         <div class="table-cell w-3/5 pb-4 text-left">
-                                            <x-ui.button-normal class="uppercase" type="button"
+                                            <x-ui.button-normal class="uppercase validateButton" type="button"
                                                                 onclick="this.disabled=true;this.form.submit();this.innerText='...calculating';">
                                                 {{__('Save Changes for Balance')}}
                                             </x-ui.button-normal>
@@ -97,3 +103,14 @@
     </x-ui.main>
 
 </x-app-layout>
+<script>
+    $(document).ready(function(){
+        var checkSeat = '{{$checkSeatNegPos}}';
+        var license = '{{$licenseActiveInactive}}';
+        if(checkSeat && license){
+        }else{
+            $('.validInput').attr('disabled','disabled');
+            $('.validateButton').attr('disabled','disabled');
+        }
+    });
+</script>

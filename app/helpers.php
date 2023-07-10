@@ -117,3 +117,21 @@ if(!function_exists('checkNegativeLicense')) {
         return $response;
     }
 }
+
+if(!function_exists('getAvailable_seats')){
+    function getAvailable_seats($currentUser,$businesses){
+        $currentUser = Auth::user();
+        $seat_count = 0;
+        foreach($businesses as $bus){
+            if($bus->license->advisor_id == $currentUser->id && $currentUser->isAdvisor()){
+                if ( is_object($bus->license) ){
+                    if(checkLicenseStatus($bus->license->id) == true){
+                        $seat_count++;
+                    }
+                }
+            }
+        }
+        
+        return $available_seats = $currentUser->seats - $seat_count;
+    }
+}
