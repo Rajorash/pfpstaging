@@ -41,7 +41,7 @@
                     $licenseActiveInactive = $conditions['licenseActiveInactive'];
                     
                 @endphp
-                @if($checkSeatNegPos && $licenseActiveInactive)
+                @if($checkSeatNegPos && $licenseActiveInactive && $countseats>=0)
                 @else
                     <div class="font-bold text-center text-red-500">{{__('License is inactive. Edit data forbidden.')}}</div>
                 @endif
