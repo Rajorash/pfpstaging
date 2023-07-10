@@ -39,8 +39,19 @@
             <x-ui.data-submit-controls class="items-center p-2" :heightController="true" :autoSubmit="false"/>
         </div>
     </x-slot>
-
-    @if(!$business->license->checkLicense)
+    @php
+        $seats_count = 0;
+        if(request()->has('seats_count')){
+            $seats_count = request()->input('seats_count');
+        }
+        
+        $conditions = checkNegativeLicense($seats_count, $business->license->id);
+        $checkSeatNegPos = $conditions['seats_count'];
+        $licenseActiveInactive = $conditions['licenseActiveInactive'];
+       
+    @endphp
+    @if($checkSeatNegPos && $licenseActiveInactive)
+    @else
         <div class="font-bold text-center text-red-500">{{__('License is inactive. Edit data forbidden.')}}</div>
     @endif
 
@@ -61,7 +72,7 @@
     <script type="text/javascript">
         window.revenueControllerUpdate = "{{route('revenue-entry.loadData')}}";
         window.revenueControllerSave = "{{route('revenue-entry.saveData')}}";
-        window.seatsCount = "{{request()->get('seats_count')}}";
+        window.seatsCount = "{{$seats_count}}";
         
     </script>
 

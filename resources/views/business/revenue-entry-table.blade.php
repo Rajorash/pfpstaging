@@ -1,9 +1,3 @@
-@php
-    $conditions = checkNegativeLicense($seatsCount, $business->license->id);
-   
-    $checkSeatNegPos = $conditions['seats_count'];
-    $licenseActiveInactive = $conditions['licenseActiveInactive'];
-@endphp
 <x-ui.table-table class="relative mb-2 cursor-fill-data">
     <thead>
     <tr class="border-b divide-x border-light_blue">
@@ -116,6 +110,11 @@
                         @foreach($period as $date)
                             @php
                                 $columnIndex++;
+                               
+                                $conditions = checkNegativeLicense($seatsCount, $business->license->id);
+                                $checkSeatNegPos = $conditions['seats_count'];
+                                $licenseActiveInactive = $conditions['licenseActiveInactive'];
+                       
                             @endphp
                             <x-ui.table-td class="text-right " padding="p-0">
                                 <input draggable="true" class="validseatcount flow_cell px-2 py-1 w-full text-right bg-transparent border-0
@@ -137,7 +136,7 @@
                                        @else
                                        value="0"
                                        @endif
-                                       @if(!$business->license->checkLicense) disabled @endif/>
+                                       @if($checkSeatNegPos && $licenseActiveInactive) @else disabled @endif/>
                             </x-ui.table-td>
                         @endforeach
                     </tr>
@@ -148,7 +147,7 @@
 
     </x-ui.table-tbody>
 </x-ui.table-table>
-<script>
+<!-- <script>
 
     $(document).ready(function(){
         var licenceStatus = '{{$licenseActiveInactive}}';
@@ -156,4 +155,4 @@
             $('.validseatcount').removeAttr('disabled');
         }
     });
-</script>
+</script> -->

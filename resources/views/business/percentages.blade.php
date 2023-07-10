@@ -34,6 +34,7 @@
         $conditions = checkNegativeLicense($seats_count, $business->license->id);
         $checkSeatNegPos = $conditions['seats_count'];
         $licenseActiveInactive = $conditions['licenseActiveInactive'];
+       
     @endphp
     @if($checkSeatNegPos && $licenseActiveInactive)
     @else
@@ -49,6 +50,7 @@
     <x-spinner-block/>
 
     <script type="text/javascript">
+       
         window.percentagesBusinessId = '{{$business->id}}';
         window.seatsCount = '{{$seats_count}}';
         window.percentagesControllerUpdate = "{{route('allocations-percentages-update')}}";

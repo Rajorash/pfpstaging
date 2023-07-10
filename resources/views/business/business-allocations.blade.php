@@ -38,7 +38,6 @@
                 </select>
             </div>
 
-            
             <div class="py-2 pl-12 text-xl">
                 <button class="text-blue font-bold py-2 px-4 rounded-full" onclick="exportTableExpenseExcel()">Export Table</button>
             </div>
@@ -50,8 +49,6 @@
     </x-slot>
 
     @php
-        $checkLicense = $business->license->checkLicense;
-        
         $seats_count = 0;
         if(request()->has('seats_count')){
             $seats_count = request()->input('seats_count');
@@ -60,10 +57,8 @@
         $conditions = checkNegativeLicense($seats_count, $business->license->id);
         $checkSeatNegPos = $conditions['seats_count'];
         $licenseActiveInactive = $conditions['licenseActiveInactive'];
+        
     @endphp
-
-    <input type="hidden" id="seatCountId" name="seatCountId" value="{{$seats_count}}"/>
-
     @if($checkSeatNegPos && $licenseActiveInactive)
     @else
         <div class="font-bold text-center text-red-500">{{__('License is inactive. Edit data forbidden.')}}</div>
@@ -83,8 +78,9 @@
     <x-spinner-block/>
 
     <script type="text/javascript">
+       
         window.allocationsNewControllerUpdate = "{{route('allocations-new-update')}}";
-        window.seatCount = "{{request()->get('seats_count')}}";
+        window.seatsCount = "{{$seats_count}}";
         
     </script>
 </x-app-layout>

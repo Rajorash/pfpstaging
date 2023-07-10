@@ -4427,6 +4427,7 @@ $(function () {
         $this.data.businessId = $('#businessId').val();
         $this.data.startDate = $('#startDate').val();
         $this.data.rangeValue = $('#currentRangeValue').val();
+        $this.data.seatsCount = window.seatsCount;
         $this.updateData.seatCountId = $('#seatCountId').val();
         if (event && typeof event.target.id === 'string') {
           $this.lastCoordinatesElementId = event.target.id;
