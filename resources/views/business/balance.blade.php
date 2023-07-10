@@ -106,11 +106,12 @@
 <script>
     $(document).ready(function(){
         var checkSeat = '{{$checkSeatNegPos}}';
+        var seatscount = '{{$countseats}}';
         var license = '{{$licenseActiveInactive}}';
-        if(checkSeat && license){
+        if(checkSeat && license && seatscount >= 0){
         }else{
             $('.validInput').attr('disabled','disabled');
-            $('.validateButton').attr('disabled','disabled');
+            $('.validateButton').hide();
         }
     });
 </script>
