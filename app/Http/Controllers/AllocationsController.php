@@ -272,7 +272,11 @@ class AllocationsController extends Controller
         $this->authorize('view', $business);
         $checklicense = $this->checklicense(Auth::user());
 
-        return view('business.percentages', ['business' => $business,'currentUser' => $checklicense]);
+        $businesses = $this->getBusinessAll();
+        $currentUser = Auth::user();
+        $seatscount = getAvailable_seats($currentUser,$businesses);
+
+        return view('business.percentages', ['business' => $business,'currentUser' => $checklicense,'countseats' => $seatscount]);
     }
 
     public function updatePercentages(Request $request)

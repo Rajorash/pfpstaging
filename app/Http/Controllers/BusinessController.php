@@ -39,7 +39,7 @@ class BusinessController extends Controller
                 }
             }
         }
-        
+      
         $available_seats = $currentUser->seats - $seat_count;
         // new code 270623 end
         

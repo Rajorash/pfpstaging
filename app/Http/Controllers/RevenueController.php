@@ -11,6 +11,7 @@ use Carbon\CarbonPeriod;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use JamesMills\LaravelTimezone\Timezone;
+use Illuminate\Support\Facades\Auth;
 
 class RevenueController extends Controller
 {
@@ -38,6 +39,10 @@ class RevenueController extends Controller
             ?? session()->get('revenue_rangeValue_'.$this->business->id, $this->defaultCurrentRangeValue);
         $endDate = Carbon::parse($startDate)->addDays($rangeValue)->format('Y-m-d');
 
+        $businesses = $this->getBusinessAll();
+        $currentUser = Auth::user();
+        $seatscount = getAvailable_seats($currentUser,$businesses);
+        
         return view('business.revenue-entry', [
             'rangeArray' => $this->getRangeArray(),
             'business' => $this->business,
@@ -46,7 +51,8 @@ class RevenueController extends Controller
             'period' => CarbonPeriod::create($startDate, $endDate),
             'minDate' => Carbon::parse($minDate)->subMonths(3)->format('Y-m-d'),
             'maxDate' => Carbon::parse($maxDate)->subDays(31)->format('Y-m-d'),
-            'today' => $today
+            'today' => $today,
+            'seatscount' => $seatscount,
         ]);
     }
 
@@ -115,7 +121,7 @@ class RevenueController extends Controller
                     ];
                 }
             }
-
+           
             $response['html'] = view('business.revenue-entry-table')
                 ->with([
                     'business' => $this->business,

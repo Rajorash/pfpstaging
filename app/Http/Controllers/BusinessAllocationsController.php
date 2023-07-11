@@ -12,9 +12,13 @@ use Carbon\CarbonPeriod;
 use Illuminate\Http\Request;
 use JamesMills\LaravelTimezone\Facades\Timezone;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use App\Traits\GettersTrait;
 
 class BusinessAllocationsController extends Controller
 {
+    use GettersTrait;
+
     protected $business = null;
     private array $phases = [];
     private array $percentages = [];
@@ -79,6 +83,10 @@ class BusinessAllocationsController extends Controller
             Carbon::parse($today)->addDays(-4)->format('Y-m-d')
         );
 
+        $businesses = $this->getBusinessAll();
+        $currentUser = Auth::user();
+        $seatscount = getAvailable_seats($currentUser,$businesses);
+
         return view('business.business-allocations', [
             'business' => $this->business,
             'rangeArray' => $this->getRangeArray(),
@@ -87,6 +95,7 @@ class BusinessAllocationsController extends Controller
             'maxDate' => $maxDate,
             'updated_today' => $update_bal_date ? $update_bal_date : Timezone::convertToLocal(Carbon::now(), 'Y-m-d'),
             'currentRangeValue' => session()->get('rangeValue_' . $this->business->id, $this->defaultCurrentRangeValue),
+            'seatscount' => $seatscount
         ]);
     }
 

@@ -40,27 +40,18 @@
         </div>
     </x-slot>
     @php
-        $seats_count = 0;
-        if(request()->has('seats_count')){
-            $seats_count = request()->input('seats_count');
-        }
         
-        $conditions = checkNegativeLicense($seats_count, $business->license->id);
+        $conditions = checkNegativeLicense($seatscount, $business->license->id);
         $checkSeatNegPos = $conditions['seats_count'];
         $licenseActiveInactive = $conditions['licenseActiveInactive'];
        
     @endphp
-    @if($checkSeatNegPos && $licenseActiveInactive)
+    @if($checkSeatNegPos && $licenseActiveInactive && $seatscount>=0)
     @else
         <div class="font-bold text-center text-red-500">{{__('License is inactive. Edit data forbidden.')}}</div>
     @endif
 
-    @php
-        $seats_count = 0;
-        if(request()->has('seats_count')){
-            $seats_count = request()->input('seats_count');
-        }
-    @endphp
+
     <x-ui.main width="w-full">
         <div id="revenueTablePlace"
              class="relative overflow-scroll global_nice_scroll block_different_height return_coordinates_table">
@@ -72,7 +63,7 @@
     <script type="text/javascript">
         window.revenueControllerUpdate = "{{route('revenue-entry.loadData')}}";
         window.revenueControllerSave = "{{route('revenue-entry.saveData')}}";
-        window.seatsCount = "{{$seats_count}}";
+        window.seatsCount = "{{$seatscount}}";
         
     </script>
 
