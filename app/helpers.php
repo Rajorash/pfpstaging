@@ -78,7 +78,7 @@ if(!function_exists('checkLicenseStatus')) {
     function checkLicenseStatus($licenseId)
     {
         $checkStatus = License::find($licenseId);
-        
+       
         if($checkStatus->active == 1){
             $today = new Timezone();
             $today = $today->convertToLocal(Carbon::now(), 'Y-m-d H:i:s');
@@ -100,11 +100,16 @@ if(!function_exists('checkLicenseStatus')) {
 
 if(!function_exists('checkNegativeLicense')) {
     function checkNegativeLicense($seats_count, $license_id) 
-    {
+    { 
         if(!$seats_count) {
             $checkSeatNegPos = false;
         } else {
-            $checkSeatNegPos = true;
+            if($seats_count<0){
+                $checkSeatNegPos = false;
+            }else{
+                $checkSeatNegPos = true;
+            }
+            
         }
         
         $licenseActiveInactive = checkLicenseStatus($license_id);
