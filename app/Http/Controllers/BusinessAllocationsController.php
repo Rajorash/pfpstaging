@@ -31,7 +31,7 @@ class BusinessAllocationsController extends Controller
     private array $bankAccountCache = [];
     private array $previousNonZeroValueCache = [];
     public array $accountsSubTypes = [];
-    protected int $defaultCurrentRangeValue = 365;
+    protected int $defaultCurrentRangeValue = 31;
 
     public const RANGE_DAILY = 1;
     public const RANGE_WEEKLY = 7;
