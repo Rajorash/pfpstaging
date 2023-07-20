@@ -12,6 +12,7 @@ class ModalFlow extends ModalComponent
     public int $accountId = 0;
     public int $flowId = 0;
     public bool $defaultNegative = false;
+    public bool $isDelete = false;
     public string $routeName = '';
     public BankAccount $account;
     public AccountFlow $flow;
@@ -26,11 +27,12 @@ class ModalFlow extends ModalComponent
      * @param  false  $defaultNegative
      * @param  string  $routeName
      */
-    public function mount($accountId, int $flowId = 0, bool $defaultNegative = false, string $routeName = '')
+    public function mount($accountId, int $flowId = 0, bool $defaultNegative = false, bool $isDelete = false, string $routeName = '')
     {
         $this->accountId = $accountId;
         $this->flowId = $flowId;
         $this->defaultNegative = $defaultNegative;
+        $this->isDelete = $isDelete;
         $this->routeName = $routeName;
 
         $this->account = BankAccount::findOrFail($this->accountId);

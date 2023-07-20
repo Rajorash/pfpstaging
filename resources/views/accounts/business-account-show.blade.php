@@ -19,7 +19,7 @@
             <x-ui.table-th>{{__('Edit Account')}}</x-ui.table-th>
         </tr>
         </thead>
-
+   
         <x-ui.table-tbody>
             @forelse($accounts as $acc)
                 <tr>
@@ -32,6 +32,7 @@
                     <x-ui.table-td class="align-top">
                         <div class="pb-2 text-lg">{{__('Account Flows')}}</div>
                         @forelse($acc->flows as $flow)
+                      
                             <div class="table w-full mb-2">
                                 <div class="table-row w-full text-sm hover:bg-gray-100">
                                     <div
@@ -67,6 +68,8 @@
                                             <x-icons.edit class="w-3 h-auto"/>
                                         </x-ui.button-small>
                                     </div>
+                                    
+                                    @if( $acc->isDeletable() )
                                     <div class="table-cell w-10 px-2 pb-1 rounded-tr-lg rounded-br-lg">
                                         <x-ui.button-small
                                             background="bg-transparent hover:bg-transparent"
@@ -76,6 +79,7 @@
                                             <x-icons.delete class="w-3 h-auto"/>
                                         </x-ui.button-small>
                                     </div>
+                                    @endif
                                 </div>
                             </div>
                         @empty

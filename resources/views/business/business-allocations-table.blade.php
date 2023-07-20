@@ -2,13 +2,12 @@
     $checkLicense = $business->license->checkLicense;
     $rowIndex = 0;
     $columnIndex = 0;
-
-    $seats_count = 0;
-    
+    $isdelete ='';
     $conditions = checkNegativeLicense($seatsCount, $business->license->id);
   
     $checkSeatNegPos = $conditions['seats_count'];
     $licenseActiveInactive = $conditions['licenseActiveInactive'];
+   
 @endphp
 
 <x-ui.table-table class="relative mb-2 cursor-fill-data">
@@ -38,6 +37,7 @@
 
             @if(isset($tableData[\App\Models\BankAccount::ACCOUNT_TYPE_REVENUE]))
                 @foreach ($tableData[\App\Models\BankAccount::ACCOUNT_TYPE_REVENUE] as $accountId => $accountData)
+                
                     <tr class="divide-x border-light_blue bg-atlantis-200 level_1 revenue-row">
                         <x-ui.table-td padding="p-1 pl-4"
                                        baseClass="text-dark_gray sticky left-0 z-10 bg-atlantis-200 whitespace-nowrap">
@@ -63,11 +63,13 @@
             @endif
 
         @endif
-
+        
         @foreach ($tableData as $accountType => $accountsArray)
             @if($accountType != \App\Models\BankAccount::ACCOUNT_TYPE_REVENUE)
                 @foreach ($accountsArray as $accountId => $accountData)
+               
                     @foreach ($accountsSubTypes as $subType => $subTypeArray)
+                    
                         <tr data-account_id="{{$accountId}}"
                             class="divide-x border-light_blue {{$subTypeArray['class_tr']}}
                             @if($subType == '_dates') level_1 @elseif( $subType  == 'sub_total') sub_level @else level_2 @endif">
@@ -161,12 +163,20 @@
 
 
                     @if ($projectionMode == 'expense')
-
+                        
                         @if (array_key_exists('flows',$accountData))
+
+                            @foreach ($accounts as $acc)
+                                @if($acc->id == $accountData['id'])
+                                    @php $isdelete = $acc->isDeletable(); @endphp
+                                @endif
+                            @endforeach
+                          
                             @foreach ($accountData['flows'] as $flowId => $flowData)
                                 @php
                                     $rowIndex++;
                                     $columnIndex = 0;
+                                    
                                 @endphp
                                 <tr  @if($checkLicense) draggable="true" drag-root @endif  data-account_id="{{$accountId}}" 
                                 flowId="{{$flowId}}"  class="divide-x bg-data-entry hover:bg-yellow-100 border-light_blue level_3">
@@ -185,7 +195,7 @@
                                             <div class="inline-flex px-4 text-right">
                                                 ({{$flowData['certainty']}}%)
                                             </div>
-                                            <a onclick="Livewire.emit('openModal', 'modal-flow',  {{ json_encode(['accountId' => $accountId, 'flowId' => $flowId, 'routeName' => 'allocations-new']) }})"
+                                            <a onclick="Livewire.emit('openModal', 'modal-flow',  {{ json_encode(['accountId' => $accountId, 'flowId' => $flowId, 'routeName' => 'allocations-new', 'isDelete'=>$isdelete]) }})"
                                                title="Edit {{$flowData['label']}}"
                                                class="opacity-50 cursor-pointer hover:opacity-100">
                                                 <x-icons.edit class="inline-flex self-end h-3 ml-auto"/>
@@ -202,10 +212,7 @@
                                             $columnIndex++;
                                             //$currentDate = $date->format('Y-m-d');
                                             $value = $flowData['_dates'][$currentDate] ?? 0;
-                                            $conditions = checkNegativeLicense($seatsCount, $business->license->id);
-                                            
-                                            $checkSeatNegPos = $conditions['seats_count'];
-                                            $licenseActiveInactive = $conditions['licenseActiveInactive'];
+                                           
                                         @endphp
                                         <x-ui.table-td padding="p-0" class="text-right hover:bg-yellow-200">
                                             <input class="validseatcount px-2 py-1 w-full text-right bg-transparent border-0
@@ -261,7 +268,7 @@
 <script>
 
     $(document).ready(function(){
-      
+    
         var checktrid = [];
         var checktdid = [];
         var total = 0;
@@ -299,4 +306,3 @@
             
     })   
 </script>
-

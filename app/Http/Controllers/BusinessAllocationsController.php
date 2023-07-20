@@ -95,7 +95,7 @@ class BusinessAllocationsController extends Controller
             'maxDate' => $maxDate,
             'updated_today' => $update_bal_date ? $update_bal_date : Timezone::convertToLocal(Carbon::now(), 'Y-m-d'),
             'currentRangeValue' => session()->get('rangeValue_' . $this->business->id, $this->defaultCurrentRangeValue),
-            'seatscount' => $seatscount
+            'countseats' => $seatscount
         ]);
     }
 
@@ -248,6 +248,7 @@ class BusinessAllocationsController extends Controller
                 $tableData[$account->type][$account->id],
                 $startDate
             );
+
         }
 
         //reset period for Forecast
@@ -298,7 +299,8 @@ class BusinessAllocationsController extends Controller
                     'tableAttributes' => $this->tableAttributes,
                     'today' => $today,
                     'todayShort' => $todayShort,
-                    'seatsCount' => $seatsCount
+                    'seatsCount' => $seatsCount,
+                    'accounts' => $accounts
                 ])->render();
 
             return response()->json($response);

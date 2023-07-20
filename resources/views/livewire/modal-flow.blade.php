@@ -7,5 +7,5 @@
         @endif
     </div>
 
-    <livewire:add-edit-flow :account-id="$accountId" :flow-id="$flowId" :default-negative="$defaultNegative" :modal-mode="true" :routeName="$routeName"/>
+    <livewire:add-edit-flow :account-id="$accountId" :flow-id="$flowId" :default-negative="$defaultNegative" :is-delete="$isDelete" :modal-mode="true" :routeName="$routeName"/>
 </div>

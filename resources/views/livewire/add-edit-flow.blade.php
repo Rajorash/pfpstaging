@@ -90,7 +90,8 @@
 
             <div class="table w-full mt-4">
                 <div class="table-row">
-                    @if ($modalMode && $flowId)
+                  
+                    @if ($modalMode && $flowId && $isDelete==true)
                         <div class="table-cell w-1/3 pb-4 text-left">
                             <x-ui.button-danger class="uppercase"
                                                 wire:click="$emit('openModal', 'confirm-delete-modal', {{json_encode(['flowId' => $flowId, 'accountId' => $accountId, 'routeName' => $routeName])}})"
