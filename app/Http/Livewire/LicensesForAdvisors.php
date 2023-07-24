@@ -67,7 +67,7 @@ class LicensesForAdvisors extends Component
             ->with('regionalAdmin')
             ->orderByDesc('created_at')
             ->paginate($this->perPage);
-
+          
         return view('license.advisor-details',
             [
                 'licensesCurrent' => $licensesCurrent,
