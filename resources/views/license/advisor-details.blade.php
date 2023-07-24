@@ -54,7 +54,7 @@
                             <label for="allowEdit" class="pl-2">{{__('Check it to allow edit count of Licenses')}}</label>
                         </div>
                     </div>
-
+                    
                     <div class="table-row @if(!$allowEdit) hidden @endif">
                         <div class="table-cell pb-2">{{__('Set new licenses count')}}</div>
                         <div class="table-cell pb-2">
@@ -66,12 +66,13 @@
                                 min="0"
                                 step="1"
                                 autofocus
-                                wire:model.debounce.1s="licensesCounter"
+                                wire:model.debounce.1s="licensesCounter" wire:loading.attr="readonly"
                             />
                             <span
                                 class="text-sm">{{__('Change value and wait 2 seconds. Value will be save automatically')}}</span>
                             <x-jet-input-error for="licensesCounter" class="text-left mt-2"/>
                         </div>
+                    
                     </div>
 
                     <div class="table-row @if(!$licensesCounterMessage) hidden @endif">
