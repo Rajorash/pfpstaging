@@ -50,12 +50,12 @@
 
     @php
         
-        $conditions = checkNegativeLicense($seatscount, $business->license->id);
+        $conditions = checkNegativeLicense($countseats, $business->license->id);
         $checkSeatNegPos = $conditions['seats_count'];
         $licenseActiveInactive = $conditions['licenseActiveInactive'];
         
     @endphp
-    @if($checkSeatNegPos && $licenseActiveInactive && $seatscount>=0)
+    @if($checkSeatNegPos && $licenseActiveInactive && $countseats>=0)
     @else
         <div class="font-bold text-center text-red-500">{{__('License is inactive. Edit data forbidden.')}}</div>
     @endif
@@ -76,7 +76,7 @@
     <script type="text/javascript">
        
         window.allocationsNewControllerUpdate = "{{route('allocations-new-update')}}";
-        window.seatsCount = "{{$seatscount}}";
+        window.seatsCount = "{{$countseats}}";
         
     </script>
 </x-app-layout>

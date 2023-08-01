@@ -148,11 +148,8 @@
     </x-ui.table-tbody>
 </x-ui.table-table>
 <!-- <script>
-
-    $(document).ready(function(){
-        var licenceStatus = '{{$licenseActiveInactive}}';
-        if(window.seatCount>=0 && licenceStatus==1){
-            $('.validseatcount').removeAttr('disabled');
-        }
+   
+    $(document).ready(function(){ alert();
+       
     });
 </script> -->

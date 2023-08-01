@@ -1,5 +1,5 @@
 <div class="livewire-wrapper">
-    <div class="table-row">
+    <!-- <div class="table-row">
         <div class="table-cell w-1/4 text-lg text-left text-center text-black pt-4" id="tab1">
                 <x-ui.button-secondary class="mr-4 {{ $tab1 ? 'bg-gray-300 text-gray-100 border-blue' : '' }} bg-slate-500 text-white  uppercase inline-flex items-center px-1 pt-1  border-transparent font-medium leading-5 text-gray-500 hover:text-gray-700 hover:border-blue focus:outline-none focus:text-gray-700 focus:blue transition duration-150 ease-in-out"  wire:click="$emit('checktab1')" type="button">
                             {{__('MANUAL ENTRY')}}
@@ -10,7 +10,7 @@
                             {{__('UPLOAD CSV')}}
                 </x-ui.button-secondary>
         </div>
-    </div>
+    </div> -->
 
 
     @if($tab1)
@@ -29,23 +29,6 @@
                                     wire:model.defer="label" wire:loading.attr="disabled"
                                     required autofocus/>
                         <x-jet-input-error for="label" class="mt-2"/>
-                    </div>
-                </div>
-
-                <div class="table-row">
-                    <div class="table-cell w-1/4 pb-4 text-left">
-                    Category
-                    </div>
-                    <div class="table-cell w-3/4 pb-4">
-                        <select name="catId" id="catId" wire:model="catId" class="w-full form-input border-light_blue
-                                focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50
-                                rounded-md shadow-sm">
-                            <option value="" >Select Category</option>
-                            @foreach($category_name as $cat)
-                                <option value="{{ $cat->id }}" >{{ $cat->category_name }}</option>
-                            @endforeach
-                        </select>
-                        <x-jet-input-error for="catId" class="mt-2"/>
                     </div>
                 </div>
 
@@ -91,7 +74,7 @@
             <div class="table w-full mt-4">
                 <div class="table-row">
                   
-                    @if ($modalMode && $flowId && $isDelete==true)
+                    @if ($modalMode && $flowId)
                         <div class="table-cell w-1/3 pb-4 text-left">
                             <x-ui.button-danger class="uppercase"
                                                 wire:click="$emit('openModal', 'confirm-delete-modal', {{json_encode(['flowId' => $flowId, 'accountId' => $accountId, 'routeName' => $routeName])}})"

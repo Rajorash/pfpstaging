@@ -18,7 +18,6 @@ class AddEditFlow extends Component
     public int $flowId = 0;
     public int $accountId = 0;
     public bool $defaultNegative = true;
-    public bool $isDelete = false;
     public string $routeName = '';
 
     public string $label = '';
@@ -68,13 +67,14 @@ class AddEditFlow extends Component
 
     protected function rules()
     {
+       
         if($this->tab2){
             return ['flowscsv' =>  'required|file|mimes:xls,xlsx,csv'];
         }else{
             return [
                 'label' => ['required', 'min:3'],
                 'negative_flow' => ['required'],
-                'catId' => ['required'],
+                'catId' => ['integer'],
                 'certainty' => ['required', 'integer', 'min:0', 'max:500']
             ];
         }
